@@ -1,0 +1,109 @@
+@namespace Ballpass.Web.Components
+@using Ballpass.Web.Features.Find.Ai
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager Nav
+@inject IStringLocalizer<FindResource> F
+@inject IStringLocalizer<SharedResource> S
+
+@* Natural-language box. A plain GET form to /find/ai (works without JavaScript); the redirect lands on /search or /match with
+   ?parsed=ai|rules. This component then renders the label and the filters as removable chips. *@
+<section class="bp-find-aibox" aria-labelledby="bp-find-ai-h">
+    <h2 id="bp-find-ai-h" class="bp-find-ai-h">@F["Ai_Heading"]</h2>
+    <form method="get" action="/find/ai" class="bp-find-aiform">
+        <input type="hidden" name="to" value="@Target">
+        <label class="visually-hidden" for="bp-find-nlq">@F["Ai_Heading"]</label>
+        <input id="bp-find-nlq" type="text" name="q" maxlength="200" value="@Echo" placeholder="@F["Ai_Placeholder"]" autocomplete="off">
+        <button type="submit" class="bp-btn">@F["Ai_Submit"]</button>
+    </form>
+    <p class="bp-find-hint">@F["Ai_Hint"]</p>
+
+    @if (parsed is not null)
+    {
+        <p class="bp-find-ailabel" data-parsed="@parsed" role="status">@F[parsed == "ai" ? "Ai_LabelAi" : "Ai_LabelRules"]</p>
+        @if (chips.Count == 0)
+        {
+            <p class="bp-find-hint">@F["Ai_NoFilters"]</p>
+        }
+        else
+        {
+            <ul class="bp-find-chips" aria-label="@F["Ai_Filters"]">
+                @foreach (var chip in chips)
+                {
+                    <li class="bp-find-chip" data-chip="@chip.Key" data-unsupported="@(chip.Unsupported ? "true" : null)">
+                        <span>@chip.Text</span>
+                        <a href="@chip.RemoveHref" class="bp-find-chip-x" aria-label="@F["Ai_Remove"]: @chip.Text" title="@F["Ai_Remove"]">×</a>
+                    </li>
+                }
+            </ul>
+        }
+    }
+</section>
+
+@code {
+    private static readonly string[] Positions = ["PG", "SG", "SF", "PF", "C"];
+    private static readonly string[] Leagues = ["A1", "A2", "B", "Regional"];
+    private static readonly string[] FilterKeys = ["gender", "position", "minHeight", "maxHeight", "minAge", "maxAge", "region", "league", "looking", "q"];
+
+    private sealed record Chip(string Key, string Text, string RemoveHref, bool Unsupported);
+
+    /// <summary>"search" (default) or "match": where the parsed filters are sent.</summary>
+    [Parameter] public string Target { get; set; } = "search";
+
+    private string? parsed;
+    private string Echo = "";
+    private List<Chip> chips = [];
+
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(Nav.Uri);
+        var query = QueryHelpers.ParseQuery(uri.Query);
+        Echo = query.TryGetValue("nlq", out var nlq) ? Truncate(nlq.ToString(), 200) : "";
+
+        var p = query.TryGetValue("parsed", out var pv) ? pv.ToString() : null;
+        parsed = p is "ai" or "rules" ? p : null;
+        if (parsed is null) return;
+
+        var pairs = query.SelectMany(kv => kv.Value.Select(v => (Key: kv.Key, Value: v ?? ""))).ToList();
+        foreach (var (key, value) in pairs)
+        {
+            var text = key == "unsupported" ? UnsupportedText(value) : FilterKeys.Contains(key) ? FilterText(key, value) : null;
+            if (text is null) continue;
+            var rest = pairs.Where(x => !(x.Key == key && x.Value == value))
+                .Select(x => $"{Uri.EscapeDataString(x.Key)}={Uri.EscapeDataString(x.Value)}");
+            chips.Add(new Chip(key, text, uri.AbsolutePath + "?" + string.Join("&", rest), key == "unsupported"));
+        }
+    }
+
+    private string? FilterText(string key, string value)
+    {
+        string? shown = key switch
+        {
+            "gender" => value is "Female" or "Male" ? S[$"Gender_{value}"].Value : null,
+            "position" => Positions.Contains(value) ? S[$"Position_{value}"].Value : null,
+            "region" => RegionName(value),
+            "league" => Leagues.Contains(value) ? S[$"League_{value}"].Value : null,
+            "looking" => value == "true" ? "" : null,
+            "q" => value.Trim() is { Length: > 0 } name ? Truncate(name, 80) : null,
+            _ => int.TryParse(value, out var n) ? n.ToString() : null,   // minHeight / maxHeight / minAge / maxAge
+        };
+        if (shown is null) return null;
+        return key == "looking" ? F["Chip_looking"].Value : $"{F[$"Chip_{key}"]}: {shown}";
+    }
+
+    private string? RegionName(string value)
+    {
+        var r = S[$"Region_{value}"];
+        return r.ResourceNotFound ? null : r.Value;
+    }
+
+    private string? UnsupportedText(string value)
+    {
+        value = Truncate(value.Trim(), 40);
+        if (value.Length == 0) return null;
+        var label = F[$"Unsupported_{value}"];
+        var text = label.ResourceNotFound ? value : label.Value;
+        return value == "minors" ? text : $"{text} · {F["Chip_Unsupported"]}";
+    }
+
+    private static string Truncate(string s, int max) => s.Length > max ? s[..max] : s;
+}

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Nav_Match" xml:space="preserve"><value>Match</value></data>
+  <data name="MatchLink_Title" xml:space="preserve"><value>Looking for a specific profile?</value></data>
+  <data name="MatchLink_Body" xml:space="preserve"><value>Tell us what your team needs and see players ranked by fit, with a reason for each criterion.</value></data>
+  <data name="MatchLink_Cta" xml:space="preserve"><value>Player match</value></data>
+  <data name="Ai_Heading" xml:space="preserve"><value>Search in your own words</value></data>
+  <data name="Ai_Hint" xml:space="preserve"><value>Type what you need, e.g. “center over 185 in Attica”.</value></data>
+  <data name="Ai_Placeholder" xml:space="preserve"><value>e.g. center over 185 in Attica</value></data>
+  <data name="Ai_Submit" xml:space="preserve"><value>Search</value></data>
+  <data name="Ai_LabelAi" xml:space="preserve"><value>AI-interpreted search. Check the filters.</value></data>
+  <data name="Ai_LabelRules" xml:space="preserve"><value>From rules (no AI model)</value></data>
+  <data name="Ai_Filters" xml:space="preserve"><value>Filters (remove one with ×, or change them in the form)</value></data>
+  <data name="Ai_NoFilters" xml:space="preserve"><value>No filters found in the text.</value></data>
+  <data name="Ai_Remove" xml:space="preserve"><value>Remove filter</value></data>
+  <data name="Chip_gender" xml:space="preserve"><value>Gender</value></data>
+  <data name="Chip_position" xml:space="preserve"><value>Position</value></data>
+  <data name="Chip_minHeight" xml:space="preserve"><value>Height from</value></data>
+  <data name="Chip_maxHeight" xml:space="preserve"><value>Height up to</value></data>
+  <data name="Chip_minAge" xml:space="preserve"><value>Age from</value></data>
+  <data name="Chip_maxAge" xml:space="preserve"><value>Age up to</value></data>
+  <data name="Chip_region" xml:space="preserve"><value>Region</value></data>
+  <data name="Chip_league" xml:space="preserve"><value>League</value></data>
+  <data name="Chip_looking" xml:space="preserve"><value>Looking for team</value></data>
+  <data name="Chip_q" xml:space="preserve"><value>Name</value></data>
+  <data name="Chip_Unsupported" xml:space="preserve"><value>Not filterable</value></data>
+  <data name="Unsupported_handedness" xml:space="preserve"><value>Handedness</value></data>
+  <data name="Unsupported_salary" xml:space="preserve"><value>Salary</value></data>
+  <data name="Unsupported_nationality" xml:space="preserve"><value>Nationality</value></data>
+  <data name="Unsupported_stats" xml:space="preserve"><value>Statistics (see “Priority” in Match)</value></data>
+  <data name="Unsupported_minors" xml:space="preserve"><value>Adults only: age set to 18+</value></data>
+  <data name="Match_Title" xml:space="preserve"><value>Player match</value></data>
+  <data name="Match_Intro" xml:space="preserve"><value>Say what you need and see players ranked by fit, with a reason for each criterion.</value></data>
+  <data name="Need_Heading" xml:space="preserve"><value>What are you looking for?</value></data>
+  <data name="Need_HardHint" xml:space="preserve"><value>Position and “confirmed only” hide players. The other criteria score them.</value></data>
+  <data name="Need_Gender" xml:space="preserve"><value>Gender</value></data>
+  <data name="Need_Position" xml:space="preserve"><value>Position (hides)</value></data>
+  <data name="Need_Height" xml:space="preserve"><value>Height (cm)</value></data>
+  <data name="Need_HeightTo" xml:space="preserve"><value>Maximum height</value></data>
+  <data name="Need_Age" xml:space="preserve"><value>Age (18+)</value></data>
+  <data name="Need_AgeTo" xml:space="preserve"><value>Maximum age</value></data>
+  <data name="Need_Region" xml:space="preserve"><value>Region</value></data>
+  <data name="Need_League" xml:space="preserve"><value>Current league</value></data>
+  <data name="Need_Any" xml:space="preserve"><value>Any</value></data>
+  <data name="Need_Priority" xml:space="preserve"><value>Stat priority</value></data>
+  <data name="Priority_None" xml:space="preserve"><value>None</value></data>
+  <data name="Priority_Rebounding" xml:space="preserve"><value>Rebounding</value></data>
+  <data name="Priority_Scoring" xml:space="preserve"><value>Scoring</value></data>
+  <data name="Priority_Playmaking" xml:space="preserve"><value>Playmaking</value></data>
+  <data name="Need_Confirmed" xml:space="preserve"><value>Confirmed stats only (coach or league mock)</value></data>
+  <data name="Need_Submit" xml:space="preserve"><value>Find</value></data>
+  <data name="Need_Clear" xml:space="preserve"><value>Clear</value></data>
+  <data name="Results_Heading" xml:space="preserve"><value>Results</value></data>
+  <data name="Results_Count" xml:space="preserve"><value>{0} results</value></data>
+  <data name="Results_Hidden" xml:space="preserve"><value>{0} hidden by filters</value></data>
+  <data name="Results_Showing" xml:space="preserve"><value>Showing the top {0}.</value></data>
+  <data name="Results_None" xml:space="preserve"><value>No player passes the filters.</value></data>
+  <data name="Results_Label" xml:space="preserve"><value>Computed on fictional demo data with default weights</value></data>
+  <data name="Results_Unranked" xml:space="preserve"><value>No scoring criterion was requested (height, age, region, league or stat): the list is not ranked by fit.</value></data>
+  <data name="Weights_Heading" xml:space="preserve"><value>How it is calculated</value></data>
+  <data name="Weights_Intro" xml:space="preserve"><value>The percentage is a weighted average of the criteria you asked for, with default weights (estimates, not measured). If a value is missing it is computed on the rest and the player is tagged “partial data”. Stats are per game; under {0} games counts as missing. It is not an assessment of ability.</value></data>
+  <data name="Weight_Height" xml:space="preserve"><value>Height</value></data>
+  <data name="Weight_Stat" xml:space="preserve"><value>Stat</value></data>
+  <data name="Weight_Region" xml:space="preserve"><value>Region</value></data>
+  <data name="Weight_Age" xml:space="preserve"><value>Age</value></data>
+  <data name="Weight_League" xml:space="preserve"><value>League</value></data>
+  <data name="Trust_Heading" xml:space="preserve"><value>Stat sources among the results</value></data>
+  <data name="Trust_Count" xml:space="preserve"><value>Based on {0} results with stats</value></data>
+  <data name="Trust_Aria" xml:space="preserve"><value>Stat sources: self-reported {0}%, coach-confirmed {1}%, league-verified (mock) {2}%</value></data>
+  <data name="Fit_Aria" xml:space="preserve"><value>Fit {0}%</value></data>
+  <data name="Fit_Unranked" xml:space="preserve"><value>Not scored</value></data>
+  <data name="Partial_Tag" xml:space="preserve"><value>Partial data</value></data>
+  <data name="Partial_Missing" xml:space="preserve"><value>Missing: {0}</value></data>
+  <data name="Missing_Stat" xml:space="preserve"><value>stat (under {0} games or none)</value></data>
+  <data name="Missing_League" xml:space="preserve"><value>league (no club)</value></data>
+  <data name="Missing_Height" xml:space="preserve"><value>height</value></data>
+  <data name="Missing_Age" xml:space="preserve"><value>age</value></data>
+  <data name="Missing_Region" xml:space="preserve"><value>region</value></data>
+  <data name="Reasons_Heading" xml:space="preserve"><value>Why it fits</value></data>
+  <data name="Reason_Height" xml:space="preserve"><value>Height {0} cm (target {1})</value></data>
+  <data name="Reason_Age" xml:space="preserve"><value>Age {0} (target {1})</value></data>
+  <data name="Reason_Region" xml:space="preserve"><value>Region: {0} (target {1})</value></data>
+  <data name="Reason_Region_Met" xml:space="preserve"><value>Region: {0}</value></data>
+  <data name="Reason_League" xml:space="preserve"><value>League: {0} (target {1})</value></data>
+  <data name="Reason_League_Met" xml:space="preserve"><value>League: {0}</value></data>
+  <data name="Reason_Stat_Top" xml:space="preserve"><value>{0} {1}/game — top {2}% of {3} (demo)</value></data>
+  <data name="Reason_Stat_Plain" xml:space="preserve"><value>{0} {1}/game — below the top 50% of {2} (demo)</value></data>
+  <data name="Unit_Rebounding" xml:space="preserve"><value>reb.</value></data>
+  <data name="Unit_Scoring" xml:space="preserve"><value>pts</value></data>
+  <data name="Unit_Playmaking" xml:space="preserve"><value>ast</value></data>
+  <data name="Cohort_PG" xml:space="preserve"><value>point guards</value></data>
+  <data name="Cohort_SG" xml:space="preserve"><value>shooting guards</value></data>
+  <data name="Cohort_SF" xml:space="preserve"><value>small forwards</value></data>
+  <data name="Cohort_PF" xml:space="preserve"><value>power forwards</value></data>
+  <data name="Cohort_C" xml:space="preserve"><value>centers</value></data>
+  <data name="Mark_Met" xml:space="preserve"><value>matches</value></data>
+  <data name="Mark_Partial" xml:space="preserve"><value>close</value></data>
+  <data name="Mark_Missed" xml:space="preserve"><value>does not match</value></data>
+  <data name="Result_Looking" xml:space="preserve"><value>Looking for team</value></data>
+</root>
