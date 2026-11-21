@@ -7,3 +7,4 @@ TestResults/
 .DS_Store
 *.log
 .playwright-cli/
+.claude/worktrees/
