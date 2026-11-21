@@ -1,0 +1,19 @@
+schema: spec-driven
+
+context: |
+  Ballpass investor POC: athlete scouting (women's basketball first, Greece).
+  Stack: .NET 10 Blazor Web App, static SSR (no interactive circuits), EF Core + PostgreSQL 18.
+  Config only via appsettings.json / user-secrets / env vars. No secrets in git.
+  MVP items (every scenario must trace to one): M0 skeleton, M1 athlete profile, M2 coach search,
+  M3 express interest, M4 shortlist, M5 demo login, M6 Greek/English.
+  OUT OF SCOPE (reject in review): social feed, posts, likes, comments, chat/DMs, payments,
+  uploads of photos/video files, Trust Score, computer vision, ESKA/EOK/Mismatch endorsement claims.
+  Demo data is fictional only: every seeded row is flagged demo, every page shows the demo banner,
+  no real people, no minors (under 18) in search results.
+
+rules:
+  proposal:
+    - State the MVP item id(s) the change serves
+    - Measured blast radius with real counts and a date
+  tasks:
+    - "Test-first: an early task writes failing tests and records the red run"

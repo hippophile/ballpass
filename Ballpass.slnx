@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Ballpass.Web/Ballpass.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Ballpass.Web.Tests/Ballpass.Web.Tests.csproj" />
+  </Folder>
+</Solution>
