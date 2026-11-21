@@ -1,0 +1,19 @@
+@* Generated placeholder art for highlight posts: a half-court drawing with the author's initials. No photos, no video, no AI faces.
+   The text equivalent is the aria-label; colours come from CSS (bp-feed-art-*) so they follow the tokens. *@
+<svg class="bp-feed-art" viewBox="0 0 320 180" role="img" aria-label="@Label" xmlns="http://www.w3.org/2000/svg">
+    <rect class="bp-feed-art-bg" x="0" y="0" width="320" height="180" rx="10" />
+    <g class="bp-feed-art-lines" fill="none" stroke-width="2">
+        <rect x="16" y="14" width="288" height="152" rx="4" />
+        <rect x="116" y="14" width="88" height="70" />
+        <circle cx="160" cy="84" r="26" />
+        <path d="M96 14 V30 A64 64 0 0 0 224 30 V14" />
+        <path d="M148 14 H172" />
+        <circle cx="160" cy="24" r="6" />
+    </g>
+    <text class="bp-feed-art-initials" x="160" y="132" text-anchor="middle">@Initials</text>
+</svg>
+
+@code {
+    [Parameter, EditorRequired] public string Initials { get; set; } = "";
+    [Parameter, EditorRequired] public string Label { get; set; } = "";
+}

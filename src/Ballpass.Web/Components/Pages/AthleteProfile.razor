@@ -35,6 +35,7 @@
             <p class="meta"><span class="meta-label">@L["Profile_Region"]:</span> @RegionName</p>
             <p class="club"><span class="meta-label">@L["Profile_CurrentClub"]:</span>
                 <strong>@(athlete.CurrentClub?.Name ?? L["Profile_NoClub"].Value)</strong></p>
+            <FollowButton Slug="@Slug" />
         </div>
     </section>
 

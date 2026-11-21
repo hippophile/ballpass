@@ -1,0 +1,50 @@
+@using Ballpass.Web.Features.Feed
+@using Microsoft.EntityFrameworkCore
+@inject IServiceScopeFactory ScopeFactory
+@inject NavigationManager Navigation
+@inject ILogger<FollowButton> Logger
+@inject IStringLocalizer<FeedResource> F
+
+@* Follow / unfollow an athlete from the profile. Renders nothing when signed out, on your own profile, or if the feed fails. *@
+@if (targetKey is not null)
+{
+    <form method="post" action="@(following ? "/feed/unfollow" : "/feed/follow")" data-feed-action="@(following ? "unfollow" : "follow")" class="bp-feed-inline bp-feed-profile-follow">
+        <AntiforgeryToken />
+        <input type="hidden" name="targetKey" value="@targetKey" />
+        <input type="hidden" name="returnUrl" value="@returnUrl" />
+        <button type="submit" class="bp-btn bp-btn-secondary" aria-pressed="@(following ? "true" : "false")" aria-label="@(following ? F["Unfollow_Aria"].Value : null)">@F[following ? "Unfollow" : "Follow"]</button>
+    </form>
+}
+
+@code {
+    [Parameter, EditorRequired] public string Slug { get; set; } = "";
+    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
+
+    private string? targetKey;
+    private bool following;
+    private string returnUrl = "/";
+
+    // Own scope + DbContext: the profile page holds the request-scoped one while this initialises.
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var viewer = FeedViewer.From(AuthState is null ? null : (await AuthState).User);
+            if (!viewer.SignedIn) return;
+            using var scope = ScopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<Ballpass.Web.Data.BallpassDbContext>();
+            var id = await db.Athletes.Where(a => a.Slug == Slug && a.IsDemo).Select(a => (int?)a.Id).FirstOrDefaultAsync();
+            if (id is null) return;
+            var key = FeedKeys.Make(Ballpass.Web.Data.AuthorKind.Athlete, id.Value);
+            if (key == viewer.Key) return;
+            following = await scope.ServiceProvider.GetRequiredService<IFollowService>().IsFollowingAsync(viewer.Key!, key);
+            returnUrl = "/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?')[0];
+            targetKey = key;
+        }
+        catch (Exception e)
+        {
+            Logger.LogWarning(e, "Follow button failed; rendering nothing");
+            targetKey = null;
+        }
+    }
+}

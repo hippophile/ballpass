@@ -40,6 +40,7 @@
     private RenderFragment NavItems => @<text>
         <AuthorizeView>
             <Authorized>
+                <FeedNavLink />
                 @if (context.User.IsInRole("Coach"))
                 {
                     <a href="/search">@L["Nav_Search"]</a>
@@ -56,6 +57,7 @@
                 </form>
             </Authorized>
             <NotAuthorized>
+                <FeedNavLink />
                 <a href="/demo">@L["Nav_DemoLogin"]</a>
             </NotAuthorized>
         </AuthorizeView>
