@@ -1,0 +1,80 @@
+@page "/demo"
+@using System.Globalization
+@using Ballpass.Web.Data
+@using Ballpass.Web.Demo
+@using Microsoft.EntityFrameworkCore
+@inject BallpassDbContext Db
+@inject IStringLocalizer<SharedResource> L
+
+<PageTitle>@L["Demo_Title"]</PageTitle>
+
+<h1>@L["Demo_Title"]</h1>
+<p>@L["Demo_Intro"]</p>
+
+<h2 class="bp-section">@L["Demo_Coaches"]</h2>
+<div class="bp-personas">
+    @foreach (var c in coaches)
+    {
+        var name = IsGreek ? $"{c.FirstName} {c.LastName}" : $"{c.FirstNameLatin} {c.LastNameLatin}";
+        <form method="post" action="/demo/login" data-persona="coach" data-name="@name" class="bp-persona-form">
+            <input type="hidden" name="personaType" value="coach">
+            <input type="hidden" name="personaId" value="@c.Id">
+            <input type="hidden" name="returnUrl" value="@(ReturnUrl ?? "")">
+            <AntiforgeryToken />
+            <button type="submit" class="bp-persona">
+                <span class="bp-persona-name">@name</span>
+                <span class="bp-persona-info">@L[GreekNames.IsFemaleFirstName(c.FirstName) ? "Role_Coach_F" : "Role_Coach"] · @c.Club?.Name · @L[$"League_{c.Club!.League}"]</span>
+            </button>
+        </form>
+    }
+</div>
+
+<h2 class="bp-section">@L["Demo_Athletes"]</h2>
+<div class="bp-personas">
+    @foreach (var a in athletes)
+    {
+        var name = IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
+        <form method="post" action="/demo/login" data-persona="athlete" data-name="@name" class="bp-persona-form">
+            <input type="hidden" name="personaType" value="athlete">
+            <input type="hidden" name="personaId" value="@a.Id">
+            <input type="hidden" name="returnUrl" value="@(ReturnUrl ?? "")">
+            <AntiforgeryToken />
+            <button type="submit" class="bp-persona">
+                <span class="bp-persona-name">@name</span>
+                <span class="bp-persona-info">@L[$"Position_{a.Position}"] · @(a.CurrentClub?.Name ?? L["Profile_NoClub"].Value)</span>
+            </button>
+        </form>
+    }
+</div>
+
+@code {
+    [SupplyParameterFromQuery(Name = "ReturnUrl")] public string? ReturnUrl { get; set; }
+
+    private List<Coach> coaches = [];
+    private List<Athlete> athletes = [];
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    protected override async Task OnInitializedAsync()
+    {
+        coaches = await Db.Coaches.AsNoTracking().Include(c => c.Club)
+            .Where(c => c.IsDemo && c.Role == CoachRole.Head)
+            .OrderBy(c => c.Club!.Name).ThenBy(c => c.Id).ToListAsync();
+
+        // Showcase mix: athletes with a club and the most seasons first, then some looking for a team.
+        athletes = [
+            .. await Showcase(Gender.Female, withClub: 5, looking: 3),
+            .. await Showcase(Gender.Male, withClub: 3, looking: 1),
+        ];
+    }
+
+    private async Task<List<Athlete>> Showcase(Gender gender, int withClub, int looking)
+    {
+        var baseQuery = Db.Athletes.AsNoTracking().Include(a => a.CurrentClub).Where(a => a.IsDemo && a.Gender == gender);
+        var clubbed = await baseQuery.Where(a => a.CurrentClubId != null)
+            .OrderByDescending(a => a.Stats.Count).ThenBy(a => a.Id).Take(withClub).ToListAsync();
+        var free = await baseQuery.Where(a => a.CurrentClubId == null)
+            .OrderByDescending(a => a.Stats.Count).ThenBy(a => a.Id).Take(looking).ToListAsync();
+        return [.. clubbed, .. free];
+    }
+}

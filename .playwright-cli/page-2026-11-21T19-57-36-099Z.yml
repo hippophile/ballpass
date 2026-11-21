@@ -1,0 +1,120 @@
+- generic [ref=f7e1]:
+  - status [ref=f7e2]:
+    - generic [ref=f7e3]: Περιβάλλον επίδειξης — όλοι οι αθλητές, προπονητές και σύλλογοι είναι φανταστικοί.
+    - generic [ref=f7e4]: Demo environment — all athletes, coaches and clubs are fictional.
+  - banner [ref=f7e5]:
+    - link "Ballpass" [ref=f7e6] [cursor=pointer]:
+      - /url: /
+    - navigation "Κύρια πλοήγηση" [ref=f7e7]:
+      - link "Είσοδος επίδειξης" [ref=f7e8] [cursor=pointer]:
+        - /url: /demo
+    - navigation "Γλώσσα" [ref=f7e9]:
+      - link "EL" [ref=f7e10] [cursor=pointer]:
+        - /url: /culture/set?culture=el&redirectUri=%2Fdemo
+      - generic [aria-hidden] [ref=f7e11]: "|"
+      - link "EN" [ref=f7e12] [cursor=pointer]:
+        - /url: /culture/set?culture=en&redirectUri=%2Fdemo
+  - main [ref=f7e13]:
+    - article [ref=f7e14]:
+      - heading "Είσοδος επίδειξης" [active] [level=1] [ref=f7e15]
+      - paragraph [ref=f7e16]: Επιλέξτε ένα φανταστικό πρόσωπο για να δοκιμάσετε την πλατφόρμα. Δεν χρειάζεται κωδικός.
+      - heading "Προπονητές" [level=2] [ref=f7e17]
+      - generic [ref=f7e18]:
+        - button "Κώστας Παπαναστασίου Προπονητής · Αετοί Κομοτηνής (demo) · Α2" [ref=f7e20] [cursor=pointer]:
+          - generic [ref=f7e21]: Κώστας Παπαναστασίου
+          - generic [ref=f7e22]: Προπονητής · Αετοί Κομοτηνής (demo) · Α2
+        - button "Ευτυχία Σωτηρίου Προπονητής · Αλκυόνες Λάρισας (demo) · Α1" [ref=f7e24] [cursor=pointer]:
+          - generic [ref=f7e25]: Ευτυχία Σωτηρίου
+          - generic [ref=f7e26]: Προπονητής · Αλκυόνες Λάρισας (demo) · Α1
+        - button "Δέσποινα Αντωνίου Προπονητής · Αστραπές Λάρισας (demo) · Β΄ Εθνική" [ref=f7e28] [cursor=pointer]:
+          - generic [ref=f7e29]: Δέσποινα Αντωνίου
+          - generic [ref=f7e30]: Προπονητής · Αστραπές Λάρισας (demo) · Β΄ Εθνική
+        - button "Θεοδώρα Σταματοπούλου Προπονητής · Βορέηδες Βόλου (demo) · Τοπικό" [ref=f7e32] [cursor=pointer]:
+          - generic [ref=f7e33]: Θεοδώρα Σταματοπούλου
+          - generic [ref=f7e34]: Προπονητής · Βορέηδες Βόλου (demo) · Τοπικό
+        - button "Αικατερίνη Μανωλάκη Προπονητής · Γλάροι Σερρών (demo) · Α1" [ref=f7e36] [cursor=pointer]:
+          - generic [ref=f7e37]: Αικατερίνη Μανωλάκη
+          - generic [ref=f7e38]: Προπονητής · Γλάροι Σερρών (demo) · Α1
+        - button "Ελένη Λαμπροπούλου Προπονητής · Δελφίνια Χανίων (demo) · Α2" [ref=f7e40] [cursor=pointer]:
+          - generic [ref=f7e41]: Ελένη Λαμπροπούλου
+          - generic [ref=f7e42]: Προπονητής · Δελφίνια Χανίων (demo) · Α2
+        - button "Μαρία Μπακάλη Προπονητής · Ζέφυροι Πάτρας (demo) · Τοπικό" [ref=f7e44] [cursor=pointer]:
+          - generic [ref=f7e45]: Μαρία Μπακάλη
+          - generic [ref=f7e46]: Προπονητής · Ζέφυροι Πάτρας (demo) · Τοπικό
+        - button "Αλέξανδρος Ιωάννου Προπονητής · Ηχώ Πειραιά (demo) · Α1" [ref=f7e48] [cursor=pointer]:
+          - generic [ref=f7e49]: Αλέξανδρος Ιωάννου
+          - generic [ref=f7e50]: Προπονητής · Ηχώ Πειραιά (demo) · Α1
+        - button "Τάσος Βασιλείου Προπονητής · Θύελλα Περιστερίου (demo) · Β΄ Εθνική" [ref=f7e52] [cursor=pointer]:
+          - generic [ref=f7e53]: Τάσος Βασιλείου
+          - generic [ref=f7e54]: Προπονητής · Θύελλα Περιστερίου (demo) · Β΄ Εθνική
+        - button "Νίκος Αναγνωστόπουλος Προπονητής · Κομήτες Βόλου (demo) · Α1" [ref=f7e56] [cursor=pointer]:
+          - generic [ref=f7e57]: Νίκος Αναγνωστόπουλος
+          - generic [ref=f7e58]: Προπονητής · Κομήτες Βόλου (demo) · Α1
+        - button "Άρης Παπαδόπουλος Προπονητής · Κορυφαίοι Ηρακλείου (demo) · Τοπικό" [ref=f7e60] [cursor=pointer]:
+          - generic [ref=f7e61]: Άρης Παπαδόπουλος
+          - generic [ref=f7e62]: Προπονητής · Κορυφαίοι Ηρακλείου (demo) · Τοπικό
+        - button "Βάσω Καραγιάννη Προπονητής · Κύματα Κομοτηνής (demo) · Β΄ Εθνική" [ref=f7e64] [cursor=pointer]:
+          - generic [ref=f7e65]: Βάσω Καραγιάννη
+          - generic [ref=f7e66]: Προπονητής · Κύματα Κομοτηνής (demo) · Β΄ Εθνική
+        - button "Στέλλα Ζαχαρίου Προπονητής · Μαχητές Κομοτηνής (demo) · Β΄ Εθνική" [ref=f7e68] [cursor=pointer]:
+          - generic [ref=f7e69]: Στέλλα Ζαχαρίου
+          - generic [ref=f7e70]: Προπονητής · Μαχητές Κομοτηνής (demo) · Β΄ Εθνική
+        - button "Αικατερίνη Φωτοπούλου Προπονητής · Μέλισσες Πάτρας (demo) · Α1" [ref=f7e72] [cursor=pointer]:
+          - generic [ref=f7e73]: Αικατερίνη Φωτοπούλου
+          - generic [ref=f7e74]: Προπονητής · Μέλισσες Πάτρας (demo) · Α1
+        - button "Στέλιος Τσιμάς Προπονητής · Νεφέλες Θεσσαλονίκης (demo) · Α2" [ref=f7e76] [cursor=pointer]:
+          - generic [ref=f7e77]: Στέλιος Τσιμάς
+          - generic [ref=f7e78]: Προπονητής · Νεφέλες Θεσσαλονίκης (demo) · Α2
+        - button "Δέσποινα Ιωάννου Προπονητής · Ορμητικοί Αγρινίου (demo) · Α2" [ref=f7e80] [cursor=pointer]:
+          - generic [ref=f7e81]: Δέσποινα Ιωάννου
+          - generic [ref=f7e82]: Προπονητής · Ορμητικοί Αγρινίου (demo) · Α2
+        - button "Παναγιώτα Σωτηρίου Προπονητής · Πυρσοί Πειραιά (demo) · Β΄ Εθνική" [ref=f7e84] [cursor=pointer]:
+          - generic [ref=f7e85]: Παναγιώτα Σωτηρίου
+          - generic [ref=f7e86]: Προπονητής · Πυρσοί Πειραιά (demo) · Β΄ Εθνική
+        - button "Τριανταφυλλιά Παπαδοπούλου Προπονητής · Σείριοι Αθηνών (demo) · Τοπικό" [ref=f7e88] [cursor=pointer]:
+          - generic [ref=f7e89]: Τριανταφυλλιά Παπαδοπούλου
+          - generic [ref=f7e90]: Προπονητής · Σείριοι Αθηνών (demo) · Τοπικό
+        - button "Δέσποινα Παπαϊωάννου Προπονητής · Τιτάνες Αθηνών (demo) · Α2" [ref=f7e92] [cursor=pointer]:
+          - generic [ref=f7e93]: Δέσποινα Παπαϊωάννου
+          - generic [ref=f7e94]: Προπονητής · Τιτάνες Αθηνών (demo) · Α2
+        - button "Μιλτιάδης Ιωαννίδης Προπονητής · Φοίνικες Ρόδου (demo) · Τοπικό" [ref=f7e96] [cursor=pointer]:
+          - generic [ref=f7e97]: Μιλτιάδης Ιωαννίδης
+          - generic [ref=f7e98]: Προπονητής · Φοίνικες Ρόδου (demo) · Τοπικό
+      - heading "Αθλητές" [level=2] [ref=f7e99]
+      - generic [ref=f7e100]:
+        - button "Στέλλα Λιάκου Σέντερ · Χωρίς ομάδα" [ref=f7e102] [cursor=pointer]:
+          - generic [ref=f7e103]: Στέλλα Λιάκου
+          - generic [ref=f7e104]: Σέντερ · Χωρίς ομάδα
+        - button "Φωτεινή Γεωργίου Σούτινγκ γκαρντ · Χωρίς ομάδα" [ref=f7e106] [cursor=pointer]:
+          - generic [ref=f7e107]: Φωτεινή Γεωργίου
+          - generic [ref=f7e108]: Σούτινγκ γκαρντ · Χωρίς ομάδα
+        - button "Ελένη Λιάκου Σούτινγκ γκαρντ · Χωρίς ομάδα" [ref=f7e110] [cursor=pointer]:
+          - generic [ref=f7e111]: Ελένη Λιάκου
+          - generic [ref=f7e112]: Σούτινγκ γκαρντ · Χωρίς ομάδα
+        - button "Τριανταφυλλιά Καλογεράκη Σμολ φόργουορντ · Χωρίς ομάδα" [ref=f7e114] [cursor=pointer]:
+          - generic [ref=f7e115]: Τριανταφυλλιά Καλογεράκη
+          - generic [ref=f7e116]: Σμολ φόργουορντ · Χωρίς ομάδα
+        - button "Αικατερίνη Αντωνίου Πάουερ φόργουορντ · Χωρίς ομάδα" [ref=f7e118] [cursor=pointer]:
+          - generic [ref=f7e119]: Αικατερίνη Αντωνίου
+          - generic [ref=f7e120]: Πάουερ φόργουορντ · Χωρίς ομάδα
+        - button "Νικολέτα Ιωάννου Πόιντ γκαρντ · Χωρίς ομάδα" [ref=f7e122] [cursor=pointer]:
+          - generic [ref=f7e123]: Νικολέτα Ιωάννου
+          - generic [ref=f7e124]: Πόιντ γκαρντ · Χωρίς ομάδα
+        - button "Ραφαέλα Μπακάλη Σμολ φόργουορντ · Χωρίς ομάδα" [ref=f7e126] [cursor=pointer]:
+          - generic [ref=f7e127]: Ραφαέλα Μπακάλη
+          - generic [ref=f7e128]: Σμολ φόργουορντ · Χωρίς ομάδα
+        - button "Δανάη Παπαγεωργίου Σμολ φόργουορντ · Χωρίς ομάδα" [ref=f7e130] [cursor=pointer]:
+          - generic [ref=f7e131]: Δανάη Παπαγεωργίου
+          - generic [ref=f7e132]: Σμολ φόργουορντ · Χωρίς ομάδα
+        - button "Σωτήρης Σωτηρίου Σμολ φόργουορντ · Χωρίς ομάδα" [ref=f7e134] [cursor=pointer]:
+          - generic [ref=f7e135]: Σωτήρης Σωτηρίου
+          - generic [ref=f7e136]: Σμολ φόργουορντ · Χωρίς ομάδα
+        - button "Λευτέρης Αθανασίου Σούτινγκ γκαρντ · Χωρίς ομάδα" [ref=f7e138] [cursor=pointer]:
+          - generic [ref=f7e139]: Λευτέρης Αθανασίου
+          - generic [ref=f7e140]: Σούτινγκ γκαρντ · Χωρίς ομάδα
+        - button "Νίκος Καραγιάννης Σούτινγκ γκαρντ · Χωρίς ομάδα" [ref=f7e142] [cursor=pointer]:
+          - generic [ref=f7e143]: Νίκος Καραγιάννης
+          - generic [ref=f7e144]: Σούτινγκ γκαρντ · Χωρίς ομάδα
+        - button "Ηλίας Βλάχος Σούτινγκ γκαρντ · Χωρίς ομάδα" [ref=f7e146] [cursor=pointer]:
+          - generic [ref=f7e147]: Ηλίας Βλάχος
+          - generic [ref=f7e148]: Σούτινγκ γκαρντ · Χωρίς ομάδα

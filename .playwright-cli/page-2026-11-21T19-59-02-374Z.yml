@@ -1,0 +1,22 @@
+- generic [active] [ref=f12e1]:
+  - status [ref=f12e2]:
+    - generic [ref=f12e3]: Περιβάλλον επίδειξης — όλοι οι αθλητές, προπονητές και σύλλογοι είναι φανταστικοί.
+    - generic [ref=f12e4]: Demo environment — all athletes, coaches and clubs are fictional.
+  - banner [ref=f12e5]:
+    - link "Ballpass" [ref=f12e6] [cursor=pointer]:
+      - /url: /
+    - navigation "Κύρια πλοήγηση" [ref=f12e7]:
+      - link "Αναζήτηση" [ref=f12e8] [cursor=pointer]:
+        - /url: /search
+      - generic [ref=f12e9]: Κώστας Παπαναστασίου (Προπονητής)
+      - button "Αποσύνδεση" [ref=f12e11] [cursor=pointer]
+    - navigation "Γλώσσα" [ref=f12e12]:
+      - link "EL" [ref=f12e13] [cursor=pointer]:
+        - /url: /culture/set?culture=el&redirectUri=%2Fnot-found
+      - generic [aria-hidden] [ref=f12e14]: "|"
+      - link "EN" [ref=f12e15] [cursor=pointer]:
+        - /url: /culture/set?culture=en&redirectUri=%2Fnot-found
+  - main [ref=f12e16]:
+    - article [ref=f12e17]:
+      - heading "Δεν βρέθηκε" [level=3] [ref=f12e18]
+      - paragraph [ref=f12e19]: Λυπούμαστε, το περιεχόμενο που ψάχνετε δεν υπάρχει.

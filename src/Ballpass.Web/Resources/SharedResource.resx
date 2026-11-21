@@ -60,4 +60,34 @@
   <data name="Region_South Aegean" xml:space="preserve"><value>Νότιο Αιγαίο</value></data>
   <data name="NotFound_Title" xml:space="preserve"><value>Δεν βρέθηκε</value></data>
   <data name="NotFound_Text" xml:space="preserve"><value>Λυπούμαστε, το περιεχόμενο που ψάχνετε δεν υπάρχει.</value></data>
+  <data name="Nav_Search" xml:space="preserve"><value>Αναζήτηση</value></data>
+  <data name="Nav_Logout" xml:space="preserve"><value>Αποσύνδεση</value></data>
+  <data name="Nav_DemoLogin" xml:space="preserve"><value>Είσοδος επίδειξης</value></data>
+  <data name="Role_Coach" xml:space="preserve"><value>Προπονητής</value></data>
+  <data name="Role_Athlete" xml:space="preserve"><value>Αθλητής</value></data>
+  <data name="Demo_Title" xml:space="preserve"><value>Είσοδος επίδειξης</value></data>
+  <data name="Demo_Intro" xml:space="preserve"><value>Επιλέξτε ένα φανταστικό πρόσωπο για να δοκιμάσετε την πλατφόρμα. Δεν χρειάζεται κωδικός.</value></data>
+  <data name="Demo_Coaches" xml:space="preserve"><value>Προπονητές</value></data>
+  <data name="Demo_Athletes" xml:space="preserve"><value>Αθλητές</value></data>
+  <data name="Denied_Title" xml:space="preserve"><value>Η αναζήτηση είναι μόνο για προπονητές</value></data>
+  <data name="Denied_Switch" xml:space="preserve"><value>Είσοδος ως προπονητής</value></data>
+  <data name="Search_Title" xml:space="preserve"><value>Αναζήτηση αθλητών</value></data>
+  <data name="Search_Gender" xml:space="preserve"><value>Φύλο</value></data>
+  <data name="Gender_Female" xml:space="preserve"><value>Γυναίκες</value></data>
+  <data name="Gender_Male" xml:space="preserve"><value>Άνδρες</value></data>
+  <data name="Search_Position" xml:space="preserve"><value>Θέση</value></data>
+  <data name="Search_Height" xml:space="preserve"><value>Ύψος (εκ.)</value></data>
+  <data name="Search_Age" xml:space="preserve"><value>Ηλικία</value></data>
+  <data name="Search_Min" xml:space="preserve"><value>Από</value></data>
+  <data name="Search_Max" xml:space="preserve"><value>Έως</value></data>
+  <data name="Search_Any" xml:space="preserve"><value>Όλες</value></data>
+  <data name="Search_Name" xml:space="preserve"><value>Όνομα</value></data>
+  <data name="Search_Submit" xml:space="preserve"><value>Αναζήτηση</value></data>
+  <data name="Search_Clear" xml:space="preserve"><value>Καθαρισμός φίλτρων</value></data>
+  <data name="Search_Results" xml:space="preserve"><value>αποτελέσματα</value></data>
+  <data name="Search_Pager" xml:space="preserve"><value>Σελίδες αποτελεσμάτων</value></data>
+  <data name="Search_Prev" xml:space="preserve"><value>Προηγούμενη</value></data>
+  <data name="Search_Next" xml:space="preserve"><value>Επόμενη</value></data>
+  <data name="Role_Coach_F" xml:space="preserve"><value>Προπονήτρια</value></data>
+  <data name="Role_Athlete_F" xml:space="preserve"><value>Αθλήτρια</value></data>
 </root>

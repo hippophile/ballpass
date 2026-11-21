@@ -1,0 +1,16 @@
+@page "/denied"
+@inject IStringLocalizer<SharedResource> L
+
+<PageTitle>@L["Denied_Title"]</PageTitle>
+
+<h1>@L["Denied_Title"]</h1>
+<p><a href="/demo">@L["Denied_Switch"]</a></p>
+
+@code {
+    [CascadingParameter] private HttpContext? Http { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Http is not null) Http.Response.StatusCode = StatusCodes.Status403Forbidden;
+    }
+}

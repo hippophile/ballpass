@@ -60,4 +60,34 @@
   <data name="Region_South Aegean" xml:space="preserve"><value>South Aegean</value></data>
   <data name="NotFound_Title" xml:space="preserve"><value>Not found</value></data>
   <data name="NotFound_Text" xml:space="preserve"><value>Sorry, the content you are looking for does not exist.</value></data>
+  <data name="Nav_Search" xml:space="preserve"><value>Search</value></data>
+  <data name="Nav_Logout" xml:space="preserve"><value>Log out</value></data>
+  <data name="Nav_DemoLogin" xml:space="preserve"><value>Demo login</value></data>
+  <data name="Role_Coach" xml:space="preserve"><value>Coach</value></data>
+  <data name="Role_Athlete" xml:space="preserve"><value>Athlete</value></data>
+  <data name="Demo_Title" xml:space="preserve"><value>Demo login</value></data>
+  <data name="Demo_Intro" xml:space="preserve"><value>Pick a fictional person to try the platform. No password needed.</value></data>
+  <data name="Demo_Coaches" xml:space="preserve"><value>Coaches</value></data>
+  <data name="Demo_Athletes" xml:space="preserve"><value>Athletes</value></data>
+  <data name="Denied_Title" xml:space="preserve"><value>Search is for coaches only</value></data>
+  <data name="Denied_Switch" xml:space="preserve"><value>Sign in as a coach</value></data>
+  <data name="Search_Title" xml:space="preserve"><value>Search athletes</value></data>
+  <data name="Search_Gender" xml:space="preserve"><value>Gender</value></data>
+  <data name="Gender_Female" xml:space="preserve"><value>Women</value></data>
+  <data name="Gender_Male" xml:space="preserve"><value>Men</value></data>
+  <data name="Search_Position" xml:space="preserve"><value>Position</value></data>
+  <data name="Search_Height" xml:space="preserve"><value>Height (cm)</value></data>
+  <data name="Search_Age" xml:space="preserve"><value>Age</value></data>
+  <data name="Search_Min" xml:space="preserve"><value>From</value></data>
+  <data name="Search_Max" xml:space="preserve"><value>To</value></data>
+  <data name="Search_Any" xml:space="preserve"><value>Any</value></data>
+  <data name="Search_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Search_Submit" xml:space="preserve"><value>Search</value></data>
+  <data name="Search_Clear" xml:space="preserve"><value>Clear filters</value></data>
+  <data name="Search_Results" xml:space="preserve"><value>results</value></data>
+  <data name="Search_Pager" xml:space="preserve"><value>Result pages</value></data>
+  <data name="Search_Prev" xml:space="preserve"><value>Previous</value></data>
+  <data name="Search_Next" xml:space="preserve"><value>Next</value></data>
+  <data name="Role_Coach_F" xml:space="preserve"><value>Coach</value></data>
+  <data name="Role_Athlete_F" xml:space="preserve"><value>Athlete</value></data>
 </root>

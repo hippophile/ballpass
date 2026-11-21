@@ -10,6 +10,24 @@
 
 <header class="topbar">
     <a class="brand" href="/">@L["Brand"]</a>
+    <nav class="bp-userbar" aria-label="@L["Nav_Main"]">
+        <AuthorizeView>
+            <Authorized>
+                @if (context.User.IsInRole("Coach"))
+                {
+                    <a href="/search">@L["Nav_Search"]</a>
+                }
+                <span class="bp-whoami">@PersonaName(context.User) <small>(@L[(context.User.IsInRole("Coach") ? "Role_Coach" : "Role_Athlete") + (context.User.FindFirst("gender")?.Value == "F" ? "_F" : "")])</small></span>
+                <form method="post" action="/demo/logout">
+                    <AntiforgeryToken />
+                    <button type="submit" class="bp-logout">@L["Nav_Logout"]</button>
+                </form>
+            </Authorized>
+            <NotAuthorized>
+                <a href="/demo">@L["Nav_DemoLogin"]</a>
+            </NotAuthorized>
+        </AuthorizeView>
+    </nav>
     <nav class="lang-toggle" aria-label="@L["Nav_Language"]">
         <a href="@LangHref("el")" hreflang="el" class="@(Lang == "el" ? "active" : null)" aria-current="@(Lang == "el" ? "true" : null)">EL</a>
         <span aria-hidden="true">|</span>
@@ -25,6 +43,9 @@
 
 @code {
     private static string Lang => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+    private static string PersonaName(System.Security.Claims.ClaimsPrincipal user) =>
+        (Lang == "el" ? user.Identity?.Name : user.FindFirst("name_latin")?.Value ?? user.Identity?.Name) ?? "";
 
     private string LangHref(string culture) =>
         $"/culture/set?culture={culture}&redirectUri={Uri.EscapeDataString("/" + Navigation.ToBaseRelativePath(Navigation.Uri))}";

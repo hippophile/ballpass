@@ -4,13 +4,33 @@ using Ballpass.Web.Demo;
 using System.Globalization;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents();
+
+// Demo persona switch: cookie auth, no Identity tables (real accounts are pilot work).
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/demo";
+        options.AccessDeniedPath = "/denied";
+        options.ReturnUrlParameter = "ReturnUrl";
+        options.SlidingExpiration = true;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+    });
+builder.Services.AddAuthorization(options =>
+    options.AddPolicy("CoachOnly", policy => policy.RequireRole("Coach")));
+builder.Services.AddCascadingAuthenticationState();
 
 // Greek by default, English on request (cookie). Resources/SharedResource{,.en}.resx
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -67,6 +87,8 @@ app.UseRequestLocalization();
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
@@ -85,6 +107,58 @@ app.MapGet("/culture/set", (string? culture, string? redirectUri, HttpContext ht
         && (redirectUri.Length == 1 || (redirectUri[1] != '/' && redirectUri[1] != '\\'));
     return Results.Redirect(local ? redirectUri! : "/");
 });
+
+static bool IsLocalUrl(string? url) =>
+    !string.IsNullOrEmpty(url) && url[0] == '/' && (url.Length == 1 || (url[1] != '/' && url[1] != '\\'));
+
+app.MapPost("/demo/login", async ([FromForm] string? personaType, [FromForm] int personaId, [FromForm] string? returnUrl,
+    BallpassDbContext db, HttpContext http) =>
+{
+    List<Claim> claims;
+    string home;
+    if (personaType == "coach")
+    {
+        var coach = await db.Coaches.AsNoTracking().FirstOrDefaultAsync(c => c.Id == personaId && c.IsDemo);
+        if (coach is null) return Results.BadRequest();
+        claims =
+        [
+            new(ClaimTypes.NameIdentifier, $"coach:{coach.Id}"),
+            new(ClaimTypes.Name, $"{coach.FirstName} {coach.LastName}"),
+            new("name_latin", $"{coach.FirstNameLatin} {coach.LastNameLatin}"),
+            new(ClaimTypes.Role, "Coach"),
+            new("gender", GreekNames.IsFemaleFirstName(coach.FirstName) ? "F" : "M"),
+            new("club_id", coach.ClubId.ToString()),
+            new("entity_id", coach.Id.ToString()),
+        ];
+        home = "/search";
+    }
+    else if (personaType == "athlete")
+    {
+        var athlete = await db.Athletes.AsNoTracking().FirstOrDefaultAsync(a => a.Id == personaId && a.IsDemo);
+        if (athlete is null) return Results.BadRequest();
+        claims =
+        [
+            new(ClaimTypes.NameIdentifier, $"athlete:{athlete.Id}"),
+            new(ClaimTypes.Name, $"{athlete.FirstName} {athlete.LastName}"),
+            new("name_latin", $"{athlete.FirstNameLatin} {athlete.LastNameLatin}"),
+            new(ClaimTypes.Role, "Athlete"),
+            new("gender", athlete.Gender == Gender.Female ? "F" : "M"),
+            new("slug", athlete.Slug),
+            new("entity_id", athlete.Id.ToString()),
+        ];
+        home = $"/p/{athlete.Slug}";
+    }
+    else return Results.BadRequest();
+
+    var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+    await http.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+    return Results.Redirect(IsLocalUrl(returnUrl) ? returnUrl! : home);
+});
+app.MapPost("/demo/logout", async (HttpContext http) =>
+{
+    await http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    return Results.Redirect("/");
+}).WithMetadata(new RequireAntiforgeryTokenAttribute());
 app.MapRazorComponents<App>();
 
 app.Run();

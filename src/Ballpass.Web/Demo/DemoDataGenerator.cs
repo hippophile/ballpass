@@ -149,8 +149,14 @@ public static class DemoDataGenerator
     private static Athlete GenerateAthlete(Randomizer r, Gender gender, List<Club> clubs, HashSet<string> slugs)
     {
         var female = gender == Gender.Female;
-        var first = Pick(r, female ? GreekNames.FemaleFirstNames : GreekNames.MaleFirstNames);
-        var last = Pick(r, GreekNames.Surnames);
+        // Unique full names: re-draw until the name's base slug is unused (no two "Άννα Αλεξίου").
+        FirstName first;
+        SurnamePair last;
+        do
+        {
+            first = Pick(r, female ? GreekNames.FemaleFirstNames : GreekNames.MaleFirstNames);
+            last = Pick(r, GreekNames.Surnames);
+        } while (slugs.Contains($"{first.Latin}-{(female ? last.FemaleLatin : last.MaleLatin)}".ToLowerInvariant()));
         var position = PositionOrder[WeightedIndex(r, PositionWeights)];
 
         var (hMin, hMax) = (female ? WomenHeights : MenHeights)[position];

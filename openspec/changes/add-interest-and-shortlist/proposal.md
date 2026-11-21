@@ -26,7 +26,13 @@ transfer/release rules, safeguarding; DMs are out of scope in openspec/config.ya
 5. `/shortlist` (CoachOnly): saved athletes as cards with a remove button.
 6. `/me/inbox` (athlete role): interests received — coach name, club, date, note. Read-only; no reply/chat.
    Top bar: "Shortlist" for coaches, "Inbox (N)" for athletes.
-7. Endpoints enforce roles server-side (an athlete posting to `/interest` gets 403).
+7. Endpoints enforce roles server-side: a non-coach posting to `/p/{slug}/interest` or `/shortlist` gets a plain
+   **403** (not a redirect).
+8. Markup contracts (tests): profile forms `<form method="post" action="/p/{slug}/interest" data-action="interest">`
+   (textarea `note`) and `... data-action="shortlist"`; `/shortlist` cards `<article class="result" data-slug="...">`;
+   inbox items `<li class="interest" data-coach="{coach display name}">`; athlete persona forms on `/demo` also carry
+   `data-slug="{slug}"`.
+9. `DemoDataSet` gains `Interests` and `Shortlist` lists (entities with Coach/Athlete navigation).
 
 ## Verification
 - Red first; tests act through the real forms (antiforgery).

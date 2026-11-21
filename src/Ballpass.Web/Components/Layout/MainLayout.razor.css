@@ -55,6 +55,46 @@
             outline-offset: 2px;
         }
 
+.bp-userbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.9rem;
+    margin-inline-start: auto;
+}
+
+    .bp-userbar a {
+        color: #cfe0f5;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .bp-userbar a:hover, .bp-userbar a:focus-visible {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+    .bp-userbar form {
+        margin: 0;
+    }
+
+.bp-whoami small {
+    color: #cfe0f5;
+}
+
+.bp-logout {
+    background: transparent;
+    color: #fff;
+    border: 1px solid #cfe0f5;
+    border-radius: 0.4rem;
+    padding: 0.15rem 0.6rem;
+}
+
+    .bp-logout:hover, .bp-logout:focus-visible {
+        background: #fff;
+        color: #0b2545;
+    }
+
 main {
     min-width: 0;
 }

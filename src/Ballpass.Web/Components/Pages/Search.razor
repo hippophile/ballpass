@@ -1,0 +1,197 @@
+@page "/search"
+@attribute [Authorize(Policy = "CoachOnly")]
+@using System.Globalization
+@using Ballpass.Web.Data
+@using Ballpass.Web.Demo
+@using Microsoft.EntityFrameworkCore
+@inject BallpassDbContext Db
+@inject TimeProvider Time
+@inject IStringLocalizer<SharedResource> L
+
+<PageTitle>@L["Search_Title"]</PageTitle>
+
+<h1>@L["Search_Title"]</h1>
+
+<div class="bp-search">
+    <form method="get" action="/search" class="bp-filters">
+        <fieldset class="bp-field">
+            <legend>@L["Search_Gender"]</legend>
+            <label><input type="radio" name="gender" value="Female" checked="@(!IsMale)"> @L["Gender_Female"]</label>
+            <label><input type="radio" name="gender" value="Male" checked="@IsMale"> @L["Gender_Male"]</label>
+        </fieldset>
+        <fieldset class="bp-field">
+            <legend>@L["Search_Position"]</legend>
+            @foreach (var p in Positions)
+            {
+                <label><input type="checkbox" name="position" value="@p" checked="@(SelectedPositions.Contains(p))"> @L[$"Position_{p}"] (@p)</label>
+            }
+        </fieldset>
+        <div class="bp-field">
+            <label for="minHeight">@L["Search_Height"]</label>
+            <div class="bp-range">
+                <input id="minHeight" type="number" name="minHeight" min="100" max="260" value="@MinHeight" aria-label="@L["Search_Min"]">
+                <span aria-hidden="true">–</span>
+                <input type="number" name="maxHeight" min="100" max="260" value="@MaxHeight" aria-label="@L["Search_Max"]">
+            </div>
+        </div>
+        <div class="bp-field">
+            <label for="minAge">@L["Search_Age"]</label>
+            <div class="bp-range">
+                <input id="minAge" type="number" name="minAge" min="10" max="80" value="@MinAge" aria-label="@L["Search_Min"]">
+                <span aria-hidden="true">–</span>
+                <input type="number" name="maxAge" min="10" max="80" value="@MaxAge" aria-label="@L["Search_Max"]">
+            </div>
+        </div>
+        <div class="bp-field">
+            <label for="region">@L["Profile_Region"]</label>
+            <select id="region" name="region">
+                <option value="">@L["Search_Any"]</option>
+                @foreach (var r in Regions)
+                {
+                    <option value="@r" selected="@(Region == r)">@RegionName(r)</option>
+                }
+            </select>
+        </div>
+        <div class="bp-field">
+            <label for="league">@L["Stat_League"]</label>
+            <select id="league" name="league">
+                <option value="">@L["Search_Any"]</option>
+                @foreach (var l in Leagues)
+                {
+                    <option value="@l" selected="@(League == l)">@L[$"League_{l}"]</option>
+                }
+            </select>
+        </div>
+        <div class="bp-field">
+            <label><input type="checkbox" name="looking" value="true" checked="@Looking"> @L["Badge_LookingForTeam"]</label>
+        </div>
+        <div class="bp-field">
+            <label for="q">@L["Search_Name"]</label>
+            <input id="q" type="text" name="q" value="@Q" maxlength="80">
+        </div>
+        <div class="bp-actions">
+            <button type="submit" class="bp-btn">@L["Search_Submit"]</button>
+            <a href="/search" class="bp-clear">@L["Search_Clear"]</a>
+        </div>
+    </form>
+
+    <section class="bp-results" aria-live="polite">
+        <p class="bp-total"><strong data-total="@total">@total</strong> @L["Search_Results"]</p>
+        <div class="bp-result-list">
+            @foreach (var a in results)
+            {
+                <div class="bp-result-wrap">
+                    <article class="result" data-slug="@a.Slug">
+                        <div class="bp-initials" aria-hidden="true">@Initials(a)</div>
+                        <div class="bp-result-body">
+                            <a class="bp-result-name" href="/p/@a.Slug">@FullName(a)</a>
+                            <div class="bp-result-meta">@L[$"Position_{a.Position}"] · @a.HeightCm @L["Profile_Cm"] · @Age(a) @L["Profile_Years"]</div>
+                            <div class="bp-result-meta">@(a.CurrentClub?.Name ?? L["Profile_NoClub"].Value)</div>
+                            @if (a.LookingForTeam)
+                            {
+                                <span class="bp-looking">@L["Badge_LookingForTeam"]</span>
+                            }
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+        @if (totalPages > 1)
+        {
+            <nav class="bp-pager" aria-label="@L["Search_Pager"]">
+                @if (CurrentPage > 1)
+                {
+                    <a rel="prev" href="@PageHref(CurrentPage - 1)">&larr; @L["Search_Prev"]</a>
+                }
+                <span>@CurrentPage / @totalPages</span>
+                @if (CurrentPage < totalPages)
+                {
+                    <a rel="next" href="@PageHref(CurrentPage + 1)">@L["Search_Next"] &rarr;</a>
+                }
+            </nav>
+        }
+    </section>
+</div>
+
+@code {
+    private const int PageSize = 20;
+    private static readonly string[] Positions = ["PG", "SG", "SF", "PF", "C"];
+    private static readonly string[] Leagues = ["A1", "A2", "B", "Regional"];
+    private static readonly string[] Regions = GreekNames.Cities.Select(c => c.Region).Distinct().OrderBy(r => r).ToArray();
+
+    [SupplyParameterFromQuery(Name = "gender")] public string? Gender { get; set; }
+    [SupplyParameterFromQuery(Name = "position")] public string[]? Position { get; set; }
+    [SupplyParameterFromQuery(Name = "minHeight")] public int? MinHeight { get; set; }
+    [SupplyParameterFromQuery(Name = "maxHeight")] public int? MaxHeight { get; set; }
+    [SupplyParameterFromQuery(Name = "minAge")] public int? MinAge { get; set; }
+    [SupplyParameterFromQuery(Name = "maxAge")] public int? MaxAge { get; set; }
+    [SupplyParameterFromQuery(Name = "region")] public string? Region { get; set; }
+    [SupplyParameterFromQuery(Name = "league")] public string? League { get; set; }
+    [SupplyParameterFromQuery(Name = "looking")] public bool Looking { get; set; }
+    [SupplyParameterFromQuery(Name = "q")] public string? Q { get; set; }
+    [SupplyParameterFromQuery(Name = "page")] public int? PageNumber { get; set; }
+
+    private List<Athlete> results = [];
+    private int total;
+    private int totalPages;
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+    private bool IsMale => Gender == "Male";
+    private string[] SelectedPositions => (Position ?? []).Where(p => Positions.Contains(p)).Distinct().ToArray();
+    private int CurrentPage => Math.Clamp(PageNumber ?? 1, 1, Math.Max(totalPages, 1));
+
+    protected override async Task OnInitializedAsync()
+    {
+        var year = Time.GetUtcNow().Year;
+        var gender = IsMale ? Data.Gender.Male : Data.Gender.Female;
+        var query = Db.Athletes.AsNoTracking().Where(a => a.IsDemo && a.Gender == gender);
+
+        var positions = SelectedPositions.Select(p => Enum.Parse<Data.Position>(p)).ToArray();
+        if (positions.Length > 0) query = query.Where(a => positions.Contains(a.Position));
+        if (MinHeight is { } minH) query = query.Where(a => a.HeightCm >= minH);
+        if (MaxHeight is { } maxH) query = query.Where(a => a.HeightCm <= maxH);
+        if (MinAge is { } minA) query = query.Where(a => a.BirthYear <= year - minA);
+        if (MaxAge is { } maxA) query = query.Where(a => a.BirthYear >= year - maxA);
+        if (!string.IsNullOrEmpty(Region)) query = query.Where(a => a.Region == Region);
+        if (Enum.TryParse<Data.League>(League, out var league) && Leagues.Contains(League))
+            query = query.Where(a => a.CurrentClub != null && a.CurrentClub.League == league);
+        if (Looking) query = query.Where(a => a.LookingForTeam);
+        if (!string.IsNullOrWhiteSpace(Q))
+        {
+            var pattern = "%" + Q.Trim().Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_") + "%";
+            query = query.Where(a => EF.Functions.ILike(a.FirstName + " " + a.LastName, pattern, "\\")
+                || EF.Functions.ILike(a.FirstNameLatin + " " + a.LastNameLatin, pattern, "\\"));
+        }
+
+        total = await query.CountAsync();
+        totalPages = (total + PageSize - 1) / PageSize;
+        results = await query.Include(a => a.CurrentClub)
+            .OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ThenBy(a => a.Id)
+            .Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToListAsync();
+    }
+
+    private string FullName(Athlete a) => IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
+    private string Initials(Athlete a) => IsGreek ? $"{a.FirstName[0]}{a.LastName[0]}" : $"{a.FirstNameLatin[0]}{a.LastNameLatin[0]}";
+    private int Age(Athlete a) => Time.GetUtcNow().Year - a.BirthYear;
+
+    private string RegionName(string r)
+    {
+        var s = L[$"Region_{r}"];
+        return s.ResourceNotFound ? r : s.Value;
+    }
+
+    private string PageHref(int page)
+    {
+        var parts = new List<string>();
+        void Add(string k, object? v) { if (v is not null && v.ToString() is { Length: > 0 } s) parts.Add($"{k}={Uri.EscapeDataString(s)}"); }
+        Add("gender", IsMale ? "Male" : null);
+        foreach (var p in SelectedPositions) Add("position", p);
+        Add("minHeight", MinHeight); Add("maxHeight", MaxHeight);
+        Add("minAge", MinAge); Add("maxAge", MaxAge);
+        Add("region", Region); Add("league", League);
+        Add("looking", Looking ? "true" : null);
+        Add("q", Q);
+        Add("page", page);
+        return "/search?" + string.Join("&", parts);
+    }
+}

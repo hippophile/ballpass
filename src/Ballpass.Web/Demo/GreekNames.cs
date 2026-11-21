@@ -10,6 +10,9 @@ public record GreekCity(string Name, string NameLatin, string Region, string Gen
 // Common Greek names for fictional demo data. Latin forms are ELOT-style, lowercase-safe (no accents).
 public static class GreekNames
 {
+    public static bool IsFemaleFirstName(string greekFirstName) =>
+        FemaleFirstNames.Any(n => n.Greek == greekFirstName);
+
     public static IReadOnlyList<FirstName> FemaleFirstNames { get; } =
     [
         new("Μαρία", "Maria"), new("Ελένη", "Eleni"), new("Αικατερίνη", "Aikaterini"), new("Βασιλική", "Vasiliki"),
