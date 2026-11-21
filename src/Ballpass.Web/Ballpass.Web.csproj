@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+    <!-- Resources/SharedResource*.resx must embed as Ballpass.Web.Resources.SharedResource (ResourcesPath = "Resources"), not be renamed after the marker class. -->
+    <EmbeddedResourceUseDependentUponConvention>false</EmbeddedResourceUseDependentUponConvention>
     <UserSecretsId>e153ad4d-c913-450d-b6a5-7843eae338ae</UserSecretsId>
   </PropertyGroup>
 

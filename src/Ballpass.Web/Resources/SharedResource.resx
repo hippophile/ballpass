@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Brand" xml:space="preserve"><value>Ballpass</value></data>
+  <data name="Home_Tagline" xml:space="preserve"><value>Η πλατφόρμα ανάδειξης αθλητριών μπάσκετ στην Ελλάδα</value></data>
+  <data name="Nav_Language" xml:space="preserve"><value>Γλώσσα</value></data>
+  <data name="Nav_Main" xml:space="preserve"><value>Κύρια πλοήγηση</value></data>
+  <data name="Badge_Demo" xml:space="preserve"><value>DEMO</value></data>
+  <data name="Badge_LookingForTeam" xml:space="preserve"><value>Ψάχνει ομάδα</value></data>
+  <data name="Profile_NoClub" xml:space="preserve"><value>Χωρίς ομάδα</value></data>
+  <data name="Profile_CurrentClub" xml:space="preserve"><value>Τρέχουσα ομάδα</value></data>
+  <data name="Profile_Stats" xml:space="preserve"><value>Στατιστικά</value></data>
+  <data name="Profile_NoStats" xml:space="preserve"><value>Δεν υπάρχουν στατιστικά ακόμη</value></data>
+  <data name="Profile_ClubHistory" xml:space="preserve"><value>Ιστορικό ομάδων</value></data>
+  <data name="Profile_Bio" xml:space="preserve"><value>Βιογραφικό</value></data>
+  <data name="Profile_Video" xml:space="preserve"><value>Βίντεο</value></data>
+  <data name="Profile_NoVideo" xml:space="preserve"><value>Δεν έχει προστεθεί βίντεο ακόμη</value></data>
+  <data name="Profile_Share" xml:space="preserve"><value>Κοινοποίηση προφίλ</value></data>
+  <data name="Profile_ShareHint" xml:space="preserve"><value>Αντιγράψτε τον σύνδεσμο για να τον στείλετε</value></data>
+  <data name="Profile_Region" xml:space="preserve"><value>Περιφέρεια</value></data>
+  <data name="Profile_Cm" xml:space="preserve"><value>εκ.</value></data>
+  <data name="Profile_Years" xml:space="preserve"><value>ετών</value></data>
+  <data name="Profile_OgDemo" xml:space="preserve"><value>Ballpass demo</value></data>
+  <data name="Profile_OgLookingForTeam" xml:space="preserve"><value>Ψάχνει ομάδα</value></data>
+  <data name="Stat_Season" xml:space="preserve"><value>Σεζόν</value></data>
+  <data name="Stat_League" xml:space="preserve"><value>Λίγκα</value></data>
+  <data name="Stat_Games" xml:space="preserve"><value>Αγ.</value></data>
+  <data name="Stat_Minutes" xml:space="preserve"><value>Λεπ.</value></data>
+  <data name="Stat_Points" xml:space="preserve"><value>Πόν.</value></data>
+  <data name="Stat_Rebounds" xml:space="preserve"><value>Ριμπ.</value></data>
+  <data name="Stat_Assists" xml:space="preserve"><value>Ασ.</value></data>
+  <data name="Stat_Steals" xml:space="preserve"><value>Κλεψ.</value></data>
+  <data name="Stat_Blocks" xml:space="preserve"><value>Μπλ.</value></data>
+  <data name="Stat_FgPct" xml:space="preserve"><value>FG%</value></data>
+  <data name="Stat_ThreePct" xml:space="preserve"><value>3P%</value></data>
+  <data name="Stat_FtPct" xml:space="preserve"><value>FT%</value></data>
+  <data name="Stat_Source" xml:space="preserve"><value>Πηγή</value></data>
+  <data name="Source_SelfReported" xml:space="preserve"><value>Αυτο-δηλωμένο</value></data>
+  <data name="Source_CoachConfirmed" xml:space="preserve"><value>Επιβεβαιωμένο από προπονητή</value></data>
+  <data name="Source_LeagueVerifiedMock" xml:space="preserve"><value>Επαληθευμένο από λίγκα (δοκιμαστικό)</value></data>
+  <data name="Position_PG" xml:space="preserve"><value>Πόιντ γκαρντ</value></data>
+  <data name="Position_SG" xml:space="preserve"><value>Σούτινγκ γκαρντ</value></data>
+  <data name="Position_SF" xml:space="preserve"><value>Σμολ φόργουορντ</value></data>
+  <data name="Position_PF" xml:space="preserve"><value>Πάουερ φόργουορντ</value></data>
+  <data name="Position_C" xml:space="preserve"><value>Σέντερ</value></data>
+  <data name="League_A1" xml:space="preserve"><value>Α1</value></data>
+  <data name="League_A2" xml:space="preserve"><value>Α2</value></data>
+  <data name="League_B" xml:space="preserve"><value>Β΄ Εθνική</value></data>
+  <data name="League_Regional" xml:space="preserve"><value>Τοπικό</value></data>
+  <data name="Region_Attica" xml:space="preserve"><value>Αττική</value></data>
+  <data name="Region_Central Macedonia" xml:space="preserve"><value>Κεντρική Μακεδονία</value></data>
+  <data name="Region_Western Greece" xml:space="preserve"><value>Δυτική Ελλάδα</value></data>
+  <data name="Region_Crete" xml:space="preserve"><value>Κρήτη</value></data>
+  <data name="Region_Thessaly" xml:space="preserve"><value>Θεσσαλία</value></data>
+  <data name="Region_Epirus" xml:space="preserve"><value>Ήπειρος</value></data>
+  <data name="Region_East Macedonia and Thrace" xml:space="preserve"><value>Ανατολική Μακεδονία και Θράκη</value></data>
+  <data name="Region_South Aegean" xml:space="preserve"><value>Νότιο Αιγαίο</value></data>
+  <data name="NotFound_Title" xml:space="preserve"><value>Δεν βρέθηκε</value></data>
+  <data name="NotFound_Text" xml:space="preserve"><value>Λυπούμαστε, το περιεχόμενο που ψάχνετε δεν υπάρχει.</value></data>
+</root>

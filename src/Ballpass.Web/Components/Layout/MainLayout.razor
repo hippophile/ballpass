@@ -1,20 +1,31 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
+@using System.Globalization
+@inject NavigationManager Navigation
+@inject IStringLocalizer<SharedResource> L
 
 <div class="demo-banner" role="status">
     <span lang="el">Περιβάλλον επίδειξης — όλοι οι αθλητές, προπονητές και σύλλογοι είναι φανταστικοί.</span>
     <span lang="en">Demo environment — all athletes, coaches and clubs are fictional.</span>
 </div>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<header class="topbar">
+    <a class="brand" href="/">@L["Brand"]</a>
+    <nav class="lang-toggle" aria-label="@L["Nav_Language"]">
+        <a href="@LangHref("el")" hreflang="el" class="@(Lang == "el" ? "active" : null)" aria-current="@(Lang == "el" ? "true" : null)">EL</a>
+        <span aria-hidden="true">|</span>
+        <a href="@LangHref("en")" hreflang="en" class="@(Lang == "en" ? "active" : null)" aria-current="@(Lang == "en" ? "true" : null)">EN</a>
+    </nav>
+</header>
 
-    <main>
-        <div class="top-row px-4"></div>
+<main>
+    <article class="content">
+        @Body
+    </article>
+</main>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+@code {
+    private static string Lang => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+    private string LangHref(string culture) =>
+        $"/culture/set?culture={culture}&redirectUri={Uri.EscapeDataString("/" + Navigation.ToBaseRelativePath(Navigation.Uri))}";
+}
