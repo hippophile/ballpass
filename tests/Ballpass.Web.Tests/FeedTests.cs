@@ -159,7 +159,7 @@ public class FeedTests(BallpassAppFactory app)
         var perPost = seed.Kudos.GroupBy(k => k.Post!).Select(g => g.Count()).ToList();
         Assert.Equal(25, perPost.Count); // 15 of the 40 posts have none
         Assert.InRange(perPost.Max(), 1, 5);
-        Assert.Empty(seed.Kudos.Where(k => k.ActorKey == k.Post!.AuthorKey));
+        Assert.DoesNotContain(seed.Kudos, k => k.ActorKey == k.Post!.AuthorKey); // nobody gives kudos to their own post
         Assert.Equal(seed.Kudos.Count, seed.Kudos.Select(k => (k.Post, k.ActorKey)).Distinct().Count());
 
         foreach (var s in data.Shortlist)
