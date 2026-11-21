@@ -1,0 +1,32 @@
+using Ballpass.Web.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace Ballpass.Web.Demo;
+
+// Applies migrations, then replaces all demo rows with the generated set in one transaction.
+public class DemoDataSeeder(BallpassDbContext db)
+{
+    public const int Seed = 42;
+
+    public async Task ResetAsync(CancellationToken ct = default)
+    {
+        await db.Database.MigrateAsync(ct);
+
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+
+        // Children first (FKs). Stat lines / seasons also go if they belong to a demo athlete.
+        await db.StatLines.Where(s => db.Athletes.Any(a => a.Id == s.AthleteId && a.IsDemo)).ExecuteDeleteAsync(ct);
+        await db.AthleteSeasons.Where(s => db.Athletes.Any(a => a.Id == s.AthleteId && a.IsDemo)).ExecuteDeleteAsync(ct);
+        await db.Athletes.Where(a => a.IsDemo).ExecuteDeleteAsync(ct);
+        await db.Coaches.Where(c => c.IsDemo).ExecuteDeleteAsync(ct);
+        await db.Clubs.Where(c => c.IsDemo).ExecuteDeleteAsync(ct);
+
+        var data = DemoDataGenerator.Generate(Seed);
+        db.Clubs.AddRange(data.Clubs);
+        db.Coaches.AddRange(data.Coaches);
+        db.Athletes.AddRange(data.Athletes);
+        await db.SaveChangesAsync(ct);
+
+        await tx.CommitAsync(ct);
+    }
+}

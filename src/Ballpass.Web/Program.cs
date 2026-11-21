@@ -1,5 +1,6 @@
 using Ballpass.Web.Components;
 using Ballpass.Web.Data;
+using Ballpass.Web.Demo;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,9 +17,26 @@ builder.Services.AddDbContext<BallpassDbContext>(options =>
             "Connection string 'ConnectionStrings:Ballpass' is missing. Run `make setup` to create the database and store it in user-secrets.");
     options.UseNpgsql(connectionString);
 });
+builder.Services.AddScoped<DemoDataSeeder>();
 builder.Services.AddHealthChecks().AddDbContextCheck<BallpassDbContext>();
 
 var app = builder.Build();
+
+// `make reset` / `make setup`: migrate + reseed demo data, then exit without starting the web server.
+// Normal startup never migrates (keeps /health 503 behaviour when the DB is down).
+if (args.Contains("--reset-demo-data"))
+{
+    using var scope = app.Services.CreateScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<DemoDataSeeder>();
+    await seeder.ResetAsync();
+
+    var db = scope.ServiceProvider.GetRequiredService<BallpassDbContext>();
+    app.Logger.LogInformation(
+        "Demo data reset: {Clubs} clubs, {Coaches} coaches, {Athletes} athletes, {Seasons} seasons, {StatLines} stat lines",
+        await db.Clubs.CountAsync(), await db.Coaches.CountAsync(), await db.Athletes.CountAsync(),
+        await db.AthleteSeasons.CountAsync(), await db.StatLines.CountAsync());
+    return;
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
