@@ -1,0 +1,25 @@
+@namespace Ballpass.Web.Components.Shared
+@using System.Globalization
+@using Ballpass.Web.Data
+@inject IStringLocalizer<ShareResource> L
+
+<section class="bp-card bp-panel bp-share-panel">
+    <h2>@L["Share_Heading"]</h2>
+    <p class="meta">@L["Share_Hint"]</p>
+    <img class="bp-share-preview" src="/p/@Athlete.Slug/og.png" width="1200" height="630" loading="lazy"
+         alt="@string.Format(CultureInfo.CurrentUICulture, L["Share_PreviewAlt"].Value, Name)" />
+    <div class="bp-share-actions">
+        <a class="bp-btn" href="/p/@Athlete.Slug/og.png?src=card" download="ballpass-@(Athlete.Slug).png">@L["Share_Download"]</a>
+        @if (Athlete.Stats.Count > 0)
+        {
+            <a class="bp-share-link" href="/p/@Athlete.Slug/season">@L["Share_SeasonLink"]</a>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public Athlete Athlete { get; set; } = default!;
+
+    private string Name => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el"
+        ? $"{Athlete.FirstName} {Athlete.LastName}" : $"{Athlete.FirstNameLatin} {Athlete.LastNameLatin}";
+}

@@ -17,6 +17,7 @@
         <meta property="og:description" content="@OgDescription" />
         <meta property="og:type" content="profile" />
         <meta property="og:url" content="@ShareUrl" />
+        <ShareMeta Athlete="athlete" />
     </HeadContent>
 
     <section class="bp-card bp-panel profile-header">
@@ -157,6 +158,8 @@
         <p class="meta">@L["Profile_ShareHint"]</p>
         <input class="share" type="text" readonly value="@ShareUrl" aria-label="@L["Profile_Share"]" />
     </section>
+
+    <SharePanel Athlete="athlete" />
 }
 
 @code {

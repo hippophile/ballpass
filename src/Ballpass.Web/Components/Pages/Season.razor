@@ -1,0 +1,163 @@
+@page "/p/{Slug}/season"
+@using System.Globalization
+@using System.Net
+@using Ballpass.Web.Components.Shared
+@using Ballpass.Web.Data
+@using Ballpass.Web.Features.Share
+@using Microsoft.EntityFrameworkCore
+@inject BallpassDbContext Db
+@inject NavigationManager Navigation
+@inject IStringLocalizer<ShareResource> L
+@inject IStringLocalizer<SharedResource> LS
+
+@* Season Wrapped: public, no JavaScript. Scroll-snap slides; every number carries data-metric + invariant data-value for tests. *@
+@if (athlete is not null && wrapped is not null)
+{
+    <PageTitle>@string.Format(Fmt, L["Wrapped_PageTitle"].Value, wrapped.Season, FullName)</PageTitle>
+    <HeadContent>
+        <ShareMeta Athlete="athlete" />
+    </HeadContent>
+
+    var total = SlideCount;
+    var n = 0;
+    <div class="bp-share-deck" role="region" tabindex="0" aria-label="@L["Wrapped_Region"]">
+        <section class="bp-share-slide bp-share-slide-intro" data-slide="intro" aria-labelledby="bp-share-h-intro">
+            <p class="bp-share-count">@(++n) / @total</p>
+            <h1 id="bp-share-h-intro" class="bp-share-title">@((MarkupString)IntroHtml)</h1>
+            <p class="bp-share-sub">@L["Wrapped_IntroSub"]</p>
+            <p class="bp-share-hint" aria-hidden="true">@L["Wrapped_Scroll"]</p>
+        </section>
+
+        <section class="bp-share-slide" data-slide="games" aria-labelledby="bp-share-h-games">
+            <p class="bp-share-count">@(++n) / @total</p>
+            <h2 id="bp-share-h-games" class="bp-share-kicker">@L["Wrapped_GamesHeading"]</h2>
+            <div class="bp-share-pair">
+                <p class="bp-share-figure"><span class="bp-share-num" data-metric="games" data-value="@wrapped.Games">@wrapped.Games</span><span class="bp-share-unit">@L["Wrapped_GamesLabel"]</span></p>
+                <p class="bp-share-figure"><span class="bp-share-num" data-metric="minutes" data-value="@wrapped.Minutes">@wrapped.Minutes.ToString("N0", CultureInfo.CurrentCulture)</span><span class="bp-share-unit">@L["Wrapped_MinutesLabel"]</span></p>
+            </div>
+            @if (!wrapped.IsFullStory)
+            {
+                <p class="bp-share-note">@L["Wrapped_FewGames"]</p>
+            }
+        </section>
+
+        @if (wrapped.IsFullStory)
+        {
+            <section class="bp-share-slide" data-slide="line" aria-labelledby="bp-share-h-line">
+                <p class="bp-share-count">@(++n) / @total</p>
+                <h2 id="bp-share-h-line" class="bp-share-kicker">@L["Wrapped_LineHeading"] · @wrapped.Season</h2>
+                <div class="bp-share-trio">
+                    <p class="bp-share-figure"><span class="bp-share-num" data-metric="points" data-value="@Inv(wrapped.Line.Points)">@Num(wrapped.Line.Points)</span><span class="bp-share-unit">@L["Card_Points"]</span></p>
+                    <p class="bp-share-figure"><span class="bp-share-num" data-metric="rebounds" data-value="@Inv(wrapped.Line.Rebounds)">@Num(wrapped.Line.Rebounds)</span><span class="bp-share-unit">@L["Card_Rebounds"]</span></p>
+                    <p class="bp-share-figure"><span class="bp-share-num" data-metric="assists" data-value="@Inv(wrapped.Line.Assists)">@Num(wrapped.Line.Assists)</span><span class="bp-share-unit">@L["Card_Assists"]</span></p>
+                </div>
+                <p class="bp-share-note">@L["Wrapped_PerGame"] · <SourceBadge Source="wrapped.Line.Source" /></p>
+            </section>
+
+            @if (wrapped.Previous is not null)
+            {
+                <section class="bp-share-slide" data-slide="growth" aria-labelledby="bp-share-h-growth">
+                    <p class="bp-share-count">@(++n) / @total</p>
+                    <h2 id="bp-share-h-growth" class="bp-share-kicker">@string.Format(Fmt, L["Wrapped_GrowthHeading"].Value, wrapped.Previous.Season)</h2>
+                    <div class="bp-share-trio">
+                        @Delta("points", L["Card_Points"].Value, wrapped.Line.Points - wrapped.Previous.Points)
+                        @Delta("rebounds", L["Card_Rebounds"].Value, wrapped.Line.Rebounds - wrapped.Previous.Rebounds)
+                        @Delta("assists", L["Card_Assists"].Value, wrapped.Line.Assists - wrapped.Previous.Assists)
+                    </div>
+                </section>
+            }
+
+            @if (cohort is not null)
+            {
+                <section class="bp-share-slide" data-slide="cohort" data-cohort-metric="@cohort.Metric.ToString().ToLowerInvariant()" aria-labelledby="bp-share-h-cohort">
+                    <p class="bp-share-count">@(++n) / @total</p>
+                    <h2 id="bp-share-h-cohort" class="bp-share-kicker">@L["Wrapped_StandsHeading"]</h2>
+                    <p class="bp-share-figure">
+                        <span class="bp-share-num">@string.Format(Fmt, L["Wrapped_Top"].Value, cohort.TopPercent)</span>
+                        <span class="bp-share-unit">@L[$"Metric_{cohort.Metric}"]</span>
+                    </p>
+                    <p class="bp-share-note">@string.Format(Fmt, L[athlete.Gender == Gender.Female ? "Wrapped_CohortNoteF" : "Wrapped_CohortNoteM"].Value, cohort.N)</p>
+                    <span hidden data-metric="cohort-n" data-value="@cohort.N"></span>
+                    <span hidden data-metric="cohort-top" data-value="@cohort.TopPercent"></span>
+                </section>
+            }
+        }
+
+        <section class="bp-share-slide bp-share-slide-outro" data-slide="outro" aria-labelledby="bp-share-h-outro">
+            <p class="bp-share-count">@(++n) / @total</p>
+            <h2 id="bp-share-h-outro" class="bp-share-kicker">@L["Wrapped_OutroHeading"]</h2>
+            <p class="bp-share-figure"><span class="bp-share-num bp-share-name">@FullName</span></p>
+            <div class="bp-share-actions">
+                <a class="bp-btn" href="/p/@Slug?src=wrapped">@L["Wrapped_OpenProfile"]</a>
+                <a class="bp-share-link" href="/p/@Slug/og.png?src=card" download="ballpass-@(Slug).png">@L["Wrapped_DownloadCard"]</a>
+            </div>
+            <p class="bp-share-note">@L["Wrapped_Demo"]</p>
+        </section>
+    </div>
+}
+
+@code {
+    [Parameter] public string Slug { get; set; } = "";
+
+    private Athlete? athlete;
+    private SeasonWrapped? wrapped;
+    private CohortHighlight? cohort;
+
+    private static IFormatProvider Fmt => CultureInfo.CurrentUICulture;
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    protected override async Task OnInitializedAsync()
+    {
+        athlete = await Db.Athletes.AsNoTracking().Include(a => a.Stats)
+            .FirstOrDefaultAsync(a => a.Slug == Slug && a.IsDemo);
+        wrapped = athlete is null ? null : SeasonWrapped.From(athlete.Stats);
+        if (athlete is null || wrapped is null)
+        {
+            Navigation.NotFound();
+            return;
+        }
+
+        if (wrapped.IsFullStory)
+        {
+            var gender = athlete.Gender;
+            var season = wrapped.Season;
+            var rows = await Db.StatLines.AsNoTracking().Where(s => s.Season == season)
+                .Join(Db.Athletes.Where(a => a.IsDemo && a.Gender == gender), s => s.AthleteId, a => a.Id,
+                    (s, a) => new CohortRow(a.Position, s.Points, s.Rebounds, s.Assists, s.Steals, s.Blocks))
+                .ToListAsync();
+            var l = wrapped.Line;
+            cohort = SeasonCohort.Best(new CohortRow(athlete.Position, l.Points, l.Rebounds, l.Assists, l.Steals, l.Blocks), rows);
+        }
+    }
+
+    private int SlideCount => !wrapped!.IsFullStory ? 3 : 3 + 1 + (wrapped.Previous is not null ? 1 : 0) + (cohort is not null ? 1 : 0);
+
+    private string FirstName => IsGreek ? athlete!.FirstName : athlete!.FirstNameLatin;
+
+    private string FullName => IsGreek ? $"{athlete!.FirstName} {athlete.LastName}" : $"{athlete!.FirstNameLatin} {athlete.LastNameLatin}";
+
+    // Season is wrapped in a nowrap span so "2025-26" is never split at the hyphen; every inserted value is HTML-encoded.
+    private string IntroHtml
+    {
+        get
+        {
+            var season = $"<span class=\"bp-share-nowrap\">{WebUtility.HtmlEncode(wrapped!.Season)}</span>";
+            if (!IsGreek) return string.Format(Fmt, L["Wrapped_IntroOf"].Value, season, WebUtility.HtmlEncode(FirstName));
+            var genitive = athlete!.Gender == Gender.Female ? GreekGenitive.FemaleFirstName(FirstName) : null;
+            return genitive is null
+                ? string.Format(Fmt, L["Wrapped_IntroPlain"].Value, season, WebUtility.HtmlEncode(FirstName))
+                : string.Format(Fmt, L["Wrapped_IntroOf"].Value, season, WebUtility.HtmlEncode(genitive));
+        }
+    }
+
+    private static string Num(decimal v) => v.ToString("0.0", CultureInfo.CurrentCulture);
+    private static string Inv(decimal v) => v.ToString("0.0", CultureInfo.InvariantCulture);
+    private static string InvSigned(decimal v) => (v > 0 ? "+" : "") + Inv(v);
+
+    // Arrow + number, plus a visually hidden word so direction never relies on the glyph or colour.
+    private RenderFragment Delta(string metric, string label, decimal d) => @<p class="bp-share-figure bp-share-delta @(d > 0 ? "bp-share-up" : d < 0 ? "bp-share-down" : "bp-share-flat")">
+        <span class="bp-share-num" data-metric="delta-@metric" data-value="@InvSigned(d)"><span aria-hidden="true">@(d > 0 ? "▲" : d < 0 ? "▼" : "■") </span>@(d > 0 ? "+" : d < 0 ? "−" : "")@Num(Math.Abs(d))</span>
+        <span class="visually-hidden">@L[d > 0 ? "Wrapped_Up" : d < 0 ? "Wrapped_Down" : "Wrapped_Same"]</span>
+        <span class="bp-share-unit">@label</span>
+    </p>;
+}

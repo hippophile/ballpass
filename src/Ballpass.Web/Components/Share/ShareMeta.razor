@@ -1,0 +1,34 @@
+@namespace Ballpass.Web.Components.Shared
+@using System.Globalization
+@using Ballpass.Web.Data
+@using Ballpass.Web.Features.Share
+@inject NavigationManager Navigation
+@inject IConfiguration Config
+@inject IStringLocalizer<ShareResource> L
+@inject IStringLocalizer<SharedResource> LS
+
+@* Share meta tags. Render INSIDE a page's <HeadContent> (a second HeadContent on the same page replaces the first, it does not add to it). Absolute URLs: config PublicBaseUrl (e.g. the tunnel URL), else the request scheme/host. *@
+<meta property="og:image" content="@ImageUrl" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="@OgCardRenderer.Width" />
+<meta property="og:image:height" content="@OgCardRenderer.Height" />
+<meta property="og:image:alt" content="@Alt" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="@ImageUrl" />
+<meta name="twitter:image:alt" content="@Alt" />
+
+@code {
+    [Parameter, EditorRequired] public Athlete Athlete { get; set; } = default!;
+
+    private string ImageUrl => ShareUrls.Absolute(Config["PublicBaseUrl"], Navigation.BaseUri, $"/p/{Athlete.Slug}/og.png");
+
+    private string Alt
+    {
+        get
+        {
+            var greek = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+            var name = greek ? $"{Athlete.FirstName} {Athlete.LastName}" : $"{Athlete.FirstNameLatin} {Athlete.LastNameLatin}";
+            return string.Format(CultureInfo.CurrentUICulture, L["Share_OgAlt"].Value, name, LS[$"Position_{Athlete.Position}"].Value);
+        }
+    }
+}
