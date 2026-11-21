@@ -1,0 +1,208 @@
+@namespace Ballpass.Web.Components
+@using System.Globalization
+@using Ballpass.Web.Data
+@using Ballpass.Web.Features.Evidence
+@using Microsoft.AspNetCore.WebUtilities
+@inject ICohortService Cohorts
+@inject IStatAggregator Stats
+@inject IBadgeService BadgeRules
+@inject NavigationManager Navigation
+@inject IStringLocalizer<EvidenceResource> E
+@inject IStringLocalizer<SharedResource> L
+
+@* Evidence under the key stats: percentile bars (demo cohort), season line with trend, rule badges.
+   Server-rendered inline SVG; every chart has role="img" + aria-label and a visually hidden table. *@
+@if (evidence is not null && latest is not null)
+{
+    <div class="bp-ev" data-evidence data-confirmed-only="@(confirmedOnly ? "true" : "false")">
+        <section class="bp-ev-block" aria-labelledby="bp-ev-pct-h">
+            <h3 id="bp-ev-pct-h">@E["Pct_Heading"]</h3>
+            <p class="bp-ev-cohort" data-n="@evidence.PeerCount">@CohortLabel</p>
+            <p class="bp-ev-toggle">
+                <span>@E["Toggle_Label"]</span>
+                <a href="/p/@Athlete.Slug" aria-current="@(confirmedOnly ? null : "true")">@E["Toggle_All"]</a>
+                <a href="/p/@Athlete.Slug?confirmed=1" aria-current="@(confirmedOnly ? "true" : null)">@E["Toggle_Confirmed"]</a>
+            </p>
+            @foreach (var m in evidence.Metrics)
+            {
+                <div class="bp-ev-row" data-metric="@m.Metric" data-pct="@(m.Percentile?.ToString(CultureInfo.InvariantCulture))">
+                    <span class="bp-ev-label">@MetricLabel(m.Metric)</span>
+                    <span class="bp-ev-num">@ValueText(m)</span>
+                    @if (m.Percentile is { } pct)
+                    {
+                        <span class="bp-ev-pct">@E["Pct_Value", pct]</span>
+                        <svg class="bp-ev-bar" viewBox="0 0 200 10" preserveAspectRatio="none" role="img" aria-label="@AriaText(m)" focusable="false">
+                            <rect class="bp-ev-track" x="0" y="0" width="@ChartGeometry.Fmt(ChartGeometry.TrackWidth)" height="10" />
+                            <rect class="bp-ev-fill" x="0" y="0" width="@ChartGeometry.Fmt(ChartGeometry.FillWidth(pct))" height="10" />
+                            <line class="bp-ev-tick" x1="100" y1="0" x2="100" y2="10" />
+                        </svg>
+                    }
+                    else
+                    {
+                        <span class="bp-ev-pct bp-ev-nodata">@NoDataText(m)</span>
+                        <svg class="bp-ev-bar" viewBox="0 0 200 10" preserveAspectRatio="none" role="img" aria-label="@AriaText(m)" focusable="false">
+                            <rect class="bp-ev-track" x="0" y="0" width="@ChartGeometry.Fmt(ChartGeometry.TrackWidth)" height="10" />
+                        </svg>
+                    }
+                </div>
+            }
+            <div class="bp-ev-sr-box"><table class="bp-ev-sr">
+                <caption>@E["Pct_Heading"]: @CohortLabel</caption>
+                <thead><tr><th scope="col">@E["Col_Metric"]</th><th scope="col">@E["Col_Value"]</th><th scope="col">@E["Col_Pct"]</th><th scope="col">@E["Col_N"]</th></tr></thead>
+                <tbody>
+                    @foreach (var m in evidence.Metrics)
+                    {
+                        <tr data-metric="@m.Metric">
+                            <th scope="row">@MetricLabel(m.Metric)</th>
+                            <td>@ValueText(m)</td>
+                            <td>@(m.Percentile?.ToString(CultureInfo.CurrentCulture) ?? E["Compare_NoValue"].Value)</td>
+                            <td>@m.N</td>
+                        </tr>
+                    }
+                </tbody>
+            </table></div>
+            <p class="bp-ev-source">@E["Source_Note"] <span class="bp-ev-src" data-ev-source="@latest.Source">@L[$"Source_{latest.Source}"]</span></p>
+            <p class="bp-ev-note">@E["Thresholds_Note"]</p>
+        </section>
+
+        <section class="bp-ev-block" aria-labelledby="bp-ev-line-h">
+            <h3 id="bp-ev-line-h">@E["Line_Heading"]</h3>
+            <p class="bp-ev-trendline">
+                <span class="bp-ev-trend-label">@E["Trend_Label"]:</span>
+                <span class="bp-ev-trend" data-trend="@trend!.Direction">@TrendText</span>
+            </p>
+            <svg class="bp-ev-line" viewBox="0 0 @ChartGeometry.Fmt(layout!.Width) @ChartGeometry.Fmt(layout.Height)" role="img"
+                 aria-label="@E["Line_Aria", LineSummary]" focusable="false">
+                <line class="bp-ev-axis" x1="0" y1="@ChartGeometry.Fmt(layout.BaselineY)" x2="@ChartGeometry.Fmt(layout.Width)" y2="@ChartGeometry.Fmt(layout.BaselineY)" />
+                @foreach (var seg in layout.Segments)
+                {
+                    if (seg.Count > 1)
+                    {
+                        <polyline class="bp-ev-path" points="@ChartGeometry.PointsAttr(seg)" />
+                    }
+                    foreach (var p in seg)
+                    {
+                        <g>
+                            <circle class="bp-ev-dot" cx="@ChartGeometry.Fmt(p.X)" cy="@ChartGeometry.Fmt(p.Y)" r="4.5" />
+                            <text class="bp-ev-val" x="@ChartGeometry.Fmt(p.X)" y="@ChartGeometry.Fmt(p.Y - 10)" text-anchor="middle">@Num(p.Value)</text>
+                        </g>
+                    }
+                }
+                @foreach (var (season, x) in layout.Axis)
+                {
+                    <g>
+                        <text class="bp-ev-axis-label" x="@ChartGeometry.Fmt(x)" y="@ChartGeometry.Fmt(layout.BaselineY + 18)" text-anchor="middle">@season</text>
+                    </g>
+                }
+            </svg>
+            <div class="bp-ev-sr-box"><table class="bp-ev-sr">
+                <caption>@E["Line_Heading"]</caption>
+                <thead><tr><th scope="col">@E["Line_Col_Season"]</th><th scope="col">@E["Line_Col_Ppg"]</th><th scope="col">@E["Line_Col_Games"]</th><th scope="col">@E["Line_Col_Source"]</th></tr></thead>
+                <tbody>
+                    @foreach (var slot in slots)
+                    {
+                        <tr data-line-season="@slot.Season">
+                            <th scope="row">@slot.Season</th>
+                            @if (slot.Line is { } l)
+                            {
+                                <td>@Num(l.Points)</td>
+                                <td>@l.Games</td>
+                                <td>@L[$"Source_{l.Source}"]</td>
+                            }
+                            else
+                            {
+                                <td colspan="3">@E["Line_Missing"]</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table></div>
+            <p class="bp-ev-note">@E["Trend_Rule"]</p>
+        </section>
+
+        @if (badges.Count > 0)
+        {
+            <section class="bp-ev-block" aria-labelledby="bp-ev-badges-h">
+                <h3 id="bp-ev-badges-h">@E["Badges_Heading"]</h3>
+                <ul class="bp-ev-badges">
+                    @foreach (var b in badges)
+                    {
+                        <li class="bp-ev-badge" data-rule="@b.Rule" data-source="@b.Source">@E[$"Badge_{b.Rule}", b.Args]@if (ShowSource(b))
+                            {
+                                <span class="bp-ev-badge-src"> · @E["Badge_Source", L[$"Source_{b.Source}"].Value]</span>
+                            }</li>
+                    }
+                </ul>
+            </section>
+        }
+
+        @if (isCoach)
+        {
+            <p class="bp-ev-compare"><a href="/compare?a=@Athlete.Slug">@E["Compare_Link"]</a></p>
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public Athlete Athlete { get; set; } = default!;
+    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
+
+    private CohortEvidence? evidence;
+    private StatLine? latest;
+    private TrendResult? trend;
+    private IReadOnlyList<SeasonSlot> slots = [];
+    private ProgressionLayout? layout;
+    private IReadOnlyList<Badge> badges = [];
+    private bool confirmedOnly;
+    private bool isCoach;
+
+    protected override async Task OnInitializedAsync()
+    {
+        latest = Stats.LatestLine(Athlete.Stats);
+        if (latest is null) return;
+
+        var query = QueryHelpers.ParseQuery(new Uri(Navigation.Uri).Query);
+        confirmedOnly = query.TryGetValue("confirmed", out var c) && c == "1";
+        evidence = await Cohorts.EvaluateAsync(Athlete, confirmedOnly);
+
+        trend = Stats.Trend(Athlete.Stats);
+        slots = Stats.Progression(Athlete.Stats);
+        layout = ChartGeometry.Layout(slots, 320, 150);
+
+        // The top-quartile badge uses the full cohort, not the confirmed-only one.
+        var all = confirmedOnly ? await Cohorts.EvaluateAsync(Athlete, false) : evidence;
+        badges = BadgeRules.Evaluate(Athlete.Stats, all?.Get(EvidenceMetric.Points)?.Percentile);
+
+        var user = AuthState is null ? null : (await AuthState).User;
+        isCoach = user?.IsInRole("Coach") == true;
+    }
+
+    private string CohortLabel => E["Cohort_Label", evidence!.PeerCount, E[$"Group_{evidence.Group}"].Value].Value;
+
+    private string MetricLabel(EvidenceMetric m) => E[$"Metric_{m}"].Value;
+
+    private static string Num(decimal v) => v.ToString("0.0", CultureInfo.CurrentCulture);
+
+    private string ValueText(MetricPercentile m) =>
+        m.Value.ToString("0.0", CultureInfo.CurrentCulture) + (m.Metric == EvidenceMetric.FgPct ? "%" : "");
+
+    private string NoDataText(MetricPercentile m) =>
+        $"{E["Insufficient", m.N]} · {E[m.Reason == InsufficientReason.TooFewGames ? "Insufficient_Games" : "Insufficient_Peers"]}";
+
+    private string AriaText(MetricPercentile m) => m.Percentile is { } pct
+        ? $"{E["Aria_Row", MetricLabel(m.Metric), ValueText(m), E["Pct_Value", pct]]}. {CohortLabel}"
+        : $"{E["Aria_RowNoData", MetricLabel(m.Metric), ValueText(m), NoDataText(m)]}";
+
+    private string TrendText => trend!.Direction switch
+    {
+        TrendDirection.Up => $"▲ +{trend.ChangePct!.Value.ToString("0.#", CultureInfo.CurrentCulture)}% · {E["Trend_Up"]}",
+        TrendDirection.Down => $"▼ {trend.ChangePct!.Value.ToString("0.#", CultureInfo.CurrentCulture)}% · {E["Trend_Down"]}",
+        TrendDirection.Flat => $"▬ {trend.ChangePct!.Value.ToString("+0.#;-0.#;0", CultureInfo.CurrentCulture)}% · {E["Trend_Flat"]}",
+        _ => E["Trend_NotAvailable"].Value,
+    };
+
+    private string LineSummary => string.Join("; ", slots.Select(s => $"{s.Season} {(s.Line is null ? E["Line_Missing"].Value : Num(s.Line.Points))}"));
+
+    // Badges that only restate a source in their own text (1, 2) do not repeat it; the others show the source of the latest season.
+    private static bool ShowSource(Badge b) => b.Source is not null && b.Rule is not ("coach-confirmed" or "league-verified");
+}

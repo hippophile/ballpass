@@ -145,15 +145,17 @@ public sealed class OgCardRenderer : IOgCardRenderer
             Color = color, IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2.4f,
             StrokeCap = SKStrokeCap.Round, StrokeJoin = SKStrokeJoin.Round,
         };
-        using var path = new SKPath();
         switch (source)
         {
             case StatSource.LeagueVerifiedMock:
-                path.MoveTo(x + 12, y + 1); path.LineTo(x + 21, y + 4.5f); path.LineTo(x + 21, y + 12);
-                path.CubicTo(x + 21, y + 17, x + 17, y + 21, x + 12, y + 23);
-                path.CubicTo(x + 7, y + 21, x + 3, y + 17, x + 3, y + 12);
-                path.LineTo(x + 3, y + 4.5f); path.Close();
-                canvas.DrawPath(path, stroke);
+                // SkiaSharp 4: SKPath mutators are obsolete; build with SKPathBuilder and detach an immutable path.
+                var shield = new SKPathBuilder();
+                shield.MoveTo(x + 12, y + 1); shield.LineTo(x + 21, y + 4.5f); shield.LineTo(x + 21, y + 12);
+                shield.CubicTo(x + 21, y + 17, x + 17, y + 21, x + 12, y + 23);
+                shield.CubicTo(x + 7, y + 21, x + 3, y + 17, x + 3, y + 12);
+                shield.LineTo(x + 3, y + 4.5f); shield.Close();
+                using (var path = shield.Detach())
+                    canvas.DrawPath(path, stroke);
                 DrawCheck(canvas, stroke, x, y);
                 break;
             case StatSource.CoachConfirmed:
@@ -168,8 +170,9 @@ public sealed class OgCardRenderer : IOgCardRenderer
 
     private static void DrawCheck(SKCanvas canvas, SKPaint stroke, float x, float y)
     {
-        using var check = new SKPath();
-        check.MoveTo(x + 7.5f, y + 12.5f); check.LineTo(x + 10.7f, y + 15.7f); check.LineTo(x + 16.5f, y + 9);
+        var builder = new SKPathBuilder();
+        builder.MoveTo(x + 7.5f, y + 12.5f); builder.LineTo(x + 10.7f, y + 15.7f); builder.LineTo(x + 16.5f, y + 9);
+        using var check = builder.Detach();
         canvas.DrawPath(check, stroke);
     }
 

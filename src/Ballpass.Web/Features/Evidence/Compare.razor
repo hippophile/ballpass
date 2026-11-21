@@ -1,0 +1,203 @@
+@page "/compare"
+@namespace Ballpass.Web.Components.Pages
+@attribute [Authorize(Policy = "CoachOnly")]
+@using System.Globalization
+@using Ballpass.Web.Components.Shared
+@using Ballpass.Web.Data
+@using Ballpass.Web.Features.Evidence
+@using Microsoft.EntityFrameworkCore
+@inject BallpassDbContext Db
+@inject ICohortService Cohorts
+@inject IStatAggregator Stats
+@inject NavigationManager Navigation
+@inject IStringLocalizer<EvidenceResource> E
+@inject IStringLocalizer<SharedResource> L
+
+<PageTitle>@E["Compare_Title"]</PageTitle>
+
+<h1>@E["Compare_Title"]</h1>
+
+@* Children (the launcher queries the shortlist) must not start while this page's own queries are running: render only once loaded. *@
+@if (!loaded)
+{
+}
+else if (a is null || b is null || a.Id == b.Id)
+{
+    if (a is not null && b is not null)
+    {
+        <p class="bp-status" role="status">@E["Compare_Same"]</p>
+    }
+    <CompareLauncher FixedA="@(a?.Slug)" />
+}
+else
+{
+    <section class="bp-card bp-panel bp-ev-cmp" data-compare>
+        <h2>@E["Compare_Heading"]</h2>
+
+        @if (Warn)
+        {
+            <p class="bp-ev-warning" role="note">⚠ @E["Compare_Warning", L[$"Position_{a.Position}"].Value, L[$"Position_{b.Position}"].Value]</p>
+        }
+
+        <div class="bp-ev-players">
+            @foreach (var (who, ath, ev) in Players)
+            {
+                <div class="bp-ev-player" data-athlete="@who">
+                    <svg class="bp-ev-key" viewBox="0 0 24 12" width="24" height="12" aria-hidden="true" focusable="false">
+                        @if (who == "a")
+                        {
+                            <line class="bp-ev-cmp-fill" data-athlete="a" x1="0" y1="6" x2="24" y2="6" stroke-width="3" />
+                            <circle data-marker="circle" class="bp-ev-mark" data-athlete="a" cx="12" cy="6" r="4.5" />
+                        }
+                        else
+                        {
+                            <line class="bp-ev-cmp-fill" data-athlete="b" x1="0" y1="6" x2="24" y2="6" stroke-width="3" stroke-dasharray="4 2" />
+                            <rect data-marker="square" class="bp-ev-mark" data-athlete="b" x="7" y="1.5" width="9" height="9" />
+                        }
+                    </svg>
+                    <span class="bp-ev-player-text">
+                        <a class="bp-ev-player-name" href="/p/@ath.Slug">@FullName(ath)</a>
+                        <span class="bp-ev-player-meta">@L[$"Position_{ath.Position}"] · @(who == "a" ? E["Compare_Solid"] : E["Compare_Dashed"])</span>
+                        @if (ev is not null)
+                        {
+                            <span class="bp-ev-player-meta">@CohortLabel(ev)</span>
+                            <SourceBadge Source="ev.SubjectSource" />
+                        }
+                    </span>
+                </div>
+            }
+        </div>
+
+        @foreach (var m in Enum.GetValues<EvidenceMetric>())
+        {
+            var pa = Get(evA, m);
+            var pb = Get(evB, m);
+            <div class="bp-ev-cmp-row" data-metric="@m">
+                <span class="bp-ev-label">@E[$"Metric_{m}"]</span>
+                <svg class="bp-ev-cmp-svg" viewBox="0 0 252 34" role="img" aria-label="@CmpAria(m, pa, pb)" focusable="false">
+                    <g transform="translate(6 0)">
+                        <line class="bp-ev-cmp-track" x1="0" y1="9" x2="@ChartGeometry.Fmt(ChartGeometry.TrackWidth)" y2="9" stroke-width="8" />
+                        <line class="bp-ev-cmp-track" x1="0" y1="25" x2="@ChartGeometry.Fmt(ChartGeometry.TrackWidth)" y2="25" stroke-width="8" />
+                        @if (pa?.Percentile is { } x1)
+                        {
+                            <line class="bp-ev-cmp-fill" data-athlete="a" x1="0" y1="9" x2="@ChartGeometry.Fmt(ChartGeometry.FillWidth(x1))" y2="9" stroke-width="8" />
+                            <circle data-marker="circle" class="bp-ev-mark" data-athlete="a" cx="@ChartGeometry.Fmt(ChartGeometry.FillWidth(x1))" cy="9" r="5.5" />
+                        }
+                        @if (pb?.Percentile is { } x2)
+                        {
+                            <line class="bp-ev-cmp-fill" data-athlete="b" x1="0" y1="25" x2="@ChartGeometry.Fmt(ChartGeometry.FillWidth(x2))" y2="25" stroke-width="8" stroke-dasharray="6 3" />
+                            <rect data-marker="square" class="bp-ev-mark" data-athlete="b" x="@ChartGeometry.Fmt(ChartGeometry.FillWidth(x2) - 5)" y="20" width="10" height="10" />
+                        }
+                        <text class="bp-ev-cmp-text" data-athlete="a" data-metric="@m" x="212" y="13">@PctText(pa)</text>
+                        <text class="bp-ev-cmp-text" data-athlete="b" data-metric="@m" x="212" y="29">@PctText(pb)</text>
+                    </g>
+                </svg>
+            </div>
+        }
+
+        <div class="bp-ev-table-wrap">
+            <table class="bp-ev-table" data-compare-table>
+                <caption>@E["Compare_Heading"]</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">@E["Col_Metric"]</th>
+                        <th scope="col">@FullName(a) · @E["Col_Value"]</th>
+                        <th scope="col">@FullName(a) · @E["Col_Pct"]</th>
+                        <th scope="col">@FullName(b) · @E["Col_Value"]</th>
+                        <th scope="col">@FullName(b) · @E["Col_Pct"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in Enum.GetValues<EvidenceMetric>())
+                    {
+                        var pa = Get(evA, m);
+                        var pb = Get(evB, m);
+                        <tr data-metric="@m">
+                            <th scope="row">@E[$"Metric_{m}"]</th>
+                            <td data-athlete="a" data-kind="value">@ValueText(pa)</td>
+                            <td data-athlete="a" data-pct>@PctText(pa)</td>
+                            <td data-athlete="b" data-kind="value">@ValueText(pb)</td>
+                            <td data-athlete="b" data-pct>@PctText(pb)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @foreach (var (who, ath, ev) in Players)
+        {
+            var missing = ev?.Metrics.FirstOrDefault(x => x.Percentile is null);
+            if (ev is null || missing is not null)
+            {
+                <p class="bp-ev-note" data-athlete="@who">@FullName(ath): @E["Insufficient", missing?.N ?? 0] · @E[missing?.Reason == InsufficientReason.TooFewGames ? "Insufficient_Games" : "Insufficient_Peers"]</p>
+            }
+        }
+        <p class="bp-ev-note">@E["Thresholds_Note"]</p>
+    </section>
+
+    <p><a href="/shortlist">← @L["Shortlist_Title"]</a></p>
+}
+
+@code {
+    [SupplyParameterFromQuery(Name = "a")] public string? SlugA { get; set; }
+    [SupplyParameterFromQuery(Name = "b")] public string? SlugB { get; set; }
+
+    private Athlete? a;
+    private Athlete? b;
+    private CohortEvidence? evA;
+    private CohortEvidence? evB;
+    private bool loaded;
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { await LoadAll(); }
+        finally { loaded = true; }
+    }
+
+    private async Task LoadAll()
+    {
+        a = await Load(SlugA);
+        b = await Load(SlugB);
+        // A slug that was given but does not exist is a 404, a missing one just shows the chooser.
+        if ((!string.IsNullOrEmpty(SlugA) && a is null) || (!string.IsNullOrEmpty(SlugB) && b is null))
+        {
+            Navigation.NotFound();
+            return;
+        }
+        if (a is null || b is null || a.Id == b.Id) return;
+
+        evA = await Cohorts.EvaluateAsync(a);
+        evB = await Cohorts.EvaluateAsync(b);
+    }
+
+    private Task<Athlete?> Load(string? slug) => string.IsNullOrEmpty(slug)
+        ? Task.FromResult<Athlete?>(null)
+        : Db.Athletes.AsNoTracking().Include(x => x.Stats).FirstOrDefaultAsync(x => x.Slug == slug && x.IsDemo);
+
+    private IEnumerable<(string Who, Athlete Athlete, CohortEvidence? Evidence)> Players
+    {
+        get
+        {
+            yield return ("a", a!, evA);
+            yield return ("b", b!, evB);
+        }
+    }
+
+    private bool Warn => a!.Gender != b!.Gender || CohortCalculator.GroupOf(a.Position) != CohortCalculator.GroupOf(b.Position);
+
+    private static string FullName(Athlete x) => IsGreek ? $"{x.FirstName} {x.LastName}" : $"{x.FirstNameLatin} {x.LastNameLatin}";
+
+    private string CohortLabel(CohortEvidence ev) => E["Cohort_Label", ev.PeerCount, E[$"Group_{ev.Group}"].Value].Value;
+
+    private static MetricPercentile? Get(CohortEvidence? ev, EvidenceMetric m) => ev?.Get(m);
+
+    private string PctText(MetricPercentile? p) => p?.Percentile?.ToString(CultureInfo.CurrentCulture) ?? E["Compare_NoValue"].Value;
+
+    private string ValueText(MetricPercentile? p) => p is null ? E["Compare_NoValue"].Value
+        : p.Value.ToString("0.0", CultureInfo.CurrentCulture) + (p.Metric == EvidenceMetric.FgPct ? "%" : "");
+
+    private string CmpAria(EvidenceMetric m, MetricPercentile? pa, MetricPercentile? pb) =>
+        $"{E[$"Metric_{m}"]}: {FullName(a!)} {PctText(pa)}, {FullName(b!)} {PctText(pb)}";
+}
