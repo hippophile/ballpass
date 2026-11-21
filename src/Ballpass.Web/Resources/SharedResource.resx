@@ -5,7 +5,6 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="Brand" xml:space="preserve"><value>Ballpass</value></data>
-  <data name="Home_Tagline" xml:space="preserve"><value>Η πλατφόρμα ανάδειξης αθλητριών μπάσκετ στην Ελλάδα</value></data>
   <data name="Nav_Language" xml:space="preserve"><value>Γλώσσα</value></data>
   <data name="Nav_Main" xml:space="preserve"><value>Κύρια πλοήγηση</value></data>
   <data name="Badge_Demo" xml:space="preserve"><value>DEMO</value></data>
@@ -69,17 +68,15 @@
   <data name="Demo_Intro" xml:space="preserve"><value>Επιλέξτε ένα φανταστικό πρόσωπο για να δοκιμάσετε την πλατφόρμα. Δεν χρειάζεται κωδικός.</value></data>
   <data name="Demo_Coaches" xml:space="preserve"><value>Προπονητές</value></data>
   <data name="Demo_Athletes" xml:space="preserve"><value>Αθλητές</value></data>
-  <data name="Denied_Title" xml:space="preserve"><value>Η αναζήτηση είναι μόνο για προπονητές</value></data>
+  <data name="Denied_Title" xml:space="preserve"><value>Η ενέργεια είναι μόνο για προπονητές</value></data>
   <data name="Denied_Switch" xml:space="preserve"><value>Είσοδος ως προπονητής</value></data>
   <data name="Search_Title" xml:space="preserve"><value>Αναζήτηση αθλητών</value></data>
   <data name="Search_Gender" xml:space="preserve"><value>Φύλο</value></data>
   <data name="Gender_Female" xml:space="preserve"><value>Γυναίκες</value></data>
   <data name="Gender_Male" xml:space="preserve"><value>Άνδρες</value></data>
   <data name="Search_Position" xml:space="preserve"><value>Θέση</value></data>
-  <data name="Search_Height" xml:space="preserve"><value>Ύψος (εκ.)</value></data>
-  <data name="Search_Age" xml:space="preserve"><value>Ηλικία</value></data>
-  <data name="Search_Min" xml:space="preserve"><value>Από</value></data>
-  <data name="Search_Max" xml:space="preserve"><value>Έως</value></data>
+  <data name="Search_Height" xml:space="preserve"><value>Ύψος από / έως (εκ.)</value></data>
+  <data name="Search_Age" xml:space="preserve"><value>Ηλικία από / έως</value></data>
   <data name="Search_Any" xml:space="preserve"><value>Όλες</value></data>
   <data name="Search_Name" xml:space="preserve"><value>Όνομα</value></data>
   <data name="Search_Submit" xml:space="preserve"><value>Αναζήτηση</value></data>
@@ -109,4 +106,31 @@
   <data name="Inbox_Title" xml:space="preserve"><value>Εισερχόμενα</value></data>
   <data name="Inbox_Empty" xml:space="preserve"><value>Δεν έχετε λάβει ενδιαφέρον ακόμη.</value></data>
   <data name="Inbox_NoNote" xml:space="preserve"><value>Χωρίς σημείωση</value></data>
+  <data name="Nav_Menu" xml:space="preserve"><value>Μενού</value></data>
+  <data name="Home_Value" xml:space="preserve"><value>Η πλατφόρμα που φέρνει αθλήτριες και αθλητές σε επαφή με προπονητές — με στοιχεία και διαφάνεια για την πηγή τους, όχι γνωριμίες.</value></data>
+  <data name="Home_Sub" xml:space="preserve"><value>Ξεκινάμε από το γυναικείο μπάσκετ στην Ελλάδα.</value></data>
+  <data name="Home_CtaDemo" xml:space="preserve"><value>Δοκιμάστε ως προπονητής</value></data>
+  <data name="Home_CtaSample" xml:space="preserve"><value>Δείτε ένα δείγμα προφίλ</value></data>
+  <data name="Home_CountAthletes" xml:space="preserve"><value>αθλητές</value></data>
+  <data name="Home_CountClubs" xml:space="preserve"><value>σύλλογοι</value></data>
+  <data name="Home_CountCoaches" xml:space="preserve"><value>προπονητές</value></data>
+  <data name="Home_CountsCaption" xml:space="preserve"><value>δεδομένα επίδειξης</value></data>
+  <data name="Home_HowTitle" xml:space="preserve"><value>Πώς λειτουργεί</value></data>
+  <data name="Home_Step1Title" xml:space="preserve"><value>Το προφίλ της αθλήτριας</value></data>
+  <data name="Home_Step1Text" xml:space="preserve"><value>Στοιχεία, ιστορικό ομάδων και στατιστικά με ετικέτα πηγής — με σύνδεσμο για κοινοποίηση.</value></data>
+  <data name="Home_Step2Title" xml:space="preserve"><value>Ο προπονητής αναζητά</value></data>
+  <data name="Home_Step2Text" xml:space="preserve"><value>Φιλτράρει ανά θέση, ύψος, ηλικία, περιοχή και κατηγορία.</value></data>
+  <data name="Home_Step3Title" xml:space="preserve"><value>Εκδήλωση ενδιαφέροντος</value></data>
+  <data name="Home_Step3Text" xml:space="preserve"><value>Ο προπονητής εκδηλώνει ενδιαφέρον και η αθλήτρια το βλέπει στα εισερχόμενά της.</value></data>
+  <data name="Home_TrustTitle" xml:space="preserve"><value>Εμπιστοσύνη στα στοιχεία</value></data>
+  <data name="Home_TrustSelf" xml:space="preserve"><value>Δηλώνεται από την ίδια την αθλήτρια ή τον αθλητή.</value></data>
+  <data name="Home_TrustCoach" xml:space="preserve"><value>Επιβεβαιώνεται από προπονητή που τον/την γνωρίζει.</value></data>
+  <data name="Home_TrustLeague" xml:space="preserve"><value>Στην επίδειξη είναι προσομοίωση — δεν υπάρχει συνεργασία με λίγκα.</value></data>
+  <data name="Home_Footer" xml:space="preserve"><value>Όλα τα πρόσωπα, οι σύλλογοι και τα στοιχεία είναι φανταστικά (δεδομένα επίδειξης).</value></data>
+  <data name="Search_HeightTo" xml:space="preserve"><value>Ύψος έως (εκ.)</value></data>
+  <data name="Search_AgeTo" xml:space="preserve"><value>Ηλικία έως</value></data>
+  <data name="Error_Title" xml:space="preserve"><value>Κάτι πήγε στραβά</value></data>
+  <data name="Error_Text" xml:space="preserve"><value>Παρουσιάστηκε σφάλμα κατά την επεξεργασία του αιτήματός σας. Δοκιμάστε ξανά σε λίγο.</value></data>
+  <data name="Error_Home" xml:space="preserve"><value>Επιστροφή στην αρχική</value></data>
+  <data name="Error_RequestId" xml:space="preserve"><value>Κωδικός αιτήματος:</value></data>
 </root>

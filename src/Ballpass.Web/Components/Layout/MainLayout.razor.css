@@ -125,3 +125,48 @@ main {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.bp-menu {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .bp-userbar {
+        display: none;
+    }
+
+    .bp-menu {
+        display: block;
+        order: 3;
+        width: 100%;
+    }
+
+        .bp-menu summary {
+            cursor: pointer;
+            font-weight: 700;
+            padding: 0.25rem 0;
+        }
+
+        .bp-menu summary:focus-visible {
+            outline: 2px solid #ffc107;
+            outline-offset: 2px;
+        }
+
+    .bp-menu-links {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 0.5rem 0 0.25rem;
+    }
+
+        .bp-menu-links a {
+            color: #cfe0f5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .bp-menu-links form {
+            margin: 0;
+        }
+}

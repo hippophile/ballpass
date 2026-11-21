@@ -14,6 +14,30 @@
 <header class="topbar">
     <a class="brand" href="/">@L["Brand"]</a>
     <nav class="bp-userbar" aria-label="@L["Nav_Main"]">
+        @NavItems
+    </nav>
+    <nav class="lang-toggle" aria-label="@L["Nav_Language"]">
+        <a href="@LangHref("el")" hreflang="el" class="@(Lang == "el" ? "active" : null)" aria-current="@(Lang == "el" ? "true" : null)">EL</a>
+        <span aria-hidden="true">|</span>
+        <a href="@LangHref("en")" hreflang="en" class="@(Lang == "en" ? "active" : null)" aria-current="@(Lang == "en" ? "true" : null)">EN</a>
+    </nav>
+    <details class="bp-menu">
+        <summary>@L["Nav_Menu"]</summary>
+        <nav class="bp-menu-links" aria-label="@L["Nav_Main"]">
+            @NavItems
+        </nav>
+    </details>
+</header>
+
+<main>
+    <article class="content">
+        @Body
+    </article>
+</main>
+
+@code {
+    // Rendered twice: inline bar on desktop, inside <details> on phones (CSS shows one; no JavaScript).
+    private RenderFragment NavItems => @<text>
         <AuthorizeView>
             <Authorized>
                 @if (context.User.IsInRole("Coach"))
@@ -35,21 +59,8 @@
                 <a href="/demo">@L["Nav_DemoLogin"]</a>
             </NotAuthorized>
         </AuthorizeView>
-    </nav>
-    <nav class="lang-toggle" aria-label="@L["Nav_Language"]">
-        <a href="@LangHref("el")" hreflang="el" class="@(Lang == "el" ? "active" : null)" aria-current="@(Lang == "el" ? "true" : null)">EL</a>
-        <span aria-hidden="true">|</span>
-        <a href="@LangHref("en")" hreflang="en" class="@(Lang == "en" ? "active" : null)" aria-current="@(Lang == "en" ? "true" : null)">EN</a>
-    </nav>
-</header>
+    </text>;
 
-<main>
-    <article class="content">
-        @Body
-    </article>
-</main>
-
-@code {
     private static string Lang => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 
     private static string PersonaName(System.Security.Claims.ClaimsPrincipal user) =>

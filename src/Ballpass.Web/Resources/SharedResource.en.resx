@@ -5,7 +5,6 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="Brand" xml:space="preserve"><value>Ballpass</value></data>
-  <data name="Home_Tagline" xml:space="preserve"><value>Scouting platform for women's basketball in Greece</value></data>
   <data name="Nav_Language" xml:space="preserve"><value>Language</value></data>
   <data name="Nav_Main" xml:space="preserve"><value>Main navigation</value></data>
   <data name="Badge_Demo" xml:space="preserve"><value>DEMO</value></data>
@@ -69,17 +68,15 @@
   <data name="Demo_Intro" xml:space="preserve"><value>Pick a fictional person to try the platform. No password needed.</value></data>
   <data name="Demo_Coaches" xml:space="preserve"><value>Coaches</value></data>
   <data name="Demo_Athletes" xml:space="preserve"><value>Athletes</value></data>
-  <data name="Denied_Title" xml:space="preserve"><value>Search is for coaches only</value></data>
+  <data name="Denied_Title" xml:space="preserve"><value>This action is for coaches only</value></data>
   <data name="Denied_Switch" xml:space="preserve"><value>Sign in as a coach</value></data>
   <data name="Search_Title" xml:space="preserve"><value>Search athletes</value></data>
   <data name="Search_Gender" xml:space="preserve"><value>Gender</value></data>
   <data name="Gender_Female" xml:space="preserve"><value>Women</value></data>
   <data name="Gender_Male" xml:space="preserve"><value>Men</value></data>
   <data name="Search_Position" xml:space="preserve"><value>Position</value></data>
-  <data name="Search_Height" xml:space="preserve"><value>Height (cm)</value></data>
-  <data name="Search_Age" xml:space="preserve"><value>Age</value></data>
-  <data name="Search_Min" xml:space="preserve"><value>From</value></data>
-  <data name="Search_Max" xml:space="preserve"><value>To</value></data>
+  <data name="Search_Height" xml:space="preserve"><value>Height from / to (cm)</value></data>
+  <data name="Search_Age" xml:space="preserve"><value>Age from / to</value></data>
   <data name="Search_Any" xml:space="preserve"><value>Any</value></data>
   <data name="Search_Name" xml:space="preserve"><value>Name</value></data>
   <data name="Search_Submit" xml:space="preserve"><value>Search</value></data>
@@ -109,4 +106,31 @@
   <data name="Inbox_Title" xml:space="preserve"><value>Inbox</value></data>
   <data name="Inbox_Empty" xml:space="preserve"><value>You have not received any interest yet.</value></data>
   <data name="Inbox_NoNote" xml:space="preserve"><value>No note</value></data>
+  <data name="Nav_Menu" xml:space="preserve"><value>Menu</value></data>
+  <data name="Home_Value" xml:space="preserve"><value>Where athletes meet coaches — on data with a clear source label, not connections.</value></data>
+  <data name="Home_Sub" xml:space="preserve"><value>Starting with women's basketball in Greece.</value></data>
+  <data name="Home_CtaDemo" xml:space="preserve"><value>Try as a coach</value></data>
+  <data name="Home_CtaSample" xml:space="preserve"><value>See a sample athlete profile</value></data>
+  <data name="Home_CountAthletes" xml:space="preserve"><value>athletes</value></data>
+  <data name="Home_CountClubs" xml:space="preserve"><value>clubs</value></data>
+  <data name="Home_CountCoaches" xml:space="preserve"><value>coaches</value></data>
+  <data name="Home_CountsCaption" xml:space="preserve"><value>demo data</value></data>
+  <data name="Home_HowTitle" xml:space="preserve"><value>How it works</value></data>
+  <data name="Home_Step1Title" xml:space="preserve"><value>The athlete's profile</value></data>
+  <data name="Home_Step1Text" xml:space="preserve"><value>Details, club history and stats with a source label — with a link to share.</value></data>
+  <data name="Home_Step2Title" xml:space="preserve"><value>The coach searches</value></data>
+  <data name="Home_Step2Text" xml:space="preserve"><value>Filter by position, height, age, region and league.</value></data>
+  <data name="Home_Step3Title" xml:space="preserve"><value>Expressing interest</value></data>
+  <data name="Home_Step3Text" xml:space="preserve"><value>The coach expresses interest and the athlete sees it in her inbox.</value></data>
+  <data name="Home_TrustTitle" xml:space="preserve"><value>Trust in the numbers</value></data>
+  <data name="Home_TrustSelf" xml:space="preserve"><value>Entered by the athlete herself or himself.</value></data>
+  <data name="Home_TrustCoach" xml:space="preserve"><value>Confirmed by a coach who knows the athlete.</value></data>
+  <data name="Home_TrustLeague" xml:space="preserve"><value>A mock in this demo — there is no league partner.</value></data>
+  <data name="Home_Footer" xml:space="preserve"><value>All people, clubs and data are fictional (demo data).</value></data>
+  <data name="Search_HeightTo" xml:space="preserve"><value>Height to (cm)</value></data>
+  <data name="Search_AgeTo" xml:space="preserve"><value>Age to</value></data>
+  <data name="Error_Title" xml:space="preserve"><value>Something went wrong</value></data>
+  <data name="Error_Text" xml:space="preserve"><value>An error occurred while processing your request. Please try again shortly.</value></data>
+  <data name="Error_Home" xml:space="preserve"><value>Back to home</value></data>
+  <data name="Error_RequestId" xml:space="preserve"><value>Request ID:</value></data>
 </root>

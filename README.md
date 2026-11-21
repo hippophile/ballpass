@@ -1,0 +1,80 @@
+# Ballpass
+
+Ballpass is a scouting platform that connects athletes with coaches on verified data instead of personal connections.
+Athletes keep a profile with seasons and stats (each stat carries a trust label), coaches search with filters,
+express interest and keep a shortlist. It starts with women's basketball in Greece. UI in Greek (default) and English.
+
+**Status:** investor proof of concept. All data is fictional (see [DEMO_DATA.md](DEMO_DATA.md)). Static server-rendered
+Blazor, no JavaScript needed.
+
+## Screenshots
+
+| Home | Athlete profile | Coach search |
+|---|---|---|
+| ![Home](docs/screenshots/home-desktop-el.png) | ![Profile](docs/screenshots/profile-desktop-el.png) | ![Search](docs/screenshots/search-desktop-el.png) |
+
+| Coach actions on a profile | Search on a phone | Athlete inbox on a phone |
+|---|---|---|
+| ![Coach actions](docs/screenshots/profile-coach-actions-el.png) | ![Search mobile](docs/screenshots/search-mobile-el.png) | ![Inbox mobile](docs/screenshots/inbox-mobile-el.png) |
+
+All people, clubs and stats in the screenshots are fictional demo data.
+
+## Requirements
+- .NET 10 SDK
+- Docker / OrbStack with a running PostgreSQL container named `postgres`
+
+## Commands
+| Command | What it does |
+|---|---|
+| `make setup` | Restores packages, creates the `ballpass` database if missing, stores the connection string in user-secrets (not in git), applies migrations and loads the demo data |
+| `make run` | Starts the app |
+| `make test` | Runs all tests (needs the database) |
+| `make reset` | Deletes the demo rows and regenerates the identical demo data set (safe to repeat) |
+
+App URL: http://localhost:5273
+
+## 3-minute investor demo
+1. Open `/` (home): value proposition, live demo counters, how it works, trust labels.
+2. Click "See a sample athlete profile": stats with trust labels; copy the share link (social preview is built in).
+3. Back on home, click "Try as a coach" and pick the **first coach** on the demo login page.
+4. In Search, show the filters, e.g. position Center (Greek UI: «Σέντερ»), height min 185. Then clear the filters
+   and type the surname of the **first athlete** listed on the demo login page (athletes section) in the name field.
+5. Open that athlete's profile.
+6. Express interest (add a note) and add her to your list.
+7. Open "List" (My list) and show the saved athlete.
+8. Log out.
+9. On the demo login page, sign in as that **first athlete**. Her position on the list is fixed: the order comes from
+   the seed data, so interests sent during the demo do not move her.
+10. Open the inbox: your interest and note are there, next to the interests that were already waiting.
+11. Switch to EN with the EL | EN toggle.
+
+Tip: run `make reset` before each demo so every investor sees the same data.
+
+## What is fictional
+Everything: athletes, coaches, clubs, bios. Every athlete, coach, club, interest and shortlist row is flagged `IsDemo` (seasons and stat lines belong to demo athletes), every page shows the demo banner, and every athlete is an adult (born 2007 or earlier).
+The "league-verified" stat label is a mock; there is no league partner. Details: [DEMO_DATA.md](DEMO_DATA.md).
+
+## MVP map
+| Item | Feature | Spec |
+|---|---|---|
+| M0 | Skeleton, health check, demo banner, config | `openspec/specs/platform` |
+| M0 | Deterministic fictional data, reset | `openspec/specs/demo-data` |
+| M1 | Athlete profile + share preview | `openspec/specs/athlete-profile` |
+| M2 | Coach search with filters | `openspec/specs/coach-search` |
+| M3 | Express interest, athlete inbox | `openspec/specs/interest` |
+| M4 | Coach shortlist | `openspec/specs/shortlist` |
+| M5 | Demo persona login | `openspec/specs/demo-login` |
+| M6 | Greek / English | `openspec/specs/localization` |
+| Polish | Home page, mobile menu | `openspec/changes/polish-home-and-mobile` (becomes `openspec/specs/home` on archive) |
+
+## Known limits
+- No real accounts: demo login only, no passwords.
+- Greek name search is not accent-insensitive.
+- English view still shows Greek club names and bios.
+- The share URL needs forwarded headers configured when running behind a proxy.
+- Not deployed yet (local only).
+- No notifications (email or push).
+
+## Project rules
+- Changes go through openspec (`openspec/changes/<name>/`: propose, validate, implement, archive); tests are written first.
+- No secrets in git: configuration comes from appsettings.json, user-secrets and environment variables.

@@ -68,13 +68,23 @@
         ];
     }
 
+    // Seeded interest counts per athlete, computed once from the deterministic generator. Live interests sent
+    // during a demo never reshuffle the persona list (audit M1).
+    private static readonly Dictionary<string, int> SeededInterests =
+        DemoDataGenerator.Generate(DemoDataSeeder.Seed).Interests
+            .GroupBy(i => i.Athlete!.Slug).ToDictionary(g => g.Key, g => g.Count());
+
     private async Task<List<Athlete>> Showcase(Gender gender, int withClub, int looking)
     {
-        var baseQuery = Db.Athletes.AsNoTracking().Include(a => a.CurrentClub).Where(a => a.IsDemo && a.Gender == gender);
-        var clubbed = await baseQuery.Where(a => a.CurrentClubId != null)
-            .OrderByDescending(a => a.Stats.Count).ThenBy(a => a.Id).Take(withClub).ToListAsync();
-        var free = await baseQuery.Where(a => a.CurrentClubId == null)
-            .OrderByDescending(a => a.Stats.Count).ThenBy(a => a.Id).Take(looking).ToListAsync();
-        return [.. clubbed, .. free];
+        // Athletes with seeded interest waiting first (inbox not empty in the demo), then most seasons, then id.
+        var candidates = await Db.Athletes.AsNoTracking().Include(a => a.CurrentClub).Include(a => a.Stats)
+            .Where(a => a.IsDemo && a.Gender == gender).ToListAsync();
+        IEnumerable<Athlete> Rank(IEnumerable<Athlete> q) => q
+            .OrderByDescending(a => SeededInterests.GetValueOrDefault(a.Slug))
+            .ThenByDescending(a => a.Stats.Count).ThenBy(a => a.Id);
+        return [
+            .. Rank(candidates.Where(a => a.CurrentClubId != null)).Take(withClub),
+            .. Rank(candidates.Where(a => a.CurrentClubId == null)).Take(looking),
+        ];
     }
 }

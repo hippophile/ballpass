@@ -1,3 +1,4 @@
+using Ballpass.Web;
 using Ballpass.Web.Components;
 using Ballpass.Web.Data;
 using Ballpass.Web.Demo;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,22 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
         // Relative Location (the default is absolute): works behind a proxy and keeps redirects host-agnostic.
+        // A demo reset deletes the personas: reject sessions whose coach/athlete row no longer exists.
+        options.Events.OnValidatePrincipal = async ctx =>
+        {
+            var role = ctx.Principal?.FindFirstValue(ClaimTypes.Role);
+            if (!int.TryParse(ctx.Principal?.FindFirstValue("entity_id"), out var id)) return;
+            var db = ctx.HttpContext.RequestServices.GetRequiredService<BallpassDbContext>();
+            var exists = role switch
+            {
+                "Coach" => await db.Coaches.AnyAsync(c => c.Id == id && c.IsDemo),
+                "Athlete" => await db.Athletes.AnyAsync(a => a.Id == id && a.IsDemo),
+                _ => true,
+            };
+            if (exists) return;
+            ctx.RejectPrincipal();
+            await ctx.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        };
         options.Events.OnRedirectToLogin = ctx =>
         {
             var returnUrl = Uri.EscapeDataString(ctx.Request.PathBase + ctx.Request.Path + ctx.Request.QueryString);
@@ -92,7 +110,18 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 app.UseRequestLocalization();
-app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+// 403 -> Denied page, anything else -> NotFound page (see Components/Pages/Status.razor).
+app.UseStatusCodePagesWithReExecute("/status/{0}", createScopeForStatusCodePages: true);
+// Error/status pages are re-executed with the original method. A failed POST (e.g. 400 from a missing token) would
+// re-run the page as POST and the component endpoint would try to read a form body that may not exist → 500.
+// Re-run them as GET instead.
+app.Use((context, next) =>
+{
+    if (context.Features.Get<Microsoft.AspNetCore.Diagnostics.IStatusCodeReExecuteFeature>() is not null
+        || context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>() is not null)
+        context.Request.Method = HttpMethods.Get;
+    return next();
+});
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -110,18 +139,22 @@ app.MapGet("/culture/set", (string? culture, string? redirectUri, HttpContext ht
             CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
             new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1), SameSite = SameSiteMode.Lax, IsEssential = true });
     }
-    // Open-redirect guard: local absolute paths only.
-    var local = !string.IsNullOrEmpty(redirectUri) && redirectUri[0] == '/'
-        && (redirectUri.Length == 1 || (redirectUri[1] != '/' && redirectUri[1] != '\\'));
-    return Results.Redirect(local ? redirectUri! : "/");
+    return Results.Redirect(LocalRedirect.IsSafe(redirectUri) ? redirectUri! : "/");
 });
 
-static bool IsLocalUrl(string? url) =>
-    !string.IsNullOrEmpty(url) && url[0] == '/' && (url.Length == 1 || (url[1] != '/' && url[1] != '\\'));
+// Explicit antiforgery check (single source): invalid/missing token -> 400, never a 500.
+static async Task<bool> TokenValidAsync(IAntiforgery antiforgery, HttpContext http)
+{
+    try { await antiforgery.ValidateRequestAsync(http); return true; }
+    catch (AntiforgeryValidationException) { return false; }
+}
+
+static bool IsUniqueViolation(DbUpdateException e) => e.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation };
 
 app.MapPost("/demo/login", async ([FromForm] string? personaType, [FromForm] int personaId, [FromForm] string? returnUrl,
-    BallpassDbContext db, HttpContext http) =>
+    BallpassDbContext db, HttpContext http, IAntiforgery antiforgery) =>
 {
+    if (!await TokenValidAsync(antiforgery, http)) return Results.BadRequest();
     List<Claim> claims;
     string home;
     if (personaType == "coach")
@@ -160,11 +193,12 @@ app.MapPost("/demo/login", async ([FromForm] string? personaType, [FromForm] int
 
     var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
     await http.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-    return Results.Redirect(IsLocalUrl(returnUrl) ? returnUrl! : home);
-});
+    return Results.Redirect(LocalRedirect.IsSafe(returnUrl) ? returnUrl! : home);
+}).DisableAntiforgery();
 // Coach actions on a profile. Role is enforced here (plain 403), not only by hiding the buttons.
-app.MapPost("/p/{slug}/interest", async (string slug, [FromForm] string? note, BallpassDbContext db, HttpContext http, TimeProvider time) =>
+app.MapPost("/p/{slug}/interest", async (string slug, [FromForm] string? note, BallpassDbContext db, HttpContext http, TimeProvider time, IAntiforgery antiforgery) =>
 {
+    if (!await TokenValidAsync(antiforgery, http)) return Results.BadRequest();
     if (!http.User.IsInRole("Coach") || !int.TryParse(http.User.FindFirstValue("entity_id"), out var coachId))
         return Results.StatusCode(StatusCodes.Status403Forbidden);
     var athlete = await db.Athletes.AsNoTracking().FirstOrDefaultAsync(a => a.Slug == slug && a.IsDemo);
@@ -183,11 +217,16 @@ app.MapPost("/p/{slug}/interest", async (string slug, [FromForm] string? note, B
         CreatedAt = time.GetUtcNow(),
         IsDemo = true,
     });
-    await db.SaveChangesAsync();
+    try { await db.SaveChangesAsync(); }
+    catch (DbUpdateException e) when (IsUniqueViolation(e))
+    {
+        return Results.Redirect($"/p/{slug}?status=interest-exists");
+    }
     return Results.Redirect($"/p/{slug}?status=interest-sent");
-});
-app.MapPost("/p/{slug}/shortlist", async (string slug, BallpassDbContext db, HttpContext http, TimeProvider time) =>
+}).DisableAntiforgery();
+app.MapPost("/p/{slug}/shortlist", async (string slug, BallpassDbContext db, HttpContext http, TimeProvider time, IAntiforgery antiforgery) =>
 {
+    if (!await TokenValidAsync(antiforgery, http)) return Results.BadRequest();
     if (!http.User.IsInRole("Coach") || !int.TryParse(http.User.FindFirstValue("entity_id"), out var coachId))
         return Results.StatusCode(StatusCodes.Status403Forbidden);
     var athlete = await db.Athletes.AsNoTracking().FirstOrDefaultAsync(a => a.Slug == slug && a.IsDemo);
@@ -197,18 +236,28 @@ app.MapPost("/p/{slug}/shortlist", async (string slug, BallpassDbContext db, Htt
     if (entry is null)
     {
         db.ShortlistEntries.Add(new ShortlistEntry { CoachId = coachId, AthleteId = athlete.Id, CreatedAt = time.GetUtcNow(), IsDemo = true });
-        await db.SaveChangesAsync();
+        try { await db.SaveChangesAsync(); }
+        catch (DbUpdateException e) when (IsUniqueViolation(e))
+        {
+            // Concurrent add already created it: current state is "shortlisted".
+            return Results.Redirect($"/p/{slug}?status=shortlist-added");
+        }
         return Results.Redirect($"/p/{slug}?status=shortlist-added");
     }
     db.ShortlistEntries.Remove(entry);
-    await db.SaveChangesAsync();
+    try { await db.SaveChangesAsync(); }
+    catch (DbUpdateConcurrencyException)
+    {
+        // Concurrent remove already deleted it: current state is "not shortlisted".
+    }
     return Results.Redirect($"/p/{slug}?status=shortlist-removed");
 });
-app.MapPost("/demo/logout", async (HttpContext http) =>
+app.MapPost("/demo/logout", async (HttpContext http, IAntiforgery antiforgery) =>
 {
+    if (!await TokenValidAsync(antiforgery, http)) return Results.BadRequest();
     await http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     return Results.Redirect("/");
-}).WithMetadata(new RequireAntiforgeryTokenAttribute());
+});
 app.MapRazorComponents<App>();
 
 app.Run();

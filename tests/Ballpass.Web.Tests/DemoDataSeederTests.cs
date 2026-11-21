@@ -26,5 +26,8 @@ public class DemoDataSeederTests
         Assert.Equal(20, await db.Clubs.CountAsync());
         Assert.Equal(30, await db.Coaches.CountAsync());
         Assert.True(await db.Athletes.AllAsync(a => a.IsDemo));
+        var generated = DemoDataGenerator.Generate(42);
+        Assert.Equal(generated.Interests.Count, await db.Interests.CountAsync());
+        Assert.Equal(generated.Shortlist.Count, await db.ShortlistEntries.CountAsync());
     }
 }

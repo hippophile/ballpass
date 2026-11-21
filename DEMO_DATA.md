@@ -13,7 +13,7 @@ All athletes, coaches and clubs in the demo database are **fictional**. They are
 ## Rules
 - **`IsDemo` flag**: every club, coach and athlete row has `IsDemo = true`. Reset deletes only flagged rows.
 - **"(demo)" clubs**: every club name ends with ` (demo)` and uses an invented nickname, not a real club name.
-- **No minors**: all athletes are 18-34 years old on 2026-01-01 (birth years 1992-2008).
+- **No minors**: birth years 1992–2007, so every athlete is 18 or older on every day of 2026 (at most 34).
 - **No videos**: `VideoUrl` is always empty.
 - **Bios** are generic Greek text; they mention no real clubs or people.
 
@@ -32,4 +32,4 @@ Applies migrations, deletes all demo rows and inserts the generated set in one t
 
 ## Caveat
 Names are random combinations of common Greek first names and surnames. A combination can match a real person
-by chance. That is why every page shows the demo banner, every row is flagged `IsDemo`, and clubs carry "(demo)".
+by chance. That is why every page shows the demo banner, every athlete, coach, club, interest and shortlist row is flagged `IsDemo`, and clubs carry "(demo)".

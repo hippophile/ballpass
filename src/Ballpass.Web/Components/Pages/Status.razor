@@ -1,0 +1,16 @@
+@page "/status/{Code:int}"
+@attribute [RequireAntiforgeryToken(required: false)]
+
+@* Re-execution target for status codes: 403 -> Denied, everything else -> NotFound. *@
+@if (Code == StatusCodes.Status403Forbidden)
+{
+    <Denied />
+}
+else
+{
+    <NotFound />
+}
+
+@code {
+    [Parameter] public int Code { get; set; }
+}

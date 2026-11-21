@@ -48,19 +48,26 @@ public class InterestShortlistTests(BallpassAppFactory app)
     [Fact]
     public async Task Interest_sent_twice_appears_once_in_athlete_inbox()
     {
+        // Audit M1: the pair must start with NO interest, otherwise the test passes without anything being saved.
         var coach = app.Client();
         var coachName = await SignIn(coach, "coach", 0);
-        var slug = await FirstAthleteSlug(coach);
+        string? slug = null;
+        for (var i = 0; i < 12 && slug is null; i++)
+        {
+            var candidate = await AthleteSlug(app.Client(), i);
+            if (await InboxCount(candidate, coachName) == 0) slug = candidate;
+        }
+        Assert.NotNull(slug);
 
         await PostAction(coach, slug, "interest", new() { ["note"] = "Θα θέλαμε να σας δούμε σε προπόνηση." });
+        Assert.Equal(1, await InboxCount(slug, coachName));
+
         await PostAction(coach, slug, "interest", new() { ["note"] = "Δεύτερη φορά." });
+        Assert.Equal(1, await InboxCount(slug, coachName));
 
-        Assert.DoesNotContain("data-action=\"interest\"", await Html(coach, $"/p/{slug}")); // confirmation replaces form
-
-        var athlete = app.Client();
-        await SignInAthlete(athlete, slug);
-        var inbox = await Html(athlete, "/me/inbox");
-        Assert.Single(Regex.Matches(inbox, $"<li[^>]*class=\"interest\"[^>]*data-coach=\"{Regex.Escape(coachName)}\""));
+        var profile = await Html(coach, $"/p/{slug}");
+        Assert.DoesNotContain("data-action=\"interest\"", profile); // confirmation replaces form
+        Assert.Contains("Έχετε ήδη εκδηλώσει ενδιαφέρον", profile);
     }
 
     [Fact]
@@ -117,6 +124,13 @@ public class InterestShortlistTests(BallpassAppFactory app)
     }
 
     // ---------- helpers ----------
+
+    private async Task<int> InboxCount(string slug, string coachName)
+    {
+        var athlete = app.Client();
+        await SignInAthlete(athlete, slug);
+        return InterestCount(await Html(athlete, "/me/inbox"), coachName);
+    }
 
     private static int InterestCount(string inbox, string coachName) =>
         Regex.Matches(inbox, $"<li[^>]*class=\"interest\"[^>]*data-coach=\"{Regex.Escape(coachName)}\"").Count;

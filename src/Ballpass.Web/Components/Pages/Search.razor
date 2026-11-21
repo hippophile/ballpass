@@ -29,17 +29,19 @@
         <div class="bp-field">
             <label for="minHeight">@L["Search_Height"]</label>
             <div class="bp-range">
-                <input id="minHeight" type="number" name="minHeight" min="100" max="260" value="@MinHeight" aria-label="@L["Search_Min"]">
+                <input id="minHeight" type="number" name="minHeight" min="100" max="260" value="@MinHeight">
                 <span aria-hidden="true">–</span>
-                <input type="number" name="maxHeight" min="100" max="260" value="@MaxHeight" aria-label="@L["Search_Max"]">
+                <label class="visually-hidden" for="maxHeight">@L["Search_HeightTo"]</label>
+                <input id="maxHeight" type="number" name="maxHeight" min="100" max="260" value="@MaxHeight">
             </div>
         </div>
         <div class="bp-field">
             <label for="minAge">@L["Search_Age"]</label>
             <div class="bp-range">
-                <input id="minAge" type="number" name="minAge" min="10" max="80" value="@MinAge" aria-label="@L["Search_Min"]">
+                <input id="minAge" type="number" name="minAge" min="10" max="80" value="@MinAge">
                 <span aria-hidden="true">–</span>
-                <input type="number" name="maxAge" min="10" max="80" value="@MaxAge" aria-label="@L["Search_Max"]">
+                <label class="visually-hidden" for="maxAge">@L["Search_AgeTo"]</label>
+                <input id="maxAge" type="number" name="maxAge" min="10" max="80" value="@MaxAge">
             </div>
         </div>
         <div class="bp-field">

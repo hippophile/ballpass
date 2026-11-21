@@ -178,7 +178,7 @@
             .Include(a => a.Seasons).ThenInclude(s => s.Club)
             .Include(a => a.Stats)
             .AsSplitQuery()
-            .FirstOrDefaultAsync(a => a.Slug == Slug);
+            .FirstOrDefaultAsync(a => a.Slug == Slug && a.IsDemo);
 
         if (athlete is null)
         {

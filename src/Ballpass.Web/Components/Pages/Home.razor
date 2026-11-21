@@ -1,7 +1,63 @@
 @page "/"
+@using Ballpass.Web.Data
+@using Microsoft.EntityFrameworkCore
+@inject BallpassDbContext Db
 @inject IStringLocalizer<SharedResource> L
 
 <PageTitle>@L["Brand"]</PageTitle>
 
-<h1>@L["Brand"]</h1>
-<p>@L["Home_Tagline"]</p>
+<section class="bp-hero">
+    <h1>@L["Brand"]</h1>
+    <p class="bp-value">@L["Home_Value"]</p>
+    <p class="bp-sub">@L["Home_Sub"]</p>
+    <div class="bp-ctas">
+        <a class="bp-cta bp-cta-primary" data-cta="demo" href="/demo">@L["Home_CtaDemo"]</a>
+        @if (sampleSlug is not null)
+        {
+            <a class="bp-cta" data-cta="sample" href="/p/@sampleSlug">@L["Home_CtaSample"]</a>
+        }
+    </div>
+</section>
+
+<section class="bp-counters" aria-label="@L["Home_CountsCaption"]">
+    <div class="bp-counter"><span class="bp-count-num" data-count="athletes">@athletes</span><span class="bp-count-label">@L["Home_CountAthletes"]</span></div>
+    <div class="bp-counter"><span class="bp-count-num" data-count="clubs">@clubs</span><span class="bp-count-label">@L["Home_CountClubs"]</span></div>
+    <div class="bp-counter"><span class="bp-count-num" data-count="coaches">@coaches</span><span class="bp-count-label">@L["Home_CountCoaches"]</span></div>
+    <p class="bp-caption">@L["Home_CountsCaption"]</p>
+</section>
+
+<section class="bp-home-section">
+    <h2>@L["Home_HowTitle"]</h2>
+    <ol class="bp-steps">
+        <li><span class="bp-step-num" aria-hidden="true">1</span><strong>@L["Home_Step1Title"]</strong><span>@L["Home_Step1Text"]</span></li>
+        <li><span class="bp-step-num" aria-hidden="true">2</span><strong>@L["Home_Step2Title"]</strong><span>@L["Home_Step2Text"]</span></li>
+        <li><span class="bp-step-num" aria-hidden="true">3</span><strong>@L["Home_Step3Title"]</strong><span>@L["Home_Step3Text"]</span></li>
+    </ol>
+</section>
+
+<section class="bp-home-section">
+    <h2>@L["Home_TrustTitle"]</h2>
+    <ul class="bp-trust">
+        <li><span class="bp-src bp-src-self">@L["Source_SelfReported"]</span><span>@L["Home_TrustSelf"]</span></li>
+        <li><span class="bp-src bp-src-coach">@L["Source_CoachConfirmed"]</span><span>@L["Home_TrustCoach"]</span></li>
+        <li><span class="bp-src bp-src-league">@L["Source_LeagueVerifiedMock"]</span><span>@L["Home_TrustLeague"]</span></li>
+    </ul>
+</section>
+
+<p class="bp-home-footer">@L["Home_Footer"]</p>
+
+@code {
+    private int athletes, clubs, coaches;
+    private string? sampleSlug;
+
+    protected override async Task OnInitializedAsync()
+    {
+        athletes = await Db.Athletes.CountAsync(a => a.IsDemo);
+        clubs = await Db.Clubs.CountAsync(c => c.IsDemo);
+        coaches = await Db.Coaches.CountAsync(c => c.IsDemo);
+        sampleSlug = await Db.Athletes
+            .Where(a => a.IsDemo && a.Gender == Gender.Female && a.CurrentClubId != null)
+            .OrderByDescending(a => a.Stats.Count).ThenBy(a => a.Id)
+            .Select(a => a.Slug).FirstOrDefaultAsync();
+    }
+}

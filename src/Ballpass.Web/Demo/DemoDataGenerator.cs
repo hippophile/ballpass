@@ -138,8 +138,10 @@ public static class DemoDataGenerator
             var coach = Pick(r, heads);
             var sameGender = athletes.Where(a => a.Gender == coach.Club!.Gender).ToList();
             var outside = sameGender.Where(a => a.CurrentClub != coach.Club).ToList();
-            // Prefer athletes from other clubs; fall back to the whole gender pool.
-            var athlete = Pick(r, r.Double() < 0.9 && outside.Count > 0 ? outside : sameGender);
+            // Only athletes from other clubs: a coach "discovering" their own player looks odd in a demo (audit m10).
+            // The draw is kept so the random sequence (and the rest of the data) stays the same.
+            _ = r.Double();
+            var athlete = Pick(r, outside);
             if (!pairs.Add((coach, athlete))) continue;
             var noteRoll = r.Int(0, InterestNotes.Length + 1);
             interests.Add(new Interest
@@ -246,7 +248,7 @@ public static class DemoDataGenerator
             LastName = female ? last.Female : last.Male,
             FirstNameLatin = first.Latin,
             LastNameLatin = female ? last.FemaleLatin : last.MaleLatin,
-            BirthYear = r.Int(1992, 2008),
+            BirthYear = r.Int(1992, 2007), // ≤ 2007: adult on every day of 2026 (audit C1)
             Gender = gender,
             Position = position,
             HeightCm = height,

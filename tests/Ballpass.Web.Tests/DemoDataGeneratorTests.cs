@@ -51,7 +51,8 @@ public class DemoDataGeneratorTests
     {
         Assert.All(Data.Athletes, a =>
         {
-            var age = AgeReference.Year - a.BirthYear;
+            // Worst case: birthday not yet passed on the reference date (audit C1: 2008 births are 17).
+            var age = AgeReference.Year - a.BirthYear - 1;
             Assert.InRange(age, 18, 34);
         });
     }
