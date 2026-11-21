@@ -1,0 +1,10 @@
+@namespace Ballpass.Web.Components
+@inject IStringLocalizer<FindResource> F
+
+<a class="bp-find-matchlink" href="/match">
+    <span class="bp-find-matchlink-text">
+        <strong>@F["MatchLink_Title"]</strong>
+        <span>@F["MatchLink_Body"]</span>
+    </span>
+    <span class="bp-find-matchlink-cta">@F["MatchLink_Cta"] &rarr;</span>
+</a>

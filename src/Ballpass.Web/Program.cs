@@ -3,6 +3,7 @@ using Ballpass.Web.Components;
 using Ballpass.Web.Data;
 using Ballpass.Web.Demo;
 using Ballpass.Web.Features.Share;
+using Ballpass.Web.Features.Find;
 using System.Globalization;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
@@ -85,6 +86,7 @@ builder.Services.AddScoped<DemoDataSeeder>();
 builder.Services.AddShare();
 builder.Services.AddEvidence();
 builder.Services.AddFeed();
+builder.Services.AddFind();
 builder.Services.AddHealthChecks().AddDbContextCheck<BallpassDbContext>();
 
 var app = builder.Build();
@@ -265,6 +267,7 @@ app.MapPost("/demo/logout", async (HttpContext http, IAntiforgery antiforgery) =
 });
 app.MapShare();
 app.MapFeed();
+app.MapFind();
 app.MapRazorComponents<App>();
 
 app.Run();

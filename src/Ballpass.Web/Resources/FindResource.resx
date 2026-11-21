@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Nav_Match" xml:space="preserve"><value>Ταίριασμα</value></data>
+  <data name="MatchLink_Title" xml:space="preserve"><value>Ψάχνετε συγκεκριμένο προφίλ;</value></data>
+  <data name="MatchLink_Body" xml:space="preserve"><value>Πείτε μας τι χρειάζεται η ομάδα σας και δείτε παίκτες σε σειρά συμβατότητας, με εξήγηση ανά κριτήριο.</value></data>
+  <data name="MatchLink_Cta" xml:space="preserve"><value>Ταίριασμα παικτών</value></data>
+  <data name="Ai_Heading" xml:space="preserve"><value>Αναζήτηση με φυσική γλώσσα</value></data>
+  <data name="Ai_Hint" xml:space="preserve"><value>Γράψτε με δικά σας λόγια τι ψάχνετε, π.χ. «σέντερ πάνω από 185 στην Αττική».</value></data>
+  <data name="Ai_Placeholder" xml:space="preserve"><value>π.χ. σέντερ πάνω από 185 στην Αττική</value></data>
+  <data name="Ai_Submit" xml:space="preserve"><value>Αναζήτηση</value></data>
+  <data name="Ai_LabelAi" xml:space="preserve"><value>Αναζήτηση με AI. Ελέγξτε τα φίλτρα.</value></data>
+  <data name="Ai_LabelRules" xml:space="preserve"><value>Από κανόνες (χωρίς μοντέλο AI)</value></data>
+  <data name="Ai_Filters" xml:space="preserve"><value>Φίλτρα (αφαιρέστε ένα με το ×, ή αλλάξτε τα στη φόρμα)</value></data>
+  <data name="Ai_NoFilters" xml:space="preserve"><value>Δεν βρέθηκαν φίλτρα στο κείμενο.</value></data>
+  <data name="Ai_Remove" xml:space="preserve"><value>Αφαίρεση φίλτρου</value></data>
+  <data name="Chip_gender" xml:space="preserve"><value>Φύλο</value></data>
+  <data name="Chip_position" xml:space="preserve"><value>Θέση</value></data>
+  <data name="Chip_minHeight" xml:space="preserve"><value>Ύψος από</value></data>
+  <data name="Chip_maxHeight" xml:space="preserve"><value>Ύψος έως</value></data>
+  <data name="Chip_minAge" xml:space="preserve"><value>Ηλικία από</value></data>
+  <data name="Chip_maxAge" xml:space="preserve"><value>Ηλικία έως</value></data>
+  <data name="Chip_region" xml:space="preserve"><value>Περιφέρεια</value></data>
+  <data name="Chip_league" xml:space="preserve"><value>Κατηγορία</value></data>
+  <data name="Chip_looking" xml:space="preserve"><value>Ψάχνει ομάδα</value></data>
+  <data name="Chip_q" xml:space="preserve"><value>Όνομα</value></data>
+  <data name="Chip_Unsupported" xml:space="preserve"><value>Δεν φιλτράρεται</value></data>
+  <data name="Unsupported_handedness" xml:space="preserve"><value>Χέρι εκτέλεσης</value></data>
+  <data name="Unsupported_salary" xml:space="preserve"><value>Μισθός</value></data>
+  <data name="Unsupported_nationality" xml:space="preserve"><value>Υπηκοότητα</value></data>
+  <data name="Unsupported_stats" xml:space="preserve"><value>Στατιστικά (δείτε «Προτεραιότητα» στο Ταίριασμα)</value></data>
+  <data name="Unsupported_minors" xml:space="preserve"><value>Μόνο ενήλικες: η ηλικία ορίστηκε σε 18+</value></data>
+  <data name="Match_Title" xml:space="preserve"><value>Ταίριασμα παικτών</value></data>
+  <data name="Match_Intro" xml:space="preserve"><value>Ορίστε τι χρειάζεστε και δείτε παίκτες σε σειρά συμβατότητας, με εξήγηση ανά κριτήριο.</value></data>
+  <data name="Need_Heading" xml:space="preserve"><value>Τι ψάχνετε;</value></data>
+  <data name="Need_HardHint" xml:space="preserve"><value>Η θέση και το «μόνο επιβεβαιωμένα» κρύβουν παίκτες. Τα υπόλοιπα κριτήρια βαθμολογούν.</value></data>
+  <data name="Need_Gender" xml:space="preserve"><value>Φύλο</value></data>
+  <data name="Need_Position" xml:space="preserve"><value>Θέση (κρύβει)</value></data>
+  <data name="Need_Height" xml:space="preserve"><value>Ύψος (εκ.)</value></data>
+  <data name="Need_HeightTo" xml:space="preserve"><value>Μέγιστο ύψος</value></data>
+  <data name="Need_Age" xml:space="preserve"><value>Ηλικία (18+)</value></data>
+  <data name="Need_AgeTo" xml:space="preserve"><value>Μέγιστη ηλικία</value></data>
+  <data name="Need_Region" xml:space="preserve"><value>Περιφέρεια</value></data>
+  <data name="Need_League" xml:space="preserve"><value>Κατηγορία σήμερα</value></data>
+  <data name="Need_Any" xml:space="preserve"><value>Οποιαδήποτε</value></data>
+  <data name="Need_Priority" xml:space="preserve"><value>Προτεραιότητα στατιστικού</value></data>
+  <data name="Priority_None" xml:space="preserve"><value>Καμία</value></data>
+  <data name="Priority_Rebounding" xml:space="preserve"><value>Ριμπάουντ</value></data>
+  <data name="Priority_Scoring" xml:space="preserve"><value>Σκοράρισμα</value></data>
+  <data name="Priority_Playmaking" xml:space="preserve"><value>Δημιουργία παιχνιδιού</value></data>
+  <data name="Need_Confirmed" xml:space="preserve"><value>Μόνο επιβεβαιωμένα στατιστικά (προπονητή ή λίγκας mock)</value></data>
+  <data name="Need_Submit" xml:space="preserve"><value>Εύρεση</value></data>
+  <data name="Need_Clear" xml:space="preserve"><value>Καθαρισμός</value></data>
+  <data name="Results_Heading" xml:space="preserve"><value>Αποτελέσματα</value></data>
+  <data name="Results_Count" xml:space="preserve"><value>{0} αποτελέσματα</value></data>
+  <data name="Results_Hidden" xml:space="preserve"><value>{0} κρυμμένοι από φίλτρα</value></data>
+  <data name="Results_Showing" xml:space="preserve"><value>Εμφανίζονται οι πρώτοι {0}.</value></data>
+  <data name="Results_None" xml:space="preserve"><value>Κανένας παίκτης δεν περνά τα φίλτρα.</value></data>
+  <data name="Results_Label" xml:space="preserve"><value>Υπολογίζεται σε φανταστικά δεδομένα επίδειξης με προεπιλεγμένα βάρη</value></data>
+  <data name="Results_Unranked" xml:space="preserve"><value>Δεν ζητήσατε κριτήριο βαθμολόγησης (ύψος, ηλικία, περιφέρεια, κατηγορία ή στατιστικό): η λίστα δεν είναι ταξινομημένη κατά συμβατότητα.</value></data>
+  <data name="Weights_Heading" xml:space="preserve"><value>Πώς υπολογίζεται</value></data>
+  <data name="Weights_Intro" xml:space="preserve"><value>Το ποσοστό είναι σταθμισμένος μέσος των κριτηρίων που ζητήσατε, με προεπιλεγμένα βάρη (εκτιμήσεις, όχι μετρημένα). Αν λείπει δεδομένο, υπολογίζεται στα υπόλοιπα και ο παίκτης σημαίνεται «μερικά δεδομένα». Τα στατιστικά είναι ανά αγώνα· κάτω από {0} αγώνες θεωρούνται ελλιπή. Δεν είναι αξιολόγηση ικανότητας.</value></data>
+  <data name="Weight_Height" xml:space="preserve"><value>Ύψος</value></data>
+  <data name="Weight_Stat" xml:space="preserve"><value>Στατιστικό</value></data>
+  <data name="Weight_Region" xml:space="preserve"><value>Περιφέρεια</value></data>
+  <data name="Weight_Age" xml:space="preserve"><value>Ηλικία</value></data>
+  <data name="Weight_League" xml:space="preserve"><value>Κατηγορία</value></data>
+  <data name="Trust_Heading" xml:space="preserve"><value>Πηγές στατιστικών στα αποτελέσματα</value></data>
+  <data name="Trust_Count" xml:space="preserve"><value>Βάσει {0} αποτελεσμάτων με στατιστικά</value></data>
+  <data name="Trust_Aria" xml:space="preserve"><value>Πηγές στατιστικών: αυτο-δηλωμένο {0}%, επιβεβαιωμένο από προπονητή {1}%, επαληθευμένο από λίγκα (mock) {2}%</value></data>
+  <data name="Fit_Aria" xml:space="preserve"><value>Συμβατότητα {0}%</value></data>
+  <data name="Fit_Unranked" xml:space="preserve"><value>Χωρίς βαθμολογία</value></data>
+  <data name="Partial_Tag" xml:space="preserve"><value>Μερικά δεδομένα</value></data>
+  <data name="Partial_Missing" xml:space="preserve"><value>Λείπει: {0}</value></data>
+  <data name="Missing_Stat" xml:space="preserve"><value>στατιστικό (λιγότεροι από {0} αγώνες ή καθόλου)</value></data>
+  <data name="Missing_League" xml:space="preserve"><value>κατηγορία (χωρίς σύλλογο)</value></data>
+  <data name="Missing_Height" xml:space="preserve"><value>ύψος</value></data>
+  <data name="Missing_Age" xml:space="preserve"><value>ηλικία</value></data>
+  <data name="Missing_Region" xml:space="preserve"><value>περιφέρεια</value></data>
+  <data name="Reasons_Heading" xml:space="preserve"><value>Γιατί ταιριάζει</value></data>
+  <data name="Reason_Height" xml:space="preserve"><value>Ύψος {0} εκ. (στόχος {1})</value></data>
+  <data name="Reason_Age" xml:space="preserve"><value>Ηλικία {0} (στόχος {1})</value></data>
+  <data name="Reason_Region" xml:space="preserve"><value>Περιφέρεια: {0} (στόχος {1})</value></data>
+  <data name="Reason_Region_Met" xml:space="preserve"><value>Περιφέρεια: {0}</value></data>
+  <data name="Reason_League" xml:space="preserve"><value>Κατηγορία: {0} (στόχος {1})</value></data>
+  <data name="Reason_League_Met" xml:space="preserve"><value>Κατηγορία: {0}</value></data>
+  <data name="Reason_Stat_Top" xml:space="preserve"><value>{0} {1}/αγώνα — top {2}% των {3} (demo)</value></data>
+  <data name="Reason_Stat_Plain" xml:space="preserve"><value>{0} {1}/αγώνα — κάτω από το top 50% των {2} (demo)</value></data>
+  <data name="Unit_Rebounding" xml:space="preserve"><value>ριμπ.</value></data>
+  <data name="Unit_Scoring" xml:space="preserve"><value>πόντ.</value></data>
+  <data name="Unit_Playmaking" xml:space="preserve"><value>ασίστ.</value></data>
+  <data name="Cohort_PG" xml:space="preserve"><value>πόιντ γκαρντ</value></data>
+  <data name="Cohort_SG" xml:space="preserve"><value>σούτινγκ γκαρντ</value></data>
+  <data name="Cohort_SF" xml:space="preserve"><value>σμολ φόργουορντ</value></data>
+  <data name="Cohort_PF" xml:space="preserve"><value>πάουερ φόργουορντ</value></data>
+  <data name="Cohort_C" xml:space="preserve"><value>σέντερ</value></data>
+  <data name="Mark_Met" xml:space="preserve"><value>ταιριάζει</value></data>
+  <data name="Mark_Partial" xml:space="preserve"><value>κοντά</value></data>
+  <data name="Mark_Missed" xml:space="preserve"><value>δεν ταιριάζει</value></data>
+  <data name="Result_Looking" xml:space="preserve"><value>Ψάχνει ομάδα</value></data>
+</root>

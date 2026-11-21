@@ -1,0 +1,336 @@
+@page "/match"
+@attribute [Authorize(Policy = "CoachOnly")]
+@using System.Globalization
+@using System.Security.Claims
+@using Ballpass.Web.Components.Shared
+@using Ballpass.Web.Data
+@using Ballpass.Web.Features.Find.Ai
+@using Ballpass.Web.Features.Find.Fit
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.Extensions.Options
+@inject BallpassDbContext Db
+@inject TimeProvider Time
+@inject FitScorer Scorer
+@inject IOptions<FitOptions> FitConfig
+@inject IStringLocalizer<FindResource> F
+@inject IStringLocalizer<SharedResource> S
+
+<PageTitle>@F["Match_Title"]</PageTitle>
+
+<h1>@F["Match_Title"]</h1>
+<p class="bp-find-intro">@F["Match_Intro"]</p>
+
+<AiSearchBox Target="match" />
+
+<div class="bp-find-layout">
+    <form method="get" action="/match" class="bp-find-form">
+        <h2>@F["Need_Heading"]</h2>
+        <p class="bp-find-hint">@F["Need_HardHint"]</p>
+        <fieldset class="bp-field">
+            <legend>@F["Need_Gender"]</legend>
+            <label><input type="radio" name="gender" value="Female" checked="@(!IsMale)"> @S["Gender_Female"]</label>
+            <label><input type="radio" name="gender" value="Male" checked="@IsMale"> @S["Gender_Male"]</label>
+        </fieldset>
+        <fieldset class="bp-field">
+            <legend>@F["Need_Position"]</legend>
+            @foreach (var p in SearchFilterValidator.Positions)
+            {
+                <label><input type="checkbox" name="position" value="@p" checked="@(SelectedPositions.Contains(p))"> @S[$"Position_{p}"] (@p)</label>
+            }
+        </fieldset>
+        <div class="bp-field">
+            <label for="minHeight">@F["Need_Height"]</label>
+            <div class="bp-range">
+                <input id="minHeight" type="number" name="minHeight" min="100" max="260" value="@MinHeight">
+                <span aria-hidden="true">–</span>
+                <label class="visually-hidden" for="maxHeight">@F["Need_HeightTo"]</label>
+                <input id="maxHeight" type="number" name="maxHeight" min="100" max="260" value="@MaxHeight">
+            </div>
+        </div>
+        <div class="bp-field">
+            <label for="minAge">@F["Need_Age"]</label>
+            <div class="bp-range">
+                <input id="minAge" type="number" name="minAge" min="18" max="80" value="@MinAge">
+                <span aria-hidden="true">–</span>
+                <label class="visually-hidden" for="maxAge">@F["Need_AgeTo"]</label>
+                <input id="maxAge" type="number" name="maxAge" min="18" max="80" value="@MaxAge">
+            </div>
+        </div>
+        <div class="bp-field">
+            <label for="region">@F["Need_Region"]</label>
+            <select id="region" name="region">
+                <option value="">@F["Need_Any"]</option>
+                @foreach (var r in SearchFilterValidator.Regions)
+                {
+                    <option value="@r" selected="@(Region == r)">@RegionName(r)</option>
+                }
+            </select>
+        </div>
+        <div class="bp-field">
+            <label for="league">@F["Need_League"]</label>
+            <select id="league" name="league">
+                <option value="">@F["Need_Any"]</option>
+                @foreach (var l in SearchFilterValidator.Leagues)
+                {
+                    <option value="@l" selected="@(League == l)">@S[$"League_{l}"]</option>
+                }
+            </select>
+        </div>
+        <fieldset class="bp-field">
+            <legend>@F["Need_Priority"]</legend>
+            <label><input type="radio" name="priority" value="" checked="@(need.Priority == FitPriority.None)"> @F["Priority_None"]</label>
+            @foreach (var p in PriorityOptions)
+            {
+                <label><input type="radio" name="priority" value="@p.ToString().ToLowerInvariant()" checked="@(need.Priority == p)"> @F[$"Priority_{p}"]</label>
+            }
+        </fieldset>
+        <div class="bp-field">
+            <label><input type="checkbox" name="confirmed" value="true" checked="@need.ConfirmedOnly"> @F["Need_Confirmed"]</label>
+        </div>
+        <div class="bp-actions">
+            <button type="submit" class="bp-btn">@F["Need_Submit"]</button>
+            <a href="/match" class="bp-clear">@F["Need_Clear"]</a>
+        </div>
+    </form>
+
+    <section class="bp-find-results" aria-live="polite" aria-labelledby="bp-find-results-h">
+        <h2 id="bp-find-results-h" class="visually-hidden">@F["Results_Heading"]</h2>
+        <p class="bp-find-count">
+            <strong data-total="@ranking.Results.Count">@F["Results_Count", ranking.Results.Count]</strong>
+            <span class="bp-find-hidden" data-hidden="@ranking.Hidden">@F["Results_Hidden", ranking.Hidden]</span>
+        </p>
+        <p class="bp-find-disclaimer">@F["Results_Label"]</p>
+
+        @if (trust is not null)
+        {
+            <div class="bp-find-trust" data-self="@trust.SelfReported" data-coach="@trust.CoachConfirmed" data-league="@trust.LeagueVerified"
+                 role="img" aria-label="@F["Trust_Aria", trust.SelfReported, trust.CoachConfirmed, trust.LeagueVerified]">
+                <div class="bp-find-trust-head">
+                    <span>@F["Trust_Heading"]</span>
+                    <span class="bp-find-trust-n">@F["Trust_Count", withStats]</span>
+                </div>
+                <div class="bp-find-trust-bar" aria-hidden="true">
+                    <span class="bp-find-seg bp-find-seg-self" style="width:@(trust.SelfReported)%"></span>
+                    <span class="bp-find-seg bp-find-seg-coach" style="width:@(trust.CoachConfirmed)%"></span>
+                    <span class="bp-find-seg bp-find-seg-league" style="width:@(trust.LeagueVerified)%"></span>
+                </div>
+                <ul class="bp-find-trust-legend">
+                    <li class="bp-src-self"><span class="bp-find-dot bp-find-seg-self"></span>@S["Source_SelfReported"] <b>@trust.SelfReported%</b></li>
+                    <li class="bp-src-coach"><span class="bp-find-dot bp-find-seg-coach"></span>@S["Source_CoachConfirmed"] <b>@trust.CoachConfirmed%</b></li>
+                    <li class="bp-src-league"><span class="bp-find-dot bp-find-seg-league"></span>@S["Source_LeagueVerifiedMock"] <b>@trust.LeagueVerified%</b></li>
+                </ul>
+            </div>
+        }
+
+        <details class="bp-find-weights">
+            <summary>@F["Weights_Heading"]</summary>
+            <p>@F["Weights_Intro", FitConfig.Value.MinGames]</p>
+            <ul>
+                <li>@F["Weight_Height"]: @Pct(FitConfig.Value.Weights.Height)</li>
+                <li>@F["Weight_Stat"]: @Pct(FitConfig.Value.Weights.Stat)</li>
+                <li>@F["Weight_Region"]: @Pct(FitConfig.Value.Weights.Region)</li>
+                <li>@F["Weight_Age"]: @Pct(FitConfig.Value.Weights.Age)</li>
+                <li>@F["Weight_League"]: @Pct(FitConfig.Value.Weights.League)</li>
+            </ul>
+        </details>
+
+        @if (!ranked && ranking.Results.Count > 0)
+        {
+            <p class="bp-find-note">@F["Results_Unranked"]</p>
+        }
+
+        @if (ranking.Results.Count == 0)
+        {
+            <p class="bp-find-note">@F["Results_None"]</p>
+        }
+        else
+        {
+            <div class="bp-find-list">
+                @foreach (var r in shown)
+                {
+                    var a = athletes[r.Candidate.Slug];
+                    <article class="bp-find-match" data-slug="@a.Slug" data-fit="@r.FitPercent">
+                        <div class="bp-find-fit" style="--fit:@(r.FitPercent ?? 0)" role="img"
+                             aria-label="@(r.FitPercent is { } fp ? F["Fit_Aria", fp].Value : F["Fit_Unranked"].Value)">
+                            @if (r.FitPercent is { } pct)
+                            {
+                                <span class="bp-find-fit-num">@pct<small>%</small></span>
+                            }
+                            else
+                            {
+                                <span class="bp-find-fit-num">–</span>
+                            }
+                        </div>
+                        <div class="bp-find-body">
+                            <div class="bp-find-title">
+                                <a class="bp-find-name" href="/p/@a.Slug">@FullName(a)</a>
+                                @if (r.Partial)
+                                {
+                                    <span class="bp-find-partial" title="@F["Partial_Missing", MissingText(r)]">@F["Partial_Tag"]</span>
+                                }
+                                @if (a.LookingForTeam)
+                                {
+                                    <span class="bp-looking">@F["Result_Looking"]</span>
+                                }
+                            </div>
+                            <div class="bp-find-meta">@S[$"Position_{a.Position}"] · @a.HeightCm @S["Profile_Cm"] · @r.Candidate.Age @S["Profile_Years"] · @(a.CurrentClub?.Name ?? S["Profile_NoClub"].Value)</div>
+                            @if (r.Reasons.Count > 0)
+                            {
+                                <ul class="bp-find-reasons" aria-label="@F["Reasons_Heading"]">
+                                    @foreach (var reason in r.Reasons)
+                                    {
+                                        <li class="bp-find-reason" data-criterion="@reason.Criterion" data-state="@reason.State.ToString().ToLowerInvariant()">
+                                            <span class="bp-find-mark" aria-label="@F[$"Mark_{reason.State}"]" title="@F[$"Mark_{reason.State}"]">@Mark(reason.State)</span>
+                                            <span class="bp-find-reason-text">@ReasonText(reason, r.Candidate)</span>
+                                            <SourceBadge Source="reason.Source" />
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            @if (r.Partial)
+                            {
+                                <p class="bp-find-missing">@F["Partial_Missing", MissingText(r)]</p>
+                            }
+                        </div>
+                        <div class="bp-find-act">
+                            @if (sent.Contains(a.Slug))
+                            {
+                                <p class="bp-find-sent">✓ @S["Interest_AlreadySent"]</p>
+                            }
+                            else
+                            {
+                                <form method="post" action="/p/@a.Slug/interest" class="bp-find-interest">
+                                    <AntiforgeryToken />
+                                    <button type="submit" class="bp-btn">@S["Interest_Submit"]</button>
+                                </form>
+                            }
+                        </div>
+                    </article>
+                }
+            </div>
+            @if (ranking.Results.Count > shown.Count)
+            {
+                <p class="bp-find-note">@F["Results_Showing", shown.Count]</p>
+            }
+        }
+    </section>
+</div>
+
+@code {
+    private const int ShowTop = 20;
+    private static readonly FitPriority[] PriorityOptions = [FitPriority.Rebounding, FitPriority.Scoring, FitPriority.Playmaking];
+
+    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
+
+    [SupplyParameterFromQuery(Name = "gender")] public string? Gender { get; set; }
+    [SupplyParameterFromQuery(Name = "position")] public string[]? Position { get; set; }
+    [SupplyParameterFromQuery(Name = "minHeight")] public int? MinHeight { get; set; }
+    [SupplyParameterFromQuery(Name = "maxHeight")] public int? MaxHeight { get; set; }
+    [SupplyParameterFromQuery(Name = "minAge")] public int? MinAge { get; set; }
+    [SupplyParameterFromQuery(Name = "maxAge")] public int? MaxAge { get; set; }
+    [SupplyParameterFromQuery(Name = "region")] public string? Region { get; set; }
+    [SupplyParameterFromQuery(Name = "league")] public string? League { get; set; }
+    [SupplyParameterFromQuery(Name = "priority")] public string? Priority { get; set; }
+    [SupplyParameterFromQuery(Name = "confirmed")] public bool Confirmed { get; set; }
+
+    private FitNeed need = new();
+    private FitRanking ranking = new([], 0);
+    private List<FitResult> shown = [];
+    private Dictionary<string, Athlete> athletes = [];
+    private HashSet<string> sent = [];
+    private TrustShares? trust;
+    private int withStats;
+    private bool ranked;
+
+    private bool IsMale => Gender == "Male";
+    private string[] SelectedPositions => (Position ?? []).Where(p => SearchFilterValidator.Positions.Contains(p)).Distinct().ToArray();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var year = Time.GetUtcNow().Year;
+        var gender = IsMale ? Data.Gender.Male : Data.Gender.Female;
+
+        var league = Enum.TryParse<Data.League>(League, out var l) && SearchFilterValidator.Leagues.Contains(League!) ? l : (Data.League?)null;
+        need = new FitNeed
+        {
+            Positions = SelectedPositions.Select(p => Enum.Parse<Data.Position>(p)).ToArray(),
+            MinHeight = MinHeight, MaxHeight = MaxHeight,
+            MinAge = MinAge is { } a1 ? Math.Max(18, a1) : null,
+            MaxAge = MaxAge is { } a2 ? Math.Max(18, a2) : null,
+            Region = SearchFilterValidator.Regions.Contains(Region ?? "") ? Region : null,
+            League = league,
+            Priority = Enum.TryParse<FitPriority>(Priority, ignoreCase: true, out var pr) && PriorityOptions.Contains(pr) ? pr : FitPriority.None,
+            ConfirmedOnly = Confirmed,
+        };
+
+        // The whole same-gender demo cohort is loaded (a few hundred rows): percentiles are computed against it, hard filters hide inside the scorer.
+        var rows = await Db.Athletes.AsNoTracking().Where(a => a.IsDemo && a.Gender == gender)
+            .Include(a => a.CurrentClub).Include(a => a.Stats).ToListAsync();
+        athletes = rows.ToDictionary(a => a.Slug);
+        var cohort = rows.Select(a =>
+        {
+            var line = a.Stats.OrderByDescending(s => s.Season, StringComparer.Ordinal).FirstOrDefault();
+            var stat = line is null ? null : new FitStat(line.Season, line.Games, line.Points, line.Rebounds, line.Assists, line.Source);
+            return new FitCandidate(a.Slug, a.Position, a.HeightCm, year - a.BirthYear, a.Region, a.CurrentClub?.League, stat);
+        }).ToList();
+
+        ranking = Scorer.Rank(need, cohort);
+        ranked = ranking.Results.Any(r => r.FitPercent is not null);
+        shown = ranking.Results.Take(ShowTop).ToList();
+
+        var sources = ranking.Results.Select(r => r.Candidate.Stat?.Source).ToList();
+        trust = TrustBar.Compute(sources);
+        withStats = sources.Count(s => s is not null);
+
+        var user = AuthState is null ? null : (await AuthState).User;
+        if (int.TryParse(user?.FindFirstValue("entity_id"), out var coachId))
+        {
+            var slugs = shown.Select(r => r.Candidate.Slug).ToList();
+            sent = (await Db.Interests.Where(i => i.CoachId == coachId && slugs.Contains(i.Athlete!.Slug))
+                .Select(i => i.Athlete!.Slug).ToListAsync()).ToHashSet();
+        }
+    }
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+    private string FullName(Athlete a) => IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
+    private static string Pct(double w) => $"{Math.Round(w * 100):0}%";
+    private static string Mark(ReasonState s) => s switch { ReasonState.Met => "✓", ReasonState.Partial => "≈", _ => "✕" };
+
+    private string RegionName(string r)
+    {
+        var s = S[$"Region_{r}"];
+        return s.ResourceNotFound ? r : s.Value;
+    }
+
+    private static string Target(int? min, int? max) => (min, max) switch
+    {
+        ({ } lo, { } hi) => $"{lo}–{hi}",
+        ({ } lo, null) => $"≥{lo}",
+        (null, { } hi) => $"≤{hi}",
+        _ => "",
+    };
+
+    private string ReasonText(FitReason r, FitCandidate c) => r.Criterion switch
+    {
+        FitCriterion.Height => F["Reason_Height", (int)r.Actual, Target(need.MinHeight, need.MaxHeight)].Value,
+        FitCriterion.Age => F["Reason_Age", (int)r.Actual, Target(need.MinAge, need.MaxAge)].Value,
+        FitCriterion.Region => r.State == ReasonState.Met
+            ? F["Reason_Region_Met", RegionName(c.Region)].Value
+            : F["Reason_Region", RegionName(c.Region), RegionName(need.Region!)].Value,
+        FitCriterion.League => r.State == ReasonState.Met
+            ? F["Reason_League_Met", S[$"League_{r.ActualKey}"].Value].Value
+            : F["Reason_League", S[$"League_{r.ActualKey}"].Value, S[$"League_{need.League}"].Value].Value,
+        _ => r.TopPercent is { } top and <= 50
+            ? F["Reason_Stat_Top", r.Actual.ToString("0.0"), F[$"Unit_{need.Priority}"].Value, top, F[$"Cohort_{r.CohortPosition}"].Value].Value
+            : F["Reason_Stat_Plain", r.Actual.ToString("0.0"), F[$"Unit_{need.Priority}"].Value, F[$"Cohort_{r.CohortPosition}"].Value].Value,
+    };
+
+    private string MissingText(FitResult r) => string.Join(", ", r.Missing.Select(m => m switch
+    {
+        FitCriterion.Stat => F["Missing_Stat", FitConfig.Value.MinGames].Value,
+        FitCriterion.League => F["Missing_League"].Value,
+        FitCriterion.Height => F["Missing_Height"].Value,
+        FitCriterion.Age => F["Missing_Age"].Value,
+        _ => F["Missing_Region"].Value,
+    }));
+}

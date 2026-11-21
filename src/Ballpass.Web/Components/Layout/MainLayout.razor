@@ -44,6 +44,7 @@
                 @if (context.User.IsInRole("Coach"))
                 {
                     <a href="/search">@L["Nav_Search"]</a>
+                    <MatchNavLink />
                     <a href="/shortlist">@L["Nav_Shortlist"]</a>
                 }
                 else if (context.User.IsInRole("Athlete"))

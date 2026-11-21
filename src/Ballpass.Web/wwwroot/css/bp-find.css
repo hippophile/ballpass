@@ -1,0 +1,171 @@
+/* Find package: Match page + natural-language search box. Tokens only (var(--bp-*)), classes prefixed bp-find-. */
+
+.bp-find-intro { color: var(--bp-muted); margin: 0 0 var(--bp-sp-4); }
+.bp-find-hint { color: var(--bp-muted); font-size: var(--bp-fs-sm); margin: var(--bp-sp-2) 0 0; }
+.bp-find-note { color: var(--bp-muted); margin: var(--bp-sp-3) 0; }
+
+/* AI box */
+.bp-find-aibox {
+    background: var(--bp-s1);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+    padding: var(--bp-sp-4);
+    margin: 0 0 var(--bp-sp-4);
+}
+.bp-find-ai-h { font-size: var(--bp-fs-lg); margin: 0 0 var(--bp-sp-3); }
+.bp-find-aiform { display: flex; gap: var(--bp-sp-2); flex-wrap: wrap; }
+.bp-find-aiform input[type=text] { flex: 1 1 16rem; min-width: 0; box-sizing: border-box; }
+.bp-find-ailabel {
+    display: inline-block;
+    margin: var(--bp-sp-3) 0 var(--bp-sp-2);
+    padding: 0.15rem 0.7rem;
+    border: 1px solid var(--bp-border-ui);
+    border-radius: var(--bp-r-pill);
+    font-size: var(--bp-fs-sm);
+    font-weight: 600;
+}
+.bp-find-ailabel[data-parsed="ai"] { color: var(--bp-warn); }
+.bp-find-chips { list-style: none; display: flex; flex-wrap: wrap; gap: var(--bp-sp-2); padding: 0; margin: 0; }
+.bp-find-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bp-sp-2);
+    background: var(--bp-s2);
+    border: 1px solid var(--bp-border-ui);
+    border-radius: var(--bp-r-pill);
+    padding: 0.15rem 0.3rem 0.15rem 0.8rem;
+    font-size: var(--bp-fs-sm);
+}
+.bp-find-chip[data-unsupported] { border-style: dashed; color: var(--bp-muted); }
+.bp-find-chip-x {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.6rem; height: 1.6rem;
+    border-radius: 50%;
+    color: var(--bp-text);
+    text-decoration: none;
+    font-size: 1.1rem;
+    line-height: 1;
+}
+.bp-find-chip-x:hover { background: var(--bp-s3); color: var(--bp-text); }
+
+/* Search page link to Match */
+.bp-find-matchlink {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--bp-sp-3);
+    background: var(--bp-s1);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+    padding: var(--bp-sp-3) var(--bp-sp-4);
+    margin: 0 0 var(--bp-sp-4);
+    color: var(--bp-text);
+    text-decoration: none;
+}
+.bp-find-matchlink:hover { background: var(--bp-s2); color: var(--bp-text); }
+.bp-find-matchlink-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 18rem; }
+.bp-find-matchlink-text span { color: var(--bp-muted); font-size: var(--bp-fs-sm); }
+.bp-find-matchlink-cta { color: var(--bp-accent); font-weight: 700; white-space: nowrap; }
+
+/* Match layout + need form */
+.bp-find-layout { display: grid; grid-template-columns: 1fr; gap: var(--bp-sp-4); min-width: 0; }
+@media (min-width: 900px) { .bp-find-layout { grid-template-columns: 18rem minmax(0, 1fr); align-items: start; } }
+
+.bp-find-form {
+    display: flex; flex-direction: column; gap: var(--bp-sp-3);
+    background: var(--bp-s1);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+    padding: var(--bp-sp-4);
+    min-width: 0;
+}
+.bp-find-form h2 { font-size: var(--bp-fs-lg); margin: 0; }
+.bp-find-form fieldset { min-width: 0; margin: 0; border: 0; padding: 0; }
+.bp-find-form legend, .bp-find-form .bp-field > label:first-child:not(:only-child) {
+    font-size: var(--bp-fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--bp-muted); float: none; width: auto; margin-bottom: 0.25rem;
+}
+.bp-find-form fieldset label { display: block; }
+.bp-find-form select, .bp-find-form input[type=text] { width: 100%; box-sizing: border-box; }
+
+/* Results */
+.bp-find-results { min-width: 0; }
+.bp-find-count { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--bp-sp-2) var(--bp-sp-4); margin: 0 0 var(--bp-sp-1); font-size: var(--bp-fs-lg); }
+.bp-find-hidden { color: var(--bp-muted); font-size: var(--bp-fs-md); }
+.bp-find-disclaimer { color: var(--bp-muted); font-size: var(--bp-fs-sm); margin: 0 0 var(--bp-sp-3); }
+
+.bp-find-trust {
+    background: var(--bp-s1); border: 1px solid var(--bp-border); border-radius: var(--bp-r-md);
+    padding: var(--bp-sp-3) var(--bp-sp-4); margin: 0 0 var(--bp-sp-3);
+}
+.bp-find-trust-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--bp-sp-2); font-size: var(--bp-fs-sm); font-weight: 600; }
+.bp-find-trust-n { color: var(--bp-muted); font-weight: 400; }
+.bp-find-trust-bar { display: flex; height: 10px; border-radius: var(--bp-r-pill); overflow: hidden; background: var(--bp-s3); margin: var(--bp-sp-2) 0; }
+.bp-find-seg-self { background: var(--bp-src-self); }
+.bp-find-seg-coach { background: var(--bp-src-coach); }
+.bp-find-seg-league { background: var(--bp-src-league); }
+.bp-find-trust-legend { list-style: none; display: flex; flex-wrap: wrap; gap: var(--bp-sp-1) var(--bp-sp-4); padding: 0; margin: 0; font-size: var(--bp-fs-sm); }
+.bp-find-dot { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; margin-inline-end: 0.4rem; }
+
+.bp-find-weights { margin: 0 0 var(--bp-sp-3); color: var(--bp-muted); font-size: var(--bp-fs-sm); }
+.bp-find-weights summary { cursor: pointer; color: var(--bp-text); }
+.bp-find-weights ul { columns: 2; padding-inline-start: 1.1rem; }
+
+.bp-find-list { display: flex; flex-direction: column; gap: var(--bp-sp-3); }
+
+.bp-find-match {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--bp-sp-3) var(--bp-sp-4);
+    background: var(--bp-s1);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+    padding: var(--bp-sp-4);
+    box-shadow: var(--bp-shadow);
+}
+.bp-find-act { grid-column: 1 / -1; }
+@media (min-width: 700px) {
+    .bp-find-match { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; }
+    .bp-find-act { grid-column: auto; }
+}
+
+/* Fit ring: conic gradient filled to --fit percent, number in the display font. */
+.bp-find-fit {
+    --fit: 0;
+    position: relative;
+    width: 5.5rem; height: 5.5rem;
+    border-radius: 50%;
+    background: conic-gradient(var(--bp-accent) calc(var(--fit) * 1%), var(--bp-s3) 0);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    flex: none;
+}
+.bp-find-fit::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--bp-s1); }
+.bp-find-fit > * { position: relative; }
+.bp-find-fit-num { font-family: var(--bp-font-display); font-weight: 700; font-size: 2rem; line-height: 1; color: var(--bp-text); }
+.bp-find-fit-num small { font-size: 0.95rem; color: var(--bp-muted); margin-inline-start: 1px; }
+.bp-find-fit-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--bp-muted); margin-top: 2px; }
+
+.bp-find-body { min-width: 0; }
+.bp-find-title { display: flex; flex-wrap: wrap; align-items: center; gap: var(--bp-sp-2); }
+.bp-find-name { font-family: var(--bp-font-display); font-size: var(--bp-fs-lg); font-weight: 700; color: var(--bp-text); text-decoration: none; }
+.bp-find-name:hover { color: var(--bp-accent); }
+.bp-find-meta { color: var(--bp-muted); font-size: var(--bp-fs-sm); margin: 2px 0 var(--bp-sp-2); }
+.bp-find-partial {
+    border: 1px dashed var(--bp-warn); color: var(--bp-warn);
+    border-radius: var(--bp-r-pill); padding: 0 0.6rem; font-size: var(--bp-fs-xs); font-weight: 600;
+}
+.bp-find-missing { color: var(--bp-muted); font-size: var(--bp-fs-xs); margin: var(--bp-sp-1) 0 0; }
+
+.bp-find-reasons { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.bp-find-reason {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--bp-sp-1) var(--bp-sp-2);
+    padding: 4px var(--bp-sp-2);
+    background: var(--bp-s2);
+    border-radius: var(--bp-r-sm);
+    font-size: var(--bp-fs-sm);
+}
+.bp-find-reason-text { flex: 1 1 8rem; min-width: 0; }
+.bp-find-mark { font-weight: 700; width: 1.1rem; text-align: center; }
+.bp-find-reason[data-state="met"] .bp-find-mark { color: var(--bp-success); }
+.bp-find-reason[data-state="partial"] .bp-find-mark { color: var(--bp-warn); }
+.bp-find-reason[data-state="missed"] .bp-find-mark { color: var(--bp-danger); }
+
+.bp-find-interest { margin: 0; }
+.bp-find-sent { color: var(--bp-success); margin: 0; font-size: var(--bp-fs-sm); }
