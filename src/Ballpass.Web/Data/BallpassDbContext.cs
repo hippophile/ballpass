@@ -70,5 +70,7 @@ public class BallpassDbContext(DbContextOptions<BallpassDbContext> options) : Db
             e.HasOne(x => x.Coach).WithMany().HasForeignKey(x => x.CoachId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(x => x.Athlete).WithMany().HasForeignKey(x => x.AthleteId).OnDelete(DeleteBehavior.Cascade);
         });
+
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(BallpassDbContext).Assembly);
     }
 }

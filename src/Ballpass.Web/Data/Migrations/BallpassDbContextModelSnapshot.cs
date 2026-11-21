@@ -124,6 +124,37 @@ namespace Ballpass.Web.Data.Migrations
                     b.ToTable("AthleteSeasons");
                 });
 
+            modelBuilder.Entity("Ballpass.Web.Data.Block", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BlockedKey")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("BlockerKey")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlockedKey");
+
+                    b.HasIndex("BlockerKey", "BlockedKey")
+                        .IsUnique();
+
+                    b.ToTable("Block");
+                });
+
             modelBuilder.Entity("Ballpass.Web.Data.Club", b =>
                 {
                     b.Property<int>("Id")
@@ -205,6 +236,37 @@ namespace Ballpass.Web.Data.Migrations
                     b.ToTable("Coaches");
                 });
 
+            modelBuilder.Entity("Ballpass.Web.Data.Follow", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FollowerKey")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("TargetKey")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TargetKey");
+
+                    b.HasIndex("FollowerKey", "TargetKey")
+                        .IsUnique();
+
+                    b.ToTable("Follow");
+                });
+
             modelBuilder.Entity("Ballpass.Web.Data.Interest", b =>
                 {
                     b.Property<int>("Id")
@@ -237,6 +299,216 @@ namespace Ballpass.Web.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Interests");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.Kudos", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActorKey")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId", "ActorKey")
+                        .IsUnique();
+
+                    b.ToTable("Kudos");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.Post", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal?>("Assists")
+                        .HasPrecision(5, 1)
+                        .HasColumnType("numeric(5,1)");
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("AuthorKey")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("AuthorKind")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<DateOnly?>("AvailableFrom")
+                        .HasColumnType("date");
+
+                    b.Property<string>("BadgeKey")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<int?>("ClubId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateOnly?>("Deadline")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("EventDate")
+                        .HasColumnType("date");
+
+                    b.Property<int?>("Games")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsDemo")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Place")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<decimal?>("Points")
+                        .HasPrecision(5, 1)
+                        .HasColumnType("numeric(5,1)");
+
+                    b.Property<string>("Position")
+                        .HasMaxLength(4)
+                        .HasColumnType("character varying(4)");
+
+                    b.Property<string>("Positions")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<int?>("PostedByCoachId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("Rebounds")
+                        .HasPrecision(5, 1)
+                        .HasColumnType("numeric(5,1)");
+
+                    b.Property<string>("Region")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<string>("Season")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<DateTimeOffset>("SortAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Source")
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)");
+
+                    b.Property<string>("Tag")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<string>("Text")
+                        .HasMaxLength(280)
+                        .HasColumnType("character varying(280)");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorKey", "CreatedAt")
+                        .IsDescending(false, true);
+
+                    b.HasIndex("CreatedAt", "Id")
+                        .IsDescending();
+
+                    b.HasIndex("SortAt", "Id")
+                        .IsDescending();
+
+                    b.ToTable("Post");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.PostHide", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActorKey")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActorKey");
+
+                    b.HasIndex("PostId", "ActorKey")
+                        .IsUnique();
+
+                    b.ToTable("PostHide");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.Report", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)");
+
+                    b.Property<string>("ReporterKey")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId", "ReporterKey")
+                        .IsUnique();
+
+                    b.ToTable("Report");
                 });
 
             modelBuilder.Entity("Ballpass.Web.Data.ShortlistEntry", b =>
@@ -392,6 +664,39 @@ namespace Ballpass.Web.Data.Migrations
                     b.Navigation("Athlete");
 
                     b.Navigation("Coach");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.Kudos", b =>
+                {
+                    b.HasOne("Ballpass.Web.Data.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.PostHide", b =>
+                {
+                    b.HasOne("Ballpass.Web.Data.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.Report", b =>
+                {
+                    b.HasOne("Ballpass.Web.Data.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
                 });
 
             modelBuilder.Entity("Ballpass.Web.Data.ShortlistEntry", b =>

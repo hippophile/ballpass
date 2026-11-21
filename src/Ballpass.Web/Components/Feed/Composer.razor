@@ -1,0 +1,126 @@
+@using Ballpass.Web.Data
+@using Ballpass.Web.Demo
+@using Ballpass.Web.Features.Feed
+@inject IStringLocalizer<SharedResource> L
+@inject IStringLocalizer<FeedResource> F
+
+@* Composer: only the forms the persona's role may post. The server checks the role again (403). *@
+<section class="bp-card bp-panel bp-feed-compose" aria-label="@F["Compose_Aria"]">
+    <h2>@F["Compose_Title"]</h2>
+
+    <form method="post" action="/feed/post" data-feed-compose="freetext" class="bp-feed-form">
+        <AntiforgeryToken />
+        <input type="hidden" name="type" value="FreeText" />
+        <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+        <label for="bp-feed-text">@F["Compose_TextLabel"]</label>
+        <textarea id="bp-feed-text" name="text" maxlength="280" rows="3" required></textarea>
+        <div class="bp-feed-form-row">
+            <span class="bp-feed-hint">@F["Compose_TextHint"]</span>
+            <button type="submit" class="bp-btn">@F["Compose_Submit"]</button>
+        </div>
+    </form>
+
+    @if (Viewer.IsAthlete)
+    {
+        <details class="bp-feed-more">
+            <summary>@F["Compose_Lft"]</summary>
+            <form method="post" action="/feed/post" data-feed-compose="lft" class="bp-feed-form">
+                <AntiforgeryToken />
+                <input type="hidden" name="type" value="LookingForTeam" />
+                <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+                <fieldset class="bp-feed-toggle">
+                    <legend>@F["Compose_Lft"]</legend>
+                    <label><input type="radio" name="lft" value="on" checked />@F["Compose_LftOn"]</label>
+                    <label><input type="radio" name="lft" value="off" />@F["Compose_LftOff"]</label>
+                </fieldset>
+                <div class="bp-feed-grid">
+                    <div>
+                        <label for="bp-feed-pos">@F["Field_Position"]</label>
+                        <select id="bp-feed-pos" name="position">
+                            @foreach (var pos in Enum.GetValues<Position>())
+                            {
+                                <option value="@pos">@L[$"Position_{pos}"]</option>
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label for="bp-feed-region">@F["Field_Region"]</label>
+                        <select id="bp-feed-region" name="region">
+                            @foreach (var region in Regions)
+                            {
+                                <option value="@region">@RegionName(region)</option>
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label for="bp-feed-avail">@F["Field_Available"]</label>
+                        <input id="bp-feed-avail" type="date" name="availableFrom" />
+                    </div>
+                </div>
+                <label for="bp-feed-note">@F["Compose_Note"]</label>
+                <input id="bp-feed-note" type="text" name="text" maxlength="140" />
+                <div class="bp-feed-form-row">
+                    <span></span>
+                    <button type="submit" class="bp-btn">@F["Compose_LftSubmit"]</button>
+                </div>
+            </form>
+        </details>
+
+        <details class="bp-feed-more">
+            <summary>@F["Compose_Highlight"]</summary>
+            <form method="post" action="/feed/post" data-feed-compose="highlight" class="bp-feed-form">
+                <AntiforgeryToken />
+                <input type="hidden" name="type" value="Highlight" />
+                <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+                <label for="bp-feed-title">@F["Compose_HighlightTitle"]</label>
+                <input id="bp-feed-title" type="text" name="title" maxlength="80" required />
+                <div class="bp-feed-form-row">
+                    <span class="bp-feed-hint">@F["Compose_HighlightHint"]</span>
+                    <button type="submit" class="bp-btn">@F["Compose_Submit"]</button>
+                </div>
+            </form>
+        </details>
+    }
+    else if (Viewer.IsCoach)
+    {
+        <details class="bp-feed-more">
+            <summary>@F["Compose_Tryout"]</summary>
+            <form method="post" action="/feed/post" data-feed-compose="tryout" class="bp-feed-form">
+                <AntiforgeryToken />
+                <input type="hidden" name="type" value="TryoutCall" />
+                <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+                <div class="bp-feed-grid">
+                    <div>
+                        <label for="bp-feed-date">@F["Field_Date"]</label>
+                        <input id="bp-feed-date" type="date" name="eventDate" required />
+                    </div>
+                    <div>
+                        <label for="bp-feed-deadline">@F["Field_Deadline"]</label>
+                        <input id="bp-feed-deadline" type="date" name="deadline" />
+                    </div>
+                </div>
+                <label for="bp-feed-place">@F["Field_Place"]</label>
+                <input id="bp-feed-place" type="text" name="place" maxlength="120" required />
+                <label for="bp-feed-positions">@F["Field_Positions"]</label>
+                <input id="bp-feed-positions" type="text" name="positions" maxlength="40" />
+                <div class="bp-feed-form-row">
+                    <span class="bp-feed-hint">@F["Compose_TryoutHint"]</span>
+                    <button type="submit" class="bp-btn">@F["Compose_Submit"]</button>
+                </div>
+            </form>
+        </details>
+    }
+</section>
+
+@code {
+    [Parameter, EditorRequired] public FeedViewer Viewer { get; set; } = FeedViewer.Anonymous;
+    [Parameter] public string ReturnUrl { get; set; } = "/feed";
+
+    private static readonly string[] Regions = GreekNames.Cities.Select(c => c.Region).Distinct().ToArray();
+
+    private string RegionName(string region)
+    {
+        var r = L[$"Region_{region}"];
+        return r.ResourceNotFound ? region : r.Value;
+    }
+}

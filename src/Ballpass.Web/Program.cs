@@ -81,6 +81,7 @@ builder.Services.AddDbContext<BallpassDbContext>(options =>
 });
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<DemoDataSeeder>();
+builder.Services.AddFeed();
 builder.Services.AddHealthChecks().AddDbContextCheck<BallpassDbContext>();
 
 var app = builder.Build();
@@ -242,6 +243,7 @@ app.MapPost("/p/{slug}/shortlist", async (string slug, BallpassDbContext db, Htt
             // Concurrent add already created it: current state is "shortlisted".
             return Results.Redirect($"/p/{slug}?status=shortlist-added");
         }
+        await http.RequestServices.TryFollowAsync($"coach:{coachId}", $"athlete:{athlete.Id}");
         return Results.Redirect($"/p/{slug}?status=shortlist-added");
     }
     db.ShortlistEntries.Remove(entry);
@@ -258,6 +260,7 @@ app.MapPost("/demo/logout", async (HttpContext http, IAntiforgery antiforgery) =
     await http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     return Results.Redirect("/");
 });
+app.MapFeed();
 app.MapRazorComponents<App>();
 
 app.Run();

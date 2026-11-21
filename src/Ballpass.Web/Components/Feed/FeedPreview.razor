@@ -1,0 +1,43 @@
+@using Ballpass.Web.Features.Feed
+@inject IServiceScopeFactory ScopeFactory
+@inject ILogger<FeedPreview> Logger
+@inject IStringLocalizer<FeedResource> F
+
+@* Home strip: the newest public posts, read-only. If the feed fails the strip is simply not rendered. *@
+@if (items.Count > 0)
+{
+    <section class="bp-feed-preview" aria-labelledby="bp-feed-preview-title">
+        <div class="bp-feed-preview-head">
+            <h2 id="bp-feed-preview-title">@F["Preview_Title"]</h2>
+            <a href="/feed">@F["Preview_More"]</a>
+        </div>
+        <p class="bp-feed-hint">@F["Preview_Note"]</p>
+        <div class="bp-feed-preview-list">
+            @foreach (var item in items)
+            {
+                <PostCard Item="item" ReadOnly="true" />
+            }
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter] public int Count { get; set; } = 3;
+
+    private IReadOnlyList<FeedItem> items = [];
+
+    // Own scope + DbContext: this component initialises while the host page still holds the request-scoped context.
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            using var scope = ScopeFactory.CreateScope();
+            items = await scope.ServiceProvider.GetRequiredService<IFeedService>().GetPreviewAsync(Count);
+        }
+        catch (Exception e)
+        {
+            Logger.LogWarning(e, "Feed preview failed; rendering nothing");
+            items = [];
+        }
+    }
+}

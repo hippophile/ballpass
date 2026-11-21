@@ -1,0 +1,221 @@
+@using Ballpass.Web.Data
+@using System.Globalization
+@using Ballpass.Web.Components.Shared
+@using Ballpass.Web.Features.Feed
+@inject IStringLocalizer<SharedResource> L
+@inject IStringLocalizer<FeedResource> F
+@inject TimeProvider Time
+
+@{
+    var p = Item.Post;
+}
+<article class="bp-feed-post@(ReadOnly ? " bp-feed-post-compact" : "")" data-post-id="@p.Id" data-post-type="@p.Type" data-author-key="@p.AuthorKey">
+    <header class="bp-feed-head">
+        <div class="bp-feed-author">
+            <span class="bp-feed-avatar" aria-hidden="true">@Initials</span>
+            <div class="bp-feed-who">
+                <span class="bp-feed-name">
+                    @if (Item.Slug is not null)
+                    {
+                        <a href="/p/@Item.Slug">@DisplayName</a>
+                    }
+                    else
+                    {
+                        @DisplayName
+                    }
+                </span>
+                <span class="bp-feed-role">@RoleText@if (Item.ClubName is not null && p.AuthorKind != AuthorKind.Club) {<text> · @Item.ClubName</text>}</span>
+            </div>
+        </div>
+        <div class="bp-feed-meta">
+            <span class="bp-feed-type">@F[$"Type_{p.Type}"]</span>
+            <time class="bp-feed-time" datetime="@p.CreatedAt.UtcDateTime.ToString("o", CultureInfo.InvariantCulture)" title="@p.CreatedAt.UtcDateTime.ToString("g", CultureInfo.CurrentCulture) UTC">@RelativeTime</time>
+            <span class="bp-feed-chip" data-chip="demo">@F["Chip_Demo"]</span>
+            @if (CanAct)
+            {
+                <details class="bp-feed-menu">
+                    <summary aria-label="@F["Menu_Label"]"><span aria-hidden="true">…</span></summary>
+                    <div class="bp-feed-menu-panel">
+                        <form method="post" action="/feed/report" data-feed-action="report" class="bp-feed-menu-form">
+                            <AntiforgeryToken />
+                            <input type="hidden" name="postId" value="@p.Id" />
+                            <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+                            <label for="reason-@p.Id">@F["Report_Reason"]</label>
+                            <select id="reason-@p.Id" name="reason">
+                                @foreach (var reason in Safeguards.ReportReasons)
+                                {
+                                    <option value="@reason">@F[$"Reason_{reason}"]</option>
+                                }
+                            </select>
+                            <button type="submit" class="bp-btn bp-btn-secondary">@F["Menu_Report"]</button>
+                        </form>
+                        <form method="post" action="/feed/hide" data-feed-action="hide" class="bp-feed-menu-form">
+                            <AntiforgeryToken />
+                            <input type="hidden" name="postId" value="@p.Id" />
+                            <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+                            <button type="submit" class="bp-btn bp-btn-secondary">@F["Menu_Hide"]</button>
+                        </form>
+                        <form method="post" action="/feed/block" data-feed-action="block" class="bp-feed-menu-form">
+                            <AntiforgeryToken />
+                            <input type="hidden" name="postId" value="@p.Id" />
+                            <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+                            <p class="bp-feed-hint">@F["Block_Hint"]</p>
+                            <button type="submit" class="bp-btn bp-btn-secondary">@F["Menu_Block"]</button>
+                        </form>
+                    </div>
+                </details>
+            }
+        </div>
+    </header>
+
+    <div class="bp-feed-body">
+        @switch (p.Type)
+        {
+            case PostType.LookingForTeam:
+                <dl class="bp-feed-fields">
+                    @if (p.Position is { } position)
+                    {
+                        <div data-field="position"><dt>@F["Field_Position"]</dt><dd>@L[$"Position_{position}"]</dd></div>
+                    }
+                    <div data-field="region"><dt>@F["Field_Region"]</dt><dd>@RegionName(p.Region)</dd></div>
+                    <div data-field="available"><dt>@F["Field_Available"]</dt><dd>@(p.AvailableFrom is { } from ? Date(from) : "—")</dd></div>
+                </dl>
+                @if (!string.IsNullOrEmpty(p.Text))
+                {
+                    <p class="bp-feed-text" data-field="note">@p.Text</p>
+                }
+                break;
+            case PostType.TryoutCall:
+                <dl class="bp-feed-fields">
+                    <div data-field="date"><dt>@F["Field_Date"]</dt><dd>@(p.EventDate is { } ev ? Date(ev) : "—")</dd></div>
+                    <div data-field="place"><dt>@F["Field_Place"]</dt><dd>@p.Place</dd></div>
+                    <div data-field="positions"><dt>@F["Field_Positions"]</dt><dd>@p.Positions</dd></div>
+                    <div data-field="deadline"><dt>@F["Field_Deadline"]</dt><dd>@(p.Deadline is { } dl ? Date(dl) : "—")</dd></div>
+                </dl>
+                break;
+            case PostType.StatUpdate:
+                <dl class="bp-feed-stats">
+                    <div data-field="season"><dt>@F["Field_Season"]</dt><dd>@p.Season</dd></div>
+                    <div data-field="games"><dt>@F["Field_Games"]</dt><dd>@p.Games</dd></div>
+                    <div data-field="points"><dt>@F["Field_Points"]</dt><dd>@Num(p.Points)</dd></div>
+                    <div data-field="rebounds"><dt>@F["Field_Rebounds"]</dt><dd>@Num(p.Rebounds)</dd></div>
+                    <div data-field="assists"><dt>@F["Field_Assists"]</dt><dd>@Num(p.Assists)</dd></div>
+                </dl>
+                <p class="bp-feed-source">
+                    @if (p.Source is { } source)
+                    {
+                        <SourceBadge Source="source" />
+                    }
+                    <span class="bp-feed-hint">@F["Field_PerGame"] · @F["Chip_System"]</span>
+                </p>
+                break;
+            case PostType.Highlight:
+                <CourtArt Initials="@Initials" Label="@(F["Highlight_Alt", p.Title ?? ""].Value)" />
+                <p class="bp-feed-text" data-field="title">@p.Title</p>
+                <p class="bp-feed-hint">@F["Highlight_Caption"]</p>
+                break;
+            case PostType.Badge:
+                <p class="bp-feed-badge" data-field="badge">
+                    <svg viewBox="0 0 16 16" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 1.5l5.5 2v4c0 3.3-2.3 5.7-5.5 7-3.2-1.3-5.5-3.7-5.5-7v-4z" /><path d="M5.6 8.2l1.8 1.8 3-3.4" /></svg>
+                    <span>@F[$"Badge_{p.BadgeKey}"]</span>
+                </p>
+                <p class="bp-feed-hint">@F["Badge_Note"]</p>
+                break;
+            default:
+                <p class="bp-feed-text" data-field="text">@p.Text</p>
+                break;
+        }
+    </div>
+
+    @if (CanAct)
+    {
+        <footer class="bp-feed-actions">
+            @if (Item.IsOwn)
+            {
+                <span class="bp-feed-kudos-own" data-kudos-count="@(Item.KudosCount ?? 0)" title="@(F["Kudos_Count", Item.KudosCount ?? 0].Value)"><span aria-hidden="true">🔥</span> @(F["Kudos_Count", Item.KudosCount ?? 0].Value)</span>
+            }
+            else
+            {
+                <form method="post" action="/feed/kudos" data-feed-action="kudos" class="bp-feed-inline">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="postId" value="@p.Id" />
+                    <input type="hidden" name="on" value="@(Item.KudoedByMe ? "0" : "1")" />
+                    <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+                    <button type="submit" class="bp-feed-kudos" aria-pressed="@(Item.KudoedByMe ? "true" : "false")" aria-label="@F[Item.KudoedByMe ? "Kudos_Off" : "Kudos_On"]">
+                        <span class="bp-feed-flame" aria-hidden="true">🔥</span> @F["Kudos"]
+                    </button>
+                </form>
+                <form method="post" action="@(Item.Following ? "/feed/unfollow" : "/feed/follow")" data-feed-action="@(Item.Following ? "unfollow" : "follow")" class="bp-feed-inline">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="targetKey" value="@p.AuthorKey" />
+                    <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+                    <button type="submit" class="bp-btn bp-btn-secondary bp-feed-follow" aria-pressed="@(Item.Following ? "true" : "false")" aria-label="@(Item.Following ? F["Unfollow_Aria"].Value : null)">@F[Item.Following ? "Unfollow" : "Follow"]</button>
+                </form>
+            }
+            @if (Viewer.IsCoach && p.Type == PostType.LookingForTeam && Item.Slug is not null)
+            {
+                @if (Item.InterestSent)
+                {
+                    <span class="bp-feed-sent">@F["Interest_Sent"]</span>
+                }
+                else
+                {
+                    <form method="post" action="/p/@Item.Slug/interest" data-feed-action="interest" class="bp-feed-inline">
+                        <AntiforgeryToken />
+                        <button type="submit" class="bp-btn">@F["Interest"]</button>
+                    </form>
+                }
+                <a class="bp-feed-profile" href="/p/@Item.Slug">@F["ProfileLink"]</a>
+            }
+        </footer>
+    }
+</article>
+
+@code {
+    [Parameter, EditorRequired] public FeedItem Item { get; set; } = default!;
+    [Parameter] public FeedViewer Viewer { get; set; } = FeedViewer.Anonymous;
+    /// <summary>Home strip and anonymous visitors: no forms at all.</summary>
+    [Parameter] public bool ReadOnly { get; set; }
+    [Parameter] public string ReturnUrl { get; set; } = "/feed";
+
+    private bool CanAct => !ReadOnly && Viewer.SignedIn;
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    private string DisplayName => IsGreek ? Item.NameEl : Item.NameLatin;
+
+    private string RoleText => Item.RoleKey == "Role_Club" ? F["Role_Club"].Value : L[Item.RoleKey].Value;
+
+    private string Initials
+    {
+        get
+        {
+            var words = DisplayName.Replace("(demo)", "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            return words.Length == 0 ? "?" : string.Concat(words.Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);
+        }
+    }
+
+    private string RelativeTime
+    {
+        get
+        {
+            var age = Time.GetUtcNow() - Item.Post.CreatedAt;
+            if (age < TimeSpan.FromMinutes(1)) return F["Time_Now"].Value;
+            if (age < TimeSpan.FromHours(1)) return F["Time_Minutes", (int)age.TotalMinutes].Value;
+            if (age < TimeSpan.FromDays(1)) return F["Time_Hours", (int)age.TotalHours].Value;
+            if (age < TimeSpan.FromDays(30)) return F["Time_Days", (int)age.TotalDays].Value;
+            return Item.Post.CreatedAt.ToString("d MMM yyyy", CultureInfo.CurrentCulture);
+        }
+    }
+
+    private static string Date(DateOnly d) => d.ToString("d MMM yyyy", CultureInfo.CurrentCulture);
+
+    private static string Num(decimal? v) => v is { } n ? n.ToString("0.0", CultureInfo.CurrentCulture) : "—";
+
+    private string RegionName(string? region)
+    {
+        if (string.IsNullOrEmpty(region)) return "—";
+        var r = L[$"Region_{region}"];
+        return r.ResourceNotFound ? region : r.Value;
+    }
+}

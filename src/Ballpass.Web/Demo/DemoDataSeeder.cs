@@ -33,6 +33,7 @@ public class DemoDataSeeder(BallpassDbContext db)
         db.Interests.AddRange(data.Interests);
         db.ShortlistEntries.AddRange(data.Shortlist);
         await db.SaveChangesAsync(ct);
+        await FeedSeeder.ReplaceAsync(db, data, TimeProvider.System.GetUtcNow(), ct);
 
         await tx.CommitAsync(ct);
     }
