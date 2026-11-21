@@ -10,6 +10,9 @@ namespace Ballpass.Web.Tests;
 /// <summary>Connection strings for test databases, derived from the dev user-secret (never printed).</summary>
 public static class TestDb
 {
+    /// Parallel agents/worktrees set BALLPASS_TESTDB_SUFFIX (e.g. "_feed") so they never share a test database.
+    public static string Suffix => Environment.GetEnvironmentVariable("BALLPASS_TESTDB_SUFFIX") ?? "";
+
     public static string ConnectionString(string database)
     {
         var config = new ConfigurationBuilder()
@@ -18,7 +21,7 @@ public static class TestDb
             .Build();
         var dev = config.GetConnectionString("Ballpass")
             ?? throw new InvalidOperationException("Run `make setup` first (ConnectionStrings:Ballpass missing).");
-        return new NpgsqlConnectionStringBuilder(dev) { Database = database }.ConnectionString;
+        return new NpgsqlConnectionStringBuilder(dev) { Database = database + Suffix }.ConnectionString;
     }
 }
 
