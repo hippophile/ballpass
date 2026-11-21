@@ -1,108 +1,75 @@
 .bp-hero {
-    background: linear-gradient(135deg, #0b2545 0%, #13376b 100%);
-    color: #fff;
-    border-radius: 1rem;
-    padding: 2rem 1.25rem;
+    position: relative;
+    background:
+        radial-gradient(60% 120% at 50% -20%, color-mix(in srgb, var(--bp-accent) 22%, transparent), transparent 70%),
+        var(--bp-s1);
+    border: 1px solid var(--bp-border);
+    border-top: 1px solid var(--bp-accent);
+    border-radius: var(--bp-r-md);
+    padding: var(--bp-sp-7) var(--bp-sp-4);
     text-align: center;
 }
 
     .bp-hero h1 {
-        font-size: 2.6rem;
+        font-size: clamp(2.6rem, 9vw, 4rem);
         font-weight: 800;
-        letter-spacing: 0.02em;
-        margin: 0 0 0.5rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin: 0 0 var(--bp-sp-2);
     }
 
+        .bp-hero h1::first-letter {
+            color: var(--bp-accent);
+        }
+
 .bp-value {
-    font-size: 1.2rem;
+    font-size: var(--bp-fs-lg);
     max-width: 38rem;
-    margin: 0 auto 0.5rem;
+    margin: 0 auto var(--bp-sp-2);
 }
 
 .bp-sub {
-    color: #ffa94d;
-    font-weight: 700;
-    margin: 0 0 1.25rem;
+    color: var(--bp-muted);
+    font-weight: 600;
+    margin: 0 0 var(--bp-sp-5);
 }
 
 .bp-ctas {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.75rem;
+    gap: var(--bp-sp-3);
 }
-
-.bp-cta {
-    display: inline-block;
-    padding: 0.65rem 1.3rem;
-    border-radius: 0.6rem;
-    border: 2px solid #fff;
-    color: #fff;
-    font-weight: 700;
-    text-decoration: none;
-}
-
-    .bp-cta:hover, .bp-cta:focus-visible {
-        background: #fff;
-        color: #0b2545;
-    }
-
-.bp-cta-primary {
-    background: #e8590c;
-    border-color: #e8590c;
-}
-
-    .bp-cta-primary:hover, .bp-cta-primary:focus-visible {
-        background: #c2410c;
-        border-color: #c2410c;
-        color: #fff;
-    }
 
 .bp-counters {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.75rem;
-    margin: 1.25rem 0;
+    gap: var(--bp-sp-3);
+    margin: var(--bp-sp-5) 0;
 }
 
 .bp-counter {
-    flex: 1 1 6rem;
+    flex: 1 1 8rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: #fff;
-    border: 1px solid #d5dbe3;
-    border-radius: 0.75rem;
-    padding: 0.8rem 0.5rem;
-    box-shadow: 0 1px 2px rgba(11, 37, 69, 0.06);
-}
-
-.bp-count-num {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #e8590c;
-    line-height: 1.1;
-}
-
-.bp-count-label {
-    color: #0b2545;
-    font-weight: 600;
+    gap: 0.25rem;
+    padding: var(--bp-sp-4) 0.5rem;
 }
 
 .bp-caption {
     flex-basis: 100%;
     text-align: center;
     margin: 0;
-    font-size: 0.85rem;
-    color: #4a5568;
+    font-size: var(--bp-fs-sm);
+    color: var(--bp-muted);
 }
 
 .bp-home-section h2 {
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: #0b2545;
-    margin: 1.5rem 0 0.75rem;
+    font-size: var(--bp-fs-lg);
+    font-weight: 700;
+    margin: var(--bp-sp-6) 0 var(--bp-sp-3);
 }
 
 .bp-steps, .bp-trust {
@@ -111,7 +78,7 @@
     margin: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-    gap: 0.75rem;
+    gap: var(--bp-sp-3);
 }
 
     .bp-steps li, .bp-trust li {
@@ -119,10 +86,6 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 0.35rem;
-        background: #fff;
-        border: 1px solid #d5dbe3;
-        border-radius: 0.75rem;
-        padding: 0.9rem 1rem;
         min-width: 0;
     }
 
@@ -130,44 +93,18 @@
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
-    background: #0b2545;
-    color: #fff;
+    background: var(--bp-accent);
+    color: var(--bp-accent-contrast);
+    font-family: var(--bp-font-display);
     font-weight: 800;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.bp-src {
-    display: inline-block;
-    padding: 0.25em 0.6em;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    line-height: 1.3;
-}
-
-.bp-src-self {
-    background: #e9ecef;
-    color: #343a40;
-    border: 1px solid #868e96;
-}
-
-.bp-src-coach {
-    background: #d3f9d8;
-    color: #1b5e20;
-    border: 1px solid #2b8a3e;
-}
-
-.bp-src-league {
-    background: #d0ebff;
-    color: #0b3d75;
-    border: 1px solid #1c7ed6;
-}
-
 .bp-home-footer {
-    margin: 1.5rem 0 0;
+    margin: var(--bp-sp-6) 0 0;
     text-align: center;
-    font-size: 0.85rem;
-    color: #4a5568;
+    font-size: var(--bp-fs-sm);
+    color: var(--bp-muted);
 }

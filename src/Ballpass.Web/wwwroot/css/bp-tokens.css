@@ -1,0 +1,14 @@
+/* Ballpass design tokens: ONE dark theme (founder decision 2026-11-21). Contrast verified by tests/LookTests. */
+:root,[data-theme="dark"]{
+ --bp-bg:#0B0F14;--bp-s1:#121821;--bp-s2:#1A2330;--bp-s3:#243044;
+ --bp-border:#2C3A50;--bp-border-ui:#5C6E8A;
+ --bp-text:#E8EEF5;--bp-muted:#9AA8BB;
+ --bp-accent:#FF6A2B;--bp-accent-contrast:#0B0F14;--bp-focus:#8AB4FF;
+ --bp-success:#3DDC97;--bp-warn:#FFB020;--bp-danger:#FF5C6C;
+ --bp-src-self:#A7B4C6;--bp-src-coach:#4FC3F7;--bp-src-league:#B794F6;
+ --bp-r-sm:6px;--bp-r-md:12px;--bp-r-pill:999px;
+ --bp-shadow:0 1px 2px rgb(0 0 0/.4),0 8px 24px rgb(0 0 0/.35);
+ --bp-sp-1:4px;--bp-sp-2:8px;--bp-sp-3:12px;--bp-sp-4:16px;--bp-sp-5:24px;--bp-sp-6:32px;--bp-sp-7:48px;
+ --bp-fs-xs:.75rem;--bp-fs-sm:.875rem;--bp-fs-md:1rem;--bp-fs-lg:1.25rem;--bp-fs-xl:1.75rem;--bp-fs-stat:3rem;
+ --bp-font-text:"BP Text",system-ui,sans-serif;--bp-font-display:"BP Display","Arial Narrow",sans-serif;
+ color-scheme:dark}

@@ -1,12 +1,14 @@
+/* Demo banner: amber on dark, still the loudest strip on the page. */
 .demo-banner {
-    background-color: #ffc107;
-    color: #212529;
+    background-color: color-mix(in srgb, var(--bp-warn) 14%, var(--bp-bg));
+    color: var(--bp-warn);
     width: 100%;
     box-sizing: border-box;
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 1rem;
     text-align: center;
+    font-size: var(--bp-fs-sm);
     font-weight: 600;
-    border-bottom: 1px solid #b38600;
+    border-bottom: 1px solid color-mix(in srgb, var(--bp-warn) 45%, transparent);
 }
 
     .demo-banner span {
@@ -20,39 +22,49 @@
     justify-content: space-between;
     gap: 0.5rem 1rem;
     padding: 0.6rem 1rem;
-    background-color: #0b2545;
-    color: #fff;
+    background-color: var(--bp-s1);
+    border-bottom: 1px solid var(--bp-border);
+    color: var(--bp-text);
 }
 
     .topbar .brand {
-        color: #fff;
-        font-size: 1.35rem;
+        color: var(--bp-text);
+        font-family: var(--bp-font-display);
+        font-size: 1.5rem;
         font-weight: 800;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
         text-decoration: none;
+        border-radius: var(--bp-r-sm);
     }
+
+        .topbar .brand::first-letter {
+            color: var(--bp-accent);
+        }
 
 .lang-toggle {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    color: var(--bp-muted);
 }
 
     .lang-toggle a {
-        color: #cfe0f5;
+        color: var(--bp-muted);
         text-decoration: none;
         padding: 0.15rem 0.3rem;
+        border-radius: var(--bp-r-sm);
     }
 
-        .lang-toggle a.active {
-            color: #fff;
-            font-weight: 800;
-            text-decoration: underline;
+        .lang-toggle a:hover {
+            color: var(--bp-text);
         }
 
-        .lang-toggle a:focus-visible, .topbar .brand:focus-visible {
-            outline: 2px solid #ffc107;
-            outline-offset: 2px;
+        .lang-toggle a.active {
+            color: var(--bp-accent);
+            font-weight: 800;
+            text-decoration: underline;
+            text-underline-offset: 4px;
         }
 
 .bp-userbar {
@@ -64,14 +76,14 @@
 }
 
     .bp-userbar a {
-        color: #cfe0f5;
+        color: var(--bp-text);
         text-decoration: none;
         font-weight: 600;
+        border-radius: var(--bp-r-sm);
     }
 
-        .bp-userbar a:hover, .bp-userbar a:focus-visible {
-            color: #fff;
-            text-decoration: underline;
+        .bp-userbar a:hover {
+            color: var(--bp-accent);
         }
 
     .bp-userbar form {
@@ -79,20 +91,21 @@
     }
 
 .bp-whoami small {
-    color: #cfe0f5;
+    color: var(--bp-muted);
 }
 
 .bp-logout {
     background: transparent;
-    color: #fff;
-    border: 1px solid #cfe0f5;
-    border-radius: 0.4rem;
-    padding: 0.15rem 0.6rem;
+    color: var(--bp-text);
+    border: 1px solid var(--bp-border-ui);
+    border-radius: var(--bp-r-sm);
+    padding: 0.2rem 0.75rem;
+    min-height: 32px;
+    transition: background-color 150ms ease-out;
 }
 
-    .bp-logout:hover, .bp-logout:focus-visible {
-        background: #fff;
-        color: #0b2545;
+    .bp-logout:hover {
+        background: var(--bp-s2);
     }
 
 main {
@@ -100,16 +113,15 @@ main {
 }
 
 .content {
-    padding: 1rem;
+    padding: 1.5rem 1rem;
     max-width: 960px;
     margin: 0 auto;
 }
 
 #blazor-error-ui {
-    color-scheme: light only;
-    background: lightyellow;
+    background: var(--bp-s3);
     bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--bp-shadow);
     box-sizing: border-box;
     display: none;
     left: 0;
@@ -145,11 +157,7 @@ main {
             cursor: pointer;
             font-weight: 700;
             padding: 0.25rem 0;
-        }
-
-        .bp-menu summary:focus-visible {
-            outline: 2px solid #ffc107;
-            outline-offset: 2px;
+            color: var(--bp-text);
         }
 
     .bp-menu-links {
@@ -161,7 +169,7 @@ main {
     }
 
         .bp-menu-links a {
-            color: #cfe0f5;
+            color: var(--bp-text);
             text-decoration: none;
             font-weight: 600;
         }

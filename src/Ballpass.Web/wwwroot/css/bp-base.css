@@ -1,0 +1,167 @@
+/* Global element styles, Bootstrap variable mapping, fonts, motion. Loaded AFTER bootstrap and bp-tokens. */
+
+/* Self-hosted fonts (OFL 1.1; licences in /fonts). Latin + Greek (with tonos) subsets, variable weight. */
+@font-face {
+    font-family: "BP Text";
+    src: url("/fonts/bp-text.woff2") format("woff2");
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "BP Display";
+    src: url("/fonts/bp-display.woff2") format("woff2");
+    font-weight: 500 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Bootstrap 5.3 reads these; mapping keeps any remaining Bootstrap component (e.g. .visually-hidden, reboot) on-theme. */
+:root[data-bs-theme="dark"] {
+    --bs-body-bg: var(--bp-bg);
+    --bs-body-color: var(--bp-text);
+    --bs-secondary-color: var(--bp-muted);
+    --bs-tertiary-bg: var(--bp-s2);
+    --bs-border-color: var(--bp-border);
+    --bs-link-color: var(--bp-accent);
+    --bs-link-hover-color: var(--bp-text);
+    --bs-link-color-rgb: 255, 106, 43;
+    --bs-emphasis-color: var(--bp-text);
+    --bs-body-font-family: var(--bp-font-text);
+}
+
+html {
+    background: var(--bp-bg);
+}
+
+body {
+    background: var(--bp-bg);
+    color: var(--bp-text);
+    font-family: var(--bp-font-text);
+    font-size: var(--bp-fs-md);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+    font-family: var(--bp-font-display);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--bp-text);
+}
+
+h1 {
+    font-size: var(--bp-fs-xl);
+    margin: 0 0 var(--bp-sp-4);
+}
+
+a {
+    color: var(--bp-accent);
+    text-underline-offset: 3px;
+}
+
+    a:hover {
+        color: var(--bp-text);
+    }
+
+::selection {
+    background: var(--bp-accent);
+    color: var(--bp-accent-contrast);
+}
+
+/* Focus ring: 2px --bp-focus, offset 2px, everywhere. */
+:focus-visible {
+    outline: 2px solid var(--bp-focus);
+    outline-offset: 2px;
+}
+
+h1:focus {
+    outline: none;
+}
+
+/* Form controls */
+input[type=text], input[type=number], select, textarea {
+    background: var(--bp-bg);
+    color: var(--bp-text);
+    border: 1px solid var(--bp-border-ui);
+    border-radius: var(--bp-r-sm);
+    padding: 0.45rem 0.65rem;
+    min-height: 40px;
+    font: inherit;
+}
+
+    input[type=text]::placeholder, textarea::placeholder {
+        color: var(--bp-muted);
+    }
+
+input[type=radio], input[type=checkbox] {
+    accent-color: var(--bp-accent);
+    width: 1.05rem;
+    height: 1.05rem;
+    vertical-align: -0.15em;
+    margin-inline-end: 0.35rem;
+}
+
+hr {
+    border-color: var(--bp-border);
+    opacity: 1;
+}
+
+code {
+    color: var(--bp-muted);
+}
+
+/* Blazor framework UI */
+#blazor-error-ui {
+    color-scheme: dark;
+    background: var(--bp-s3);
+    color: var(--bp-text);
+    border-top: 1px solid var(--bp-danger);
+}
+
+.blazor-error-boundary {
+    background: var(--bp-danger);
+    color: var(--bp-accent-contrast);
+}
+
+.validation-message {
+    color: var(--bp-danger);
+}
+
+/* Motion: all of it off under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+    @view-transition {
+        navigation: auto;
+    }
+
+    ::view-transition-old(root), ::view-transition-new(root) {
+        animation-duration: 200ms;
+    }
+
+    main .content {
+        animation: bp-fade-in 200ms ease-out;
+    }
+}
+
+@keyframes bp-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+
+    ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) {
+        animation-duration: 0s !important;
+    }
+}

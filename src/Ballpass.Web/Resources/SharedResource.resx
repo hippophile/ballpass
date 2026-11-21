@@ -39,7 +39,7 @@
   <data name="Stat_Source" xml:space="preserve"><value>Πηγή</value></data>
   <data name="Source_SelfReported" xml:space="preserve"><value>Αυτο-δηλωμένο</value></data>
   <data name="Source_CoachConfirmed" xml:space="preserve"><value>Επιβεβαιωμένο από προπονητή</value></data>
-  <data name="Source_LeagueVerifiedMock" xml:space="preserve"><value>Επαληθευμένο από λίγκα (δοκιμαστικό)</value></data>
+  <data name="Source_LeagueVerifiedMock" xml:space="preserve"><value>Επαληθευμένο από λίγκα (mock)</value></data>
   <data name="Position_PG" xml:space="preserve"><value>Πόιντ γκαρντ</value></data>
   <data name="Position_SG" xml:space="preserve"><value>Σούτινγκ γκαρντ</value></data>
   <data name="Position_SF" xml:space="preserve"><value>Σμολ φόργουορντ</value></data>

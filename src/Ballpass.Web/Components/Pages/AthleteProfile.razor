@@ -1,5 +1,6 @@
 @page "/p/{Slug}"
 @using System.Globalization
+@using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Data
 @using Ballpass.Web.Demo
 @using Microsoft.EntityFrameworkCore
@@ -18,15 +19,15 @@
         <meta property="og:url" content="@ShareUrl" />
     </HeadContent>
 
-    <section class="card profile-header">
+    <section class="bp-card bp-panel profile-header">
         <div class="avatar" aria-hidden="true">@Initials</div>
         <div class="identity">
             <h1>@FullName</h1>
             <div class="badges">
-                <span class="badge badge-demo">@L["Badge_Demo"]</span>
+                <span class="bp-badge bp-badge-demo">@L["Badge_Demo"]</span>
                 @if (athlete.LookingForTeam)
                 {
-                    <span class="badge badge-looking">@L["Badge_LookingForTeam"]</span>
+                    <span class="bp-badge bp-badge-looking">@L["Badge_LookingForTeam"]</span>
                 }
             </div>
             <p class="meta">@PositionLong (@athlete.Position) · @athlete.HeightCm @L["Profile_Cm"] · @Age @L["Profile_Years"] · @CityName</p>
@@ -48,7 +49,7 @@
 
     @if (coachId is not null)
     {
-        <section class="card bp-actions-panel">
+        <section class="bp-card bp-panel bp-actions-panel">
             <h2>@L["Interest_Heading"]</h2>
             @if (interestSent)
             {
@@ -70,7 +71,7 @@
         </section>
     }
 
-    <section class="card">
+    <section class="bp-card bp-panel">
         <h2>@L["Profile_Stats"]</h2>
         @if (stats.Count == 0)
         {
@@ -78,6 +79,12 @@
         }
         else
         {
+            <div class="key-stats">
+                <div class="key-stat"><span class="bp-stat-num">@Num(stats[0].Points)</span><span class="bp-stat-label">@L["Stat_Points"]</span></div>
+                <div class="key-stat"><span class="bp-stat-num">@Num(stats[0].Rebounds)</span><span class="bp-stat-label">@L["Stat_Rebounds"]</span></div>
+                <div class="key-stat"><span class="bp-stat-num">@Num(stats[0].Assists)</span><span class="bp-stat-label">@L["Stat_Assists"]</span></div>
+            </div>
+            <p class="key-season">@stats[0].Season · @L[$"League_{stats[0].League}"]</p>
             <div class="table-scroll">
                 <table class="stats">
                     <thead>
@@ -113,7 +120,7 @@
                                 <td>@Num(s.FgPct)</td>
                                 <td>@Num(s.ThreePct)</td>
                                 <td>@Num(s.FtPct)</td>
-                                <td><span class="badge @SourceClass(s.Source)">@L[$"Source_{s.Source}"]</span></td>
+                                <td><SourceBadge Source="s.Source" /></td>
                             </tr>
                         }
                     </tbody>
@@ -122,7 +129,7 @@
         }
     </section>
 
-    <section class="card">
+    <section class="bp-card bp-panel">
         <h2>@L["Profile_ClubHistory"]</h2>
         <ul class="history">
             @foreach (var s in history)
@@ -134,18 +141,18 @@
 
     @if (!string.IsNullOrWhiteSpace(athlete.Bio))
     {
-        <section class="card">
+        <section class="bp-card bp-panel">
             <h2>@L["Profile_Bio"]</h2>
             <p>@athlete.Bio</p>
         </section>
     }
 
-    <section class="card">
+    <section class="bp-card bp-panel">
         <h2>@L["Profile_Video"]</h2>
         <p class="video-empty">@L["Profile_NoVideo"]</p>
     </section>
 
-    <section class="card">
+    <section class="bp-card bp-panel">
         <h2>@L["Profile_Share"]</h2>
         <p class="meta">@L["Profile_ShareHint"]</p>
         <input class="share" type="text" readonly value="@ShareUrl" aria-label="@L["Profile_Share"]" />
@@ -234,11 +241,4 @@
         $"{athlete!.CurrentClub?.Name ?? L["Profile_OgLookingForTeam"].Value} · {L["Profile_OgDemo"]}";
 
     private static string Num(decimal v) => v.ToString("0.0", CultureInfo.CurrentCulture);
-
-    private static string SourceClass(StatSource s) => s switch
-    {
-        StatSource.CoachConfirmed => "badge-coach",
-        StatSource.LeagueVerifiedMock => "badge-league",
-        _ => "badge-self",
-    };
 }

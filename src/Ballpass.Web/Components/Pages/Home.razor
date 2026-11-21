@@ -1,4 +1,5 @@
 @page "/"
+@using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Data
 @using Microsoft.EntityFrameworkCore
 @inject BallpassDbContext Db
@@ -20,9 +21,9 @@
 </section>
 
 <section class="bp-counters" aria-label="@L["Home_CountsCaption"]">
-    <div class="bp-counter"><span class="bp-count-num" data-count="athletes">@athletes</span><span class="bp-count-label">@L["Home_CountAthletes"]</span></div>
-    <div class="bp-counter"><span class="bp-count-num" data-count="clubs">@clubs</span><span class="bp-count-label">@L["Home_CountClubs"]</span></div>
-    <div class="bp-counter"><span class="bp-count-num" data-count="coaches">@coaches</span><span class="bp-count-label">@L["Home_CountCoaches"]</span></div>
+    <div class="bp-counter"><span class="bp-count-num" data-count="athletes" style="--bp-n:@athletes">@athletes</span><span class="bp-count-label">@L["Home_CountAthletes"]</span></div>
+    <div class="bp-counter"><span class="bp-count-num" data-count="clubs" style="--bp-n:@clubs">@clubs</span><span class="bp-count-label">@L["Home_CountClubs"]</span></div>
+    <div class="bp-counter"><span class="bp-count-num" data-count="coaches" style="--bp-n:@coaches">@coaches</span><span class="bp-count-label">@L["Home_CountCoaches"]</span></div>
     <p class="bp-caption">@L["Home_CountsCaption"]</p>
 </section>
 
@@ -38,9 +39,9 @@
 <section class="bp-home-section">
     <h2>@L["Home_TrustTitle"]</h2>
     <ul class="bp-trust">
-        <li><span class="bp-src bp-src-self">@L["Source_SelfReported"]</span><span>@L["Home_TrustSelf"]</span></li>
-        <li><span class="bp-src bp-src-coach">@L["Source_CoachConfirmed"]</span><span>@L["Home_TrustCoach"]</span></li>
-        <li><span class="bp-src bp-src-league">@L["Source_LeagueVerifiedMock"]</span><span>@L["Home_TrustLeague"]</span></li>
+        <li><SourceBadge Source="StatSource.SelfReported" /><span>@L["Home_TrustSelf"]</span></li>
+        <li><SourceBadge Source="StatSource.CoachConfirmed" /><span>@L["Home_TrustCoach"]</span></li>
+        <li><SourceBadge Source="StatSource.LeagueVerifiedMock" /><span>@L["Home_TrustLeague"]</span></li>
     </ul>
 </section>
 

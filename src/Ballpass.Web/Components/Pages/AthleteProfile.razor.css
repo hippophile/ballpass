@@ -1,27 +1,10 @@
-.card {
-    background: #fff;
-    border: 1px solid #d5dbe3;
-    border-radius: 0.75rem;
-    padding: 1rem 1.25rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 1px 2px rgba(11, 37, 69, 0.06);
-}
-
-    .card h2 {
-        font-size: 1.1rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: #0b2545;
-        margin-bottom: 0.75rem;
-    }
-
 .profile-header {
     display: flex;
-    flex-direction: row; /* Bootstrap .card forces column */
+    flex-direction: row;
     gap: 1.25rem;
     align-items: center;
-    border-top: 5px solid #e8590c;
+    margin-bottom: var(--bp-sp-4);
+    border-top: 1px solid var(--bp-accent);
 }
 
 .avatar {
@@ -29,8 +12,10 @@
     width: 5.5rem;
     height: 5.5rem;
     border-radius: 50%;
-    background: #0b2545;
-    color: #fff;
+    background: var(--bp-s2);
+    border: 2px solid var(--bp-accent);
+    color: var(--bp-text);
+    font-family: var(--bp-font-display);
     font-size: 2rem;
     font-weight: 800;
     display: flex;
@@ -43,9 +28,8 @@
 }
 
     .identity h1 {
-        font-size: 1.75rem;
+        font-size: var(--bp-fs-xl);
         font-weight: 800;
-        color: #0b2545;
         margin: 0 0 0.35rem;
         overflow-wrap: anywhere;
     }
@@ -55,11 +39,11 @@
     }
 
 .meta {
-    color: #3d4852;
+    color: var(--bp-muted);
 }
 
 .meta-label {
-    color: #5a6672;
+    color: var(--bp-muted);
 }
 
 .badges {
@@ -68,43 +52,23 @@
     gap: 0.4rem;
 }
 
-.badge {
-    display: inline-block;
-    padding: 0.25em 0.6em;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    line-height: 1.3;
-    white-space: nowrap;
+.key-stats {
+    margin-bottom: var(--bp-sp-2);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bp-sp-3) var(--bp-sp-6);
 }
 
-.badge-demo {
-    background: #fff3bf;
-    color: #5c4400;
-    border: 1px solid #b38600;
+.key-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
 }
 
-.badge-looking {
-    background: #c2410c;
-    color: #fff;
-}
-
-.badge-self {
-    background: #e9ecef;
-    color: #343a40;
-    border: 1px solid #868e96;
-}
-
-.badge-coach {
-    background: #d3f9d8;
-    color: #1b5e20;
-    border: 1px solid #2b8a3e;
-}
-
-.badge-league {
-    background: #d0ebff;
-    color: #0b3d75;
-    border: 1px solid #1c7ed6;
+.key-season {
+    margin: var(--bp-sp-3) 0 0;
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-muted);
 }
 
 .table-scroll {
@@ -119,16 +83,22 @@
 }
 
     .stats th, .stats td {
-        padding: 0.45rem 0.6rem;
+        padding: 0.5rem 0.6rem;
         text-align: right;
         white-space: nowrap;
-        border-bottom: 1px solid #e3e7ec;
+        border-bottom: 1px solid var(--bp-border);
     }
 
     .stats thead th {
-        background: #0b2545;
-        color: #fff;
-        font-size: 0.8rem;
+        background: var(--bp-s2);
+        color: var(--bp-muted);
+        font-size: var(--bp-fs-xs);
+        letter-spacing: 0.06em;
+    }
+
+    .stats tbody th {
+        color: var(--bp-text);
+        font-weight: 600;
     }
 
     .stats th:first-child, .stats td:nth-child(2), .stats th:last-child, .stats td:last-child {
@@ -136,16 +106,11 @@
     }
 
     .stats td:last-child {
-        min-width: 9.5rem;
+        min-width: 11rem;
     }
 
-    .stats td:last-child .badge {
-        white-space: normal;
-        text-align: center;
-    }
-
-    .stats tbody tr:nth-child(even) {
-        background: #f4f6f9;
+    .stats tbody tr:hover {
+        background: var(--bp-s2);
     }
 
 .history {
@@ -155,19 +120,21 @@
 }
 
     .history li {
-        padding: 0.35rem 0;
-        border-bottom: 1px solid #e3e7ec;
+        padding: 0.4rem 0;
+        border-bottom: 1px solid var(--bp-border);
     }
 
 .history-season {
     display: inline-block;
     min-width: 5.5rem;
+    font-family: var(--bp-font-display);
     font-weight: 700;
-    color: #0b2545;
+    font-variant-numeric: tabular-nums;
+    color: var(--bp-muted);
 }
 
 .video-empty {
-    color: #4a5560;
+    color: var(--bp-muted);
     font-style: italic;
     margin: 0;
 }
@@ -175,13 +142,8 @@
 .share {
     width: 100%;
     box-sizing: border-box;
-    padding: 0.5rem 0.6rem;
-    border: 1px solid #8a94a0;
-    border-radius: 0.4rem;
-    background: #f4f6f9;
-    color: #0b2545;
     font-family: ui-monospace, Menlo, Consolas, monospace;
-    font-size: 0.9rem;
+    font-size: var(--bp-fs-sm);
 }
 
 @media (max-width: 480px) {
