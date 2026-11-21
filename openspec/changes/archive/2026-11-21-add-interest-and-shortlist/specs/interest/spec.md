@@ -7,8 +7,9 @@ The system SHALL let a signed-in coach express interest in an athlete from the a
 #### Scenario: Interest reaches the inbox once
 
 - **GIVEN** a signed-in coach on an athlete's profile
-- **WHEN** the coach submits the interest form twice
+- **WHEN** the coach posts an interest for that athlete twice
 - **THEN** the athlete's inbox lists that coach exactly once
+- **AND** after the first post the profile shows an "already sent" confirmation instead of the form
 
 #### Scenario: Note too long
 

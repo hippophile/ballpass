@@ -90,4 +90,23 @@
   <data name="Search_Next" xml:space="preserve"><value>Επόμενη</value></data>
   <data name="Role_Coach_F" xml:space="preserve"><value>Προπονήτρια</value></data>
   <data name="Role_Athlete_F" xml:space="preserve"><value>Αθλήτρια</value></data>
+  <data name="Nav_Shortlist" xml:space="preserve"><value>Λίστα</value></data>
+  <data name="Nav_Inbox" xml:space="preserve"><value>Εισερχόμενα</value></data>
+  <data name="Interest_Heading" xml:space="preserve"><value>Ενέργειες προπονητή</value></data>
+  <data name="Interest_NoteLabel" xml:space="preserve"><value>Σημείωση (προαιρετική, έως 280 χαρακτήρες)</value></data>
+  <data name="Interest_Submit" xml:space="preserve"><value>Εκδήλωση ενδιαφέροντος</value></data>
+  <data name="Interest_AlreadySent" xml:space="preserve"><value>Έχετε ήδη εκδηλώσει ενδιαφέρον</value></data>
+  <data name="Shortlist_Add" xml:space="preserve"><value>Προσθήκη στη λίστα</value></data>
+  <data name="Shortlist_Remove" xml:space="preserve"><value>Αφαίρεση από τη λίστα</value></data>
+  <data name="Status_interest-sent" xml:space="preserve"><value>Το ενδιαφέρον σας στάλθηκε.</value></data>
+  <data name="Status_interest-exists" xml:space="preserve"><value>Έχετε ήδη εκδηλώσει ενδιαφέρον για αυτόν τον αθλητή.</value></data>
+  <data name="Status_note-too-long" xml:space="preserve"><value>Η σημείωση δεν μπορεί να ξεπερνά τους 280 χαρακτήρες.</value></data>
+  <data name="Status_shortlist-added" xml:space="preserve"><value>Ο αθλητής προστέθηκε στη λίστα σας.</value></data>
+  <data name="Status_shortlist-removed" xml:space="preserve"><value>Ο αθλητής αφαιρέθηκε από τη λίστα σας.</value></data>
+  <data name="Profile_InterestReceived" xml:space="preserve"><value>Ενδιαφέρον που λάβατε</value></data>
+  <data name="Shortlist_Title" xml:space="preserve"><value>Η λίστα μου</value></data>
+  <data name="Shortlist_Empty" xml:space="preserve"><value>Δεν έχετε προσθέσει αθλητές στη λίστα σας ακόμη.</value></data>
+  <data name="Inbox_Title" xml:space="preserve"><value>Εισερχόμενα</value></data>
+  <data name="Inbox_Empty" xml:space="preserve"><value>Δεν έχετε λάβει ενδιαφέρον ακόμη.</value></data>
+  <data name="Inbox_NoNote" xml:space="preserve"><value>Χωρίς σημείωση</value></data>
 </root>

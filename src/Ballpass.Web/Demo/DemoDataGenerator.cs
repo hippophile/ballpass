@@ -3,7 +3,11 @@ using Bogus;
 
 namespace Ballpass.Web.Demo;
 
-public record DemoDataSet(IReadOnlyList<Club> Clubs, IReadOnlyList<Coach> Coaches, IReadOnlyList<Athlete> Athletes);
+public record DemoDataSet(IReadOnlyList<Club> Clubs, IReadOnlyList<Coach> Coaches, IReadOnlyList<Athlete> Athletes)
+{
+    public IReadOnlyList<Interest> Interests { get; init; } = [];
+    public IReadOnlyList<ShortlistEntry> Shortlist { get; init; } = [];
+}
 
 // Pure generator: every random decision comes from one seeded Bogus Randomizer (no clock, no Guid, no unseeded Random),
 // so the same seed always gives the same data set. All people and clubs are fictional.
@@ -13,6 +17,20 @@ public static class DemoDataGenerator
     private const int MenCount = 100;
     private const int HeadCoachCount = 20;
     private const int AssistantCoachCount = 10;
+
+    private const int InterestCount = 40;
+
+    private static readonly string[] InterestNotes =
+    [
+        "Θα θέλαμε να σας δούμε σε μια προπόνηση.",
+        "Το προφίλ σας μας ενδιαφέρει. Επικοινωνήστε μαζί μας όποτε μπορείτε.",
+        "Ψάχνουμε παίκτες με τα δικά σας χαρακτηριστικά για την επόμενη περίοδο.",
+        "Θα χαρούμε να γνωριστούμε και να μιλήσουμε για τα σχέδιά σας.",
+        "Παρακολουθούμε τις εμφανίσεις σας και θα θέλαμε μια συνάντηση.",
+        "Η ομάδα μας διαθέτει θέση στο ρόστερ. Ελάτε να συζητήσουμε.",
+        "Είστε ευπρόσδεκτη/ος σε μια δοκιμαστική προπόνηση.",
+        "Μας άρεσε το προφίλ σας. Πείτε μας πότε είστε διαθέσιμη/ος.",
+    ];
 
     private static readonly string[] Seasons = ["2023-24", "2024-25", "2025-26"];
 
@@ -87,7 +105,53 @@ public static class DemoDataGenerator
         for (var i = 0; i < WomenCount; i++) athletes.Add(GenerateAthlete(r, Gender.Female, clubs, slugs));
         for (var i = 0; i < MenCount; i++) athletes.Add(GenerateAthlete(r, Gender.Male, clubs, slugs));
 
-        return new DemoDataSet(clubs, coaches, athletes);
+        // Generated after the athletes so the athlete data stays identical to earlier seeds.
+        var (interests, shortlist) = GenerateInterestAndShortlist(r, coaches, athletes);
+
+        return new DemoDataSet(clubs, coaches, athletes) { Interests = interests, Shortlist = shortlist };
+    }
+
+    private static (List<Interest> Interests, List<ShortlistEntry> Shortlist) GenerateInterestAndShortlist(
+        Randomizer r, List<Coach> coaches, List<Athlete> athletes)
+    {
+        var heads = coaches.Where(c => c.Role == CoachRole.Head).ToList();
+        var baseTime = new DateTimeOffset(2026, 11, 1, 10, 0, 0, TimeSpan.Zero);
+
+        var shortlist = new List<ShortlistEntry>();
+        foreach (var coach in heads)
+        {
+            var pool = athletes.Where(a => a.Gender == coach.Club!.Gender).ToList();
+            foreach (var athlete in r.Shuffle(pool).Take(r.Int(3, 5)))
+                shortlist.Add(new ShortlistEntry
+                {
+                    Coach = coach,
+                    Athlete = athlete,
+                    CreatedAt = baseTime.AddMinutes(r.Int(0, 20 * 24 * 60)),
+                    IsDemo = true,
+                });
+        }
+
+        var interests = new List<Interest>();
+        var pairs = new HashSet<(Coach, Athlete)>();
+        while (interests.Count < InterestCount)
+        {
+            var coach = Pick(r, heads);
+            var sameGender = athletes.Where(a => a.Gender == coach.Club!.Gender).ToList();
+            var outside = sameGender.Where(a => a.CurrentClub != coach.Club).ToList();
+            // Prefer athletes from other clubs; fall back to the whole gender pool.
+            var athlete = Pick(r, r.Double() < 0.9 && outside.Count > 0 ? outside : sameGender);
+            if (!pairs.Add((coach, athlete))) continue;
+            var noteRoll = r.Int(0, InterestNotes.Length + 1);
+            interests.Add(new Interest
+            {
+                Coach = coach,
+                Athlete = athlete,
+                Note = noteRoll < InterestNotes.Length ? InterestNotes[noteRoll] : null,
+                CreatedAt = baseTime.AddMinutes(r.Int(0, 20 * 24 * 60)),
+                IsDemo = true,
+            });
+        }
+        return (interests, shortlist);
     }
 
     private static List<Club> GenerateClubs(Randomizer r)

@@ -14,7 +14,12 @@ public class DemoDataSeeder(BallpassDbContext db)
 
         await using var tx = await db.Database.BeginTransactionAsync(ct);
 
-        // Children first (FKs). Stat lines / seasons also go if they belong to a demo athlete.
+        // Children first (FKs). Interests / shortlist rows reference demo coaches and athletes.
+        await db.Interests.Where(i => db.Athletes.Any(a => a.Id == i.AthleteId && a.IsDemo)
+            || db.Coaches.Any(c => c.Id == i.CoachId && c.IsDemo)).ExecuteDeleteAsync(ct);
+        await db.ShortlistEntries.Where(i => db.Athletes.Any(a => a.Id == i.AthleteId && a.IsDemo)
+            || db.Coaches.Any(c => c.Id == i.CoachId && c.IsDemo)).ExecuteDeleteAsync(ct);
+        // Stat lines / seasons also go if they belong to a demo athlete.
         await db.StatLines.Where(s => db.Athletes.Any(a => a.Id == s.AthleteId && a.IsDemo)).ExecuteDeleteAsync(ct);
         await db.AthleteSeasons.Where(s => db.Athletes.Any(a => a.Id == s.AthleteId && a.IsDemo)).ExecuteDeleteAsync(ct);
         await db.Athletes.Where(a => a.IsDemo).ExecuteDeleteAsync(ct);
@@ -25,6 +30,8 @@ public class DemoDataSeeder(BallpassDbContext db)
         db.Clubs.AddRange(data.Clubs);
         db.Coaches.AddRange(data.Coaches);
         db.Athletes.AddRange(data.Athletes);
+        db.Interests.AddRange(data.Interests);
+        db.ShortlistEntries.AddRange(data.Shortlist);
         await db.SaveChangesAsync(ct);
 
         await tx.CommitAsync(ct);

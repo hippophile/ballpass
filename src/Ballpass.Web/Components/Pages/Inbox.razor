@@ -1,0 +1,55 @@
+@page "/me/inbox"
+@attribute [Authorize(Roles = "Athlete")]
+@using System.Globalization
+@using Ballpass.Web.Data
+@using Ballpass.Web.Demo
+@using Microsoft.EntityFrameworkCore
+@inject BallpassDbContext Db
+@inject IStringLocalizer<SharedResource> L
+
+<PageTitle>@L["Inbox_Title"]</PageTitle>
+
+<h1>@L["Inbox_Title"]</h1>
+
+@if (interests.Count == 0)
+{
+    <p class="bp-empty">@L["Inbox_Empty"]</p>
+}
+else
+{
+    <ul class="bp-interest-list">
+        @foreach (var i in interests)
+        {
+            var coach = i.Coach!;
+            var name = CoachName(coach);
+            <li class="interest" data-coach="@name">
+                <div class="bp-result-name">@name</div>
+                <div class="bp-result-meta">@L[GreekNames.IsFemaleFirstName(coach.FirstName) ? "Role_Coach_F" : "Role_Coach"] · @coach.Club?.Name</div>
+                <div class="bp-result-meta">@i.CreatedAt.ToString("d", CultureInfo.CurrentCulture)</div>
+                <p class="bp-interest-note">@(string.IsNullOrWhiteSpace(i.Note) ? L["Inbox_NoNote"].Value : i.Note)</p>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState> AuthState { get; set; } = default!;
+
+    private List<Interest> interests = [];
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthState).User;
+        if (!int.TryParse(user.FindFirst("entity_id")?.Value, out var athleteId)) return;
+
+        interests = await Db.Interests.AsNoTracking()
+            .Include(i => i.Coach).ThenInclude(c => c!.Club)
+            .Where(i => i.AthleteId == athleteId)
+            .OrderByDescending(i => i.CreatedAt).ThenByDescending(i => i.Id)
+            .ToListAsync();
+    }
+
+    private static string CoachName(Coach c) => IsGreek ? $"{c.FirstName} {c.LastName}" : $"{c.FirstNameLatin} {c.LastNameLatin}";
+}

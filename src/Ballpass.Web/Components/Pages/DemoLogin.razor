@@ -34,7 +34,7 @@
     @foreach (var a in athletes)
     {
         var name = IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
-        <form method="post" action="/demo/login" data-persona="athlete" data-name="@name" class="bp-persona-form">
+        <form method="post" action="/demo/login" data-persona="athlete" data-name="@name" data-slug="@a.Slug" class="bp-persona-form">
             <input type="hidden" name="personaType" value="athlete">
             <input type="hidden" name="personaId" value="@a.Id">
             <input type="hidden" name="returnUrl" value="@(ReturnUrl ?? "")">

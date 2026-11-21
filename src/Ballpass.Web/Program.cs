@@ -27,6 +27,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = true;
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
+        // Relative Location (the default is absolute): works behind a proxy and keeps redirects host-agnostic.
+        options.Events.OnRedirectToLogin = ctx =>
+        {
+            var returnUrl = Uri.EscapeDataString(ctx.Request.PathBase + ctx.Request.Path + ctx.Request.QueryString);
+            ctx.Response.Redirect($"{options.LoginPath}?{options.ReturnUrlParameter}={returnUrl}");
+            return Task.CompletedTask;
+        };
     });
 builder.Services.AddAuthorization(options =>
     options.AddPolicy("CoachOnly", policy => policy.RequireRole("Coach")));
@@ -70,9 +77,10 @@ if (args.Contains("--reset-demo-data"))
 
     var db = scope.ServiceProvider.GetRequiredService<BallpassDbContext>();
     app.Logger.LogInformation(
-        "Demo data reset: {Clubs} clubs, {Coaches} coaches, {Athletes} athletes, {Seasons} seasons, {StatLines} stat lines",
+        "Demo data reset: {Clubs} clubs, {Coaches} coaches, {Athletes} athletes, {Seasons} seasons, {StatLines} stat lines, {Interests} interests, {Shortlist} shortlist entries",
         await db.Clubs.CountAsync(), await db.Coaches.CountAsync(), await db.Athletes.CountAsync(),
-        await db.AthleteSeasons.CountAsync(), await db.StatLines.CountAsync());
+        await db.AthleteSeasons.CountAsync(), await db.StatLines.CountAsync(),
+        await db.Interests.CountAsync(), await db.ShortlistEntries.CountAsync());
     return;
 }
 
@@ -153,6 +161,48 @@ app.MapPost("/demo/login", async ([FromForm] string? personaType, [FromForm] int
     var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
     await http.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
     return Results.Redirect(IsLocalUrl(returnUrl) ? returnUrl! : home);
+});
+// Coach actions on a profile. Role is enforced here (plain 403), not only by hiding the buttons.
+app.MapPost("/p/{slug}/interest", async (string slug, [FromForm] string? note, BallpassDbContext db, HttpContext http, TimeProvider time) =>
+{
+    if (!http.User.IsInRole("Coach") || !int.TryParse(http.User.FindFirstValue("entity_id"), out var coachId))
+        return Results.StatusCode(StatusCodes.Status403Forbidden);
+    var athlete = await db.Athletes.AsNoTracking().FirstOrDefaultAsync(a => a.Slug == slug && a.IsDemo);
+    if (athlete is null) return Results.NotFound();
+
+    var text = note?.Trim();
+    if (text is { Length: > 280 }) return Results.Redirect($"/p/{slug}?status=note-too-long");
+    if (await db.Interests.AnyAsync(i => i.CoachId == coachId && i.AthleteId == athlete.Id))
+        return Results.Redirect($"/p/{slug}?status=interest-exists");
+
+    db.Interests.Add(new Interest
+    {
+        CoachId = coachId,
+        AthleteId = athlete.Id,
+        Note = string.IsNullOrEmpty(text) ? null : text,
+        CreatedAt = time.GetUtcNow(),
+        IsDemo = true,
+    });
+    await db.SaveChangesAsync();
+    return Results.Redirect($"/p/{slug}?status=interest-sent");
+});
+app.MapPost("/p/{slug}/shortlist", async (string slug, BallpassDbContext db, HttpContext http, TimeProvider time) =>
+{
+    if (!http.User.IsInRole("Coach") || !int.TryParse(http.User.FindFirstValue("entity_id"), out var coachId))
+        return Results.StatusCode(StatusCodes.Status403Forbidden);
+    var athlete = await db.Athletes.AsNoTracking().FirstOrDefaultAsync(a => a.Slug == slug && a.IsDemo);
+    if (athlete is null) return Results.NotFound();
+
+    var entry = await db.ShortlistEntries.FirstOrDefaultAsync(s => s.CoachId == coachId && s.AthleteId == athlete.Id);
+    if (entry is null)
+    {
+        db.ShortlistEntries.Add(new ShortlistEntry { CoachId = coachId, AthleteId = athlete.Id, CreatedAt = time.GetUtcNow(), IsDemo = true });
+        await db.SaveChangesAsync();
+        return Results.Redirect($"/p/{slug}?status=shortlist-added");
+    }
+    db.ShortlistEntries.Remove(entry);
+    await db.SaveChangesAsync();
+    return Results.Redirect($"/p/{slug}?status=shortlist-removed");
 });
 app.MapPost("/demo/logout", async (HttpContext http) =>
 {

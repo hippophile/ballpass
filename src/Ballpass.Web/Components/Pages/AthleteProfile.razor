@@ -36,6 +36,40 @@
         </div>
     </section>
 
+    @if (!string.IsNullOrEmpty(StatusMessage))
+    {
+        <p class="bp-status" role="status">@StatusMessage</p>
+    }
+
+    @if (isOwnProfile)
+    {
+        <p class="bp-received"><a href="/me/inbox">@L["Profile_InterestReceived"]: @receivedCount</a></p>
+    }
+
+    @if (coachId is not null)
+    {
+        <section class="card bp-actions-panel">
+            <h2>@L["Interest_Heading"]</h2>
+            @if (interestSent)
+            {
+                <p class="bp-interest-sent">✓ @L["Interest_AlreadySent"]</p>
+            }
+            else
+            {
+                <form method="post" action="/p/@Slug/interest" data-action="interest" class="bp-action-form">
+                    <AntiforgeryToken />
+                    <label for="interest-note">@L["Interest_NoteLabel"]</label>
+                    <textarea id="interest-note" name="note" maxlength="280" rows="3"></textarea>
+                    <button type="submit" class="bp-btn">@L["Interest_Submit"]</button>
+                </form>
+            }
+            <form method="post" action="/p/@Slug/shortlist" data-action="shortlist" class="bp-action-form">
+                <AntiforgeryToken />
+                <button type="submit" class="bp-btn">@L[shortlisted ? "Shortlist_Remove" : "Shortlist_Add"]</button>
+            </form>
+        </section>
+    }
+
     <section class="card">
         <h2>@L["Profile_Stats"]</h2>
         @if (stats.Count == 0)
@@ -120,10 +154,20 @@
 
 @code {
     [Parameter] public string Slug { get; set; } = "";
+    [SupplyParameterFromQuery(Name = "status")] public string? Status { get; set; }
+    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
 
     private Athlete? athlete;
     private List<StatLine> stats = [];
     private List<AthleteSeason> history = [];
+    private int? coachId;
+    private bool interestSent;
+    private bool shortlisted;
+    private bool isOwnProfile;
+    private int receivedCount;
+
+    private static readonly string[] StatusKeys = ["interest-sent", "interest-exists", "note-too-long", "shortlist-added", "shortlist-removed"];
+    private string? StatusMessage => Status is not null && StatusKeys.Contains(Status) ? L[$"Status_{Status}"].Value : null;
 
     private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
 
@@ -144,6 +188,22 @@
 
         stats = athlete.Stats.OrderByDescending(s => s.Season, StringComparer.Ordinal).ToList();
         history = athlete.Seasons.OrderByDescending(s => s.Season, StringComparer.Ordinal).ToList();
+
+        var user = AuthState is null ? null : (await AuthState).User;
+        if (user?.Identity?.IsAuthenticated == true && int.TryParse(user.FindFirst("entity_id")?.Value, out var entityId))
+        {
+            if (user.IsInRole("Coach"))
+            {
+                coachId = entityId;
+                interestSent = await Db.Interests.AnyAsync(i => i.CoachId == entityId && i.AthleteId == athlete.Id);
+                shortlisted = await Db.ShortlistEntries.AnyAsync(s => s.CoachId == entityId && s.AthleteId == athlete.Id);
+            }
+            else if (user.IsInRole("Athlete") && entityId == athlete.Id)
+            {
+                isOwnProfile = true;
+                receivedCount = await Db.Interests.CountAsync(i => i.AthleteId == athlete.Id);
+            }
+        }
     }
 
     private string FullName => athlete is null ? "" :

@@ -1,6 +1,9 @@
 @inherits LayoutComponentBase
 @using System.Globalization
+@using Ballpass.Web.Data
+@using Microsoft.EntityFrameworkCore
 @inject NavigationManager Navigation
+@inject IServiceScopeFactory ScopeFactory
 @inject IStringLocalizer<SharedResource> L
 
 <div class="demo-banner" role="status">
@@ -16,6 +19,11 @@
                 @if (context.User.IsInRole("Coach"))
                 {
                     <a href="/search">@L["Nav_Search"]</a>
+                    <a href="/shortlist">@L["Nav_Shortlist"]</a>
+                }
+                else if (context.User.IsInRole("Athlete"))
+                {
+                    <a href="/me/inbox">@L["Nav_Inbox"] (@inboxCount)</a>
                 }
                 <span class="bp-whoami">@PersonaName(context.User) <small>(@L[(context.User.IsInRole("Coach") ? "Role_Coach" : "Role_Athlete") + (context.User.FindFirst("gender")?.Value == "F" ? "_F" : "")])</small></span>
                 <form method="post" action="/demo/logout">
@@ -46,6 +54,21 @@
 
     private static string PersonaName(System.Security.Claims.ClaimsPrincipal user) =>
         (Lang == "el" ? user.Identity?.Name : user.FindFirst("name_latin")?.Value ?? user.Identity?.Name) ?? "";
+
+    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
+
+    private int inboxCount;
+
+    // Own scope + DbContext: the layout initialises concurrently with the page, which holds the request-scoped context.
+    protected override async Task OnInitializedAsync()
+    {
+        var user = AuthState is null ? null : (await AuthState).User;
+        if (user?.IsInRole("Athlete") != true || !int.TryParse(user.FindFirst("entity_id")?.Value, out var id)) return;
+
+        using var scope = ScopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BallpassDbContext>();
+        inboxCount = await db.Interests.CountAsync(i => i.AthleteId == id);
+    }
 
     private string LangHref(string culture) =>
         $"/culture/set?culture={culture}&redirectUri={Uri.EscapeDataString("/" + Navigation.ToBaseRelativePath(Navigation.Uri))}";

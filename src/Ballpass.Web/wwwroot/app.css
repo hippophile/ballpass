@@ -265,3 +265,58 @@ h1:focus {
     gap: 1rem;
     margin-top: 1rem;
 }
+
+/* Interest / shortlist */
+.bp-status {
+    background: #e7f0fb;
+    border: 1px solid #b6cdee;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    font-weight: 600;
+}
+
+.bp-received {
+    font-weight: 600;
+}
+
+.bp-action-form {
+    display: block;
+    margin-top: 0.75rem;
+}
+
+    .bp-action-form textarea {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0.3rem 0 0.6rem;
+    }
+
+.bp-interest-sent {
+    color: #1e6b34;
+    font-weight: 600;
+}
+
+.bp-result-actions {
+    margin-left: auto;
+}
+
+.bp-interest-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.interest {
+    background: #fff;
+    border: 1px solid #d5dbe3;
+    border-radius: 0.75rem;
+    padding: 0.7rem 1rem;
+    box-shadow: 0 1px 2px rgba(11, 37, 69, 0.06);
+}
+
+.bp-interest-note {
+    margin: 0.4rem 0 0;
+}

@@ -86,3 +86,26 @@ public class StatLine
     public decimal FtPct { get; set; }
     public StatSource Source { get; set; }
 }
+
+public class Interest
+{
+    public int Id { get; set; }
+    public int CoachId { get; set; }
+    public Coach? Coach { get; set; }
+    public int AthleteId { get; set; }
+    public Athlete? Athlete { get; set; }
+    public string? Note { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+    public bool IsDemo { get; set; }
+}
+
+public class ShortlistEntry
+{
+    public int Id { get; set; }
+    public int CoachId { get; set; }
+    public Coach? Coach { get; set; }
+    public int AthleteId { get; set; }
+    public Athlete? Athlete { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+    public bool IsDemo { get; set; }
+}

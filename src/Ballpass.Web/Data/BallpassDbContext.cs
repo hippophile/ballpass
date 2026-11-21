@@ -9,6 +9,8 @@ public class BallpassDbContext(DbContextOptions<BallpassDbContext> options) : Db
     public DbSet<Athlete> Athletes => Set<Athlete>();
     public DbSet<AthleteSeason> AthleteSeasons => Set<AthleteSeason>();
     public DbSet<StatLine> StatLines => Set<StatLine>();
+    public DbSet<Interest> Interests => Set<Interest>();
+    public DbSet<ShortlistEntry> ShortlistEntries => Set<ShortlistEntry>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -52,6 +54,21 @@ public class BallpassDbContext(DbContextOptions<BallpassDbContext> options) : Db
             e.Property(x => x.FgPct).HasPrecision(4, 1);
             e.Property(x => x.ThreePct).HasPrecision(4, 1);
             e.Property(x => x.FtPct).HasPrecision(4, 1);
+        });
+
+        modelBuilder.Entity<Interest>(e =>
+        {
+            e.Property(x => x.Note).HasMaxLength(280);
+            e.HasIndex(x => new { x.CoachId, x.AthleteId }).IsUnique();
+            e.HasOne(x => x.Coach).WithMany().HasForeignKey(x => x.CoachId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(x => x.Athlete).WithMany().HasForeignKey(x => x.AthleteId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<ShortlistEntry>(e =>
+        {
+            e.HasIndex(x => new { x.CoachId, x.AthleteId }).IsUnique();
+            e.HasOne(x => x.Coach).WithMany().HasForeignKey(x => x.CoachId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(x => x.Athlete).WithMany().HasForeignKey(x => x.AthleteId).OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

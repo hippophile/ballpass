@@ -90,4 +90,23 @@
   <data name="Search_Next" xml:space="preserve"><value>Next</value></data>
   <data name="Role_Coach_F" xml:space="preserve"><value>Coach</value></data>
   <data name="Role_Athlete_F" xml:space="preserve"><value>Athlete</value></data>
+  <data name="Nav_Shortlist" xml:space="preserve"><value>Shortlist</value></data>
+  <data name="Nav_Inbox" xml:space="preserve"><value>Inbox</value></data>
+  <data name="Interest_Heading" xml:space="preserve"><value>Coach actions</value></data>
+  <data name="Interest_NoteLabel" xml:space="preserve"><value>Note (optional, up to 280 characters)</value></data>
+  <data name="Interest_Submit" xml:space="preserve"><value>Express interest</value></data>
+  <data name="Interest_AlreadySent" xml:space="preserve"><value>You have already expressed interest</value></data>
+  <data name="Shortlist_Add" xml:space="preserve"><value>Add to shortlist</value></data>
+  <data name="Shortlist_Remove" xml:space="preserve"><value>Remove from shortlist</value></data>
+  <data name="Status_interest-sent" xml:space="preserve"><value>Your interest was sent.</value></data>
+  <data name="Status_interest-exists" xml:space="preserve"><value>You have already expressed interest in this athlete.</value></data>
+  <data name="Status_note-too-long" xml:space="preserve"><value>The note cannot be longer than 280 characters.</value></data>
+  <data name="Status_shortlist-added" xml:space="preserve"><value>The athlete was added to your shortlist.</value></data>
+  <data name="Status_shortlist-removed" xml:space="preserve"><value>The athlete was removed from your shortlist.</value></data>
+  <data name="Profile_InterestReceived" xml:space="preserve"><value>Interest received</value></data>
+  <data name="Shortlist_Title" xml:space="preserve"><value>My shortlist</value></data>
+  <data name="Shortlist_Empty" xml:space="preserve"><value>You have not added any athletes to your shortlist yet.</value></data>
+  <data name="Inbox_Title" xml:space="preserve"><value>Inbox</value></data>
+  <data name="Inbox_Empty" xml:space="preserve"><value>You have not received any interest yet.</value></data>
+  <data name="Inbox_NoNote" xml:space="preserve"><value>No note</value></data>
 </root>
