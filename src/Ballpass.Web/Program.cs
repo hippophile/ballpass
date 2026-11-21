@@ -81,6 +81,7 @@ builder.Services.AddDbContext<BallpassDbContext>(options =>
 });
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<DemoDataSeeder>();
+builder.Services.AddEvidence();
 builder.Services.AddHealthChecks().AddDbContextCheck<BallpassDbContext>();
 
 var app = builder.Build();

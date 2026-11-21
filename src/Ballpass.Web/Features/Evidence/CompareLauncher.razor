@@ -1,0 +1,85 @@
+@namespace Ballpass.Web.Components
+@using System.Globalization
+@using Ballpass.Web.Data
+@using Microsoft.EntityFrameworkCore
+@inject IServiceScopeFactory Scopes
+@inject IStringLocalizer<EvidenceResource> E
+
+@* GET form to /compare. Choose two shortlisted players (or, with FixedA, only the second one). Coach-only: renders nothing for others. *@
+@if (isCoach && (athletes.Count > 0 || FixedA is not null))
+{
+    <section class="bp-card bp-panel bp-ev-launcher">
+        <h2>@E["Compare_Launcher"]</h2>
+        @if (FixedA is null && athletes.Count < 2)
+        {
+            <p class="bp-ev-note">@E["Compare_NeedTwo"]</p>
+        }
+        else if (FixedA is not null && choices.Count == 0)
+        {
+            <p class="bp-ev-note">@E["Compare_NoShortlist"]</p>
+        }
+        else
+        {
+            <form method="get" action="/compare" data-compare-launcher class="bp-ev-launcher-form">
+                @if (FixedA is null)
+                {
+                    <div class="bp-field">
+                        <label for="bp-ev-a">@E["Compare_PickA"]</label>
+                        <select id="bp-ev-a" name="a">
+                            @foreach (var a in athletes)
+                            {
+                                <option value="@a.Slug">@FullName(a)</option>
+                            }
+                        </select>
+                    </div>
+                }
+                else
+                {
+                    <input type="hidden" name="a" value="@FixedA" />
+                }
+                <div class="bp-field">
+                    <label for="bp-ev-b">@E["Compare_PickB"]</label>
+                    <select id="bp-ev-b" name="b">
+                        @foreach (var (a, i) in choices.Select((x, i) => (x, i)))
+                        {
+                            @* Without a fixed first player, B defaults to the second entry so a plain submit compares two different players. *@
+                            <option value="@a.Slug" selected="@(FixedA is null && i == 1)">@FullName(a)</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="bp-btn">@E["Compare_Submit"]</button>
+            </form>
+        }
+    </section>
+}
+
+@code {
+    /// <summary>Slug of the first player when it is already decided (profile "Σύγκριση με…" link).</summary>
+    [Parameter] public string? FixedA { get; set; }
+    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
+
+    private List<Athlete> athletes = [];
+    private List<Athlete> choices = [];
+    private bool isCoach;
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = AuthState is null ? null : (await AuthState).User;
+        if (user?.IsInRole("Coach") != true || !int.TryParse(user.FindFirst("entity_id")?.Value, out var coachId)) return;
+        isCoach = true;
+
+        // Own scope = own DbContext: this component can render while the host page's queries are still running.
+        using var scope = Scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BallpassDbContext>();
+        athletes = await db.ShortlistEntries.AsNoTracking()
+            .Where(s => s.CoachId == coachId)
+            .OrderByDescending(s => s.CreatedAt).ThenByDescending(s => s.Id)
+            .Select(s => s.Athlete!)
+            .ToListAsync();
+        choices = athletes.Where(x => x.Slug != FixedA).ToList();
+    }
+
+    private static string FullName(Athlete a) => IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
+}

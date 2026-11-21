@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Panel_Heading" xml:space="preserve"><value>Performance evidence</value></data>
+  <data name="Pct_Heading" xml:space="preserve"><value>Percentiles — demo cohort (δείγμα επίδειξης)</value></data>
+  <data name="Cohort_Label" xml:space="preserve"><value>demo cohort (δείγμα επίδειξης): {0} {1} (fictional)</value></data>
+  <data name="Group_Guard" xml:space="preserve"><value>guards</value></data>
+  <data name="Group_Forward" xml:space="preserve"><value>forwards</value></data>
+  <data name="Group_Center" xml:space="preserve"><value>centers</value></data>
+  <data name="Metric_Points" xml:space="preserve"><value>Points / 40'</value></data>
+  <data name="Metric_Rebounds" xml:space="preserve"><value>Rebounds / 40'</value></data>
+  <data name="Metric_Assists" xml:space="preserve"><value>Assists / 40'</value></data>
+  <data name="Metric_Steals" xml:space="preserve"><value>Steals / 40'</value></data>
+  <data name="Metric_FgPct" xml:space="preserve"><value>Field goal % (FG%)</value></data>
+  <data name="Pct_Value" xml:space="preserve"><value>{0}th percentile</value></data>
+  <data name="Insufficient" xml:space="preserve"><value>Not enough data (n={0})</value></data>
+  <data name="Insufficient_Peers" xml:space="preserve"><value>fewer than 20 peers in the cohort</value></data>
+  <data name="Insufficient_Games" xml:space="preserve"><value>fewer than 10 games</value></data>
+  <data name="Aria_Row" xml:space="preserve"><value>{0}: {1}, {2}</value></data>
+  <data name="Aria_RowNoData" xml:space="preserve"><value>{0}: {1}. {2}</value></data>
+  <data name="Source_Note" xml:space="preserve"><value>Source of the latest season stats:</value></data>
+  <data name="Thresholds_Note" xml:space="preserve"><value>The thresholds (20 peers, 10 games, ±10%, 8 games) are our own estimates, not league rules. The cohort is fictional.</value></data>
+  <data name="Toggle_Label" xml:space="preserve"><value>Comparison cohort:</value></data>
+  <data name="Toggle_All" xml:space="preserve"><value>All sources</value></data>
+  <data name="Toggle_Confirmed" xml:space="preserve"><value>Coach-confirmed only</value></data>
+  <data name="Col_Metric" xml:space="preserve"><value>Metric</value></data>
+  <data name="Col_Value" xml:space="preserve"><value>Value</value></data>
+  <data name="Col_Pct" xml:space="preserve"><value>Percentile</value></data>
+  <data name="Col_N" xml:space="preserve"><value>Cohort (n)</value></data>
+  <data name="Line_Heading" xml:space="preserve"><value>Points per game by season</value></data>
+  <data name="Line_Aria" xml:space="preserve"><value>Points per game by season: {0}</value></data>
+  <data name="Line_Col_Season" xml:space="preserve"><value>Season</value></data>
+  <data name="Line_Col_Ppg" xml:space="preserve"><value>Points/game</value></data>
+  <data name="Line_Col_Games" xml:space="preserve"><value>Games</value></data>
+  <data name="Line_Col_Source" xml:space="preserve"><value>Source</value></data>
+  <data name="Line_Missing" xml:space="preserve"><value>no data</value></data>
+  <data name="Trend_Label" xml:space="preserve"><value>Trend</value></data>
+  <data name="Trend_Up" xml:space="preserve"><value>rising</value></data>
+  <data name="Trend_Down" xml:space="preserve"><value>falling</value></data>
+  <data name="Trend_Flat" xml:space="preserve"><value>steady</value></data>
+  <data name="Trend_NotAvailable" xml:space="preserve"><value>n/a</value></data>
+  <data name="Trend_Rule" xml:space="preserve"><value>Rule: ±10% against the previous season. n/a when the previous season is missing or either season has fewer than 8 games.</value></data>
+  <data name="Badges_Heading" xml:space="preserve"><value>Rule-based badges</value></data>
+  <data name="Badge_coach-confirmed" xml:space="preserve"><value>Coach-confirmed: {0} seasons</value></data>
+  <data name="Badge_league-verified" xml:space="preserve"><value>League-verified (mock): {0} seasons</value></data>
+  <data name="Badge_multi-season" xml:space="preserve"><value>Experience: stats for {0} seasons</value></data>
+  <data name="Badge_regular" xml:space="preserve"><value>Regular: {0} games in the latest season (rule: 25+)</value></data>
+  <data name="Badge_rising" xml:space="preserve"><value>Rising: +{0}% points per game (rule: +10% or more)</value></data>
+  <data name="Badge_top-quartile" xml:space="preserve"><value>Top quartile: {0}th percentile in points/40' (demo cohort)</value></data>
+  <data name="Badge_Source" xml:space="preserve"><value>source: {0}</value></data>
+  <data name="Compare_Link" xml:space="preserve"><value>Compare with…</value></data>
+  <data name="Compare_Title" xml:space="preserve"><value>Compare players</value></data>
+  <data name="Compare_Heading" xml:space="preserve"><value>Percentile comparison — demo cohort (δείγμα επίδειξης)</value></data>
+  <data name="Compare_PickA" xml:space="preserve"><value>Player A</value></data>
+  <data name="Compare_PickB" xml:space="preserve"><value>Player B</value></data>
+  <data name="Compare_Submit" xml:space="preserve"><value>Compare</value></data>
+  <data name="Compare_Launcher" xml:space="preserve"><value>Compare two players</value></data>
+  <data name="Compare_NeedTwo" xml:space="preserve"><value>You need at least two players on your shortlist to compare.</value></data>
+  <data name="Compare_ChooseB" xml:space="preserve"><value>Pick which shortlisted player to compare with:</value></data>
+  <data name="Compare_NoShortlist" xml:space="preserve"><value>Your shortlist is empty. Add players from search.</value></data>
+  <data name="Compare_Same" xml:space="preserve"><value>Pick two different players.</value></data>
+  <data name="Compare_Warning" xml:space="preserve"><value>Careful: different positions ({0} and {1}). Each percentile is within its own demo cohort, so they are not directly comparable.</value></data>
+  <data name="Compare_Legend" xml:space="preserve"><value>Legend</value></data>
+  <data name="Compare_Solid" xml:space="preserve"><value>solid line, circle</value></data>
+  <data name="Compare_Dashed" xml:space="preserve"><value>dashed line, square</value></data>
+  <data name="Compare_Cohort" xml:space="preserve"><value>Cohort</value></data>
+  <data name="Compare_NoValue" xml:space="preserve"><value>—</value></data>
+  <data name="Back_ToProfile" xml:space="preserve"><value>Back to profile</value></data>
+</root>

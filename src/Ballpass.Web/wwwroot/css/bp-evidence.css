@@ -1,0 +1,423 @@
+/* Evidence package: percentile bars, season line, badges, compare. Only var(--bp-*) tokens except the chart hues below. */
+
+/* Okabe-Ito hues, each >= 3:1 on --bp-bg (#0B0F14); verified by tests/EvidenceTests. Never the only cue: shapes/dashes/text carry the meaning too. */
+:root {
+    --bp-chart-a: #56B4E9;
+    --bp-chart-b: #E69F00;
+    --bp-chart-c: #009E73;
+    --bp-chart-d: #F0E442;
+    --bp-chart-e: #CC79A7;
+}
+
+.bp-ev {
+    display: grid;
+    gap: var(--bp-sp-5);
+    margin-block: var(--bp-sp-5) var(--bp-sp-4);
+}
+
+.bp-ev-block {
+    border-top: 1px solid var(--bp-border);
+    padding-top: var(--bp-sp-4);
+}
+
+.bp-ev h3 {
+    margin: 0 0 var(--bp-sp-2);
+    font-family: var(--bp-font-display);
+    font-size: var(--bp-fs-md);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--bp-text);
+}
+
+.bp-ev-cohort {
+    margin: 0 0 var(--bp-sp-2);
+    font-size: var(--bp-fs-sm);
+    color: var(--bp-muted);
+}
+
+.bp-ev-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bp-sp-2) var(--bp-sp-3);
+    margin: 0 0 var(--bp-sp-4);
+    font-size: var(--bp-fs-sm);
+    color: var(--bp-muted);
+}
+
+    .bp-ev-toggle a {
+        color: var(--bp-text);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        text-decoration-color: var(--bp-border-ui);
+    }
+
+        .bp-ev-toggle a[aria-current="true"] {
+            color: var(--bp-accent);
+            text-decoration-color: var(--bp-accent);
+            font-weight: 600;
+        }
+
+/* ---- percentile row: label left, big number right, thin bar below ---- */
+.bp-ev-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    column-gap: var(--bp-sp-3);
+    row-gap: 2px;
+    margin-bottom: var(--bp-sp-4);
+}
+
+.bp-ev-label {
+    font-size: var(--bp-fs-sm);
+    color: var(--bp-muted);
+}
+
+.bp-ev-num {
+    font-family: var(--bp-font-display);
+    font-weight: 800;
+    font-size: var(--bp-fs-xl);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    color: var(--bp-text);
+    text-align: end;
+}
+
+.bp-ev-pct {
+    grid-column: 1 / -1;
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-muted);
+}
+
+.bp-ev-nodata {
+    color: var(--bp-warn);
+}
+
+.bp-ev-bar {
+    grid-column: 1 / -1;
+    display: block;
+    width: 100%;
+    height: 10px;
+    border-radius: var(--bp-r-pill);
+    overflow: hidden;
+}
+
+.bp-ev-track {
+    fill: var(--bp-s2);
+}
+
+.bp-ev-fill {
+    fill: var(--bp-chart-a);
+}
+
+.bp-ev-tick {
+    stroke: var(--bp-bg);
+    stroke-width: 0.6;
+    opacity: 0.5;
+}
+
+.bp-ev-source, .bp-ev-note {
+    margin: var(--bp-sp-2) 0 0;
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-muted);
+}
+
+/* ---- season line ---- */
+.bp-ev-trendline {
+    margin: 0 0 var(--bp-sp-2);
+    display: flex;
+    gap: var(--bp-sp-2);
+    align-items: baseline;
+}
+
+.bp-ev-trend-label {
+    font-size: var(--bp-fs-sm);
+    color: var(--bp-muted);
+}
+
+.bp-ev-trend {
+    font-family: var(--bp-font-display);
+    font-weight: 700;
+    font-size: var(--bp-fs-lg);
+    color: var(--bp-text);
+}
+
+.bp-ev-line {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    overflow: visible;
+}
+
+.bp-ev-axis {
+    stroke: var(--bp-border-ui);
+    stroke-width: 1;
+}
+
+.bp-ev-path {
+    fill: none;
+    stroke: var(--bp-chart-a);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+.bp-ev-dot {
+    fill: var(--bp-bg);
+    stroke: var(--bp-chart-a);
+    stroke-width: 2.5;
+}
+
+.bp-ev-val {
+    fill: var(--bp-text);
+    font: 700 13px var(--bp-font-text);
+}
+
+.bp-ev-axis-label {
+    fill: var(--bp-muted);
+    font: 500 11.5px var(--bp-font-text);
+}
+
+/* ---- badges ---- */
+.bp-ev-badges {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bp-sp-2);
+}
+
+.bp-ev-badge {
+    display: block;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--bp-border-ui);
+    border-radius: var(--bp-r-md);
+    background: var(--bp-s2);
+    color: var(--bp-text);
+    font-size: var(--bp-fs-sm);
+}
+
+    .bp-ev-badge::before {
+        margin-inline-end: 0.4em;
+        content: "◇" / "";
+        color: var(--bp-muted);
+    }
+
+    .bp-ev-badge[data-source="CoachConfirmed"]::before {
+        content: "✓" / "";
+        color: var(--bp-src-coach);
+    }
+
+    .bp-ev-badge[data-source="LeagueVerifiedMock"]::before {
+        content: "⛨" / "";
+        color: var(--bp-src-league);
+    }
+
+    .bp-ev-badge[data-source="SelfReported"]::before {
+        content: "○" / "";
+        color: var(--bp-src-self);
+    }
+
+.bp-ev-badge-src {
+    color: var(--bp-muted);
+}
+
+/* Plain-text source label (icon via ::before, text always present). */
+.bp-ev-src {
+    display: inline-flex;
+    gap: 0.4em;
+    color: var(--bp-text);
+    font-weight: 600;
+}
+
+    .bp-ev-src::before {
+        content: "○" / "";
+        color: var(--bp-src-self);
+    }
+
+    .bp-ev-src[data-ev-source="CoachConfirmed"]::before {
+        content: "✓" / "";
+        color: var(--bp-src-coach);
+    }
+
+    .bp-ev-src[data-ev-source="LeagueVerifiedMock"]::before {
+        content: "⛨" / "";
+        color: var(--bp-src-league);
+    }
+
+.bp-ev-compare {
+    margin: 0;
+}
+
+    .bp-ev-compare a {
+        font-weight: 600;
+    }
+
+/* ---- visually hidden table fallback (the box clips it; a table ignores its own width) ---- */
+.bp-ev-sr-box {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---- compare ---- */
+.bp-ev-warning {
+    margin: 0 0 var(--bp-sp-4);
+    padding: var(--bp-sp-3);
+    border: 1px solid var(--bp-warn);
+    border-radius: var(--bp-r-sm);
+    background: var(--bp-s2);
+    color: var(--bp-text);
+}
+
+.bp-ev-players {
+    display: grid;
+    gap: var(--bp-sp-3);
+    margin-bottom: var(--bp-sp-5);
+}
+
+@media (min-width: 640px) {
+    .bp-ev-players {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.bp-ev-player {
+    display: flex;
+    gap: var(--bp-sp-3);
+    align-items: flex-start;
+}
+
+.bp-ev-player-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.bp-ev-player-name {
+    font-family: var(--bp-font-display);
+    font-size: var(--bp-fs-lg);
+    font-weight: 700;
+}
+
+.bp-ev-player-meta {
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-muted);
+}
+
+.bp-ev-key {
+    flex: none;
+    margin-top: 0.5rem;
+}
+
+.bp-ev-cmp-row {
+    margin-bottom: var(--bp-sp-3);
+}
+
+.bp-ev-cmp-svg {
+    display: block;
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+}
+
+.bp-ev-cmp-track {
+    stroke: var(--bp-s2);
+}
+
+.bp-ev-cmp-fill[data-athlete="a"], .bp-ev-mark[data-athlete="a"] {
+    stroke: var(--bp-chart-a);
+}
+
+.bp-ev-cmp-fill[data-athlete="b"], .bp-ev-mark[data-athlete="b"] {
+    stroke: var(--bp-chart-b);
+}
+
+.bp-ev-mark {
+    stroke-width: 2.5;
+}
+
+.bp-ev-mark[data-athlete="a"] {
+    fill: var(--bp-chart-a);
+    stroke: var(--bp-bg);
+}
+
+.bp-ev-mark[data-athlete="b"] {
+    fill: var(--bp-chart-b);
+    stroke: var(--bp-bg);
+}
+
+.bp-ev-cmp-text {
+    fill: var(--bp-text);
+    font: 700 13px var(--bp-font-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.bp-ev-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--bp-sp-4);
+    font-size: var(--bp-fs-sm);
+    font-variant-numeric: tabular-nums;
+}
+
+    .bp-ev-table caption {
+        text-align: start;
+        color: var(--bp-muted);
+        font-size: var(--bp-fs-xs);
+        padding-bottom: var(--bp-sp-2);
+    }
+
+    .bp-ev-table th, .bp-ev-table td {
+        padding: 0.4rem 0.6rem;
+        border-bottom: 1px solid var(--bp-border);
+        text-align: end;
+        white-space: nowrap;
+    }
+
+    .bp-ev-table th:first-child, .bp-ev-table thead th {
+        text-align: start;
+    }
+
+    .bp-ev-table thead th {
+        color: var(--bp-muted);
+        font-weight: 500;
+        white-space: normal;
+    }
+
+.bp-ev-launcher-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bp-sp-3);
+    align-items: flex-end;
+}
+
+    .bp-ev-launcher-form .bp-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: min(100%, 14rem);
+        flex: 1 1 14rem;
+    }
+
+    .bp-ev-launcher-form label {
+        font-size: var(--bp-fs-sm);
+        color: var(--bp-muted);
+    }
+
+.bp-ev-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.bp-ev-launcher {
+    margin-top: var(--bp-sp-5);
+}
