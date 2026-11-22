@@ -9,6 +9,7 @@
 @inject BallpassDbContext Db
 @inject ICohortService Cohorts
 @inject IStatAggregator Stats
+@inject Microsoft.Extensions.Options.IOptions<EvidenceOptions> EvOptions
 @inject NavigationManager Navigation
 @inject IStringLocalizer<EvidenceResource> E
 @inject IStringLocalizer<SharedResource> L
@@ -129,10 +130,10 @@ else
             var missing = ev?.Metrics.FirstOrDefault(x => x.Percentile is null);
             if (ev is null || missing is not null)
             {
-                <p class="bp-ev-note" data-athlete="@who">@FullName(ath): @E["Insufficient", missing?.N ?? 0] · @E[missing?.Reason == InsufficientReason.TooFewGames ? "Insufficient_Games" : "Insufficient_Peers"]</p>
+                <p class="bp-ev-note" data-athlete="@who">@FullName(ath): @E["Insufficient", missing?.N ?? 0] · @(missing?.Reason switch { InsufficientReason.TooFewGames => E["Insufficient_Games"].Value, InsufficientReason.TooFewMinutes => E["Insufficient_Minutes", EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture)].Value, _ => E["Insufficient_Peers"].Value })</p>
             }
         }
-        <p class="bp-ev-note">@E["Thresholds_Note"]</p>
+        <p class="bp-ev-note">@E["Thresholds_Note", EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture)]</p>
     </section>
 
     <p><a href="/shortlist">← @L["Shortlist_Title"]</a></p>

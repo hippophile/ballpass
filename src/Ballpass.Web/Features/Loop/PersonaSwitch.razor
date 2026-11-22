@@ -1,0 +1,28 @@
+@namespace Ballpass.Web.Components
+@using Ballpass.Web.Features.Loop
+@using Microsoft.Extensions.Options
+@inject IOptions<DemoOptions> Demo
+@inject IStringLocalizer<LoopResource> T
+
+@* One-click persona switch pill. Coach: see it as the athlete. Switched athlete: back to the coach. Hidden when Demo:Enabled=false. *@
+@if (Demo.Value.Enabled && direction is not null)
+{
+    <form method="post" action="/demo/switch?to=@direction" data-demo-switch="@direction" class="bp-loop-switch">
+        <AntiforgeryToken />
+        <button type="submit" class="bp-loop-pill">@T[direction == "athlete" ? "Switch_ToAthlete" : "Switch_ToCoach"]</button>
+    </form>
+}
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
+
+    private string? direction;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = AuthState is null ? null : (await AuthState).User;
+        if (user?.Identity?.IsAuthenticated != true) return;
+        if (user.IsInRole("Coach")) direction = "athlete";
+        else if (user.IsInRole("Athlete") && user.FindFirst(PersonaClaims.SwitchFromCoach) is not null) direction = "coach";
+    }
+}

@@ -18,11 +18,12 @@
   <data name="Pct_Value" xml:space="preserve"><value>{0}ο εκατοστημόριο</value></data>
   <data name="Insufficient" xml:space="preserve"><value>Δεν υπάρχουν αρκετά δεδομένα (n={0})</value></data>
   <data name="Insufficient_Peers" xml:space="preserve"><value>λιγότεροι από 20 συνομήλικοι στο δείγμα</value></data>
+  <data name="Insufficient_Minutes" xml:space="preserve"><value>λιγότερα από {0} λεπτά ανά αγώνα</value></data>
   <data name="Insufficient_Games" xml:space="preserve"><value>λιγότεροι από 10 αγώνες</value></data>
   <data name="Aria_Row" xml:space="preserve"><value>{0}: {1}, {2}</value></data>
   <data name="Aria_RowNoData" xml:space="preserve"><value>{0}: {1}. {2}</value></data>
   <data name="Source_Note" xml:space="preserve"><value>Πηγή στατιστικών τελευταίας σεζόν:</value></data>
-  <data name="Thresholds_Note" xml:space="preserve"><value>Τα κατώφλια (20 συνομήλικοι, 10 αγώνες, ±10%, 8 αγώνες) είναι δικές μας εκτιμήσεις, όχι κανόνες λίγκας. Το δείγμα είναι φανταστικό.</value></data>
+  <data name="Thresholds_Note" xml:space="preserve"><value>Τα κατώφλια (20 συνομήλικοι, 10 αγώνες, {0} λεπτά ανά αγώνα, ±10%, 8 αγώνες) είναι δικές μας εκτιμήσεις, όχι κανόνες λίγκας. Το δείγμα είναι φανταστικό.</value></data>
   <data name="Toggle_Label" xml:space="preserve"><value>Δείγμα σύγκρισης:</value></data>
   <data name="Toggle_All" xml:space="preserve"><value>Όλες οι πηγές</value></data>
   <data name="Toggle_Confirmed" xml:space="preserve"><value>Μόνο επιβεβαιωμένα από προπονητή</value></data>

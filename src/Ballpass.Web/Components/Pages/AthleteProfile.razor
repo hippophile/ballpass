@@ -8,6 +8,8 @@
 @inject NavigationManager Navigation
 @inject TimeProvider Time
 @inject IStringLocalizer<SharedResource> L
+@inject IStringLocalizer<LoopResource> Loop
+@inject IStringLocalizer<EvidenceResource> Evid
 
 @if (athlete is not null)
 {
@@ -35,7 +37,10 @@
             <p class="meta"><span class="meta-label">@L["Profile_Region"]:</span> @RegionName</p>
             <p class="club"><span class="meta-label">@L["Profile_CurrentClub"]:</span>
                 <strong>@(athlete.CurrentClub?.Name ?? L["Profile_NoClub"].Value)</strong></p>
-            <FollowButton Slug="@Slug" />
+            @if (coachId is null)
+            {
+                <FollowButton Slug="@Slug" />
+            }
         </div>
     </section>
 
@@ -51,25 +56,31 @@
 
     @if (coachId is not null)
     {
-        <section class="bp-card bp-panel bp-actions-panel">
-            <h2>@L["Interest_Heading"]</h2>
-            @if (interestSent)
-            {
-                <p class="bp-interest-sent">✓ @L["Interest_AlreadySent"]</p>
-            }
-            else
-            {
-                <form method="post" action="/p/@Slug/interest" data-action="interest" class="bp-action-form">
+        <section class="bp-card bp-panel bp-actions-panel" aria-label="@L["Interest_Heading"]">
+            <div class="bp-loop-actionbar">
+                @if (interestSent)
+                {
+                    <p class="bp-interest-sent">✓ @L["Interest_AlreadySent"]</p>
+                }
+                else
+                {
+                    <form method="post" action="/p/@Slug/interest" data-action="interest" class="bp-loop-interest">
+                        <AntiforgeryToken />
+                        <button type="submit" class="bp-btn">@L["Interest_Submit"]</button>
+                        <details class="bp-loop-note">
+                            <summary>@Loop["Actions_NoteToggle"]</summary>
+                            <label for="interest-note">@L["Interest_NoteLabel"]</label>
+                            <textarea id="interest-note" name="note" maxlength="280" rows="3"></textarea>
+                        </details>
+                    </form>
+                }
+                <form method="post" action="/p/@Slug/shortlist" data-action="shortlist" class="bp-loop-inline">
                     <AntiforgeryToken />
-                    <label for="interest-note">@L["Interest_NoteLabel"]</label>
-                    <textarea id="interest-note" name="note" maxlength="280" rows="3"></textarea>
-                    <button type="submit" class="bp-btn">@L["Interest_Submit"]</button>
+                    <button type="submit" class="bp-btn bp-btn-secondary" aria-pressed="@(shortlisted ? "true" : "false")" aria-label="@L[shortlisted ? "Shortlist_Remove" : "Shortlist_Add"]">@Loop["Actions_List"]</button>
                 </form>
-            }
-            <form method="post" action="/p/@Slug/shortlist" data-action="shortlist" class="bp-action-form">
-                <AntiforgeryToken />
-                <button type="submit" class="bp-btn">@L[shortlisted ? "Shortlist_Remove" : "Shortlist_Add"]</button>
-            </form>
+                <FollowButton Slug="@Slug" />
+                <a class="bp-btn bp-btn-secondary" href="/compare?a=@Slug">@Evid["Compare_Link"]</a>
+            </div>
         </section>
     }
 

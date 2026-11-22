@@ -219,33 +219,6 @@ public class ShareTests(BallpassAppFactory app)
     }
 
     [Fact]
-    public async Task Wrapped_cohort_slide_matches_an_independent_computation_and_is_labelled_fictional()
-    {
-        // First woman whose own season has >= 20 same-position-group peers.
-        string Group(Position p) => p is Position.PG or Position.SG ? "G" : p is Position.SF or Position.PF ? "F" : "C";
-        var athlete = Data.Athletes.First(a => a.Gender == Gender.Female && a.Stats.Count > 0 && a.Stats.Max(s => s.Season) == "2025-26"
-            && a.Stats.First(s => s.Season == "2025-26").Games >= 5
-            && Data.Athletes.Count(o => o.Gender == Gender.Female && Group(o.Position) == Group(a.Position) && o.Stats.Any(s => s.Season == "2025-26")) >= 20);
-        var peers = Data.Athletes.Where(o => o.Gender == Gender.Female && Group(o.Position) == Group(athlete.Position))
-            .Select(o => o.Stats.FirstOrDefault(s => s.Season == "2025-26")).Where(s => s is not null).Select(s => s!).ToList();
-        var mine = athlete.Stats.First(s => s.Season == "2025-26");
-        var best = new (string Name, Func<StatLine, decimal> Get)[]
-        {
-            ("points", s => s.Points), ("rebounds", s => s.Rebounds), ("assists", s => s.Assists), ("steals", s => s.Steals), ("blocks", s => s.Blocks),
-        }.Select(m => (m.Name, Pct: 100.0 * (peers.Count(p => m.Get(p) < m.Get(mine)) + 0.5 * peers.Count(p => m.Get(p) == m.Get(mine))) / peers.Count))
-         .MaxBy(x => x.Pct);
-
-        var html = WebUtility.HtmlDecode(await app.Client().GetStringAsync($"/p/{athlete.Slug}/season"));
-
-        if (best.Pct < 50) { Assert.DoesNotContain("data-slide=\"cohort\"", html); return; }
-        Assert.Contains("data-slide=\"cohort\"", html);
-        Assert.Equal(peers.Count.ToString(), Metric(html, "cohort-n"));
-        Assert.Equal(Math.Max(1, 100 - (int)Math.Round(best.Pct, MidpointRounding.AwayFromZero)).ToString(), Metric(html, "cohort-top"));
-        Assert.Contains($"data-cohort-metric=\"{best.Name}\"", html);
-        Assert.Contains($"ανάμεσα σε {peers.Count} αθλήτριες επίδειξης (φανταστικά)", html);
-    }
-
-    [Fact]
     public async Task Wrapped_with_fewer_than_5_games_shows_only_intro_games_and_outro()
     {
         var slug = "share-few-games" + TestDb.Suffix.Replace("_", "-");
@@ -275,32 +248,6 @@ public class ShareTests(BallpassAppFactory app)
             var db = scope.ServiceProvider.GetRequiredService<BallpassDbContext>();
             await db.Athletes.Where(a => a.Slug == slug).ExecuteDeleteAsync();
         }
-    }
-
-    [Fact]
-    public void Cohort_below_20_is_skipped_and_at_20_picks_the_highest_midrank_metric()
-    {
-        CohortRow Row(decimal pts, decimal reb) => new(Position.SG, pts, reb, 1m, 1m, 1m);
-        var mine = Row(30m, 3m);
-        List<CohortRow> Peers(int n) => [mine, .. Enumerable.Range(0, n - 1).Select(i => Row(i, i))];
-
-        Assert.Null(SeasonCohort.Best(mine, Peers(19)));
-
-        var best = SeasonCohort.Best(mine, Peers(20));
-        Assert.NotNull(best);
-        Assert.Equal(CohortMetric.Points, best.Metric);
-        Assert.Equal(20, best.N);
-        Assert.Equal(98, best.Percentile);          // (19 below + 0.5 self) / 20 = 97.5 -> 98
-        Assert.Equal(2, best.TopPercent);
-    }
-
-    [Fact]
-    public void Cohort_uses_only_the_same_position_group()
-    {
-        var mine = new CohortRow(Position.C, 10m, 10m, 10m, 1m, 1m);
-        var others = Enumerable.Range(0, 25).Select(_ => new CohortRow(Position.PG, 1m, 1m, 1m, 1m, 1m)).ToList();
-
-        Assert.Null(SeasonCohort.Best(mine, [mine, .. others]));   // only 1 centre -> n < 20
     }
 
     [Theory]

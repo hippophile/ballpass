@@ -10,7 +10,7 @@ public enum PositionGroup { Guard, Forward, Center }
 
 public enum TrendDirection { Up, Down, Flat, NotAvailable }
 
-public enum InsufficientReason { None, TooFewPeers, TooFewGames }
+public enum InsufficientReason { None, TooFewPeers, TooFewGames, TooFewMinutes }
 
 public record StatValues(double Points, double Rebounds, double Assists, double Steals, double Blocks, double FgPct);
 

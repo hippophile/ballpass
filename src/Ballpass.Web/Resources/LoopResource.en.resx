@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Nav_Sent" xml:space="preserve"><value>Sent</value></data>
+  <data name="Nav_SentUnread" xml:space="preserve"><value>new replies</value></data>
+  <data name="Sent_Title" xml:space="preserve"><value>Sent interests</value></data>
+  <data name="Sent_Intro" xml:space="preserve"><value>Every interest you sent and where it stands: sent, seen, replied.</value></data>
+  <data name="Sent_Empty" xml:space="preserve"><value>You have not sent any interest yet. Find athletes through search.</value></data>
+  <data name="Sent_Aria" xml:space="preserve"><value>Progress: sent, seen, replied</value></data>
+  <data name="Step_Sent" xml:space="preserve"><value>Sent</value></data>
+  <data name="Step_Seen" xml:space="preserve"><value>Seen</value></data>
+  <data name="Step_Replied" xml:space="preserve"><value>Replied</value></data>
+  <data name="Step_Pending" xml:space="preserve"><value>waiting</value></data>
+  <data name="Reply_Accepted" xml:space="preserve"><value>Accepted</value></data>
+  <data name="Reply_Declined" xml:space="preserve"><value>Declined</value></data>
+  <data name="Time_Now" xml:space="preserve"><value>just now</value></data>
+  <data name="Time_Minutes" xml:space="preserve"><value>{0} min ago</value></data>
+  <data name="Time_Hours" xml:space="preserve"><value>{0} h ago</value></data>
+  <data name="Time_Days" xml:space="preserve"><value>{0} d ago</value></data>
+  <data name="Inbox_New" xml:space="preserve"><value>new</value></data>
+  <data name="Inbox_Accept" xml:space="preserve"><value>Accept</value></data>
+  <data name="Inbox_Decline" xml:space="preserve"><value>Decline</value></data>
+  <data name="Inbox_ReplyAria" xml:space="preserve"><value>Reply to this interest</value></data>
+  <data name="Inbox_YouAccepted" xml:space="preserve"><value>You accepted this interest.</value></data>
+  <data name="Inbox_YouDeclined" xml:space="preserve"><value>You declined this interest.</value></data>
+  <data name="Inbox_Contact" xml:space="preserve"><value>contact through the club (demo)</value></data>
+  <data name="Inbox_ContactNote" xml:space="preserve"><value>Fictional demo address, not a real email.</value></data>
+  <data name="Actions_List" xml:space="preserve"><value>List</value></data>
+  <data name="Actions_NoteToggle" xml:space="preserve"><value>Add a note (optional)</value></data>
+  <data name="Switch_ToAthlete" xml:space="preserve"><value>See it as the athlete</value></data>
+  <data name="Switch_ToCoach" xml:space="preserve"><value>Back to the coach</value></data>
+  <data name="Reset_Title" xml:space="preserve"><value>Reset demo data</value></data>
+  <data name="Reset_Intro" xml:space="preserve"><value>The demo environment will be restored to its starting state.</value></data>
+  <data name="Reset_Effect1" xml:space="preserve"><value>All demo data is restored: athletes, coaches, clubs, interests, shortlists and posts.</value></data>
+  <data name="Reset_Effect2" xml:space="preserve"><value>Anything you added or changed in the demo (interests, replies, posts) is lost.</value></data>
+  <data name="Reset_Effect3" xml:space="preserve"><value>You will be signed out and returned to the home page.</value></data>
+  <data name="Reset_Confirm" xml:space="preserve"><value>Reset now</value></data>
+  <data name="Reset_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Reset_Link" xml:space="preserve"><value>Reset demo data</value></data>
+  <data name="Toast_Reset" xml:space="preserve"><value>Demo data restored. Start again from the top.</value></data>
+</root>

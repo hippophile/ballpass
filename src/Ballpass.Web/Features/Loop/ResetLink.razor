@@ -1,0 +1,10 @@
+@namespace Ballpass.Web.Components
+@using Ballpass.Web.Features.Loop
+@using Microsoft.Extensions.Options
+@inject IOptions<DemoOptions> Demo
+@inject IStringLocalizer<LoopResource> T
+
+@if (Demo.Value.Enabled)
+{
+    <p class="bp-loop-reset-link"><a href="/demo/reset">@T["Reset_Link"]</a></p>
+}

@@ -27,6 +27,7 @@ public class DemoDataSeeder(BallpassDbContext db)
         await db.Clubs.Where(c => c.IsDemo).ExecuteDeleteAsync(ct);
 
         var data = DemoDataGenerator.Generate(Seed);
+        InterestLifecycleSeeder.Apply(data.Interests, TimeProvider.System.GetUtcNow(), Seed);
         db.Clubs.AddRange(data.Clubs);
         db.Coaches.AddRange(data.Coaches);
         db.Athletes.AddRange(data.Athletes);

@@ -34,11 +34,11 @@
   <data name="Wrapped_Same" xml:space="preserve"><value>χωρίς αλλαγή</value></data>
   <data name="Wrapped_StandsHeading" xml:space="preserve"><value>Πού ξεχωρίζει</value></data>
   <data name="Wrapped_Top" xml:space="preserve"><value>Top {0}%</value></data>
-  <data name="Metric_Points" xml:space="preserve"><value>Στους πόντους ανά αγώνα</value></data>
-  <data name="Metric_Rebounds" xml:space="preserve"><value>Στα ριμπάουντ ανά αγώνα</value></data>
-  <data name="Metric_Assists" xml:space="preserve"><value>Στις ασίστ ανά αγώνα</value></data>
-  <data name="Metric_Steals" xml:space="preserve"><value>Στα κλεψίματα ανά αγώνα</value></data>
-  <data name="Metric_Blocks" xml:space="preserve"><value>Στα μπλοκ ανά αγώνα</value></data>
+  <data name="Metric_Points" xml:space="preserve"><value>Στους πόντους ανά 40΄</value></data>
+  <data name="Metric_Rebounds" xml:space="preserve"><value>Στα ριμπάουντ ανά 40΄</value></data>
+  <data name="Metric_Assists" xml:space="preserve"><value>Στις ασίστ ανά 40΄</value></data>
+  <data name="Metric_Steals" xml:space="preserve"><value>Στα κλεψίματα ανά 40΄</value></data>
+  <data name="Metric_FgPct" xml:space="preserve"><value>Στην ευστοχία σουτ (FG%)</value></data>
   <data name="Wrapped_CohortNoteF" xml:space="preserve"><value>ανάμεσα σε {0} αθλήτριες επίδειξης (φανταστικά)</value></data>
   <data name="Wrapped_CohortNoteM" xml:space="preserve"><value>ανάμεσα σε {0} αθλητές επίδειξης (φανταστικά)</value></data>
   <data name="Wrapped_OutroHeading" xml:space="preserve"><value>Δες ολόκληρο το προφίλ</value></data>

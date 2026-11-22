@@ -246,14 +246,6 @@
         color: var(--bp-src-league);
     }
 
-.bp-ev-compare {
-    margin: 0;
-}
-
-    .bp-ev-compare a {
-        font-weight: 600;
-    }
-
 /* ---- visually hidden table fallback (the box clips it; a table ignores its own width) ---- */
 .bp-ev-sr-box {
     position: absolute;

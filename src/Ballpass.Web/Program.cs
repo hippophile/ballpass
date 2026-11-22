@@ -87,6 +87,7 @@ builder.Services.AddShare();
 builder.Services.AddEvidence();
 builder.Services.AddFeed();
 builder.Services.AddFind();
+builder.Services.AddLoop();
 builder.Services.AddHealthChecks().AddDbContextCheck<BallpassDbContext>();
 
 var app = builder.Build();
@@ -268,6 +269,7 @@ app.MapPost("/demo/logout", async (HttpContext http, IAntiforgery antiforgery) =
 app.MapShare();
 app.MapFeed();
 app.MapFind();
+app.MapLoop();
 app.MapRazorComponents<App>();
 
 app.Run();

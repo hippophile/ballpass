@@ -6,6 +6,7 @@
 @using Ballpass.Web.Features.Share
 @using Microsoft.EntityFrameworkCore
 @inject BallpassDbContext Db
+@inject Ballpass.Web.Features.Evidence.ICohortRank Ranks
 @inject NavigationManager Navigation
 @inject IStringLocalizer<ShareResource> L
 @inject IStringLocalizer<SharedResource> LS
@@ -117,17 +118,7 @@
             return;
         }
 
-        if (wrapped.IsFullStory)
-        {
-            var gender = athlete.Gender;
-            var season = wrapped.Season;
-            var rows = await Db.StatLines.AsNoTracking().Where(s => s.Season == season)
-                .Join(Db.Athletes.Where(a => a.IsDemo && a.Gender == gender), s => s.AthleteId, a => a.Id,
-                    (s, a) => new CohortRow(a.Position, s.Points, s.Rebounds, s.Assists, s.Steals, s.Blocks))
-                .ToListAsync();
-            var l = wrapped.Line;
-            cohort = SeasonCohort.Best(new CohortRow(athlete.Position, l.Points, l.Rebounds, l.Assists, l.Steals, l.Blocks), rows);
-        }
+        if (wrapped.IsFullStory) cohort = await WrappedCohort.BestAsync(Ranks, athlete.Id);
     }
 
     private int SlideCount => !wrapped!.IsFullStory ? 3 : 3 + 1 + (wrapped.Previous is not null ? 1 : 0) + (cohort is not null ? 1 : 0);
