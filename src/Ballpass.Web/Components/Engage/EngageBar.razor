@@ -1,0 +1,73 @@
+@inject EngageCache Cache
+@inject IStringLocalizer<EngageResource> E
+@inject IStringLocalizer<FeedResource> F
+
+@* Public engagement of one post: 🔥 count, comment count, likers line, hashtag chips. Renders nothing if the engage services fail. *@
+@if (e is not null)
+{
+    <div class="bp-engage-bar" role="group" aria-label="@E["Bar_Aria"]">
+        <div class="bp-engage-counts">
+            <span class="bp-engage-fire" data-kudos-count="@e.KudosCount" title="@F["Kudos_Count", e.KudosCount].Value"><span class="bp-engage-flame" aria-hidden="true">🔥</span> <span>@e.KudosCount</span><span class="bp-engage-sr"> @F["Kudos"]</span></span>
+            @if (Likers is { } line)
+            {
+                <p class="bp-engage-likers" data-likers-line>@line</p>
+            }
+            <span class="bp-engage-commentcount" data-comment-count="@e.CommentCount">@(e.CommentCount == 1 ? E["Comments_One"].Value : E["Comments_Many", e.CommentCount].Value)</span>
+        </div>
+        @if (e.Tags.Count > 0)
+        {
+            <ul class="bp-engage-tags" aria-label="@E["Tags_Aria"]">
+                @foreach (var t in e.Tags)
+                {
+                    <li><a data-tag="@t.Tag" href="/feed?tag=@Uri.EscapeDataString(t.Label)">#@t.Label</a></li>
+                }
+            </ul>
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public FeedItem Item { get; set; } = default!;
+    [Parameter] public FeedViewer Viewer { get; set; } = FeedViewer.Anonymous;
+
+    private PostEngagement? e;
+    private RenderFragment? Likers;
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    protected override async Task OnInitializedAsync()
+    {
+        e = await Cache.GetAsync(Viewer, Item.Post.Id);
+        if (e is null) return;
+        Likers = BuildLikers(e);
+    }
+
+    // "{name}" in the resource is replaced by the profile link of the most recent liker, "{n}" by the number of the others.
+    private RenderFragment? BuildLikers(PostEngagement p)
+    {
+        var first = p.Likers.Count > 0 ? p.Likers[0] : null;
+        if (first is null) return p.LikedByMe ? (b => b.AddContent(0, E["Likers_You"].Value)) : null;
+        var key = (p.LikedByMe, p.OtherLikers > 1) switch
+        {
+            (true, true) => "Likers_YouWithMore",
+            (true, false) => "Likers_YouWithOne",
+            (false, true) => "Likers_More",
+            _ => "Likers_One",
+        };
+        var parts = E[key].Value.Replace("{n}", (p.OtherLikers - 1).ToString(CultureInfo.CurrentCulture)).Split("{name}");
+        var name = IsGreek ? first.NameEl : first.NameLatin;
+        return b =>
+        {
+            b.AddContent(0, parts[0]);
+            if (first.Slug is not null)
+            {
+                b.OpenElement(1, "a");
+                b.AddAttribute(2, "href", $"/p/{first.Slug}");
+                b.AddContent(3, name);
+                b.CloseElement();
+            }
+            else b.AddContent(4, name);
+            if (parts.Length > 1) b.AddContent(5, parts[1]);
+        };
+    }
+}

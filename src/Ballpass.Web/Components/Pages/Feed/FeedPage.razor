@@ -1,9 +1,12 @@
 @page "/feed"
 @using Ballpass.Web.Components.Feed
 @using Ballpass.Web.Features.Feed
+@using Ballpass.Web.Components.Engage
+@using Ballpass.Web.Features.Engage
 @inject IFeedService Feed
 @inject ILogger<FeedPage> Logger
 @inject IStringLocalizer<FeedResource> F
+@inject EngageCache Engage
 
 <PageTitle>@F["Page_Title"]</PageTitle>
 
@@ -21,6 +24,7 @@
         <a href="/feed" aria-current="@(following ? null : "page")">@F["Tab_ForYou"]</a>
         <a href="/feed?tab=following" aria-current="@(following ? "page" : null)">@F["Tab_Following"]</a>
     </nav>
+    <EngageBelowTabs Viewer="viewer" Following="following" Tag="@Tag" Before="@Before" />
 
     @if (viewer.SignedIn)
     {
@@ -54,6 +58,7 @@
             @foreach (var item in page.Items)
             {
                 <PostCard Item="item" Viewer="viewer" ReturnUrl="@ReturnUrl" />
+                <EngageInline Item="item" Items="page.Items" Viewer="viewer" />
             }
         </div>
         <p class="bp-feed-paging">
@@ -67,6 +72,7 @@
             }
         </p>
     }
+    <EngageSidebar Viewer="viewer" />
 </div>
 
 @code {
@@ -74,6 +80,7 @@
 
     [SupplyParameterFromQuery(Name = "tab")] public string? Tab { get; set; }
     [SupplyParameterFromQuery(Name = "before")] public string? Before { get; set; }
+    [SupplyParameterFromQuery(Name = "tag")] public string? Tag { get; set; }
     [SupplyParameterFromQuery(Name = "status")] public string? Status { get; set; }
     [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
 
@@ -82,9 +89,16 @@
     private bool unavailable;
 
     private bool following => string.Equals(Tab, "following", StringComparison.OrdinalIgnoreCase);
-    private string BaseUrl => following ? "/feed?tab=following" : "/feed";
-    private string ReturnUrl => string.IsNullOrEmpty(Before) ? BaseUrl : $"{BaseUrl}{(following ? "&" : "?")}before={Before}";
-    private string MoreHref => $"{BaseUrl}{(following ? "&" : "?")}before={page.NextCursor}";
+    private string BaseUrl => (following, PostTagParser.Fold(Tag)) switch
+    {
+        (false, null) => "/feed",
+        (true, null) => "/feed?tab=following",
+        (false, _) => $"/feed?tag={Uri.EscapeDataString(Tag!.Trim().TrimStart('#'))}",
+        _ => $"/feed?tab=following&tag={Uri.EscapeDataString(Tag!.Trim().TrimStart('#'))}",
+    };
+    private string Sep => BaseUrl.Contains('?') ? "&" : "?";
+    private string ReturnUrl => string.IsNullOrEmpty(Before) ? BaseUrl : $"{BaseUrl}{Sep}before={Before}";
+    private string MoreHref => $"{BaseUrl}{Sep}before={page.NextCursor}";
     private string? StatusText => Status is not null && StatusKeys.Contains(Status) ? F[$"Status_{Status}"].Value : null;
 
     protected override async Task OnInitializedAsync()
@@ -93,7 +107,8 @@
         if (following && !viewer.SignedIn) return;
         try
         {
-            page = await Feed.GetFeedAsync(viewer, following ? FeedTab.Following : FeedTab.ForYou, Before);
+            page = await Feed.GetFeedAsync(viewer, following ? FeedTab.Following : FeedTab.ForYou, Before, Tag);
+            await Engage.PreloadAsync(viewer, page.Items.Select(i => i.Post.Id));
         }
         catch (Exception e)
         {

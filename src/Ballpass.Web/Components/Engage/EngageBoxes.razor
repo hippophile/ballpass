@@ -1,0 +1,88 @@
+@inject EngageCache Cache
+@inject IStringLocalizer<EngageResource> E
+@inject IStringLocalizer<FeedResource> F
+@inject IStringLocalizer<SharedResource> L
+
+@* "Who to follow" and "Trending" boxes. Used twice on /feed: in the desktop sidebar and inline after the 3rd post on phones (CSS shows one of them). *@
+@if (suggestions.Count > 0)
+{
+    <section class="bp-engage-box" data-engage="follow" aria-label="@E["Follow_Title"]">
+        <h2>@E["Follow_Title"]</h2>
+        <ul class="bp-engage-people">
+            @foreach (var s in suggestions)
+            {
+                <li data-follow-key="@s.Person.Key" data-region="@s.Region">
+                    <span class="bp-engage-avatar" aria-hidden="true">@Initials(s.Person)</span>
+                    <span class="bp-engage-who">
+                        <span class="bp-engage-pname">
+                            @if (s.Person.Slug is not null)
+                            {
+                                <a href="/p/@s.Person.Slug">@Name(s.Person)</a>
+                            }
+                            else
+                            {
+                                @Name(s.Person)
+                            }
+                        </span>
+                        <span class="bp-engage-prole">@L[s.RoleKey]@(s.Region is { Length: > 0 } ? " · " + RegionName(s.Region) : "")@if (s.LookingForTeam) {<text> · </text><strong>@E["Follow_Lft"]</strong>}</span>
+                    </span>
+                    @if (Viewer.SignedIn)
+                    {
+                        <form method="post" action="/feed/follow" data-feed-action="follow" class="bp-feed-inline">
+                            <AntiforgeryToken />
+                            <input type="hidden" name="targetKey" value="@s.Person.Key" />
+                            <input type="hidden" name="returnUrl" value="/feed" />
+                            <button type="submit" class="bp-btn bp-btn-secondary bp-engage-follow">@F["Follow"]</button>
+                        </form>
+                    }
+                </li>
+            }
+        </ul>
+        @if (!Viewer.SignedIn)
+        {
+            <p class="bp-feed-hint">@E["Follow_SignIn"] <a href="/demo?ReturnUrl=%2Ffeed">@E["Comment_SignInCta"]</a></p>
+        }
+    </section>
+}
+@if (trends.Count > 0)
+{
+    <section class="bp-engage-box" data-engage="trends" aria-label="@E["Trends_Title"]">
+        <h2>@E["Trends_Title"]</h2>
+        <p class="bp-feed-hint">@E["Trends_Window"]</p>
+        <ol class="bp-engage-trends">
+            @foreach (var t in trends)
+            {
+                <li data-tag-key="@t.Tag" data-tag-count="@t.Count">
+                    <a href="/feed?tag=@Uri.EscapeDataString(t.Label)">#@t.Label</a>
+                    <span class="bp-engage-tcount">@(t.Count == 1 ? E["Trends_CountOne"].Value : E["Trends_CountMany", t.Count].Value)</span>
+                </li>
+            }
+        </ol>
+    </section>
+}
+
+@code {
+    [Parameter] public FeedViewer Viewer { get; set; } = FeedViewer.Anonymous;
+
+    private IReadOnlyList<Suggestion> suggestions = [];
+    private IReadOnlyList<TrendingTag> trends = [];
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    private static string Name(PersonView p) => IsGreek ? p.NameEl : p.NameLatin;
+
+    private static string Initials(PersonView p) =>
+        string.Concat(Name(p).Replace("(demo)", "").Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);
+
+    private string RegionName(string region)
+    {
+        var r = L[$"Region_{region}"];
+        return r.ResourceNotFound ? region : r.Value;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        trends = await Cache.TrendingAsync();
+        suggestions = await Cache.SuggestionsAsync(Viewer);
+    }
+}

@@ -1,0 +1,476 @@
+/* Engage (package ENGAGE): comments, public engagement, who-to-follow, trends, new-posts pill. Tokens only (var(--bp-*)); every class is bp-engage-*. */
+
+.bp-engage-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ---- Strip below the tabs: seeded label, new-posts pill, tag filter ---- */
+.bp-engage-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--bp-sp-2) var(--bp-sp-3);
+    margin: 0 0 var(--bp-sp-3);
+}
+
+.bp-engage-seeded {
+    margin: 0;
+    font-size: var(--bp-fs-sm);
+}
+
+.bp-engage-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0.35rem 1rem;
+    border-radius: var(--bp-r-pill);
+    background: var(--bp-accent);
+    color: var(--bp-accent-contrast);
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: var(--bp-shadow);
+}
+
+    .bp-engage-pill:hover {
+        color: var(--bp-accent-contrast);
+        filter: brightness(1.08);
+    }
+
+.bp-engage-tagfilter {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bp-sp-3);
+    margin: 0;
+}
+
+.bp-engage-tagchip {
+    background: var(--bp-s3);
+    border: 1px solid var(--bp-border-ui);
+    border-radius: var(--bp-r-pill);
+    padding: 0.25em 0.8em;
+    font-weight: 700;
+}
+
+/* ---- Engagement bar of a post ---- */
+.bp-engage-bar {
+    margin-top: var(--bp-sp-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-2);
+}
+
+.bp-engage-counts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--bp-sp-1) var(--bp-sp-3);
+    color: var(--bp-muted);
+    font-size: var(--bp-fs-sm);
+    font-weight: 600;
+}
+
+.bp-engage-fire {
+    color: var(--bp-text);
+}
+
+.bp-engage-flame {
+    display: inline-block;
+}
+
+.bp-engage-likers {
+    flex: 1 1 12rem;
+    min-width: 0;
+    margin: 0;
+    font-weight: 400;
+}
+
+    .bp-engage-likers a {
+        color: var(--bp-text);
+        font-weight: 600;
+    }
+
+.bp-engage-commentcount {
+    margin-inline-start: auto;
+}
+
+.bp-engage-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bp-sp-2);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .bp-engage-tags a {
+        display: inline-block;
+        padding: 0.15em 0.7em;
+        border-radius: var(--bp-r-pill);
+        background: var(--bp-s2);
+        border: 1px solid var(--bp-border);
+        color: var(--bp-text);
+        font-size: var(--bp-fs-sm);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .bp-engage-tags a:hover {
+            border-color: var(--bp-border-ui);
+            background: var(--bp-s3);
+        }
+
+/* Kudos burst: the page returns to #post-N after the toggle, so :target is the post that was just reacted to. */
+@keyframes bp-engage-burst {
+    0% { transform: scale(1) rotate(0); }
+    35% { transform: scale(1.7) rotate(-10deg); }
+    70% { transform: scale(0.95) rotate(4deg); }
+    100% { transform: scale(1) rotate(0); }
+}
+
+@keyframes bp-engage-ring {
+    0% { opacity: 0.8; transform: scale(0.3); }
+    100% { opacity: 0; transform: scale(2.4); }
+}
+
+.bp-feed-kudos {
+    position: relative;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .bp-feed-post:target .bp-feed-kudos[aria-pressed="true"] .bp-feed-flame {
+        animation: bp-engage-burst 650ms ease-out 1;
+    }
+
+    .bp-feed-post:target .bp-feed-kudos[aria-pressed="true"]::after {
+        content: "";
+        position: absolute;
+        inset-inline-start: 1.1rem;
+        top: 50%;
+        width: 1.6rem;
+        height: 1.6rem;
+        margin-top: -0.8rem;
+        margin-inline-start: -0.4rem;
+        border-radius: 50%;
+        border: 2px solid var(--bp-warn);
+        pointer-events: none;
+        animation: bp-engage-ring 650ms ease-out 1 forwards;
+    }
+
+    .bp-feed-post:target .bp-engage-flame {
+        animation: bp-engage-burst 650ms ease-out 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bp-feed-flame,
+    .bp-engage-flame,
+    .bp-feed-kudos::after {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* ---- Comments ---- */
+.bp-engage-comments {
+    margin-top: var(--bp-sp-3);
+    border-top: 1px solid var(--bp-border);
+    padding-top: var(--bp-sp-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-2);
+}
+
+.bp-engage-status {
+    margin: 0;
+}
+
+.bp-engage-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-2);
+}
+
+.bp-engage-comment {
+    background: var(--bp-s2);
+    border-radius: var(--bp-r-md);
+    padding: var(--bp-sp-2) var(--bp-sp-3);
+}
+
+.bp-engage-chead {
+    display: flex;
+    align-items: center;
+    gap: var(--bp-sp-2);
+    flex-wrap: wrap;
+}
+
+.bp-engage-cname {
+    font-weight: 700;
+    font-size: var(--bp-fs-sm);
+}
+
+    .bp-engage-cname a {
+        color: var(--bp-text);
+        text-decoration: none;
+    }
+
+        .bp-engage-cname a:hover {
+            text-decoration: underline;
+        }
+
+.bp-engage-ctime {
+    color: var(--bp-muted);
+    font-size: var(--bp-fs-xs);
+}
+
+.bp-engage-ctext {
+    margin: 2px 0 0;
+    overflow-wrap: anywhere;
+    font-size: var(--bp-fs-sm);
+}
+
+.bp-engage-cmenu {
+    position: relative;
+    margin-inline-start: auto;
+}
+
+    .bp-engage-cmenu > summary {
+        list-style: none;
+        cursor: pointer;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--bp-r-sm);
+        color: var(--bp-muted);
+        line-height: 1;
+    }
+
+        .bp-engage-cmenu > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .bp-engage-cmenu > summary:hover {
+            background: var(--bp-s3);
+            color: var(--bp-text);
+        }
+
+.bp-engage-cmenu-panel {
+    position: absolute;
+    inset-inline-end: 0;
+    top: 38px;
+    z-index: 5;
+    min-width: 230px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-3);
+    background: var(--bp-s2);
+    border: 1px solid var(--bp-border-ui);
+    border-radius: var(--bp-r-md);
+    padding: var(--bp-sp-3);
+    box-shadow: var(--bp-shadow);
+    font-size: var(--bp-fs-sm);
+}
+
+.bp-engage-cform {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-2);
+    margin: 0;
+}
+
+    .bp-engage-cform select {
+        background: var(--bp-bg);
+        color: var(--bp-text);
+        border: 1px solid var(--bp-border-ui);
+        border-radius: var(--bp-r-sm);
+        padding: 0.4rem 0.5rem;
+        min-height: 40px;
+        font: inherit;
+    }
+
+.bp-engage-all {
+    align-self: flex-start;
+    font-size: var(--bp-fs-sm);
+    font-weight: 600;
+}
+
+.bp-engage-compose {
+    display: flex;
+    gap: var(--bp-sp-2);
+    align-items: flex-start;
+    margin: 0;
+}
+
+    .bp-engage-compose textarea {
+        flex: 1 1 auto;
+        min-width: 0;
+        min-height: 44px;
+        resize: vertical;
+        background: var(--bp-bg);
+        color: var(--bp-text);
+        border: 1px solid var(--bp-border-ui);
+        border-radius: var(--bp-r-md);
+        padding: 0.6rem 0.8rem;
+        font: inherit;
+    }
+
+/* ---- Boxes: who to follow, trends ---- */
+.bp-engage-box {
+    background: var(--bp-s1);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+    padding: var(--bp-sp-4);
+    box-shadow: var(--bp-shadow);
+    margin: 0 0 var(--bp-sp-3);
+}
+
+    .bp-engage-box h2 {
+        font-size: var(--bp-fs-md);
+        margin: 0 0 var(--bp-sp-2);
+    }
+
+.bp-engage-people,
+.bp-engage-trends {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-3);
+}
+
+.bp-engage-people li {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    column-gap: var(--bp-sp-3);
+    row-gap: var(--bp-sp-2);
+    align-items: center;
+}
+
+    .bp-engage-people li > .bp-engage-avatar {
+        grid-row: 1 / span 2;
+        align-self: start;
+    }
+
+    .bp-engage-people li > form {
+        grid-column: 2;
+    }
+
+.bp-engage-avatar {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bp-s3);
+    border: 1px solid var(--bp-border-ui);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: var(--bp-fs-sm);
+}
+
+.bp-engage-who {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.bp-engage-pname {
+    font-weight: 700;
+    overflow-wrap: break-word;
+}
+
+    .bp-engage-pname a {
+        color: var(--bp-text);
+        text-decoration: none;
+    }
+
+        .bp-engage-pname a:hover {
+            text-decoration: underline;
+        }
+
+.bp-engage-prole {
+    color: var(--bp-muted);
+    font-size: var(--bp-fs-xs);
+}
+
+    .bp-engage-prole strong {
+        color: var(--bp-text);
+    }
+
+.bp-engage-follow {
+    padding: 0.3rem 0.8rem;
+    white-space: nowrap;
+}
+
+.bp-engage-trends li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--bp-sp-3);
+}
+
+    .bp-engage-trends li a {
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+.bp-engage-tcount {
+    color: var(--bp-muted);
+    font-size: var(--bp-fs-sm);
+    white-space: nowrap;
+}
+
+/* ---- Layout: phones show the boxes after the 3rd post, desktops a sidebar ---- */
+.bp-engage-side {
+    display: none;
+}
+
+.bp-engage-inline {
+    margin: 0;
+}
+
+@media (min-width: 1100px) {
+    body .content:has(.bp-engage-side) {
+        max-width: 1160px;
+    }
+
+    .bp-feed:has(.bp-engage-side) {
+        max-width: none;
+        display: grid;
+        grid-template-columns: minmax(0, 720px) 340px;
+        column-gap: var(--bp-sp-6);
+        justify-content: center;
+        align-items: start;
+    }
+
+        .bp-feed:has(.bp-engage-side) > * {
+            grid-column: 1;
+        }
+
+        .bp-feed:has(.bp-engage-side) > .bp-engage-side {
+            display: block;
+            grid-column: 2;
+            grid-row: 1 / span 40;
+            position: sticky;
+            top: var(--bp-sp-4);
+        }
+
+    .bp-engage-inline {
+        display: none;
+    }
+}

@@ -239,6 +239,86 @@ namespace Ballpass.Web.Data.Migrations
                     b.ToTable("Coaches");
                 });
 
+            modelBuilder.Entity("Ballpass.Web.Data.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorKey")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("HiddenReason")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<bool>("IsDemo")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(280)
+                        .HasColumnType("character varying(280)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorKey", "CreatedAt");
+
+                    b.HasIndex("PostId", "CreatedAt");
+
+                    b.ToTable("Comment");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.CommentReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDemo")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)");
+
+                    b.Property<string>("ReporterKey")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReporterKey");
+
+                    b.HasIndex("CommentId", "ReporterKey")
+                        .IsUnique();
+
+                    b.ToTable("CommentReport");
+                });
+
             modelBuilder.Entity("Ballpass.Web.Data.Follow", b =>
                 {
                     b.Property<int>("Id")
@@ -504,6 +584,37 @@ namespace Ballpass.Web.Data.Migrations
                     b.ToTable("PostHide");
                 });
 
+            modelBuilder.Entity("Ballpass.Web.Data.PostTag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Tag")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Tag");
+
+                    b.HasIndex("PostId", "Tag")
+                        .IsUnique();
+
+                    b.ToTable("PostTag");
+                });
+
             modelBuilder.Entity("Ballpass.Web.Data.Report", b =>
                 {
                     b.Property<int>("Id")
@@ -675,6 +786,28 @@ namespace Ballpass.Web.Data.Migrations
                     b.Navigation("Club");
                 });
 
+            modelBuilder.Entity("Ballpass.Web.Data.Comment", b =>
+                {
+                    b.HasOne("Ballpass.Web.Data.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.CommentReport", b =>
+                {
+                    b.HasOne("Ballpass.Web.Data.Comment", "Comment")
+                        .WithMany()
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+                });
+
             modelBuilder.Entity("Ballpass.Web.Data.Interest", b =>
                 {
                     b.HasOne("Ballpass.Web.Data.Athlete", "Athlete")
@@ -706,6 +839,17 @@ namespace Ballpass.Web.Data.Migrations
                 });
 
             modelBuilder.Entity("Ballpass.Web.Data.PostHide", b =>
+                {
+                    b.HasOne("Ballpass.Web.Data.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.PostTag", b =>
                 {
                     b.HasOne("Ballpass.Web.Data.Post", "Post")
                         .WithMany()

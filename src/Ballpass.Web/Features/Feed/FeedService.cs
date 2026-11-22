@@ -1,5 +1,6 @@
 using Ballpass.Web.Data;
 using Ballpass.Web.Demo;
+using Ballpass.Web.Features.Engage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Npgsql;
@@ -12,9 +13,10 @@ public class FeedService(BallpassDbContext db, TimeProvider time, IOptions<FeedO
 
     // ---- reading ----
 
-    public async Task<FeedPageResult> GetFeedAsync(FeedViewer viewer, FeedTab tab, string? before, CancellationToken ct = default)
+    public async Task<FeedPageResult> GetFeedAsync(FeedViewer viewer, FeedTab tab, string? before, string? tag = null, CancellationToken ct = default)
     {
         var q = await VisiblePostsAsync(viewer, ct);
+        if (PostTagParser.Fold(tag) is { } tagKey) q = q.Where(p => db.Set<PostTag>().Any(t => t.PostId == p.Id && t.Tag == tagKey));
         if (viewer.Key is { } key && tab == FeedTab.Following)
         {
             var followed = await db.Set<Follow>().Where(f => f.FollowerKey == key).Select(f => f.TargetKey).ToListAsync(ct);
@@ -184,6 +186,7 @@ public class FeedService(BallpassDbContext db, TimeProvider time, IOptions<FeedO
 
         post.SortAt = FeedKeys.Truncate(now + FeedRanking.Boost(post.Type, post.Source, o));
         db.Set<Post>().Add(post);
+        db.Set<PostTag>().AddRange(PostTagParser.Parse(post.Text, post.Title).Select(t => new PostTag { Post = post, Tag = t.Tag, Label = t.Label }));
         if (post.Type == PostType.LookingForTeam) athlete!.LookingForTeam = true;
         await db.SaveChangesAsync(ct);
         return PostOutcome.Posted;

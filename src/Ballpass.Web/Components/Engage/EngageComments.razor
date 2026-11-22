@@ -1,0 +1,139 @@
+@inject EngageCache Cache
+@inject IStringLocalizer<EngageResource> E
+@inject IStringLocalizer<FeedResource> F
+@inject IStringLocalizer<SharedResource> L
+@inject TimeProvider Time
+
+@* Flat comments of one post: the latest two (oldest first), "see all", the composer and per-comment actions. Posts to /feed/comment*. *@
+@if (e is not null)
+{
+    var p = Item.Post;
+    <section class="bp-engage-comments" data-engage="comments" aria-label="@E["Comments_Aria"]">
+        @if (StatusText is not null)
+        {
+            <p class="bp-status bp-engage-status" role="status" data-comment-status="@Cs">@StatusText</p>
+        }
+        @if (e.Comments.Count > 0)
+        {
+            <ul class="bp-engage-list">
+                @foreach (var c in e.Comments)
+                {
+                    <li class="bp-engage-comment" data-comment-id="@c.Id" data-comment-author="@c.AuthorKey">
+                        <div class="bp-engage-chead">
+                            <span class="bp-engage-cname">
+                                @if (c.Author.Slug is not null)
+                                {
+                                    <a href="/p/@c.Author.Slug">@Name(c.Author)</a>
+                                }
+                                else
+                                {
+                                    @Name(c.Author)
+                                }
+                            </span>
+                            <time class="bp-engage-ctime" datetime="@c.CreatedAt.UtcDateTime.ToString("o", CultureInfo.InvariantCulture)">@RelativeTimeText.Format(L, c.CreatedAt, Time.GetUtcNow())</time>
+                            @if (Viewer.SignedIn)
+                            {
+                                <details class="bp-engage-cmenu">
+                                    <summary aria-label="@E["Comment_Menu"]"><span aria-hidden="true">…</span></summary>
+                                    <div class="bp-engage-cmenu-panel">
+                                        @if (c.IsOwn)
+                                        {
+                                            <form method="post" action="/feed/comment/delete" class="bp-engage-cform">
+                                                <AntiforgeryToken />
+                                                <input type="hidden" name="commentId" value="@c.Id" />
+                                                <input type="hidden" name="returnUrl" value="@ActionReturn" />
+                                                <button type="submit" class="bp-btn bp-btn-secondary">@E["Comment_Delete"]</button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form method="post" action="/feed/comment/report" class="bp-engage-cform">
+                                                <AntiforgeryToken />
+                                                <input type="hidden" name="commentId" value="@c.Id" />
+                                                <input type="hidden" name="returnUrl" value="@ActionReturn" />
+                                                <label for="creason-@c.Id">@F["Report_Reason"]</label>
+                                                <select id="creason-@c.Id" name="reason">
+                                                    @foreach (var reason in Safeguards.ReportReasons)
+                                                    {
+                                                        <option value="@reason">@F[$"Reason_{reason}"]</option>
+                                                    }
+                                                </select>
+                                                <button type="submit" class="bp-btn bp-btn-secondary">@E["Comment_Report"]</button>
+                                            </form>
+                                        }
+                                        @if (c.CanHide)
+                                        {
+                                            <form method="post" action="/feed/comment/hide" class="bp-engage-cform">
+                                                <AntiforgeryToken />
+                                                <input type="hidden" name="commentId" value="@c.Id" />
+                                                <input type="hidden" name="returnUrl" value="@ActionReturn" />
+                                                <p class="bp-feed-hint">@E["Comment_HideHint"]</p>
+                                                <button type="submit" class="bp-btn bp-btn-secondary">@E["Comment_Hide"]</button>
+                                            </form>
+                                        }
+                                    </div>
+                                </details>
+                            }
+                        </div>
+                        <p class="bp-engage-ctext">@c.Text</p>
+                    </li>
+                }
+            </ul>
+        }
+        @if (e.CommentCount > e.Comments.Count)
+        {
+            <a class="bp-engage-all" href="@ExpandHref">@E["Comments_ShowAll", e.CommentCount]</a>
+        }
+        else if (e.Expanded && e.CommentCount > Collapsed)
+        {
+            <a class="bp-engage-all" href="@(ReturnUrl + "#post-" + p.Id)">@E["Comments_Collapse"]</a>
+        }
+
+        @if (Viewer.SignedIn)
+        {
+            <form method="post" action="/feed/comment" class="bp-engage-compose" data-engage-compose>
+                <AntiforgeryToken />
+                <input type="hidden" name="postId" value="@p.Id" />
+                <input type="hidden" name="returnUrl" value="@ActionReturn" />
+                <label class="bp-engage-sr" for="ctext-@p.Id">@E["Comment_Label"]</label>
+                <textarea id="ctext-@p.Id" name="text" maxlength="280" rows="1" required placeholder="@E["Comment_Placeholder"]" aria-describedby="chint-@p.Id"></textarea>
+                <button type="submit" class="bp-btn">@E["Comment_Submit"]</button>
+            </form>
+            <p class="bp-engage-sr" id="chint-@p.Id">@E["Comment_Hint"]</p>
+        }
+        else
+        {
+            <p class="bp-feed-hint">@E["Comment_SignIn"] <a href="/demo?ReturnUrl=@Uri.EscapeDataString(ReturnUrl)">@E["Comment_SignInCta"]</a></p>
+        }
+    </section>
+}
+
+@code {
+    [Parameter, EditorRequired] public FeedItem Item { get; set; } = default!;
+    [Parameter] public FeedViewer Viewer { get; set; } = FeedViewer.Anonymous;
+    [Parameter] public string ReturnUrl { get; set; } = "/feed";
+    [CascadingParameter] private HttpContext? Http { get; set; }
+
+    private static readonly string[] CsKeys = ["posted", "rate", "too-long", "invalid", "deleted", "hidden", "reported"];
+
+    private PostEngagement? e;
+
+    private int Collapsed => 2;
+
+    private string Cs => Http?.Request.Query["cs"].ToString() ?? "";
+    private bool Targeted => Http?.Request.Query["cp"].ToString() == Item.Post.Id.ToString(CultureInfo.InvariantCulture);
+    private string? StatusText => Targeted && CsKeys.Contains(Cs) ? E[$"Cs_{Cs}"].Value : null;
+
+    private string Join(string url, string param) => $"{url}{(url.Contains('?') ? '&' : '?')}{param}";
+
+    private string ExpandHref => Join(ReturnUrl, $"comments={Item.Post.Id}") + $"#post-{Item.Post.Id}";
+
+    /// <summary>Back to this post (expanded list stays expanded) with the post id so the feedback shows under it.</summary>
+    private string ActionReturn => Join(e is { Expanded: true } ? Join(ReturnUrl, $"comments={Item.Post.Id}") : ReturnUrl, $"cp={Item.Post.Id}") + $"#post-{Item.Post.Id}";
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    private static string Name(PersonView p) => IsGreek ? p.NameEl : p.NameLatin;
+
+    protected override async Task OnInitializedAsync() => e = await Cache.GetAsync(Viewer, Item.Post.Id);
+}

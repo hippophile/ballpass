@@ -1,0 +1,8 @@
+@* Desktop sidebar (>= 1100 px): who to follow + trends. Hidden by CSS on phones, where EngageInline shows the same boxes after the 3rd post. *@
+<aside class="bp-engage-side" data-engage="sidebar">
+    <EngageBoxes Viewer="Viewer" />
+</aside>
+
+@code {
+    [Parameter] public Ballpass.Web.Features.Feed.FeedViewer Viewer { get; set; } = Ballpass.Web.Features.Feed.FeedViewer.Anonymous;
+}

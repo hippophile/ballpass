@@ -111,8 +111,10 @@ public static class FeedSetup
 
     private static string WithStatus(string url, string status)
     {
-        url = Regex.Replace(url.Split('#')[0], @"([?&])status=[^&]*&?", "$1").TrimEnd('?', '&');
-        return $"{url}{(url.Contains('?') ? '&' : '?')}status={status}";
+        var hash = url.IndexOf('#');
+        var fragment = hash >= 0 ? url[hash..] : ""; // #post-N anchor: the page returns to the same post
+        url = Regex.Replace(hash >= 0 ? url[..hash] : url, @"([?&])status=[^&]*&?", "$1").TrimEnd('?', '&');
+        return $"{url}{(url.Contains('?') ? '&' : '?')}status={status}{fragment}";
     }
 
     /// <summary>Shortlist seam: a feed failure must never break shortlisting.</summary>

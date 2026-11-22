@@ -1,0 +1,13 @@
+@* Phone layout: the same boxes right after the 3rd post of the list (or the last one on a short page). Hidden by CSS from 1100 px. *@
+@if (ReferenceEquals(Item, Items[Math.Min(2, Items.Count - 1)]))
+{
+    <div class="bp-engage-inline" data-engage="inline">
+        <EngageBoxes Viewer="Viewer" />
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public Ballpass.Web.Features.Feed.FeedItem Item { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyList<Ballpass.Web.Features.Feed.FeedItem> Items { get; set; } = default!;
+    [Parameter] public Ballpass.Web.Features.Feed.FeedViewer Viewer { get; set; } = Ballpass.Web.Features.Feed.FeedViewer.Anonymous;
+}
