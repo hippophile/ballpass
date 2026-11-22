@@ -57,22 +57,21 @@ All people, clubs and stats in the screenshots are fictional demo data.
 
 App URL: http://localhost:5273
 
-## 3-minute investor demo
-1. Open `/` (home): value proposition, live demo counters, how it works, trust labels.
-2. Click "See a sample athlete profile": stats with trust labels; copy the share link (social preview is built in).
-3. Back on home, click "Try as a coach" and pick the **first coach** on the demo login page.
-4. In Search, show the filters, e.g. position Center (Greek UI: «Σέντερ»), height min 185. Then clear the filters
-   and type the surname of the **first athlete** listed on the demo login page (athletes section) in the name field.
-5. Open that athlete's profile.
-6. Express interest (add a note) and add her to your list.
-7. Open "List" (My list) and show the saved athlete.
-8. Log out.
-9. On the demo login page, sign in as that **first athlete**. Her position on the list is fixed: the order comes from
-   the seed data, so interests sent during the demo do not move her.
-10. Open the inbox: your interest and note are there, next to the interests that were already waiting.
-11. Switch to EN with the EL | EN toggle.
+## Investor demo (60 seconds, then 3 minutes)
 
-Tip: run `make reset` before each demo so every investor sees the same data.
+Run `make reset` first so every investor sees the same data. Say in the first 15 seconds: *"Everything you see is
+fictional demo data. I'm showing the mechanism, not traction."*
+
+**60 seconds:**
+1. **Home** → "Δοκιμάστε ως προπονητής" → pick the first coach.
+2. **Ταίριασμα (Match):** Center, height ≥ 185, priority rebounds → ranked list with fit %, reasons and source labels.
+3. Open the top athlete → percentile bars vs the demo cohort, season trend → **Εκδήλωση ενδιαφέροντος** (with a note).
+4. **"Δείτε το ως αθλήτρια"** (one click) → the interest is in her inbox → **Αποδοχή**.
+5. **"Πίσω στον προπονητή/στην προπονήτρια"** → **Αποστολές**: sent → seen → accepted.
+
+**3-minute add-ons:** the **Ροή** (feed, 🔥, express interest from a "looking for team" card), the AI search box on
+**Αναζήτηση** (`σέντερ Αττική κάτω των 22`), **Σύγκριση** of two shortlisted players, the share card
+(`/p/{slug}/og.png`) and **Season Wrapped** (`/p/{slug}/season`), and the EL | EN switch.
 
 ## What is fictional
 Everything: athletes, coaches, clubs, bios. Every athlete, coach, club, interest and shortlist row is flagged `IsDemo` (seasons and stat lines belong to demo athletes), every page shows the demo banner, and every athlete is an adult (born 2007 or earlier).

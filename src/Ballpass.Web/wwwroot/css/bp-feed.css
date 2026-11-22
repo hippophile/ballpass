@@ -551,3 +551,43 @@
         margin-inline-start: 0;
     }
 }
+
+/* Collapsed composer: one tappable line that looks like an input; opens the forms. */
+.bp-feed-composer-summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: var(--bp-sp-3);
+    padding: var(--bp-sp-3) var(--bp-sp-4);
+    border: 1px solid var(--bp-border-ui);
+    border-radius: var(--bp-r-pill);
+    background: var(--bp-s2);
+    color: var(--bp-muted);
+    cursor: pointer;
+    min-height: 44px;
+}
+
+    .bp-feed-composer-summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .bp-feed-composer-summary:hover,
+    .bp-feed-composer-summary:focus-visible {
+        color: var(--bp-text);
+        border-color: var(--bp-accent);
+    }
+
+.bp-feed-composer-avatar {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bp-accent);
+    color: var(--bp-accent-contrast);
+    font-weight: 800;
+}
+
+.bp-feed-composer[open] > .bp-feed-composer-summary {
+    margin-bottom: var(--bp-sp-4);
+}
