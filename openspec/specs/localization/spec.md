@@ -36,3 +36,11 @@ The system MUST accept only `el` and `en` on `/culture/set` and MUST redirect on
 
 - **WHEN** a client requests `/culture/set?culture=en&redirectUri=https://evil.example/`
 - **THEN** the response is a redirect to `/`
+
+### Requirement: Formal plural Greek register
+
+Greek resources of Feed, Loop, Evidence, Find and Share SHALL address the user in the formal plural ("Ψάχνετε", "στείλατε", "Διαλέξτε").
+
+#### Scenario: No singular imperative
+- **WHEN** the five Greek resource sets are scanned
+- **THEN** none contains a known singular form (Δες, Βρες, Διάλεξε, Ακολούθησε, Συνδέσου, Περίμενε, Δοκίμασε, Συμπλήρωσε, Πρόσθεσε, ...)
