@@ -13,7 +13,7 @@
 <article id="post-@p.Id" class="bp-feed-post@(ReadOnly ? " bp-feed-post-compact" : "")" data-post-id="@p.Id" data-post-type="@p.Type" data-author-key="@p.AuthorKey">
     <header class="bp-feed-head">
         <div class="bp-feed-author">
-            <span class="bp-feed-avatar" aria-hidden="true">@Initials</span>
+            <JerseyAvatar Id="p.AuthorId" Initials="@Initials" Club="@(p.AuthorKind == AuthorKind.Club ? DisplayName : Item.ClubName)" Coach="@(p.AuthorKind == AuthorKind.Coach)" Size="48" Class="bp-feed-avatar" />
             <div class="bp-feed-who">
                 <span class="bp-feed-name">
                     @if (Item.Slug is not null)
@@ -111,7 +111,7 @@
                 </p>
                 break;
             case PostType.Highlight:
-                <CourtArt Initials="@Initials" Label="@(F["Highlight_Alt", p.Title ?? ""].Value)" />
+                <PostMedia PostId="p.Id"><Fallback><CourtArt Initials="@Initials" Label="@(F["Highlight_Alt", p.Title ?? ""].Value)" /></Fallback></PostMedia>
                 <p class="bp-feed-text" data-field="title">@p.Title</p>
                 <p class="bp-feed-hint">@F["Highlight_Caption"]</p>
                 break;
@@ -125,6 +125,10 @@
             default:
                 <p class="bp-feed-text" data-field="text">@p.Text</p>
                 break;
+        }
+        @if (p.Type is PostType.FreeText or PostType.TryoutCall or PostType.LookingForTeam)
+        {
+            <PostMedia PostId="p.Id" />
         }
     </div>
 

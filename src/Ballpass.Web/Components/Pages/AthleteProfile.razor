@@ -23,7 +23,7 @@
     </HeadContent>
 
     <section class="bp-card bp-panel profile-header">
-        <div class="avatar" aria-hidden="true">@Initials</div>
+        <JerseyAvatar Id="athlete.Id" Initials="@Initials" Club="@athlete.CurrentClub?.Name" Size="88" Class="bp-profile-jersey" />
         <div class="identity">
             <h1>@FullName</h1>
             <div class="badges">
@@ -161,10 +161,12 @@
         </section>
     }
 
+    <ProfileHighlights AthleteId="athlete.Id" Slug="@Slug">
     <section class="bp-card bp-panel">
         <h2>@L["Profile_Video"]</h2>
         <p class="video-empty">@L["Profile_NoVideo"]</p>
     </section>
+    </ProfileHighlights>
 
     <section class="bp-card bp-panel">
         <h2>@L["Profile_Share"]</h2>

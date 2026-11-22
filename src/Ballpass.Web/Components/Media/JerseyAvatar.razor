@@ -1,0 +1,37 @@
+@using Ballpass.Web.Features.Media
+@* Illustrated basketball jersey instead of an initials circle. Colour follows the club (neutral without one), the number (0-99) comes
+   from the id, the initials stay in the SVG as text. Decorative: the name is always written next to it, so it is aria-hidden.
+   Fill / text colours are data (a fixed palette checked for contrast in tests), so they are inline, not tokens. *@
+@{
+    var p = JerseyStyle.Palette(Club);
+}
+<svg class="bp-jersey@(string.IsNullOrEmpty(Class) ? "" : " " + Class)" viewBox="0 0 64 64" width="@Size" height="@Size" aria-hidden="true" focusable="false"
+     xmlns="http://www.w3.org/2000/svg" data-jersey-number="@Number" data-jersey-role="@(Coach ? "coach" : null)">
+    <path class="bp-jersey-body" d="M21 6 L27 6 Q32 13 37 6 L43 6 L59 16 L53 27 L48 23 L48 58 Q48 60 46 60 L18 60 Q16 60 16 58 L16 23 L11 27 L5 16 Z"
+          style="fill:@p.Fill;stroke:@p.Trim" />
+    <path class="bp-jersey-trim" d="M27 6 Q32 13 37 6" fill="none" style="stroke:@p.Trim" />
+    <text class="bp-jersey-number" x="32" y="37" text-anchor="middle" style="fill:@p.Text">@Number</text>
+    <text class="bp-jersey-initials" x="32" y="52" text-anchor="middle" style="fill:@p.Text">@Initials</text>
+    @if (Coach)
+    {
+        <g class="bp-jersey-badge">
+            <circle cx="50" cy="50" r="12" />
+            <rect x="44.5" y="43.5" width="11" height="14" rx="1.5" />
+            <rect x="47.5" y="42" width="5" height="3.4" rx="1" />
+            <path d="M47 49h6M47 52h6M47 55h4" />
+        </g>
+    }
+</svg>
+
+@code {
+    /// <summary>Athlete / coach / club id; the number is derived from it.</summary>
+    [Parameter, EditorRequired] public int Id { get; set; }
+    [Parameter, EditorRequired] public string Initials { get; set; } = "";
+    [Parameter] public string? Club { get; set; }
+    /// <summary>Coach variant: clipboard badge.</summary>
+    [Parameter] public bool Coach { get; set; }
+    [Parameter] public int Size { get; set; } = 48;
+    [Parameter] public string? Class { get; set; }
+
+    private int Number => JerseyStyle.Number(Id);
+}

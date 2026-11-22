@@ -90,6 +90,7 @@ builder.Services.AddFeed();
 builder.Services.AddEngage();
 builder.Services.AddFind();
 builder.Services.AddLoop();
+builder.Services.AddMedia();
 builder.Services.AddHealthChecks().AddDbContextCheck<BallpassDbContext>();
 
 var app = builder.Build();

@@ -1,4 +1,5 @@
 using Ballpass.Web.Data;
+using Ballpass.Web.Features.Media;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ballpass.Web.Demo;
@@ -37,6 +38,7 @@ public class DemoDataSeeder(BallpassDbContext db, TimeProvider time)
         await db.SaveChangesAsync(ct);
         await FeedSeeder.ReplaceAsync(db, data, now, ct);
         await EngageSeeder.ReplaceAsync(db, data, now, ct);
+        await MediaSeeder.ReplaceAsync(db, ct);
 
         await tx.CommitAsync(ct);
     }

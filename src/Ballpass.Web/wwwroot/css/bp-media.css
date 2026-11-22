@@ -1,0 +1,86 @@
+/* Ballpass media: post photos/videos, carousel, lightbox, stories bar, profile highlights, jersey avatar. Tokens only (jersey fills are data). */
+
+/* ---- jersey avatar ---- */
+.bp-jersey { display: block; flex: none; background: none; border: 0; border-radius: 0; overflow: visible; }
+.bp-jersey-body { stroke-width: 1.4; stroke-linejoin: round; }
+.bp-jersey-trim { stroke-width: 1.6; stroke-linecap: round; }
+.bp-jersey-number { font-family: var(--bp-font-display); font-weight: 800; font-size: 19px; }
+.bp-jersey-initials { font-family: var(--bp-font-display); font-weight: 700; font-size: 8.5px; letter-spacing: .02em; }
+.bp-jersey-badge circle { fill: var(--bp-accent); stroke: var(--bp-bg); stroke-width: 1.5; }
+.bp-jersey-badge rect { fill: var(--bp-text); }
+.bp-jersey-badge path { fill: none; stroke: var(--bp-bg); stroke-width: 1.2; stroke-linecap: round; }
+.bp-result-jersey { margin-inline-end: 0; }
+.bp-profile-jersey { filter: drop-shadow(0 2px 6px rgb(0 0 0 / .45)); }
+
+/* ---- post media ---- */
+.bp-media { position: relative; margin: var(--bp-sp-3) 0 0; border-radius: var(--bp-r-md); overflow: hidden; background: var(--bp-s2); border: 1px solid var(--bp-border); }
+.bp-media-tile { position: relative; line-height: 0; }
+.bp-media-open { display: block; }
+.bp-media-img, .bp-media-video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: var(--bp-bg); }
+.bp-media-video { object-fit: contain; }
+.bp-media-chip {
+    position: absolute; top: var(--bp-sp-2); left: var(--bp-sp-2); z-index: 1; pointer-events: none;
+    padding: 2px var(--bp-sp-2); border-radius: var(--bp-r-pill); line-height: 1.5;
+    background: rgb(11 15 20 / .82); color: var(--bp-text); font-size: var(--bp-fs-xs); font-weight: 600;
+}
+/* Videos: the label sits in a bar under the picture, so it never covers the graphic or the native controls. */
+.bp-media-tile-video { display: flex; flex-direction: column; background: var(--bp-s1); }
+.bp-media-tile-video .bp-media-chip { position: static; align-self: flex-start; margin: var(--bp-sp-2); }
+.bp-media-carousel {
+    display: flex; margin: 0; padding: 0; list-style: none; overflow-x: auto; scroll-snap-type: x mandatory;
+    scroll-behavior: smooth; scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.bp-media-carousel::-webkit-scrollbar { display: none; }
+.bp-media-slide { flex: 0 0 100%; scroll-snap-align: start; min-width: 0; }
+.bp-media-dots { display: flex; justify-content: center; gap: 0; padding: 0; background: var(--bp-s1); }
+.bp-media-dots a { display: grid; place-items: center; width: 28px; height: 28px; }
+.bp-media-dots a span { width: 8px; height: 8px; border-radius: 50%; background: var(--bp-border-ui); transition: transform .15s; }
+.bp-media-dots a[aria-current] span, .bp-media-dots a:hover span { background: var(--bp-accent); transform: scale(1.3); }
+
+/* CSS-only lightbox: the photo link targets #lb-..., :target shows it, the close link targets nothing. */
+.bp-media-lightbox {
+    display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center;
+    background: rgb(5 8 12 / .95); line-height: 0;
+}
+.bp-media-lightbox:target { display: flex; }
+.bp-media-lightbox img { max-width: 96vw; max-height: 88vh; width: auto; height: auto; border-radius: var(--bp-r-sm); }
+.bp-media-lightbox .bp-media-chip { top: auto; bottom: var(--bp-sp-4); left: 50%; transform: translateX(-50%); }
+.bp-media-close {
+    position: absolute; top: var(--bp-sp-4); right: var(--bp-sp-4); width: 44px; height: 44px; display: grid; place-items: center;
+    border-radius: 50%; background: var(--bp-s2); border: 1px solid var(--bp-border-ui); color: var(--bp-text); font-size: 28px; line-height: 1; text-decoration: none;
+}
+
+/* ---- stories bar ---- */
+.bp-stories { margin: var(--bp-sp-4) 0; }
+.bp-stories-title { font-size: var(--bp-fs-md); font-weight: 700; margin: 0 0 var(--bp-sp-2); }
+.bp-stories-list { display: flex; gap: var(--bp-sp-4); margin: 0; padding: var(--bp-sp-1) 0 var(--bp-sp-2); list-style: none; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin; }
+.bp-stories-list li { flex: none; scroll-snap-align: start; }
+.bp-story { display: flex; flex-direction: column; align-items: center; gap: var(--bp-sp-1); width: 76px; text-decoration: none; color: var(--bp-text); }
+.bp-story-ring { display: grid; place-items: center; width: 68px; height: 68px; border-radius: 50%; background: conic-gradient(var(--bp-accent), var(--bp-warn), var(--bp-accent)); }
+.bp-story-ring .bp-jersey { width: 60px; height: 60px; padding: 5px; box-sizing: border-box; border-radius: 50%; background: var(--bp-s1); border: 2px solid var(--bp-bg); }
+.bp-story-name { max-width: 76px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--bp-fs-xs); color: var(--bp-muted); }
+.bp-story:hover .bp-story-name, .bp-story:focus-visible .bp-story-name { color: var(--bp-text); }
+.bp-stories-note { margin: 0; color: var(--bp-muted); font-size: var(--bp-fs-xs); }
+
+/* ---- profile highlights + story page ---- */
+.bp-highlights-note { color: var(--bp-muted); font-size: var(--bp-fs-sm); margin: 0 0 var(--bp-sp-3); }
+.bp-highlights-grid { align-items: start; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--bp-sp-3); }
+.bp-highlights-grid .bp-media-tile { border-radius: var(--bp-r-md); overflow: hidden; border: 1px solid var(--bp-border); }
+.bp-highlights-more { margin: var(--bp-sp-3) 0 0; }
+.bp-story-page { max-width: 860px; margin: 0 auto; }
+.bp-story-head { display: flex; align-items: center; gap: var(--bp-sp-3); margin-bottom: var(--bp-sp-4); }
+.bp-story-head h1 { font-size: var(--bp-fs-xl); margin: 0; overflow-wrap: anywhere; }
+.bp-story-head .bp-stories-note { margin-top: var(--bp-sp-1); }
+.bp-story-close { margin-inline-start: auto; white-space: nowrap; }
+.bp-story-reel { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.bp-story-nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--bp-sp-3); margin-top: var(--bp-sp-4); }
+
+@media (max-width: 600px) {
+    .bp-media-img { aspect-ratio: 4 / 3; }
+    .bp-highlights-grid, .bp-story-reel { grid-template-columns: 1fr; }
+    .bp-story-head { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .bp-media-carousel { scroll-behavior: auto; }
+    .bp-media-dots a span { transition: none; }
+}
