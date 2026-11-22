@@ -1,0 +1,49 @@
+@using System.Globalization
+@using Ballpass.Web.Features.Media
+@inject IServiceScopeFactory ScopeFactory
+@inject ILogger<StoriesBar> Logger
+@inject IStringLocalizer<MediaResource> M
+
+@* Horizontal strip of athletes that have a highlight reel. Renders nothing when nobody does or if media fails. *@
+@if (rings.Count > 0)
+{
+    <section class="bp-stories" aria-labelledby="bp-stories-title">
+        <h2 id="bp-stories-title" class="bp-stories-title">@M["Stories_Title"]</h2>
+        <ul class="bp-stories-list" aria-label="@M["Stories_Aria"]">
+            @foreach (var r in rings)
+            {
+                <li>
+                    <a class="bp-story" href="/p/@r.Slug#highlights" data-story-slug="@r.Slug" aria-label="@M["Story_Open", Name(r)]">
+                        <span class="bp-story-ring"><JerseyAvatar Id="r.AthleteId" Initials="@Initials(r)" Club="@r.ClubName" Size="56" /></span>
+                        <span class="bp-story-name">@First(r)</span>
+                    </a>
+                </li>
+            }
+        </ul>
+        <p class="bp-stories-note">@M["Stories_Note"]</p>
+    </section>
+}
+
+@code {
+    [Parameter] public int Max { get; set; } = 24;
+
+    private IReadOnlyList<StoryRing> rings = [];
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+    private static string Name(StoryRing r) => IsGreek ? r.NameEl : r.NameLatin;
+    private static string First(StoryRing r) => Name(r).Split(' ')[0];
+    private static string Initials(StoryRing r) => string.Concat(Name(r).Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0]));
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            using var scope = ScopeFactory.CreateScope();
+            rings = await scope.ServiceProvider.GetRequiredService<IMediaService>().StoriesAsync(Max);
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, "Stories failed to load");
+        }
+    }
+}

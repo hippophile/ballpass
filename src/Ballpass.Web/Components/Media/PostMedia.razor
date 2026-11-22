@@ -1,0 +1,54 @@
+@using Ballpass.Web.Data
+@using Ballpass.Web.Features.Media
+@inject IServiceScopeFactory ScopeFactory
+@inject ILogger<PostMedia> Logger
+@inject IStringLocalizer<MediaResource> M
+
+@* Media of one post: one item, or a scroll-snap carousel with dot links (swipe on a phone, no JS). Own scope + DbContext: sibling cards
+   initialise while the host page still holds the request-scoped context. A media failure never breaks the post. *@
+@if (items.Count == 1)
+{
+    <div class="bp-media" data-media-count="1"><MediaTile Item="items[0]" Key="@($"p{PostId}-0")" /></div>
+}
+else if (items.Count > 1)
+{
+    <div class="bp-media" data-media-count="@items.Count">
+        <ul class="bp-media-carousel" data-media-carousel aria-label="@M["Carousel_Label"]">
+            @for (var i = 0; i < items.Count; i++)
+            {
+                <li class="bp-media-slide" id="ms-p@(PostId)-@i" data-media-slide><MediaTile Item="items[i]" Key="@($"p{PostId}-{i}")" /></li>
+            }
+        </ul>
+        <nav class="bp-media-dots">
+            @for (var i = 0; i < items.Count; i++)
+            {
+                <a href="#ms-p@(PostId)-@i" data-media-dot aria-label="@M["Dot_Label", i + 1, items.Count]"><span aria-hidden="true"></span></a>
+            }
+        </nav>
+    </div>
+}
+else if (Fallback is not null)
+{
+    @Fallback
+}
+
+@code {
+    [Parameter, EditorRequired] public int PostId { get; set; }
+    /// <summary>Shown when the post has no media (the old generated art of highlight posts).</summary>
+    [Parameter] public RenderFragment? Fallback { get; set; }
+
+    private IReadOnlyList<MediaItem> items = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            using var scope = ScopeFactory.CreateScope();
+            items = await scope.ServiceProvider.GetRequiredService<IMediaService>().ForPostAsync(PostId);
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, "Media of post {PostId} failed to load", PostId);
+        }
+    }
+}

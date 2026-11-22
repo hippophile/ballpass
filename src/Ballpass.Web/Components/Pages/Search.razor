@@ -88,7 +88,7 @@
             {
                 <div class="bp-result-wrap">
                     <article class="result" data-slug="@a.Slug">
-                        <div class="bp-initials" aria-hidden="true">@Initials(a)</div>
+                        <JerseyAvatar Id="a.Id" Initials="@Initials(a)" Club="@a.CurrentClub?.Name" Size="46" Class="bp-result-jersey" />
                         <div class="bp-result-body">
                             <a class="bp-result-name" href="/p/@a.Slug">@FullName(a)</a>
                             <div class="bp-result-meta">@L[$"Position_{a.Position}"] · @a.HeightCm @L["Profile_Cm"] · @Age(a) @L["Profile_Years"]</div>

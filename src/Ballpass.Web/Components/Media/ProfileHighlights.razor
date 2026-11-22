@@ -1,0 +1,46 @@
+@using Ballpass.Web.Data
+@using Ballpass.Web.Features.Media
+@inject IServiceScopeFactory ScopeFactory
+@inject ILogger<ProfileHighlights> Logger
+@inject IStringLocalizer<MediaResource> M
+
+@* Highlight reel on the profile (id="highlights"). Without a reel the host's own section (ChildContent: heading + "no video yet") stays. *@
+@if (items.Count > 0)
+{
+    <section class="bp-card bp-panel bp-highlights" id="highlights" aria-labelledby="bp-highlights-title">
+        <h2 id="bp-highlights-title">@M["Highlights_Title"]</h2>
+        <p class="bp-highlights-note">@M["Highlights_Note"]</p>
+        <div class="bp-highlights-grid" data-media-count="@items.Count">
+            @for (var i = 0; i < items.Count; i++)
+            {
+                <MediaTile Item="items[i]" Key="@($"r{AthleteId}-{i}")" />
+            }
+        </div>
+        <p class="bp-highlights-more"><a href="/stories/@Slug">@M["Highlights_Story"]</a></p>
+    </section>
+}
+else
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter, EditorRequired] public int AthleteId { get; set; }
+    [Parameter, EditorRequired] public string Slug { get; set; } = "";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private IReadOnlyList<MediaItem> items = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            using var scope = ScopeFactory.CreateScope();
+            items = await scope.ServiceProvider.GetRequiredService<IMediaService>().ReelAsync(AthleteId);
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, "Reel of athlete {AthleteId} failed to load", AthleteId);
+        }
+    }
+}

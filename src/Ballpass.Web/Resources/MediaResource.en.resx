@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Chip_Stock" xml:space="preserve"><value>Stock image · demo</value></data>
+  <data name="Chip_Graphic" xml:space="preserve"><value>Graphic · demo</value></data>
+  <data name="Zoom" xml:space="preserve"><value>Enlarge image</value></data>
+  <data name="Close" xml:space="preserve"><value>Close</value></data>
+  <data name="Dot_Label" xml:space="preserve"><value>Image {0} of {1}</value></data>
+  <data name="Carousel_Label" xml:space="preserve"><value>Post photos</value></data>
+  <data name="Video_Label" xml:space="preserve"><value>Post video</value></data>
+  <data name="Stories_Title" xml:space="preserve"><value>Highlights</value></data>
+  <data name="Stories_Aria" xml:space="preserve"><value>Athlete highlights</value></data>
+  <data name="Stories_Note" xml:space="preserve"><value>Demo sample: stock images and graphics, not real footage of the athletes.</value></data>
+  <data name="Story_Open" xml:space="preserve"><value>Highlights: {0}</value></data>
+  <data name="Highlights_Title" xml:space="preserve"><value>Highlights</value></data>
+  <data name="Highlights_Note" xml:space="preserve"><value>Demo sample: stock images and graphics, not real footage of the athlete.</value></data>
+  <data name="Highlights_Story" xml:space="preserve"><value>Open as highlights</value></data>
+  <data name="Story_Prev" xml:space="preserve"><value>Previous</value></data>
+  <data name="Story_Next" xml:space="preserve"><value>Next</value></data>
+  <data name="Story_Back" xml:space="preserve"><value>Back to the feed</value></data>
+  <data name="Story_Position" xml:space="preserve"><value>{0} of {1}</value></data>
+  <data name="Story_Profile" xml:space="preserve"><value>Profile</value></data>
+</root>

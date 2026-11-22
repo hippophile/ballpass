@@ -1,0 +1,63 @@
+@page "/stories/{Slug}"
+@using System.Globalization
+@using Ballpass.Web.Data
+@using Ballpass.Web.Components.Media
+@inject IMediaService MediaSvc
+@inject NavigationManager Navigation
+@inject IStringLocalizer<MediaResource> M
+
+@* Story overlay page: the reel of one athlete with previous / next links to the neighbouring reels (wraps around). *@
+@if (ring is not null)
+{
+    <PageTitle>@M["Highlights_Title"] · @Name</PageTitle>
+    <div class="bp-story-page">
+        <header class="bp-story-head">
+            <JerseyAvatar Id="ring.AthleteId" Initials="@Initials" Club="@ring.ClubName" Size="48" />
+            <div>
+                <h1>@Name</h1>
+                <p class="bp-stories-note">@M["Story_Position", index + 1, total] · @M["Highlights_Note"]</p>
+            </div>
+            <a class="bp-story-close" href="/feed">@M["Story_Back"]</a>
+        </header>
+        <div class="bp-highlights-grid bp-story-reel" data-media-count="@items.Count">
+            @for (var i = 0; i < items.Count; i++)
+            {
+                <MediaTile Item="items[i]" Key="@($"s{ring.AthleteId}-{i}")" />
+            }
+        </div>
+        <nav class="bp-story-nav">
+            <a class="bp-btn bp-btn-secondary" data-story-prev rel="prev" href="/stories/@prev">← @M["Story_Prev"]</a>
+            <a class="bp-btn bp-btn-secondary" href="/p/@Slug#highlights">@M["Story_Profile"]</a>
+            <a class="bp-btn bp-btn-secondary" data-story-next rel="next" href="/stories/@next">@M["Story_Next"] →</a>
+        </nav>
+    </div>
+}
+
+@code {
+    [Parameter] public string Slug { get; set; } = "";
+
+    private StoryRing? ring;
+    private IReadOnlyList<MediaItem> items = [];
+    private string prev = "", next = "";
+    private int index, total;
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+    private string Name => ring is null ? "" : IsGreek ? ring.NameEl : ring.NameLatin;
+    private string Initials => string.Concat(Name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0]));
+
+    protected override async Task OnInitializedAsync()
+    {
+        var all = await MediaSvc.StoriesAsync(int.MaxValue);
+        index = all.ToList().FindIndex(r => r.Slug == Slug);
+        if (index < 0)
+        {
+            Navigation.NotFound();
+            return;
+        }
+        total = all.Count;
+        ring = all[index];
+        prev = all[(index + total - 1) % total].Slug;
+        next = all[(index + 1) % total].Slug;
+        items = await MediaSvc.ReelAsync(ring.AthleteId);
+    }
+}
