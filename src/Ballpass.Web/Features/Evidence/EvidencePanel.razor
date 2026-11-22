@@ -6,6 +6,7 @@
 @inject ICohortService Cohorts
 @inject IStatAggregator Stats
 @inject IBadgeService BadgeRules
+@inject Microsoft.Extensions.Options.IOptions<EvidenceOptions> EvOptions
 @inject NavigationManager Navigation
 @inject IStringLocalizer<EvidenceResource> E
 @inject IStringLocalizer<SharedResource> L
@@ -62,7 +63,7 @@
                 </tbody>
             </table></div>
             <p class="bp-ev-source">@E["Source_Note"] <span class="bp-ev-src" data-ev-source="@latest.Source">@L[$"Source_{latest.Source}"]</span></p>
-            <p class="bp-ev-note">@E["Thresholds_Note"]</p>
+            <p class="bp-ev-note">@E["Thresholds_Note", EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture)]</p>
         </section>
 
         <section class="bp-ev-block" aria-labelledby="bp-ev-line-h">
@@ -135,17 +136,11 @@
                 </ul>
             </section>
         }
-
-        @if (isCoach)
-        {
-            <p class="bp-ev-compare"><a href="/compare?a=@Athlete.Slug">@E["Compare_Link"]</a></p>
-        }
     </div>
 }
 
 @code {
     [Parameter, EditorRequired] public Athlete Athlete { get; set; } = default!;
-    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
 
     private CohortEvidence? evidence;
     private StatLine? latest;
@@ -154,7 +149,6 @@
     private ProgressionLayout? layout;
     private IReadOnlyList<Badge> badges = [];
     private bool confirmedOnly;
-    private bool isCoach;
 
     protected override async Task OnInitializedAsync()
     {
@@ -172,9 +166,6 @@
         // The top-quartile badge uses the full cohort, not the confirmed-only one.
         var all = confirmedOnly ? await Cohorts.EvaluateAsync(Athlete, false) : evidence;
         badges = BadgeRules.Evaluate(Athlete.Stats, all?.Get(EvidenceMetric.Points)?.Percentile);
-
-        var user = AuthState is null ? null : (await AuthState).User;
-        isCoach = user?.IsInRole("Coach") == true;
     }
 
     private string CohortLabel => E["Cohort_Label", evidence!.PeerCount, E[$"Group_{evidence.Group}"].Value].Value;
@@ -187,7 +178,14 @@
         m.Value.ToString("0.0", CultureInfo.CurrentCulture) + (m.Metric == EvidenceMetric.FgPct ? "%" : "");
 
     private string NoDataText(MetricPercentile m) =>
-        $"{E["Insufficient", m.N]} · {E[m.Reason == InsufficientReason.TooFewGames ? "Insufficient_Games" : "Insufficient_Peers"]}";
+        $"{E["Insufficient", m.N]} · {NoDataReason(m)}";
+
+    private string NoDataReason(MetricPercentile m) => m.Reason switch
+    {
+        InsufficientReason.TooFewGames => E["Insufficient_Games"].Value,
+        InsufficientReason.TooFewMinutes => E["Insufficient_Minutes", EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture)].Value,
+        _ => E["Insufficient_Peers"].Value,
+    };
 
     private string AriaText(MetricPercentile m) => m.Percentile is { } pct
         ? $"{E["Aria_Row", MetricLabel(m.Metric), ValueText(m), E["Pct_Value", pct]]}. {CohortLabel}"

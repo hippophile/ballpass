@@ -96,6 +96,12 @@ public class Interest
     public Athlete? Athlete { get; set; }
     public string? Note { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
+    /// <summary>Set once, when the athlete opens the inbox.</summary>
+    public DateTimeOffset? SeenAt { get; set; }
+    public InterestReply Reply { get; set; }
+    public DateTimeOffset? RepliedAt { get; set; }
+    /// <summary>Set when the coach opens the sent page after the reply; drives the unread-replies count.</summary>
+    public DateTimeOffset? ReplyReadAt { get; set; }
     public bool IsDemo { get; set; }
 }
 

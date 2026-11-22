@@ -398,7 +398,8 @@ public class EvidenceTests(BallpassAppFactory app)
 
     // ---------- profile ----------
 
-    private static Athlete Female(Position p) => Data.Athletes.First(a => a.Gender == Gender.Female && a.Position == p && a.Stats.Count >= 2);
+    private static Athlete Female(Position p) => Data.Athletes.First(a => a.Gender == Gender.Female && a.Position == p && a.Stats.Count >= 2
+        && a.Stats.OrderByDescending(s => s.Season, StringComparer.Ordinal).First() is { Games: >= 10, Minutes: >= 15 });
     private static string Slug(Athlete a) => a.Slug;
 
     private static double Metric(StatLine l, EvidenceMetric m) => m switch
@@ -424,7 +425,7 @@ public class EvidenceTests(BallpassAppFactory app)
         var peers = Data.Athletes
             .Where(a => a != subject && a.Gender == subject.Gender && group.Contains(a.Position) && a.Stats.Count > 0)
             .Select(LatestOf)
-            .Where(l => l.Games >= 10 && (!confirmedOnly || l.Source == StatSource.CoachConfirmed))
+            .Where(l => l.Games >= 10 && l.Minutes >= 15 && (!confirmedOnly || l.Source == StatSource.CoachConfirmed))
             .Select(l => Metric(l, metric)).ToList();
         var v = Metric(LatestOf(subject), metric);
         var pct = (peers.Count(x => x < v) + 0.5 * peers.Count(x => x == v)) / peers.Count * 100;
@@ -601,7 +602,8 @@ public class EvidenceTests(BallpassAppFactory app)
         var (peers, _) = Expected(a, EvidenceMetric.Points, false);
         var v = Metric(LatestOf(a), EvidenceMetric.Points);
         var better = Data.Athletes
-            .Where(x => x != a && x.Gender == a.Gender && (x.Position is Position.PG or Position.SG) && x.Stats.Count > 0)
+            .Where(x => x != a && x.Gender == a.Gender && (x.Position is Position.PG or Position.SG) && x.Stats.Count > 0
+                && LatestOf(x) is { Games: >= 10, Minutes: >= 15 })
             .Count(x => Metric(LatestOf(x), EvidenceMetric.Points) > v);
         Assert.NotNull(result);
         Assert.Equal(better + 1, result!.Value.Rank);

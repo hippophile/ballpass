@@ -34,11 +34,11 @@
   <data name="Wrapped_Same" xml:space="preserve"><value>no change</value></data>
   <data name="Wrapped_StandsHeading" xml:space="preserve"><value>Standout stat</value></data>
   <data name="Wrapped_Top" xml:space="preserve"><value>Top {0}%</value></data>
-  <data name="Metric_Points" xml:space="preserve"><value>In points per game</value></data>
-  <data name="Metric_Rebounds" xml:space="preserve"><value>In rebounds per game</value></data>
-  <data name="Metric_Assists" xml:space="preserve"><value>In assists per game</value></data>
-  <data name="Metric_Steals" xml:space="preserve"><value>In steals per game</value></data>
-  <data name="Metric_Blocks" xml:space="preserve"><value>In blocks per game</value></data>
+  <data name="Metric_Points" xml:space="preserve"><value>In points per 40 min</value></data>
+  <data name="Metric_Rebounds" xml:space="preserve"><value>In rebounds per 40 min</value></data>
+  <data name="Metric_Assists" xml:space="preserve"><value>In assists per 40 min</value></data>
+  <data name="Metric_Steals" xml:space="preserve"><value>In steals per 40 min</value></data>
+  <data name="Metric_FgPct" xml:space="preserve"><value>In field-goal percentage (FG%)</value></data>
   <data name="Wrapped_CohortNoteF" xml:space="preserve"><value>among {0} demo athletes (fictional)</value></data>
   <data name="Wrapped_CohortNoteM" xml:space="preserve"><value>among {0} demo athletes (fictional)</value></data>
   <data name="Wrapped_OutroHeading" xml:space="preserve"><value>See the full profile</value></data>

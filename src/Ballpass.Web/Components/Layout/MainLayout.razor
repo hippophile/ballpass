@@ -46,11 +46,13 @@
                     <a href="/search">@L["Nav_Search"]</a>
                     <MatchNavLink />
                     <a href="/shortlist">@L["Nav_Shortlist"]</a>
+                    <LoopNavLink />
                 }
                 else if (context.User.IsInRole("Athlete"))
                 {
                     <a href="/me/inbox">@L["Nav_Inbox"] (@inboxCount)</a>
                 }
+                <PersonaSwitch />
                 <span class="bp-whoami">@PersonaName(context.User) <small>(@L[(context.User.IsInRole("Coach") ? "Role_Coach" : "Role_Athlete") + (context.User.FindFirst("gender")?.Value == "F" ? "_F" : "")])</small></span>
                 <form method="post" action="/demo/logout">
                     <AntiforgeryToken />

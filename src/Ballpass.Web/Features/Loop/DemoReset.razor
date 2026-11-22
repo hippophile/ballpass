@@ -1,0 +1,32 @@
+@page "/demo/reset"
+@using Ballpass.Web.Features.Loop
+@using Microsoft.Extensions.Options
+@inject IOptions<DemoOptions> Demo
+@inject NavigationManager Navigation
+@inject IStringLocalizer<LoopResource> T
+
+@if (Demo.Value.Enabled)
+{
+    <PageTitle>@T["Reset_Title"]</PageTitle>
+    <section class="bp-card bp-panel bp-loop-reset">
+        <h1>@T["Reset_Title"]</h1>
+        <p>@T["Reset_Intro"]</p>
+        <ul class="bp-loop-effects">
+            <li>@T["Reset_Effect1"]</li>
+            <li>@T["Reset_Effect2"]</li>
+            <li>@T["Reset_Effect3"]</li>
+        </ul>
+        <form method="post" action="/demo/reset" class="bp-loop-resetform">
+            <AntiforgeryToken />
+            <button type="submit" class="bp-btn">@T["Reset_Confirm"]</button>
+            <a class="bp-btn bp-btn-secondary" href="/demo">@T["Reset_Cancel"]</a>
+        </form>
+    </section>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (!Demo.Value.Enabled) Navigation.NotFound();
+    }
+}

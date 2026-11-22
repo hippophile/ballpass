@@ -1,0 +1,103 @@
+@page "/me/sent"
+@attribute [Authorize(Policy = "CoachOnly")]
+@using System.Globalization
+@using Ballpass.Web.Data
+@using Microsoft.EntityFrameworkCore
+@inject BallpassDbContext Db
+@inject TimeProvider Time
+@inject IStringLocalizer<LoopResource> T
+
+<PageTitle>@T["Sent_Title"]</PageTitle>
+
+<h1>@T["Sent_Title"]</h1>
+<p class="bp-loop-intro">@T["Sent_Intro"]</p>
+
+@if (items.Count == 0)
+{
+    <p class="bp-empty">@T["Sent_Empty"]</p>
+}
+else
+{
+    <div class="bp-loop-list">
+        @foreach (var i in items)
+        {
+            var a = i.Athlete!;
+            <article class="bp-loop-sent" data-interest-id="@i.Id" data-state="@State(i)">
+                <header class="bp-loop-sent-head">
+                    <a class="bp-loop-chip" href="/p/@a.Slug"><span class="bp-loop-chip-ini" aria-hidden="true">@Initials(a)</span>@Name(a)</a>
+                    <span class="bp-loop-sent-meta">@(a.CurrentClub?.Name)</span>
+                </header>
+                <ol class="bp-loop-stepper" aria-label="@T["Sent_Aria"]">
+                    <li class="bp-loop-step" data-step="sent" data-state="done">
+                        <span class="bp-loop-dot" aria-hidden="true"></span>
+                        <span class="bp-loop-step-label">@T["Step_Sent"]</span>
+                        @Stamp(i.CreatedAt)
+                    </li>
+                    <li class="bp-loop-step" data-step="seen" data-state="@(i.SeenAt is null ? "pending" : "done")">
+                        <span class="bp-loop-dot" aria-hidden="true"></span>
+                        <span class="bp-loop-step-label">@T["Step_Seen"]</span>
+                        @if (i.SeenAt is { } seen) { @Stamp(seen) } else { <span class="bp-loop-pending">@T["Step_Pending"]</span> }
+                    </li>
+                    <li class="bp-loop-step" data-step="replied" data-state="@(i.Reply == InterestReply.None ? "pending" : "done")">
+                        <span class="bp-loop-dot" aria-hidden="true"></span>
+                        <span class="bp-loop-step-label">@T["Step_Replied"]</span>
+                        @if (i.Reply != InterestReply.None && i.RepliedAt is { } replied)
+                        {
+                            <strong class="bp-loop-result" data-reply="@i.Reply">@T[i.Reply == InterestReply.Accepted ? "Reply_Accepted" : "Reply_Declined"]</strong>
+                            @Stamp(replied)
+                        }
+                        else { <span class="bp-loop-pending">@T["Step_Pending"]</span> }
+                    </li>
+                </ol>
+            </article>
+        }
+    </div>
+}
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState> AuthState { get; set; } = default!;
+
+    private List<Interest> items = [];
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthState).User;
+        if (!int.TryParse(user.FindFirst("entity_id")?.Value, out var coachId)) return;
+
+        items = await Db.Interests.AsNoTracking()
+            .Include(i => i.Athlete).ThenInclude(a => a!.CurrentClub)
+            .Where(i => i.CoachId == coachId)
+            .OrderByDescending(i => i.CreatedAt).ThenByDescending(i => i.Id)
+            .ToListAsync();
+
+        // Opening the page reads the replies: the nav count drops on the next page.
+        await Db.Interests.Where(i => i.CoachId == coachId && i.Reply != InterestReply.None && i.ReplyReadAt == null)
+            .ExecuteUpdateAsync(s => s.SetProperty(i => i.ReplyReadAt, Time.GetUtcNow()));
+    }
+
+    private static string State(Interest i) => i.Reply switch
+    {
+        InterestReply.Accepted => "accepted",
+        InterestReply.Declined => "declined",
+        _ => i.SeenAt is null ? "sent" : "seen",
+    };
+
+    private static string Name(Athlete a) => IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
+
+    private static string Initials(Athlete a) => IsGreek ? $"{a.FirstName[0]}{a.LastName[0]}" : $"{a.FirstNameLatin[0]}{a.LastNameLatin[0]}";
+
+    // Relative text, exact UTC time on hover/title, machine-readable datetime.
+    private RenderFragment Stamp(DateTimeOffset at) => @<time class="bp-loop-time" datetime="@at.UtcDateTime.ToString("o", CultureInfo.InvariantCulture)" title="@at.UtcDateTime.ToString("g", CultureInfo.CurrentCulture) UTC">@Relative(at)</time>;
+
+    private string Relative(DateTimeOffset at)
+    {
+        var age = Time.GetUtcNow() - at;
+        if (age < TimeSpan.FromMinutes(1)) return T["Time_Now"].Value;
+        if (age < TimeSpan.FromHours(1)) return T["Time_Minutes", (int)age.TotalMinutes].Value;
+        if (age < TimeSpan.FromDays(1)) return T["Time_Hours", (int)age.TotalHours].Value;
+        if (age < TimeSpan.FromDays(30)) return T["Time_Days", (int)age.TotalDays].Value;
+        return at.ToString("d MMM yyyy", CultureInfo.CurrentCulture);
+    }
+}

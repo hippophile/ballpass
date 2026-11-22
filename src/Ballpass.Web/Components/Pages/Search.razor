@@ -134,6 +134,9 @@
     [SupplyParameterFromQuery(Name = "league")] public string? League { get; set; }
     [SupplyParameterFromQuery(Name = "looking")] public bool Looking { get; set; }
     [SupplyParameterFromQuery(Name = "q")] public string? Q { get; set; }
+    [SupplyParameterFromQuery(Name = "parsed")] public string? Parsed { get; set; }
+    [SupplyParameterFromQuery(Name = "nlq")] public string? Nlq { get; set; }
+    [SupplyParameterFromQuery(Name = "unsupported")] public string? Unsupported { get; set; }
     [SupplyParameterFromQuery(Name = "page")] public int? PageNumber { get; set; }
 
     private List<Athlete> results = [];
@@ -196,6 +199,8 @@
         Add("region", Region); Add("league", League);
         Add("looking", Looking ? "true" : null);
         Add("q", Q);
+        // AI search label + chips survive paging (AiSearchBox reads these from the URL).
+        Add("parsed", Parsed); Add("nlq", Nlq); Add("unsupported", Unsupported);
         Add("page", page);
         return "/search?" + string.Join("&", parts);
     }

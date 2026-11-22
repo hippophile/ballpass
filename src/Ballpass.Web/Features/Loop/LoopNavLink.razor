@@ -1,0 +1,20 @@
+@namespace Ballpass.Web.Components
+@using Ballpass.Web.Features.Loop
+@inject LoopService Loop
+@inject IStringLocalizer<LoopResource> T
+
+@* Coach nav link to /me/sent with the number of unread replies. *@
+<a href="/me/sent" class="bp-loop-nav" data-unread="@(unread > 0 ? unread.ToString() : null)">@T["Nav_Sent"]@(unread > 0 ? $" ({unread})" : "")</a>
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
+
+    private int unread;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = AuthState is null ? null : (await AuthState).User;
+        if (user?.IsInRole("Coach") == true && int.TryParse(user.FindFirst("entity_id")?.Value, out var coachId))
+            unread = await Loop.UnreadRepliesAsync(coachId);
+    }
+}

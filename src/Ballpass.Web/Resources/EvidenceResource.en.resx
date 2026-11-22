@@ -18,11 +18,12 @@
   <data name="Pct_Value" xml:space="preserve"><value>{0}th percentile</value></data>
   <data name="Insufficient" xml:space="preserve"><value>Not enough data (n={0})</value></data>
   <data name="Insufficient_Peers" xml:space="preserve"><value>fewer than 20 peers in the cohort</value></data>
+  <data name="Insufficient_Minutes" xml:space="preserve"><value>under {0} minutes per game</value></data>
   <data name="Insufficient_Games" xml:space="preserve"><value>fewer than 10 games</value></data>
   <data name="Aria_Row" xml:space="preserve"><value>{0}: {1}, {2}</value></data>
   <data name="Aria_RowNoData" xml:space="preserve"><value>{0}: {1}. {2}</value></data>
   <data name="Source_Note" xml:space="preserve"><value>Source of the latest season stats:</value></data>
-  <data name="Thresholds_Note" xml:space="preserve"><value>The thresholds (20 peers, 10 games, ±10%, 8 games) are our own estimates, not league rules. The cohort is fictional.</value></data>
+  <data name="Thresholds_Note" xml:space="preserve"><value>The thresholds (20 peers, 10 games, {0} minutes per game, ±10%, 8 games) are our own estimates, not league rules. The cohort is fictional.</value></data>
   <data name="Toggle_Label" xml:space="preserve"><value>Comparison cohort:</value></data>
   <data name="Toggle_All" xml:space="preserve"><value>All sources</value></data>
   <data name="Toggle_Confirmed" xml:space="preserve"><value>Coach-confirmed only</value></data>

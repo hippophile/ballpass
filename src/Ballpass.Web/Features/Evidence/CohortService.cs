@@ -1,7 +1,14 @@
 using Ballpass.Web.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Ballpass.Web.Features.Evidence;
+
+/// <summary>Config section Evidence. MinMinutesPerGame is our estimate, not a league rule.</summary>
+public class EvidenceOptions
+{
+    public decimal MinMinutesPerGame { get; set; } = CohortCalculator.DefaultMinMinutes;
+}
 
 /// <summary>Public contract for the Share package: rank of an athlete inside the demo cohort (1 = best).</summary>
 public interface ICohortRank
@@ -20,6 +27,8 @@ public static class CohortCalculator
 {
     public const int MinPeers = 20;
     public const int MinGames = 10;
+    /// <summary>Default minutes-per-game floor (config Evidence:MinMinutesPerGame). Our estimate.</summary>
+    public const decimal DefaultMinMinutes = 15m;
 
     public static PositionGroup GroupOf(Position position) => position switch
     {
@@ -49,22 +58,24 @@ public static class CohortCalculator
     public static int Rank(IReadOnlyList<double> peers, double value) => 1 + peers.Count(p => p > value);
 
     /// <summary>
-    /// Peers = cohort members other than the athlete with at least <see cref="MinGames"/> games
-    /// (and, with <paramref name="confirmedOnly"/>, a coach-confirmed latest line).
+    /// Peers = cohort members other than the athlete with at least <see cref="MinGames"/> games and
+    /// <paramref name="minMinutes"/> minutes per game (per-40 percentiles inflate low-minute players) (and, with <paramref name="confirmedOnly"/>, a coach-confirmed latest line).
     /// </summary>
-    public static IReadOnlyList<CohortMember> Peers(int athleteId, IReadOnlyList<CohortMember> cohort, bool confirmedOnly) =>
-        cohort.Where(m => m.AthleteId != athleteId && m.Line.Games >= MinGames
+    public static IReadOnlyList<CohortMember> Peers(int athleteId, IReadOnlyList<CohortMember> cohort, bool confirmedOnly, decimal minMinutes = DefaultMinMinutes) =>
+        cohort.Where(m => m.AthleteId != athleteId && m.Line.Games >= MinGames && m.Line.Minutes >= minMinutes
                           && (!confirmedOnly || m.Line.Source == StatSource.CoachConfirmed)).ToList();
 
     public static CohortEvidence Evaluate(int athleteId, Gender gender, PositionGroup group, StatLine subject,
-        IReadOnlyList<CohortMember> cohort, bool confirmedOnly, IStatAggregator stats)
+        IReadOnlyList<CohortMember> cohort, bool confirmedOnly, IStatAggregator stats, decimal minMinutes = DefaultMinMinutes)
     {
-        var peers = Peers(athleteId, cohort, confirmedOnly);
+        var peers = Peers(athleteId, cohort, confirmedOnly, minMinutes);
         var metrics = Enum.GetValues<EvidenceMetric>().Select(metric =>
         {
             var value = stats.MetricValue(subject, metric);
             if (subject.Games < MinGames)
                 return new MetricPercentile(metric, value, null, subject.Games, InsufficientReason.TooFewGames);
+            if (subject.Minutes < minMinutes)
+                return new MetricPercentile(metric, value, null, peers.Count, InsufficientReason.TooFewMinutes);
             if (peers.Count < MinPeers)
                 return new MetricPercentile(metric, value, null, peers.Count, InsufficientReason.TooFewPeers);
             var values = peers.Select(p => stats.MetricValue(p.Line, metric)).ToList();
@@ -76,8 +87,10 @@ public static class CohortCalculator
 
 // Uses its own DbContext (own scope): in static SSR a component renders while its parent's async init is still
 // running, so sharing the request's scoped context with the host page could run two queries on it at once.
-public class CohortService(IServiceScopeFactory scopes, IStatAggregator stats) : ICohortService
+public class CohortService(IServiceScopeFactory scopes, IStatAggregator stats, IOptions<EvidenceOptions> options) : ICohortService
 {
+    private decimal MinMinutes => options.Value.MinMinutesPerGame;
+
     // Scoped service: the compare page evaluates two athletes, often from the same cohort.
     private readonly Dictionary<(Gender, PositionGroup), IReadOnlyList<CohortMember>> cache = [];
 
@@ -87,7 +100,7 @@ public class CohortService(IServiceScopeFactory scopes, IStatAggregator stats) :
         if (subject is null) return null;
         var group = CohortCalculator.GroupOf(athlete.Position);
         var cohort = await LoadAsync(athlete.Gender, group);
-        return CohortCalculator.Evaluate(athlete.Id, athlete.Gender, group, subject, cohort, confirmedOnly, stats);
+        return CohortCalculator.Evaluate(athlete.Id, athlete.Gender, group, subject, cohort, confirmedOnly, stats, MinMinutes);
     }
 
     public async Task<(int Rank, int N)?> RankInCohort(int athleteId, EvidenceMetric metric)
@@ -97,10 +110,10 @@ public class CohortService(IServiceScopeFactory scopes, IStatAggregator stats) :
         var athlete = await db.Athletes.AsNoTracking().Include(a => a.Stats)
             .FirstOrDefaultAsync(a => a.Id == athleteId && a.IsDemo);
         var subject = athlete is null ? null : stats.LatestLine(athlete.Stats);
-        if (athlete is null || subject is null || subject.Games < CohortCalculator.MinGames) return null;
+        if (athlete is null || subject is null || subject.Games < CohortCalculator.MinGames || subject.Minutes < MinMinutes) return null;
 
         var cohort = await LoadAsync(athlete.Gender, CohortCalculator.GroupOf(athlete.Position));
-        var peers = CohortCalculator.Peers(athlete.Id, cohort, confirmedOnly: false);
+        var peers = CohortCalculator.Peers(athlete.Id, cohort, confirmedOnly: false, MinMinutes);
         if (peers.Count < CohortCalculator.MinPeers) return null;
 
         var rank = CohortCalculator.Rank(peers.Select(p => stats.MetricValue(p.Line, metric)).ToList(), stats.MetricValue(subject, metric));

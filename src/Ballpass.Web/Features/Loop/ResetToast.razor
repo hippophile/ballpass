@@ -1,0 +1,17 @@
+@namespace Ballpass.Web.Components
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager Nav
+@inject IStringLocalizer<LoopResource> T
+
+@* Shown on the home page after /demo/reset redirects here with ?demo=reset. CSS fades it out; no JavaScript. *@
+@if (show)
+{
+    <p class="bp-loop-toast" role="status" data-toast="reset">@T["Toast_Reset"]</p>
+}
+
+@code {
+    private bool show;
+
+    protected override void OnInitialized() =>
+        show = QueryHelpers.ParseQuery(new Uri(Nav.Uri).Query).TryGetValue("demo", out var v) && v == "reset";
+}
