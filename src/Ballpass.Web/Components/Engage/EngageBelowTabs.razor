@@ -1,0 +1,48 @@
+@using Microsoft.Extensions.Options
+@inject EngageCache Cache
+@inject IOptions<EngageOptions> Options
+@inject TimeProvider Time
+@inject IStringLocalizer<EngageResource> E
+
+@* Below the tabs: the "seeded activity" label, the "N new posts" pill (posts newer than the bp_lastvisit cookie; no polling) and the active tag filter. *@
+<div class="bp-engage-strip">
+    <p class="bp-engage-seeded" data-engage="seeded"><span class="bp-feed-chip">@E["Seeded_Label"]</span></p>
+    @if (newCount > 0)
+    {
+        <a class="bp-engage-pill" data-engage="new-posts" data-new-count="@newCount" href="/feed" aria-label="@E["NewPosts_Aria"]">@(newCount == 1 ? E["NewPosts_One"].Value : E["NewPosts_Many", newCount].Value)</a>
+    }
+    @if (FoldedTag is not null)
+    {
+        <p class="bp-engage-tagfilter" data-engage="tag-filter">
+            <span class="bp-engage-tagchip"><span class="bp-engage-sr">@E["TagFilter_Label"]: </span>#@Tag!.Trim().TrimStart('#')</span>
+            <a href="@ClearHref">@E["TagFilter_Clear"]</a>
+        </p>
+    }
+</div>
+
+@code {
+    [Parameter] public FeedViewer Viewer { get; set; } = FeedViewer.Anonymous;
+    [Parameter] public bool Following { get; set; }
+    [Parameter] public string? Tag { get; set; }
+    [Parameter] public string? Before { get; set; }
+    [CascadingParameter] private HttpContext? Http { get; set; }
+
+    private int newCount;
+
+    private string? FoldedTag => PostTagParser.Fold(Tag);
+    private string ClearHref => Following ? "/feed?tab=following" : "/feed";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Only the first, unfiltered page of the Discover tab counts as "a visit".
+        if (Http is null || Following || FoldedTag is not null || !string.IsNullOrEmpty(Before)) return;
+        var now = Time.GetUtcNow();
+        var since = long.TryParse(Http.Request.Cookies[EngageLimits.LastVisitCookie], out var seconds) && seconds is > 0 and < 253_402_300_799
+            ? DateTimeOffset.FromUnixTimeSeconds(seconds)
+            : now.AddHours(-Options.Value.NewPostsDefaultHours);
+        if (since < now) newCount = await Cache.NewPostsAsync(Viewer, since);
+        if (!Http.Response.HasStarted)
+            Http.Response.Cookies.Append(EngageLimits.LastVisitCookie, now.ToUnixTimeSeconds().ToString(CultureInfo.InvariantCulture),
+                new CookieOptions { Expires = now.AddDays(30), HttpOnly = true, SameSite = SameSiteMode.Lax, IsEssential = true });
+    }
+}

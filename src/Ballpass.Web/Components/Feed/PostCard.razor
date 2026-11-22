@@ -2,6 +2,7 @@
 @using System.Globalization
 @using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Features.Feed
+@using Ballpass.Web.Components.Engage
 @inject IStringLocalizer<SharedResource> L
 @inject IStringLocalizer<FeedResource> F
 @inject TimeProvider Time
@@ -9,7 +10,7 @@
 @{
     var p = Item.Post;
 }
-<article class="bp-feed-post@(ReadOnly ? " bp-feed-post-compact" : "")" data-post-id="@p.Id" data-post-type="@p.Type" data-author-key="@p.AuthorKey">
+<article id="post-@p.Id" class="bp-feed-post@(ReadOnly ? " bp-feed-post-compact" : "")" data-post-id="@p.Id" data-post-type="@p.Type" data-author-key="@p.AuthorKey">
     <header class="bp-feed-head">
         <div class="bp-feed-author">
             <span class="bp-feed-avatar" aria-hidden="true">@Initials</span>
@@ -127,20 +128,18 @@
         }
     </div>
 
+    @if (!ReadOnly) { <EngageBar Item="Item" Viewer="Viewer" /> }
+
     @if (CanAct)
     {
         <footer class="bp-feed-actions">
-            @if (Item.IsOwn)
-            {
-                <span class="bp-feed-kudos-own" data-kudos-count="@(Item.KudosCount ?? 0)" title="@(F["Kudos_Count", Item.KudosCount ?? 0].Value)"><span aria-hidden="true">🔥</span> @(F["Kudos_Count", Item.KudosCount ?? 0].Value)</span>
-            }
-            else
+            @if (!Item.IsOwn)
             {
                 <form method="post" action="/feed/kudos" data-feed-action="kudos" class="bp-feed-inline">
                     <AntiforgeryToken />
                     <input type="hidden" name="postId" value="@p.Id" />
                     <input type="hidden" name="on" value="@(Item.KudoedByMe ? "0" : "1")" />
-                    <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+                    <input type="hidden" name="returnUrl" value="@(ReturnUrl + "#post-" + p.Id)" />
                     <button type="submit" class="bp-feed-kudos" aria-pressed="@(Item.KudoedByMe ? "true" : "false")" aria-label="@F[Item.KudoedByMe ? "Kudos_Off" : "Kudos_On"]">
                         <span class="bp-feed-flame" aria-hidden="true">🔥</span> @F["Kudos"]
                     </button>
@@ -148,7 +147,7 @@
                 <form method="post" action="@(Item.Following ? "/feed/unfollow" : "/feed/follow")" data-feed-action="@(Item.Following ? "unfollow" : "follow")" class="bp-feed-inline">
                     <AntiforgeryToken />
                     <input type="hidden" name="targetKey" value="@p.AuthorKey" />
-                    <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+                    <input type="hidden" name="returnUrl" value="@(ReturnUrl + "#post-" + p.Id)" />
                     <button type="submit" class="bp-btn bp-btn-secondary bp-feed-follow" aria-pressed="@(Item.Following ? "true" : "false")" aria-label="@(Item.Following ? F["Unfollow_Aria"].Value : null)">@F[Item.Following ? "Unfollow" : "Follow"]</button>
                 </form>
             }
@@ -169,6 +168,7 @@
             }
         </footer>
     }
+    @if (!ReadOnly) { <EngageComments Item="Item" Viewer="Viewer" ReturnUrl="@ReturnUrl" /> }
 </article>
 
 @code {

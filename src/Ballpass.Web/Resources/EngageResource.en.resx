@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Seeded_Label" xml:space="preserve"><value>Sample activity (seeded)</value></data>
+  <data name="NewPosts_One" xml:space="preserve"><value>1 new post</value></data>
+  <data name="NewPosts_Many" xml:space="preserve"><value>{0} new posts</value></data>
+  <data name="NewPosts_Aria" xml:space="preserve"><value>New posts since your last visit</value></data>
+  <data name="TagFilter_Label" xml:space="preserve"><value>Tag filter</value></data>
+  <data name="TagFilter_Clear" xml:space="preserve"><value>Clear filter</value></data>
+  <data name="Tags_Aria" xml:space="preserve"><value>Post tags</value></data>
+  <data name="Bar_Aria" xml:space="preserve"><value>Reactions and comments</value></data>
+  <data name="Comments_One" xml:space="preserve"><value>1 comment</value></data>
+  <data name="Comments_Many" xml:space="preserve"><value>{0} comments</value></data>
+  <data name="Likers_You" xml:space="preserve"><value>You like this</value></data>
+  <data name="Likers_YouWithOne" xml:space="preserve"><value>You and {name} like this</value></data>
+  <data name="Likers_YouWithMore" xml:space="preserve"><value>You, {name} and {n} more like this</value></data>
+  <data name="Likers_One" xml:space="preserve"><value>{name}</value></data>
+  <data name="Likers_More" xml:space="preserve"><value>{name} and {n} more</value></data>
+  <data name="Comments_Aria" xml:space="preserve"><value>Comments</value></data>
+  <data name="Comments_ShowAll" xml:space="preserve"><value>See all comments ({0})</value></data>
+  <data name="Comments_Collapse" xml:space="preserve"><value>Fewer comments</value></data>
+  <data name="Comment_Label" xml:space="preserve"><value>Write a comment</value></data>
+  <data name="Comment_Placeholder" xml:space="preserve"><value>Write a comment…</value></data>
+  <data name="Comment_Hint" xml:space="preserve"><value>Up to 280 characters. Links are removed.</value></data>
+  <data name="Comment_Submit" xml:space="preserve"><value>Comment</value></data>
+  <data name="Comment_SignIn" xml:space="preserve"><value>Sign in with a demo profile to comment.</value></data>
+  <data name="Comment_SignInCta" xml:space="preserve"><value>Choose a profile</value></data>
+  <data name="Comment_Menu" xml:space="preserve"><value>Comment actions</value></data>
+  <data name="Comment_Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Comment_Hide" xml:space="preserve"><value>Hide comment</value></data>
+  <data name="Comment_Report" xml:space="preserve"><value>Report</value></data>
+  <data name="Comment_HideHint" xml:space="preserve"><value>The comment will be hidden for everyone.</value></data>
+  <data name="Cs_posted" xml:space="preserve"><value>Your comment was posted.</value></data>
+  <data name="Cs_rate" xml:space="preserve"><value>One comment per 20 seconds. Try again shortly.</value></data>
+  <data name="Cs_too-long" xml:space="preserve"><value>The comment is too long (up to 280 characters).</value></data>
+  <data name="Cs_invalid" xml:space="preserve"><value>Write a comment (links are not allowed).</value></data>
+  <data name="Cs_deleted" xml:space="preserve"><value>The comment was deleted.</value></data>
+  <data name="Cs_hidden" xml:space="preserve"><value>The comment was hidden.</value></data>
+  <data name="Cs_reported" xml:space="preserve"><value>Thank you. The comment was reported and you will not see it again.</value></data>
+  <data name="Follow_Title" xml:space="preserve"><value>Who to follow</value></data>
+  <data name="Follow_Lft" xml:space="preserve"><value>Looking for a team</value></data>
+  <data name="Follow_SignIn" xml:space="preserve"><value>Sign in to follow.</value></data>
+  <data name="Trends_Title" xml:space="preserve"><value>Trending</value></data>
+  <data name="Trends_Window" xml:space="preserve"><value>Last 7 days</value></data>
+  <data name="Trends_CountOne" xml:space="preserve"><value>1 post</value></data>
+  <data name="Trends_CountMany" xml:space="preserve"><value>{0} posts</value></data>
+  <data name="Trends_Empty" xml:space="preserve"><value>No tags yet.</value></data>
+</root>

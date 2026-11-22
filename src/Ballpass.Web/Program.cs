@@ -87,6 +87,7 @@ builder.Services.AddScoped<DemoDataSeeder>();
 builder.Services.AddShare();
 builder.Services.AddEvidence();
 builder.Services.AddFeed();
+builder.Services.AddEngage();
 builder.Services.AddFind();
 builder.Services.AddLoop();
 builder.Services.AddHealthChecks().AddDbContextCheck<BallpassDbContext>();
@@ -245,6 +246,7 @@ app.MapPost("/demo/logout", async (HttpContext http, IAntiforgery antiforgery) =
 });
 app.MapShare();
 app.MapFeed();
+app.MapEngage();
 app.MapFind();
 app.MapLoop();
 app.MapRazorComponents<App>();

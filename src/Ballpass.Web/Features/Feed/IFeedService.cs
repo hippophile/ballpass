@@ -4,7 +4,8 @@ namespace Ballpass.Web.Features.Feed;
 
 public interface IFeedService
 {
-    Task<FeedPageResult> GetFeedAsync(FeedViewer viewer, FeedTab tab, string? before, CancellationToken ct = default);
+    /// <summary><paramref name="tag"/> (engage package) keeps only posts carrying that hashtag; paging works as usual.</summary>
+    Task<FeedPageResult> GetFeedAsync(FeedViewer viewer, FeedTab tab, string? before, string? tag = null, CancellationToken ct = default);
 
     /// <summary>Newest public posts for the home strip (read-only), with the viewer's hide / block / report filters.</summary>
     Task<IReadOnlyList<FeedItem>> GetPreviewAsync(FeedViewer viewer, int count, CancellationToken ct = default);

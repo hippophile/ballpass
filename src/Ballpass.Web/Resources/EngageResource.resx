@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Seeded_Label" xml:space="preserve"><value>Δείγμα δραστηριότητας (seeded)</value></data>
+  <data name="NewPosts_One" xml:space="preserve"><value>1 νέα ανάρτηση</value></data>
+  <data name="NewPosts_Many" xml:space="preserve"><value>{0} νέες αναρτήσεις</value></data>
+  <data name="NewPosts_Aria" xml:space="preserve"><value>Νέες αναρτήσεις από την τελευταία σας επίσκεψη</value></data>
+  <data name="TagFilter_Label" xml:space="preserve"><value>Φίλτρο ετικέτας</value></data>
+  <data name="TagFilter_Clear" xml:space="preserve"><value>Καθαρισμός φίλτρου</value></data>
+  <data name="Tags_Aria" xml:space="preserve"><value>Ετικέτες της ανάρτησης</value></data>
+  <data name="Bar_Aria" xml:space="preserve"><value>Αντιδράσεις και σχόλια</value></data>
+  <data name="Comments_One" xml:space="preserve"><value>1 σχόλιο</value></data>
+  <data name="Comments_Many" xml:space="preserve"><value>{0} σχόλια</value></data>
+  <data name="Likers_You" xml:space="preserve"><value>Σας αρέσει</value></data>
+  <data name="Likers_YouWithOne" xml:space="preserve"><value>Σας αρέσει μαζί με {name}</value></data>
+  <data name="Likers_YouWithMore" xml:space="preserve"><value>Σας αρέσει μαζί με {name} και {n} ακόμη</value></data>
+  <data name="Likers_One" xml:space="preserve"><value>{name}</value></data>
+  <data name="Likers_More" xml:space="preserve"><value>{name} και {n} ακόμη</value></data>
+  <data name="Comments_Aria" xml:space="preserve"><value>Σχόλια</value></data>
+  <data name="Comments_ShowAll" xml:space="preserve"><value>Δείτε όλα τα σχόλια ({0})</value></data>
+  <data name="Comments_Collapse" xml:space="preserve"><value>Λιγότερα σχόλια</value></data>
+  <data name="Comment_Label" xml:space="preserve"><value>Γράψτε ένα σχόλιο</value></data>
+  <data name="Comment_Placeholder" xml:space="preserve"><value>Γράψτε ένα σχόλιο…</value></data>
+  <data name="Comment_Hint" xml:space="preserve"><value>Μέχρι 280 χαρακτήρες. Οι σύνδεσμοι αφαιρούνται.</value></data>
+  <data name="Comment_Submit" xml:space="preserve"><value>Σχολιασμός</value></data>
+  <data name="Comment_SignIn" xml:space="preserve"><value>Συνδεθείτε με ένα δοκιμαστικό προφίλ για να σχολιάσετε.</value></data>
+  <data name="Comment_SignInCta" xml:space="preserve"><value>Επιλογή προφίλ</value></data>
+  <data name="Comment_Menu" xml:space="preserve"><value>Ενέργειες σχολίου</value></data>
+  <data name="Comment_Delete" xml:space="preserve"><value>Διαγραφή</value></data>
+  <data name="Comment_Hide" xml:space="preserve"><value>Απόκρυψη σχολίου</value></data>
+  <data name="Comment_Report" xml:space="preserve"><value>Αναφορά</value></data>
+  <data name="Comment_HideHint" xml:space="preserve"><value>Το σχόλιο θα κρυφτεί για όλους.</value></data>
+  <data name="Cs_posted" xml:space="preserve"><value>Το σχόλιό σας δημοσιεύθηκε.</value></data>
+  <data name="Cs_rate" xml:space="preserve"><value>Ένα σχόλιο ανά 20 δευτερόλεπτα. Δοκιμάστε ξανά σε λίγο.</value></data>
+  <data name="Cs_too-long" xml:space="preserve"><value>Το σχόλιο είναι πολύ μεγάλο (έως 280 χαρακτήρες).</value></data>
+  <data name="Cs_invalid" xml:space="preserve"><value>Γράψτε ένα σχόλιο (οι σύνδεσμοι δεν επιτρέπονται).</value></data>
+  <data name="Cs_deleted" xml:space="preserve"><value>Το σχόλιο διαγράφηκε.</value></data>
+  <data name="Cs_hidden" xml:space="preserve"><value>Το σχόλιο κρύφτηκε.</value></data>
+  <data name="Cs_reported" xml:space="preserve"><value>Ευχαριστούμε. Το σχόλιο αναφέρθηκε και δεν θα το βλέπετε πια.</value></data>
+  <data name="Follow_Title" xml:space="preserve"><value>Προτάσεις για να ακολουθήσετε</value></data>
+  <data name="Follow_Lft" xml:space="preserve"><value>Ψάχνει ομάδα</value></data>
+  <data name="Follow_SignIn" xml:space="preserve"><value>Συνδεθείτε για να ακολουθήσετε.</value></data>
+  <data name="Trends_Title" xml:space="preserve"><value>Τάσεις</value></data>
+  <data name="Trends_Window" xml:space="preserve"><value>Τελευταίες 7 ημέρες</value></data>
+  <data name="Trends_CountOne" xml:space="preserve"><value>1 ανάρτηση</value></data>
+  <data name="Trends_CountMany" xml:space="preserve"><value>{0} αναρτήσεις</value></data>
+  <data name="Trends_Empty" xml:space="preserve"><value>Δεν υπάρχουν ακόμη ετικέτες.</value></data>
+</root>

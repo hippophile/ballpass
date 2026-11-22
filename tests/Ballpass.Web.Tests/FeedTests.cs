@@ -525,7 +525,7 @@ public class FeedTests(BallpassAppFactory app)
     }
 
     [Fact]
-    public async Task Only_the_author_sees_the_kudos_count()
+    public async Task Kudos_count_is_public_but_only_others_can_give_kudos()  // REVERSED by wow-engage: it used to be visible to the author only
     {
         var (postId, authorKey, count) = SeedPostWithKudos(1);
         Assert.True(FeedKeys.TryParse(authorKey, out var kind, out var authorId));
@@ -536,7 +536,7 @@ public class FeedTests(BallpassAppFactory app)
         var foreign = FeedHarness.Cards(await FindOnPages(other, postId)).First(c => c.Id == postId).Html;
 
         Assert.Contains($"data-kudos-count=\"{count}\"", own);
-        Assert.DoesNotContain("data-kudos-count", foreign);
+        Assert.Contains($"data-kudos-count=\"{count}\"", foreign);
         Assert.DoesNotContain("data-feed-action=\"kudos\"", own); // no kudos on your own post
     }
 
@@ -788,7 +788,7 @@ public class ThrowingFeedFactory : BallpassAppFactory
 public class ThrowingFeedService : IFeedService, IFollowService
 {
     private static T Boom<T>() => throw new InvalidOperationException("feed is down (test)");
-    public Task<FeedPageResult> GetFeedAsync(FeedViewer viewer, FeedTab tab, string? before, CancellationToken ct = default) => Boom<Task<FeedPageResult>>();
+    public Task<FeedPageResult> GetFeedAsync(FeedViewer viewer, FeedTab tab, string? before, string? tag = null, CancellationToken ct = default) => Boom<Task<FeedPageResult>>();
     public Task<IReadOnlyList<FeedItem>> GetPreviewAsync(FeedViewer viewer, int count, CancellationToken ct = default) => Boom<Task<IReadOnlyList<FeedItem>>>();
     public Task<PostOutcome> CreateAsync(FeedViewer viewer, NewPost input, CancellationToken ct = default) => Boom<Task<PostOutcome>>();
     public Task<bool> SetKudosAsync(FeedViewer viewer, int postId, bool on, CancellationToken ct = default) => Boom<Task<bool>>();
