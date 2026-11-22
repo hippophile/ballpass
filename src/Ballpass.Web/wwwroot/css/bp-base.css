@@ -39,8 +39,8 @@ body {
     background: var(--bp-bg);
     color: var(--bp-text);
     font-family: var(--bp-font-text);
-    font-size: var(--bp-fs-md);
-    line-height: 1.55;
+    font-size: 0.9375rem;
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -51,9 +51,36 @@ h1, h2, h3 {
     color: var(--bp-text);
 }
 
+/* Type scale (flow-release §4): hero fs-hero/1.05, page H1 32/1.15, card title 18/1.3, body 15/1.5, meta 13/1.4, label 12 uppercase .06em. */
 h1 {
     font-size: var(--bp-fs-xl);
+    line-height: 1.15;
     margin: 0 0 var(--bp-sp-4);
+}
+
+.bp-hero-title {
+    font-size: var(--bp-fs-hero);
+    line-height: 1.05;
+}
+
+.bp-card-title {
+    font-size: 1.125rem;
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+.bp-meta {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--bp-muted);
+}
+
+.bp-label {
+    font-size: var(--bp-fs-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bp-muted);
 }
 
 a {
@@ -178,3 +205,233 @@ code {
     .bp-navlink:hover {
         color: var(--bp-accent);
     }
+
+    /* Active item: the one orange text in the topbar (colour rule 1). */
+    .bp-navlink[aria-current="page"] {
+        color: var(--bp-accent);
+        box-shadow: inset 0 -2px 0 var(--bp-accent);
+    }
+
+/* ---- Flow primitives (flow-release §3/§4). Orange = the coach's move, teal = the athlete's move. ---- */
+
+/* Buttons: one .bp-btn-primary per view. Dark ink only (white on orange is 2.86:1, never allowed). */
+.bp-btn-primary, .bp-btn-athlete, .bp-btn-outline, .bp-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--bp-sp-2);
+    min-height: 44px;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--bp-r-sm);
+    border: 1px solid transparent;
+    font-family: var(--bp-font-text);
+    font-size: var(--bp-fs-md);
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition: box-shadow 150ms ease-out, filter 150ms ease-out, background-color 150ms ease-out;
+}
+
+.bp-btn-primary {
+    background: var(--bp-grad-cta);
+    color: var(--bp-accent-contrast);
+}
+
+    .bp-btn-primary:hover, .bp-btn-primary:focus-visible {
+        color: var(--bp-accent-contrast);
+        box-shadow: var(--bp-glow-accent);
+        filter: brightness(1.05);
+    }
+
+.bp-btn-athlete {
+    background: var(--bp-grad-athlete);
+    color: var(--bp-athlete-contrast);
+}
+
+    .bp-btn-athlete:hover, .bp-btn-athlete:focus-visible {
+        color: var(--bp-athlete-contrast);
+        box-shadow: var(--bp-glow-athlete);
+        filter: brightness(1.05);
+    }
+
+.bp-btn-outline {
+    background: transparent;
+    color: var(--bp-text);
+    border-color: var(--bp-border-ui);
+}
+
+    .bp-btn-outline:hover {
+        background: var(--bp-s2);
+        color: var(--bp-text);
+    }
+
+.bp-btn-ghost {
+    background: transparent;
+    color: var(--bp-muted);
+    padding-inline: var(--bp-sp-3);
+}
+
+    .bp-btn-ghost:hover {
+        background: var(--bp-s2);
+        color: var(--bp-text);
+    }
+
+/* Teal chip: "Ψάχνει ομάδα" everywhere (14% tint; teal on it 7.29 on s1). */
+.bp-chip-athlete {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.2em 0.7em;
+    border-radius: var(--bp-r-pill);
+    background: color-mix(in srgb, var(--bp-athlete) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--bp-athlete) 40%, transparent);
+    color: var(--bp-athlete);
+    font-size: var(--bp-fs-xs);
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+/* Card: gradient surface, hairline border, shadow; hover glows orange (teal on athlete-owned cards). */
+.bp-card {
+    background: var(--bp-grad-card);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+    box-shadow: var(--bp-shadow);
+}
+
+    /* Big containers (.bp-panel) do not glow: only compact, clickable cards do. */
+    .bp-card:not(.bp-panel):hover {
+        box-shadow: var(--bp-shadow), var(--bp-glow-accent);
+    }
+
+    .bp-card.bp-card-athlete:not(.bp-panel):hover {
+        box-shadow: var(--bp-shadow), var(--bp-glow-athlete);
+    }
+
+/* Photo with scrim: text only in the bottom 35% (scrim alpha >= .80), never plain --bp-accent text on a photo. */
+.bp-photo {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--bp-s2);
+}
+
+    .bp-photo > img, .bp-photo > video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: saturate(.9) brightness(.92);
+        z-index: -2;
+    }
+
+.bp-photo-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--bp-scrim);
+}
+
+.bp-photo-scrim-left {
+    background: var(--bp-scrim-left), var(--bp-scrim);
+}
+
+.bp-photo-body {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: var(--bp-sp-5);
+    color: var(--bp-text);
+}
+
+/* Stepper: coach steps orange dots, athlete steps teal dots, connector orange -> teal; pending part is s3. */
+.bp-stepper {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+    .bp-stepper > li {
+        position: relative;
+        flex: 1 1 0;
+        min-width: 0;
+        padding-top: 24px;
+        font-size: 0.8125rem;
+        color: var(--bp-muted);
+    }
+
+        .bp-stepper > li::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--bp-s3);
+            border: 2px solid var(--bp-bg);
+            box-sizing: border-box;
+        }
+
+        .bp-stepper > li:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            top: 7px;
+            left: 16px;
+            right: 0;
+            height: 2px;
+            background: var(--bp-s3);
+        }
+
+        .bp-stepper > li.bp-step-coach.bp-step-done::before {
+            background: var(--bp-accent);
+        }
+
+        .bp-stepper > li.bp-step-athlete.bp-step-done::before {
+            background: var(--bp-athlete);
+        }
+
+        .bp-stepper > li.bp-step-done:not(:last-child)::after {
+            background: linear-gradient(90deg, var(--bp-accent), var(--bp-athlete));
+        }
+
+/* Vertical variant (home connection band). */
+.bp-stepper.bp-stepper-vertical {
+    flex-direction: column;
+    gap: var(--bp-sp-5);
+}
+
+    .bp-stepper.bp-stepper-vertical > li {
+        padding: 0 0 0 32px;
+        font-size: var(--bp-fs-md);
+        color: var(--bp-text);
+    }
+
+        .bp-stepper.bp-stepper-vertical > li::before {
+            top: 4px;
+        }
+
+        .bp-stepper.bp-stepper-vertical > li:not(:last-child)::after {
+            top: 20px;
+            bottom: calc(-1 * var(--bp-sp-5) + 4px);
+            left: 7px;
+            right: auto;
+            width: 2px;
+            height: auto;
+        }
+
+        .bp-stepper.bp-stepper-vertical > li.bp-step-done:not(:last-child)::after {
+            background: linear-gradient(180deg, var(--bp-accent), var(--bp-athlete));
+        }
+
+/* One quiet disclosure on every page (SPEC §8 O1). */
+.bp-footer {
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-faint);
+}

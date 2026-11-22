@@ -16,11 +16,11 @@ public sealed class OgCardRenderer : IOgCardRenderer
     public const int BandHeight = 44;
 
     public static readonly SKColor BandColor = new(0xFF, 0x6A, 0x2B);   // --bp-accent
-    private static readonly SKColor Bg = new(0x0B, 0x0F, 0x14);          // --bp-bg
-    private static readonly SKColor Text = new(0xE8, 0xEE, 0xF5);        // --bp-text
-    private static readonly SKColor Muted = new(0x9A, 0xA8, 0xBB);       // --bp-muted
+    private static readonly SKColor Bg = new(0x08, 0x0B, 0x10);          // --bp-bg
+    private static readonly SKColor Text = new(0xF3, 0xF6, 0xFA);        // --bp-text
+    private static readonly SKColor Muted = new(0xA3, 0xB0, 0xC2);       // --bp-muted
     private static readonly SKColor SrcSelf = new(0xA7, 0xB4, 0xC6);
-    private static readonly SKColor SrcCoach = new(0x4F, 0xC3, 0xF7);
+    private static readonly SKColor SrcCoach = new(0x60, 0xA5, 0xFA);
     private static readonly SKColor SrcLeague = new(0xB7, 0x94, 0xF6);
 
     private const float Left = 64;
@@ -36,7 +36,6 @@ public sealed class OgCardRenderer : IOgCardRenderer
         canvas.Clear(Bg);
 
         DrawGlow(canvas);
-        DrawTiledDemo(canvas, fonts);
         DrawBand(canvas, fonts, 0, model.WatermarkText);
         DrawBand(canvas, fonts, Height - BandHeight, model.WatermarkText);
         DrawWordmark(canvas, fonts);
@@ -55,19 +54,6 @@ public sealed class OgCardRenderer : IOgCardRenderer
             [BandColor.WithAlpha(0x2E), BandColor.WithAlpha(0)], null, SKShaderTileMode.Clamp);
         using var paint = new SKPaint { Shader = shader };
         canvas.DrawRect(0, BandHeight, Width, Height - 2 * BandHeight, paint);
-    }
-
-    private static void DrawTiledDemo(SKCanvas canvas, Fonts fonts)
-    {
-        canvas.Save();
-        canvas.ClipRect(new SKRect(0, BandHeight, Width, Height - BandHeight));
-        canvas.RotateDegrees(-24, Width / 2f, Height / 2f);
-        using var font = new SKFont(fonts.Display, 64) { Subpixel = true };
-        using var paint = new SKPaint { Color = Text.WithAlpha(0x0E), IsAntialias = true };
-        for (var y = -300f; y < Height + 300; y += 150)
-            for (var x = -400f; x < Width + 400; x += 270)
-                canvas.DrawText("DEMO", x + (((int)(y / 150)) % 2 == 0 ? 0 : 135), y, SKTextAlign.Left, font, paint);
-        canvas.Restore();
     }
 
     private static void DrawBand(SKCanvas canvas, Fonts fonts, float top, string text)

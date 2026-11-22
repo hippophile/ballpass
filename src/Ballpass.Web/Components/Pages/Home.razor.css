@@ -58,14 +58,6 @@
     padding: var(--bp-sp-4) 0.5rem;
 }
 
-.bp-caption {
-    flex-basis: 100%;
-    text-align: center;
-    margin: 0;
-    font-size: var(--bp-fs-sm);
-    color: var(--bp-muted);
-}
-
 .bp-home-section h2 {
     font-size: var(--bp-fs-lg);
     font-weight: 700;
@@ -102,9 +94,3 @@
     justify-content: center;
 }
 
-.bp-home-footer {
-    margin: var(--bp-sp-6) 0 0;
-    text-align: center;
-    font-size: var(--bp-fs-sm);
-    color: var(--bp-muted);
-}

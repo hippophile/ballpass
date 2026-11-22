@@ -4,7 +4,6 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="Seeded_Label" xml:space="preserve"><value>Sample activity (seeded)</value></data>
   <data name="NewPosts_One" xml:space="preserve"><value>1 new post</value></data>
   <data name="NewPosts_Many" xml:space="preserve"><value>{0} new posts</value></data>
   <data name="NewPosts_Aria" xml:space="preserve"><value>New posts since your last visit</value></data>
@@ -26,7 +25,7 @@
   <data name="Comment_Placeholder" xml:space="preserve"><value>Write a comment…</value></data>
   <data name="Comment_Hint" xml:space="preserve"><value>Up to 280 characters. Links are removed.</value></data>
   <data name="Comment_Submit" xml:space="preserve"><value>Comment</value></data>
-  <data name="Comment_SignIn" xml:space="preserve"><value>Sign in with a demo profile to comment.</value></data>
+  <data name="Comment_SignIn" xml:space="preserve"><value>Sign in to comment.</value></data>
   <data name="Comment_SignInCta" xml:space="preserve"><value>Choose a profile</value></data>
   <data name="Comment_Menu" xml:space="preserve"><value>Comment actions</value></data>
   <data name="Comment_Delete" xml:space="preserve"><value>Delete</value></data>

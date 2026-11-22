@@ -32,7 +32,9 @@ public class ProfileTests(BallpassAppFactory app)
         Assert.Contains(WithClub.CurrentClub!.Name, html);
         Assert.Equal(WithClub.Stats.Count, Regex.Matches(html, "<tr[^>]*data-season=\"").Count);
         Assert.Contains($"/p/{WithClub.Slug}", html);
-        Assert.Contains("class=\"demo-banner\"", html);
+        Assert.Contains("class=\"bp-footer\"", html);   // flow-release O1: footer disclosure replaces the banner
+        Assert.DoesNotContain("demo-banner", html);
+        Assert.DoesNotContain("bp-badge-demo", html);
     }
 
     [Fact]
@@ -57,7 +59,8 @@ public class ProfileTests(BallpassAppFactory app)
         var (status, html) = await Get("/p/does-not-exist");
 
         Assert.Equal(HttpStatusCode.NotFound, status);
-        Assert.Contains("class=\"demo-banner\"", html);
+        Assert.Contains("class=\"bp-footer\"", html);   // flow-release O1: footer disclosure replaces the banner
+        Assert.DoesNotContain("demo-banner", html);
     }
 
     [Fact]

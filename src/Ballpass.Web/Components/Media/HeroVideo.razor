@@ -1,0 +1,21 @@
+@using Ballpass.Web.Features.Media
+@* Home hero loop (flow-release §4.1, M5). The only <source> carries a media query, so phones (< 768 px) and visitors with
+   prefers-reduced-motion never download the video and just see the poster. Scrims: --bp-scrim + --bp-scrim-left + --bp-grad-hero.
+   Decorative: the headline is real text in ChildContent. *@
+<div class="bp-photo bp-hero-video@(string.IsNullOrEmpty(Class) ? "" : " " + Class)">
+    <video muted autoplay loop playsinline preload="metadata" poster="@StockMedia.Hero.Poster.Url"
+           width="@StockMedia.Hero.Poster.Width" height="@StockMedia.Hero.Poster.Height" aria-hidden="true" tabindex="-1">
+        <source src="@StockMedia.Hero.Url" type="video/mp4" media="(min-width:768px) and (prefers-reduced-motion:no-preference)" />
+    </video>
+    <div class="bp-photo-scrim bp-photo-scrim-left" aria-hidden="true"></div>
+    <div class="bp-hero-glow" aria-hidden="true"></div>
+    @if (ChildContent is not null)
+    {
+        <div class="bp-photo-body">@ChildContent</div>
+    }
+</div>
+
+@code {
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

@@ -62,10 +62,10 @@
   <data name="Results_Hidden_One" xml:space="preserve"><value>{0} κρυμμένος από φίλτρα</value></data>
   <data name="Results_Showing" xml:space="preserve"><value>Εμφανίζονται οι πρώτοι {0}.</value></data>
   <data name="Results_None" xml:space="preserve"><value>Κανένας παίκτης δεν περνά τα φίλτρα.</value></data>
-  <data name="Results_Label" xml:space="preserve"><value>Υπολογίζεται σε φανταστικά δεδομένα επίδειξης με προεπιλεγμένα βάρη</value></data>
+  <data name="Results_Label" xml:space="preserve"><value>Υπολογίζεται με προεπιλεγμένα βάρη</value></data>
   <data name="Results_Unranked" xml:space="preserve"><value>Δεν ζητήσατε κριτήριο βαθμολόγησης (ύψος, ηλικία, περιφέρεια, κατηγορία ή στατιστικό): η λίστα δεν είναι ταξινομημένη κατά συμβατότητα.</value></data>
   <data name="Weights_Heading" xml:space="preserve"><value>Πώς υπολογίζεται</value></data>
-  <data name="Weights_Intro" xml:space="preserve"><value>Το ποσοστό είναι σταθμισμένος μέσος των κριτηρίων που ζητήσατε, με προεπιλεγμένα βάρη (εκτιμήσεις, όχι μετρημένα). Αν λείπει δεδομένο, υπολογίζεται στα υπόλοιπα και ο παίκτης σημαίνεται «μερικά δεδομένα». Το στατιστικό είναι ανά 40΄ και συγκρίνεται με το δείγμα επίδειξης ίδιου φύλου και ίδιας θέσης, όπως στο προφίλ· λείπει όταν υπάρχουν λιγότεροι από {0} αγώνες, λιγότερα από {1} λεπτά ανά αγώνα ή λιγότεροι από {2} συνομήλικοι. Δεν είναι αξιολόγηση ικανότητας.</value></data>
+  <data name="Weights_Intro" xml:space="preserve"><value>Το ποσοστό είναι σταθμισμένος μέσος των κριτηρίων που ζητήσατε, με προεπιλεγμένα βάρη (εκτιμήσεις, όχι μετρημένα). Αν λείπει δεδομένο, υπολογίζεται στα υπόλοιπα και ο παίκτης σημαίνεται «μερικά δεδομένα». Το στατιστικό είναι ανά 40΄ και συγκρίνεται με την ομάδα σύγκρισης ίδιου φύλου και ίδιας θέσης, όπως στο προφίλ· λείπει όταν υπάρχουν λιγότεροι από {0} αγώνες, λιγότερα από {1} λεπτά ανά αγώνα ή λιγότεροι από {2} συνομήλικοι. Δεν είναι αξιολόγηση ικανότητας.</value></data>
   <data name="Weight_Height" xml:space="preserve"><value>Ύψος</value></data>
   <data name="Weight_Stat" xml:space="preserve"><value>Στατιστικό</value></data>
   <data name="Weight_Region" xml:space="preserve"><value>Περιφέρεια</value></data>
@@ -78,7 +78,7 @@
   <data name="Fit_Unranked" xml:space="preserve"><value>Χωρίς βαθμολογία</value></data>
   <data name="Partial_Tag" xml:space="preserve"><value>Μερικά δεδομένα</value></data>
   <data name="Partial_Missing" xml:space="preserve"><value>Λείπει: {0}</value></data>
-  <data name="Missing_Stat" xml:space="preserve"><value>στατιστικό (όχι αρκετά δεδομένα για σύγκριση με το δείγμα)</value></data>
+  <data name="Missing_Stat" xml:space="preserve"><value>στατιστικό (όχι αρκετά δεδομένα για σύγκριση με την ομάδα σύγκρισης)</value></data>
   <data name="Missing_League" xml:space="preserve"><value>κατηγορία (χωρίς σύλλογο)</value></data>
   <data name="Missing_Height" xml:space="preserve"><value>ύψος</value></data>
   <data name="Missing_Age" xml:space="preserve"><value>ηλικία</value></data>
@@ -90,8 +90,8 @@
   <data name="Reason_Region_Met" xml:space="preserve"><value>Περιφέρεια: {0}</value></data>
   <data name="Reason_League" xml:space="preserve"><value>Κατηγορία: {0} (στόχος {1})</value></data>
   <data name="Reason_League_Met" xml:space="preserve"><value>Κατηγορία: {0}</value></data>
-  <data name="Reason_Stat_Top" xml:space="preserve"><value>{0} {1}/40΄ — top {2}% των {3} (δείγμα επίδειξης)</value></data>
-  <data name="Reason_Stat_Plain" xml:space="preserve"><value>{0} {1}/40΄ — κάτω από το top 50% των {2} (δείγμα επίδειξης)</value></data>
+  <data name="Reason_Stat_Top" xml:space="preserve"><value>{0} {1}/40΄ — top {2}% των {3}</value></data>
+  <data name="Reason_Stat_Plain" xml:space="preserve"><value>{0} {1}/40΄ — κάτω από το top 50% των {2}</value></data>
   <data name="Unit_Rebounding" xml:space="preserve"><value>ριμπ.</value></data>
   <data name="Unit_Scoring" xml:space="preserve"><value>πόντ.</value></data>
   <data name="Unit_Playmaking" xml:space="preserve"><value>ασίστ.</value></data>

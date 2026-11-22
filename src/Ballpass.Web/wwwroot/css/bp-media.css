@@ -1,4 +1,4 @@
-/* Ballpass media: post photos/videos, carousel, lightbox, stories bar, profile highlights, jersey avatar. Tokens only (jersey fills are data). */
+/* Ballpass media: post photos/videos, carousel, lightbox, stories bar, profile highlights, jersey avatar, stock photo, hero video. Tokens only (jersey fills are data). */
 
 /* ---- jersey avatar ---- */
 .bp-jersey { display: block; flex: none; background: none; border: 0; border-radius: 0; overflow: visible; }
@@ -18,14 +18,7 @@
 .bp-media-open { display: block; }
 .bp-media-img, .bp-media-video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: var(--bp-bg); }
 .bp-media-video { object-fit: contain; }
-.bp-media-chip {
-    position: absolute; top: var(--bp-sp-2); left: var(--bp-sp-2); z-index: 1; pointer-events: none;
-    padding: 2px var(--bp-sp-2); border-radius: var(--bp-r-pill); line-height: 1.5;
-    background: rgb(11 15 20 / .82); color: var(--bp-text); font-size: var(--bp-fs-xs); font-weight: 600;
-}
-/* Videos: the label sits in a bar under the picture, so it never covers the graphic or the native controls. */
 .bp-media-tile-video { display: flex; flex-direction: column; background: var(--bp-s1); }
-.bp-media-tile-video .bp-media-chip { position: static; align-self: flex-start; margin: var(--bp-sp-2); }
 .bp-media-carousel {
     display: flex; margin: 0; padding: 0; list-style: none; overflow-x: auto; scroll-snap-type: x mandatory;
     scroll-behavior: smooth; scrollbar-width: none; overscroll-behavior-x: contain;
@@ -44,7 +37,6 @@
 }
 .bp-media-lightbox:target { display: flex; }
 .bp-media-lightbox img { max-width: 96vw; max-height: 88vh; width: auto; height: auto; border-radius: var(--bp-r-sm); }
-.bp-media-lightbox .bp-media-chip { top: auto; bottom: var(--bp-sp-4); left: 50%; transform: translateX(-50%); }
 .bp-media-close {
     position: absolute; top: var(--bp-sp-4); right: var(--bp-sp-4); width: 44px; height: 44px; display: grid; place-items: center;
     border-radius: 50%; background: var(--bp-s2); border: 1px solid var(--bp-border-ui); color: var(--bp-text); font-size: 28px; line-height: 1; text-decoration: none;
@@ -63,7 +55,6 @@
 .bp-stories-note { margin: 0; color: var(--bp-muted); font-size: var(--bp-fs-xs); }
 
 /* ---- profile highlights + story page ---- */
-.bp-highlights-note { color: var(--bp-muted); font-size: var(--bp-fs-sm); margin: 0 0 var(--bp-sp-3); }
 .bp-highlights-grid { align-items: start; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--bp-sp-3); }
 .bp-highlights-grid .bp-media-tile { border-radius: var(--bp-r-md); overflow: hidden; border: 1px solid var(--bp-border); }
 .bp-highlights-more { margin: var(--bp-sp-3) 0 0; }
@@ -74,6 +65,11 @@
 .bp-story-close { margin-inline-start: auto; white-space: nowrap; }
 .bp-story-reel { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
 .bp-story-nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--bp-sp-3); margin-top: var(--bp-sp-4); }
+
+/* ---- stock photo + hero video (StockPhoto / HeroVideo; base .bp-photo / .bp-photo-scrim live in bp-base.css) ---- */
+.bp-stock { border-radius: var(--bp-r-md); }
+.bp-hero-video { min-height: 320px; }
+.bp-hero-glow { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--bp-grad-hero); }
 
 @media (max-width: 600px) {
     .bp-media-img { aspect-ratio: 4 / 3; }

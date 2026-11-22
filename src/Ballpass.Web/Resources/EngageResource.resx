@@ -4,7 +4,6 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="Seeded_Label" xml:space="preserve"><value>Δείγμα δραστηριότητας (seeded)</value></data>
   <data name="NewPosts_One" xml:space="preserve"><value>1 νέα ανάρτηση</value></data>
   <data name="NewPosts_Many" xml:space="preserve"><value>{0} νέες αναρτήσεις</value></data>
   <data name="NewPosts_Aria" xml:space="preserve"><value>Νέες αναρτήσεις από την τελευταία σας επίσκεψη</value></data>
@@ -26,7 +25,7 @@
   <data name="Comment_Placeholder" xml:space="preserve"><value>Γράψτε ένα σχόλιο…</value></data>
   <data name="Comment_Hint" xml:space="preserve"><value>Μέχρι 280 χαρακτήρες. Οι σύνδεσμοι αφαιρούνται.</value></data>
   <data name="Comment_Submit" xml:space="preserve"><value>Σχολιασμός</value></data>
-  <data name="Comment_SignIn" xml:space="preserve"><value>Συνδεθείτε με ένα δοκιμαστικό προφίλ για να σχολιάσετε.</value></data>
+  <data name="Comment_SignIn" xml:space="preserve"><value>Συνδεθείτε για να σχολιάσετε.</value></data>
   <data name="Comment_SignInCta" xml:space="preserve"><value>Επιλογή προφίλ</value></data>
   <data name="Comment_Menu" xml:space="preserve"><value>Ενέργειες σχολίου</value></data>
   <data name="Comment_Delete" xml:space="preserve"><value>Διαγραφή</value></data>

@@ -2,7 +2,7 @@
 
 /* ---- Cards ---- */
 .bp-card, .bp-result-wrap, .bp-persona, .interest, .bp-counter, .bp-steps li, .bp-trust li {
-    background: var(--bp-s1);
+    background: var(--bp-grad-card);
     border: 1px solid var(--bp-border);
     border-radius: var(--bp-r-md);
     padding: var(--bp-sp-4);
@@ -103,11 +103,6 @@
 
 .bp-src-league {
     color: var(--bp-src-league);
-}
-
-.bp-badge-demo {
-    color: var(--bp-warn);
-    border-color: color-mix(in srgb, var(--bp-warn) 45%, transparent);
 }
 
 .bp-badge-looking {

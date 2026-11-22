@@ -1,4 +1,9 @@
 @namespace Ballpass.Web.Components
 @inject IStringLocalizer<FindResource> F
+@inject NavigationManager Navigation
 
-<a href="/match" class="bp-navlink">@F["Nav_Match"]</a>
+<a href="/match" class="bp-navlink" aria-current="@(IsCurrent ? "page" : null)">@F["Nav_Match"]</a>
+
+@code {
+    private bool IsCurrent => Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0] == "match";
+}

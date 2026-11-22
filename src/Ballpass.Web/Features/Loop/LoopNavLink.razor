@@ -2,11 +2,14 @@
 @using Ballpass.Web.Features.Loop
 @inject LoopService Loop
 @inject IStringLocalizer<LoopResource> T
+@inject NavigationManager Navigation
 
 @* Coach nav link to /me/sent with the number of unread replies. *@
-<a href="/me/sent" class="bp-loop-nav bp-navlink" data-unread="@(unread > 0 ? unread.ToString() : null)">@T["Nav_Sent"]@(unread > 0 ? $" ({unread})" : "")</a>
+<a href="/me/sent" class="bp-loop-nav bp-navlink" data-unread="@(unread > 0 ? unread.ToString() : null)" aria-current="@(IsCurrent ? "page" : null)">@T["Nav_Sent"]@(unread > 0 ? $" ({unread})" : "")</a>
 
 @code {
+    private bool IsCurrent => Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0] == "me/sent";
+
     [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
 
     private int unread;

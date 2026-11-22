@@ -27,7 +27,6 @@
         <div class="identity">
             <h1>@FullName</h1>
             <div class="badges">
-                <span class="bp-badge bp-badge-demo">@L["Badge_Demo"]</span>
                 @if (athlete.LookingForTeam)
                 {
                     <span class="bp-badge bp-badge-looking">@L["Badge_LookingForTeam"]</span>
@@ -256,7 +255,7 @@
     private string ShareUrl => $"{Navigation.BaseUri}p/{Slug}";
 
     private string OgDescription =>
-        $"{athlete!.CurrentClub?.Name ?? L["Profile_OgLookingForTeam"].Value} · {L["Profile_OgDemo"]}";
+        $"{athlete!.CurrentClub?.Name ?? L["Profile_OgLookingForTeam"].Value} · {L["Brand"]}";
 
     private static string Num(decimal v) => v.ToString("0.0", CultureInfo.CurrentCulture);
 }

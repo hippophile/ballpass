@@ -96,7 +96,7 @@ public static class FeedSeeder
             p.ClubId = club.Id;
             p.EventDate = today.AddDays(r.Int(4, 24));
             p.Deadline = p.EventDate.Value.AddDays(-r.Int(2, 4));
-            p.Place = $"Γήπεδο ομάδας, {club.City} (δείγμα)";
+            p.Place = $"Γήπεδο ομάδας, {club.City}";
             p.Positions = Pick(TryoutPositions);
             posts.Add(p);
         }

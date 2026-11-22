@@ -1,0 +1,30 @@
+@using Ballpass.Web.Features.Media
+@* A stock picture with its scrim (flow-release §3 scrim rules). Text goes in ChildContent, which sits in the bottom zone where the
+   scrim alpha is >= .80; the top of the picture carries no text. No "demo" chip (SPEC §8 O1). Decorative by default (alt="").
+   Priority = above the fold: eager + fetchpriority="high" instead of lazy (M4). *@
+<div class="bp-photo bp-stock@(string.IsNullOrEmpty(Class) ? "" : " " + Class)">
+    @if (Priority)
+    {
+        <img src="@Image.Url" width="@Image.Width" height="@Image.Height" alt="@Alt" fetchpriority="high" decoding="async" />
+    }
+    else
+    {
+        <img src="@Image.Url" width="@Image.Width" height="@Image.Height" alt="@Alt" loading="lazy" decoding="async" />
+    }
+    <div class="bp-photo-scrim@(Left ? " bp-photo-scrim-left" : "")" aria-hidden="true"></div>
+    @if (ChildContent is not null)
+    {
+        <div class="bp-photo-body">@ChildContent</div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public StockImage Image { get; set; } = default!;
+    /// <summary>Empty = decorative. Never claim the picture shows a named athlete.</summary>
+    [Parameter] public string Alt { get; set; } = "";
+    [Parameter] public bool Priority { get; set; }
+    /// <summary>Text on the left half (hero, cover): adds --bp-scrim-left on top of --bp-scrim.</summary>
+    [Parameter] public bool Left { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

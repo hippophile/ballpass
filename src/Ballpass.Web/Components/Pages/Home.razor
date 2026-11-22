@@ -28,7 +28,6 @@
     <div class="bp-counter"><span class="bp-count-num" data-count="athletes" style="--bp-n:@athletes">@athletes</span><span class="bp-count-label">@L["Home_CountAthletes"]</span></div>
     <div class="bp-counter"><span class="bp-count-num" data-count="clubs" style="--bp-n:@clubs">@clubs</span><span class="bp-count-label">@L["Home_CountClubs"]</span></div>
     <div class="bp-counter"><span class="bp-count-num" data-count="coaches" style="--bp-n:@coaches">@coaches</span><span class="bp-count-label">@L["Home_CountCoaches"]</span></div>
-    <p class="bp-caption">@L["Home_CountsCaption"]</p>
 </section>
 
 <section class="bp-home-section">
@@ -48,8 +47,6 @@
         <li><SourceBadge Source="StatSource.LeagueVerifiedMock" /><span>@L["Home_TrustLeague"]</span></li>
     </ul>
 </section>
-
-<p class="bp-home-footer">@L["Home_Footer"]</p>
 
 @code {
     private int athletes, clubs, coaches;

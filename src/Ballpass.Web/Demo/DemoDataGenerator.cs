@@ -172,7 +172,7 @@ public static class DemoDataGenerator
                     var city = GreekNames.Cities[(n * 5 + r.Int(0, 2)) % GreekNames.Cities.Count];
                     clubs.Add(new Club
                     {
-                        Name = $"{nicknames[n]} {city.Genitive} (demo)",
+                        Name = $"{nicknames[n]} {city.Genitive}",
                         City = city.Name,
                         Region = city.Region,
                         Gender = gender,

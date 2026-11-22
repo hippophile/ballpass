@@ -34,19 +34,19 @@ public class SkeletonTests(WebApplicationFactory<Program> factory) : IClassFixtu
     [Theory]
     [InlineData("/")]
     [InlineData("/this-page-does-not-exist")]
-    public async Task Every_page_shows_the_demo_banner(string path)
+    public async Task Every_page_shows_one_footer_disclosure_and_no_banner(string path)
     {
+        // Spec: openspec/changes/flow-release/specs/platform/spec.md (the banner is replaced by one quiet footer line, SPEC §8 O1)
         var client = factory.CreateClient();
 
         var response = await client.GetAsync(path);
         var html = await response.Content.ReadAsStringAsync();
 
         if (path == "/") Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var banner = Regex.Match(html, "<[^>]*class=\"demo-banner\"[^>]*>(.*?)</div>", RegexOptions.Singleline);
-        Assert.True(banner.Success, $"demo banner missing on {path}");
-        Assert.Contains("role=\"status\"", banner.Value);
-        Assert.Contains("all athletes, coaches and clubs are fictional", banner.Groups[1].Value);
-        Assert.Contains("φανταστικοί", banner.Groups[1].Value);
+        Assert.DoesNotContain("demo-banner", html);
+        var footer = Regex.Match(html, "<footer[^>]*class=\"bp-footer\"[^>]*>(.*?)</footer>", RegexOptions.Singleline);
+        Assert.True(footer.Success, $"footer disclosure missing on {path}");
+        Assert.Contains("Φανταστικά πρόσωπα και δεδομένα", footer.Groups[1].Value);
     }
 
     [Fact]

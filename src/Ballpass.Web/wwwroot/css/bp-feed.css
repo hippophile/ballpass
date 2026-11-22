@@ -220,14 +220,6 @@
     color: var(--bp-muted);
 }
 
-.bp-feed-chip {
-    color: var(--bp-warn);
-    border: 1px solid color-mix(in srgb, var(--bp-warn) 45%, transparent);
-    border-radius: var(--bp-r-pill);
-    padding: 0.2em 0.6em;
-    font-weight: 600;
-}
-
 /* "..." menu */
 .bp-feed-menu {
     position: relative;

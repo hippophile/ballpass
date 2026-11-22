@@ -178,7 +178,8 @@ public class MediaTests(BallpassAppFactory app)
         Assert.Matches("alt=\"[^\"]{5,}\"", img);
         Assert.Contains("loading=\"lazy\"", img);
         Assert.Contains("decoding=\"async\"", img);
-        Assert.Contains("Εικόνα αρχείου · demo", card);
+        Assert.DoesNotContain("Εικόνα αρχείου", card);   // flow-release O1: no stock chip
+        Assert.DoesNotContain("data-chip=\"media\"", card);
     }
 
     [Fact]
@@ -194,7 +195,8 @@ public class MediaTests(BallpassAppFactory app)
         Assert.Matches("\\sloop(\\s|=|>)", video);
         Assert.DoesNotContain("autoplay", video);
         Assert.Matches("\\scontrols(\\s|=|>)", video);
-        Assert.Contains("Γραφικό · demo", card);
+        Assert.DoesNotContain("Γραφικό · demo", card);   // flow-release O1: no graphic chip
+        Assert.DoesNotContain("data-chip=\"media\"", card);
         Assert.Matches("<source\\b[^>]*src=\"/media/[^\"]+\\.mp4\"[^>]*type=\"video/mp4\"", card);
     }
 

@@ -17,7 +17,8 @@ internal static class ShareText
 
 public static class OgCardModelFactory
 {
-    public const string WatermarkText = "DEMO · ΦΑΝΤΑΣΤΙΚΟ ΠΡΟΣΩΠΟ · FICTIONAL ATHLETE";
+    // flow-release O1: no "DEMO". The card travels without the site footer, so its bands keep the one quiet disclosure.
+    public const string WatermarkText = "ΦΑΝΤΑΣΤΙΚΟ ΠΡΟΣΩΠΟ · FICTIONAL PERSON";
 
     /// <summary>Needs <c>CurrentClub</c> and <c>Stats</c> loaded. The key line is the athlete's latest season.</summary>
     public static OgCardModel Build(Athlete athlete, int currentYear)
@@ -29,9 +30,7 @@ public static class OgCardModelFactory
             $"{currentYear - athlete.BirthYear} {ShareText.GreekShared("Profile_Years")}");
         var club = athlete.CurrentClub is null
             ? ShareText.Greek("Card_NoClub") + (athlete.LookingForTeam ? " · " + ShareText.Greek("Card_Looking") : "")   // follows the profile flag; the hash (cache key) covers this line
-            : athlete.CurrentClub.Name.Contains("(demo)", StringComparison.OrdinalIgnoreCase)   // demo club names already carry the tag
-                ? athlete.CurrentClub.Name
-                : string.Format(ShareText.El, ShareText.Greek("Card_ClubDemo"), athlete.CurrentClub.Name);
+            : athlete.CurrentClub.Name;
 
         var line = athlete.Stats.OrderByDescending(s => s.Season, StringComparer.Ordinal).ThenByDescending(s => s.Games).FirstOrDefault();
         if (line is null)

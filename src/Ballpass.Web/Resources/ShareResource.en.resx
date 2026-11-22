@@ -9,19 +9,18 @@
   <data name="Card_Assists" xml:space="preserve"><value>Assists</value></data>
   <data name="Card_NoClub" xml:space="preserve"><value>No club</value></data>
   <data name="Card_Looking" xml:space="preserve"><value>looking for a team</value></data>
-  <data name="Card_ClubDemo" xml:space="preserve"><value>{0} (demo)</value></data>
   <data name="Card_NoStats" xml:space="preserve"><value>No stats yet</value></data>
   <data name="Share_Heading" xml:space="preserve"><value>Share card</value></data>
   <data name="Share_Hint" xml:space="preserve"><value>This card shows up when you send the profile in chats and social networks.</value></data>
   <data name="Share_Download" xml:space="preserve"><value>Download card</value></data>
   <data name="Share_PreviewAlt" xml:space="preserve"><value>Share card preview: {0}</value></data>
   <data name="Share_SeasonLink" xml:space="preserve"><value>See the season (Season Wrapped)</value></data>
-  <data name="Share_OgAlt" xml:space="preserve"><value>{0}, {1}. Ballpass profile card, fictional demo person.</value></data>
+  <data name="Share_OgAlt" xml:space="preserve"><value>{0}, {1}. Ballpass profile card.</value></data>
   <data name="Wrapped_PageTitle" xml:space="preserve"><value>{0} season — {1}</value></data>
   <data name="Wrapped_Region" xml:space="preserve"><value>Season recap (Season Wrapped)</value></data>
   <data name="Wrapped_IntroOf" xml:space="preserve"><value>{1}'s {0} season</value></data>
   <data name="Wrapped_IntroPlain" xml:space="preserve"><value>{1}'s {0} season</value></data>
-  <data name="Wrapped_IntroSub" xml:space="preserve"><value>Season Wrapped · fictional demo profile</value></data>
+  <data name="Wrapped_IntroSub" xml:space="preserve"><value>Season Wrapped</value></data>
   <data name="Wrapped_Scroll" xml:space="preserve"><value>Scroll down ↓</value></data>
   <data name="Wrapped_GamesHeading" xml:space="preserve"><value>On the court</value></data>
   <data name="Wrapped_GamesLabel" xml:space="preserve"><value>games</value></data>
@@ -40,10 +39,9 @@
   <data name="Metric_Assists" xml:space="preserve"><value>In assists per 40 min</value></data>
   <data name="Metric_Steals" xml:space="preserve"><value>In steals per 40 min</value></data>
   <data name="Metric_FgPct" xml:space="preserve"><value>In field-goal percentage (FG%)</value></data>
-  <data name="Wrapped_CohortNoteF" xml:space="preserve"><value>among {0} demo athletes in the same position group ({1}), with at least {2} minutes per game (fictional)</value></data>
-  <data name="Wrapped_CohortNoteM" xml:space="preserve"><value>among {0} demo athletes in the same position group ({1}), with at least {2} minutes per game (fictional)</value></data>
+  <data name="Wrapped_CohortNoteF" xml:space="preserve"><value>among {0} athletes in the same position group ({1}), with at least {2} minutes per game</value></data>
+  <data name="Wrapped_CohortNoteM" xml:space="preserve"><value>among {0} athletes in the same position group ({1}), with at least {2} minutes per game</value></data>
   <data name="Wrapped_OutroHeading" xml:space="preserve"><value>See the full profile</value></data>
   <data name="Wrapped_OpenProfile" xml:space="preserve"><value>Open profile</value></data>
   <data name="Wrapped_DownloadCard" xml:space="preserve"><value>Download card</value></data>
-  <data name="Wrapped_Demo" xml:space="preserve"><value>Fictional demo data, not matching any real person.</value></data>
 </root>

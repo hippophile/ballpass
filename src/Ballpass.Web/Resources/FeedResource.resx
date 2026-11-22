@@ -7,7 +7,6 @@
   <data name="Nav_Feed" xml:space="preserve"><value>Ροή</value></data>
   <data name="Page_Title" xml:space="preserve"><value>Ροή</value></data>
   <data name="Page_Intro" xml:space="preserve"><value>Ενημερώσεις από αθλητές, προπονητές και συλλόγους.</value></data>
-  <data name="Page_DemoNote" xml:space="preserve"><value>Όλες οι αναρτήσεις είναι δείγματα: φανταστικά πρόσωπα, δείγμα δραστηριότητας (seeded activity).</value></data>
   <data name="Tab_Aria" xml:space="preserve"><value>Καρτέλες ροής</value></data>
   <data name="Tab_ForYou" xml:space="preserve"><value>Για εσάς</value></data>
   <data name="Tab_Following" xml:space="preserve"><value>Ακολουθείτε</value></data>
@@ -16,7 +15,7 @@
   <data name="Empty_ForYou" xml:space="preserve"><value>Δεν υπάρχουν αναρτήσεις ακόμα.</value></data>
   <data name="Empty_Following" xml:space="preserve"><value>Ακολουθήστε 3 αθλητές ή προσθέστε αθλητές στη λίστα σας για να γεμίσει η ροή σας.</value></data>
   <data name="Empty_FollowingCta" xml:space="preserve"><value>Δείτε τη ροή Για εσάς</value></data>
-  <data name="Following_SignIn" xml:space="preserve"><value>Συνδεθείτε με ένα δοκιμαστικό προφίλ για να δείτε όσους ακολουθείτε.</value></data>
+  <data name="Following_SignIn" xml:space="preserve"><value>Συνδεθείτε για να δείτε όσους ακολουθείτε.</value></data>
   <data name="Following_SignInCta" xml:space="preserve"><value>Επιλογή προφίλ</value></data>
   <data name="Unavailable" xml:space="preserve"><value>Η ροή δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκιμάστε ξανά σε λίγο.</value></data>
   <data name="Status_posted" xml:space="preserve"><value>Η ανάρτηση δημοσιεύθηκε.</value></data>
@@ -42,7 +41,7 @@
   <data name="Compose_Note" xml:space="preserve"><value>Σημείωση (έως 140 χαρακτήρες)</value></data>
   <data name="Compose_Highlight" xml:space="preserve"><value>Στιγμιότυπο</value></data>
   <data name="Compose_HighlightTitle" xml:space="preserve"><value>Τίτλος στιγμιοτύπου</value></data>
-  <data name="Compose_HighlightHint" xml:space="preserve"><value>Δημιουργείται γραφικό δείγματος. Δεν ανεβαίνουν φωτογραφίες ή βίντεο.</value></data>
+  <data name="Compose_HighlightHint" xml:space="preserve"><value>Δημιουργείται γραφικό. Δεν ανεβαίνουν φωτογραφίες ή βίντεο.</value></data>
   <data name="Compose_Tryout" xml:space="preserve"><value>Προσκλητήριο</value></data>
   <data name="Compose_TryoutHint" xml:space="preserve"><value>Για τον σύλλογό σας.</value></data>
   <data name="Field_Position" xml:space="preserve"><value>Θέση</value></data>
@@ -64,16 +63,14 @@
   <data name="Type_Highlight" xml:space="preserve"><value>Στιγμιότυπο</value></data>
   <data name="Type_Badge" xml:space="preserve"><value>Διάκριση</value></data>
   <data name="Type_FreeText" xml:space="preserve"><value>Ανάρτηση</value></data>
-  <data name="Chip_Demo" xml:space="preserve"><value>(demo)</value></data>
   <data name="Chip_System" xml:space="preserve"><value>Αυτόματη ενημέρωση</value></data>
   <data name="Role_Club" xml:space="preserve"><value>Σύλλογος</value></data>
-  <data name="Highlight_Alt" xml:space="preserve"><value>Γραφικό δείγματος για το στιγμιότυπο «{0}». Δεν είναι φωτογραφία ή βίντεο.</value></data>
-  <data name="Highlight_Caption" xml:space="preserve"><value>Γραφικό δείγματος</value></data>
+  <data name="Highlight_Alt" xml:space="preserve"><value>Γραφικό για το στιγμιότυπο «{0}». Δεν είναι φωτογραφία ή βίντεο.</value></data>
   <data name="Badge_StatsCoachConfirmed" xml:space="preserve"><value>Στατιστικά επιβεβαιωμένα από προπονητή</value></data>
   <data name="Badge_ProfileComplete" xml:space="preserve"><value>Πλήρες προφίλ</value></data>
   <data name="Badge_ThreeSeasons" xml:space="preserve"><value>Τρεις περίοδοι καταγεγραμμένες</value></data>
   <data name="Badge_FirstSeasonLogged" xml:space="preserve"><value>Πρώτη περίοδος καταγεγραμμένη</value></data>
-  <data name="Badge_Note" xml:space="preserve"><value>Αυτόματη διάκριση (δείγμα)</value></data>
+  <data name="Badge_Note" xml:space="preserve"><value>Αυτόματη διάκριση</value></data>
   <data name="Kudos" xml:space="preserve"><value>Μπράβο</value></data>
   <data name="Kudos_On" xml:space="preserve"><value>Δώστε μπράβο</value></data>
   <data name="Kudos_Off" xml:space="preserve"><value>Αφαίρεση μπράβο</value></data>
@@ -97,6 +94,5 @@
   <data name="Reason_other" xml:space="preserve"><value>Άλλος λόγος</value></data>
   <data name="Block_Hint" xml:space="preserve"><value>Δεν θα βλέπετε ο ένας τον άλλον στη ροή.</value></data>
   <data name="Preview_Title" xml:space="preserve"><value>Τι γίνεται τώρα</value></data>
-  <data name="Preview_Note" xml:space="preserve"><value>Δείγματα δραστηριότητας με φανταστικά πρόσωπα.</value></data>
   <data name="Preview_More" xml:space="preserve"><value>Δείτε όλη τη ροή →</value></data>
 </root>

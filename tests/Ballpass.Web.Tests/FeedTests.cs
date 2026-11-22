@@ -190,7 +190,7 @@ public class FeedTests(BallpassAppFactory app)
     // ---- rendering ----
 
     [Fact]
-    public async Task Anonymous_discover_renders_every_post_type_with_author_chip_time_and_demo_chip()
+    public async Task Anonymous_discover_renders_every_post_type_with_author_chip_time_and_no_demo_label()
     {
         var cards = await FeedHarness.AllPages(app.Client(), "/feed");
 
@@ -201,7 +201,8 @@ public class FeedTests(BallpassAppFactory app)
             Assert.Contains("bp-feed-author", c.Html);
             Assert.Contains("bp-feed-avatar", c.Html);
             Assert.Contains("<time", c.Html);
-            Assert.Contains("data-chip=\"demo\"", c.Html);
+            Assert.DoesNotContain("data-chip=\"demo\"", c.Html);   // flow-release O1
+            Assert.DoesNotMatch("(?i)\\(demo\\)|\\(δείγμα\\)|δείγματος", c.Html);
             Assert.DoesNotContain("data-feed-action=\"kudos\"", c.Html); // anonymous is read-only
             Assert.DoesNotContain("bp-feed-menu", c.Html);
         });

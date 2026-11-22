@@ -810,14 +810,15 @@ public class EngageTests(BallpassAppFactory app)
     // ---- layout seams ----
 
     [Fact]
-    public async Task Feed_has_the_sidebar_the_inline_boxes_after_the_third_post_and_the_seeded_label()
+    public async Task Feed_has_the_sidebar_the_inline_boxes_after_the_third_post_and_no_seeded_label()
     {
         var html = await FeedHarness.Html(app.Client(), "/feed");
 
         Assert.Contains("data-engage=\"sidebar\"", html);
         Assert.Contains("data-engage=\"trends\"", html);
         Assert.Contains("data-engage=\"follow\"", html);
-        Assert.Contains("Δείγμα δραστηριότητας (seeded)", html);
+        Assert.DoesNotContain("data-engage=\"seeded\"", html);   // flow-release O1
+        Assert.DoesNotMatch("(?i)seeded|Δείγμα δραστηριότητας", html);
         var inline = html.IndexOf("data-engage=\"inline\"", StringComparison.Ordinal);
         Assert.True(inline > 0, "inline boxes missing");
         var closings = Regex.Matches(html, "</article>").Select(m => m.Index).ToList();

@@ -5,8 +5,8 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="Panel_Heading" xml:space="preserve"><value>Στοιχεία απόδοσης</value></data>
-  <data name="Pct_Heading" xml:space="preserve"><value>Εκατοστημόρια — δείγμα επίδειξης</value></data>
-  <data name="Cohort_Label" xml:space="preserve"><value>δείγμα επίδειξης: {0} {1} (φανταστικά)</value></data>
+  <data name="Pct_Heading" xml:space="preserve"><value>Εκατοστημόρια</value></data>
+  <data name="Cohort_Label" xml:space="preserve"><value>ομάδα σύγκρισης: {0} {1}</value></data>
   <data name="Group_Guard" xml:space="preserve"><value>γκαρντ</value></data>
   <data name="Group_Forward" xml:space="preserve"><value>φόργουορντ</value></data>
   <data name="Group_Center" xml:space="preserve"><value>σέντερ</value></data>
@@ -17,20 +17,20 @@
   <data name="Metric_FgPct" xml:space="preserve"><value>Ευστοχία σουτ (FG%)</value></data>
   <data name="Pct_Value" xml:space="preserve"><value>{0}ο εκατοστημόριο</value></data>
   <data name="Insufficient" xml:space="preserve"><value>Δεν υπάρχουν αρκετά δεδομένα (n={0})</value></data>
-  <data name="Insufficient_Peers" xml:space="preserve"><value>λιγότεροι από {0} συνομήλικοι στο δείγμα</value></data>
+  <data name="Insufficient_Peers" xml:space="preserve"><value>λιγότεροι από {0} συνομήλικοι στην ομάδα σύγκρισης</value></data>
   <data name="Insufficient_Minutes" xml:space="preserve"><value>λιγότερα από {0} λεπτά ανά αγώνα</value></data>
   <data name="Insufficient_Games" xml:space="preserve"><value>λιγότεροι από 10 αγώνες</value></data>
   <data name="Aria_Row" xml:space="preserve"><value>{0}: {1}, {2}</value></data>
   <data name="Aria_RowNoData" xml:space="preserve"><value>{0}: {1}. {2}</value></data>
   <data name="Source_Note" xml:space="preserve"><value>Πηγή στατιστικών τελευταίας σεζόν:</value></data>
-  <data name="Thresholds_Note" xml:space="preserve"><value>Τα κατώφλια ({1} συνομήλικοι, 10 αγώνες, {0} λεπτά ανά αγώνα, ±10%, 8 αγώνες) είναι δικές μας εκτιμήσεις, όχι κανόνες λίγκας. Το δείγμα είναι φανταστικό.</value></data>
-  <data name="Toggle_Label" xml:space="preserve"><value>Δείγμα σύγκρισης:</value></data>
+  <data name="Thresholds_Note" xml:space="preserve"><value>Τα κατώφλια ({1} συνομήλικοι, 10 αγώνες, {0} λεπτά ανά αγώνα, ±10%, 8 αγώνες) είναι δικές μας εκτιμήσεις, όχι κανόνες λίγκας.</value></data>
+  <data name="Toggle_Label" xml:space="preserve"><value>Ομάδα σύγκρισης:</value></data>
   <data name="Toggle_All" xml:space="preserve"><value>Όλες οι πηγές</value></data>
   <data name="Toggle_Confirmed" xml:space="preserve"><value>Μόνο επιβεβαιωμένα από προπονητή</value></data>
   <data name="Col_Metric" xml:space="preserve"><value>Μετρική</value></data>
   <data name="Col_Value" xml:space="preserve"><value>Τιμή</value></data>
   <data name="Col_Pct" xml:space="preserve"><value>Εκατοστημόριο</value></data>
-  <data name="Col_N" xml:space="preserve"><value>Δείγμα (n)</value></data>
+  <data name="Col_N" xml:space="preserve"><value>Συνομήλικοι (n)</value></data>
   <data name="Line_Heading" xml:space="preserve"><value>Πόντοι ανά αγώνα ανά σεζόν</value></data>
   <data name="Line_Aria" xml:space="preserve"><value>Πόντοι ανά αγώνα ανά σεζόν: {0}</value></data>
   <data name="Line_Col_Season" xml:space="preserve"><value>Σεζόν</value></data>
@@ -50,11 +50,11 @@
   <data name="Badge_multi-season" xml:space="preserve"><value>Εμπειρία: στατιστικά για {0} σεζόν</value></data>
   <data name="Badge_regular" xml:space="preserve"><value>Σταθερή παρουσία: {0} αγώνες στην τελευταία σεζόν (κανόνας: 25+)</value></data>
   <data name="Badge_rising" xml:space="preserve"><value>Άνοδος: +{0}% πόντοι ανά αγώνα (κανόνας: +10% ή περισσότερο)</value></data>
-  <data name="Badge_top-quartile" xml:space="preserve"><value>Κορυφαίο τέταρτο: {0}ο εκατοστημόριο σε πόντους/40΄ (δείγμα επίδειξης)</value></data>
+  <data name="Badge_top-quartile" xml:space="preserve"><value>Κορυφαίο τέταρτο: {0}ο εκατοστημόριο σε πόντους/40΄</value></data>
   <data name="Badge_Source" xml:space="preserve"><value>πηγή: {0}</value></data>
   <data name="Compare_Link" xml:space="preserve"><value>Σύγκριση με…</value></data>
   <data name="Compare_Title" xml:space="preserve"><value>Σύγκριση παικτών</value></data>
-  <data name="Compare_Heading" xml:space="preserve"><value>Σύγκριση εκατοστημορίων — δείγμα επίδειξης</value></data>
+  <data name="Compare_Heading" xml:space="preserve"><value>Σύγκριση εκατοστημορίων</value></data>
   <data name="Compare_PickA" xml:space="preserve"><value>Παίκτης Α</value></data>
   <data name="Compare_PickB" xml:space="preserve"><value>Παίκτης Β</value></data>
   <data name="Compare_Submit" xml:space="preserve"><value>Σύγκριση</value></data>
@@ -63,12 +63,12 @@
   <data name="Compare_ChooseB" xml:space="preserve"><value>Διαλέξτε με ποιον παίκτη από τη βραχεία λίστα σας να συγκριθεί:</value></data>
   <data name="Compare_NoShortlist" xml:space="preserve"><value>Η βραχεία λίστα σας είναι κενή. Προσθέστε παίκτες από την αναζήτηση.</value></data>
   <data name="Compare_Same" xml:space="preserve"><value>Διαλέξτε δύο διαφορετικούς παίκτες.</value></data>
-  <data name="Compare_Warning" xml:space="preserve"><value>Προσοχή: διαφορετικές θέσεις ({0} και {1}). Κάθε εκατοστημόριο αφορά το δικό του δείγμα επίδειξης και δεν συγκρίνονται ευθέως.</value></data>
-  <data name="Compare_WarningGender" xml:space="preserve"><value>Προσοχή: διαφορετικό φύλο ({0} και {1}). Κάθε εκατοστημόριο αφορά το δικό του δείγμα επίδειξης, χωριστά για γυναίκες και άνδρες, και δεν συγκρίνονται ευθέως.</value></data>
+  <data name="Compare_Warning" xml:space="preserve"><value>Προσοχή: διαφορετικές θέσεις ({0} και {1}). Κάθε εκατοστημόριο αφορά τη δική του ομάδα σύγκρισης και δεν συγκρίνονται ευθέως.</value></data>
+  <data name="Compare_WarningGender" xml:space="preserve"><value>Προσοχή: διαφορετικό φύλο ({0} και {1}). Κάθε εκατοστημόριο αφορά τη δική του ομάδα σύγκρισης, χωριστά για γυναίκες και άνδρες, και δεν συγκρίνονται ευθέως.</value></data>
   <data name="Compare_Legend" xml:space="preserve"><value>Υπόμνημα</value></data>
   <data name="Compare_Solid" xml:space="preserve"><value>συνεχής γραμμή, κύκλος</value></data>
   <data name="Compare_Dashed" xml:space="preserve"><value>διακεκομμένη γραμμή, τετράγωνο</value></data>
-  <data name="Compare_Cohort" xml:space="preserve"><value>Δείγμα</value></data>
+  <data name="Compare_Cohort" xml:space="preserve"><value>Ομάδα σύγκρισης</value></data>
   <data name="Compare_NoValue" xml:space="preserve"><value>—</value></data>
   <data name="Back_ToProfile" xml:space="preserve"><value>Πίσω στο προφίλ</value></data>
 </root>

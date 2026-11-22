@@ -139,7 +139,7 @@ public class FindPagesTests(BallpassAppFactory app)
         Assert.Contains("εκ.", html);
         Assert.Contains("στόχος", html);
         Assert.Contains("ριμπ./40΄", html);
-        Assert.Contains("(δείγμα επίδειξης)", html);   // cohort labelled demo
+        Assert.DoesNotContain("δείγμα επίδειξης", html);   // flow-release O1: no demo label on the cohort
     }
 
     [Fact]
@@ -148,7 +148,8 @@ public class FindPagesTests(BallpassAppFactory app)
         var client = await CoachClient();
         var html = await Html(client, "/match?position=C&minHeight=185&priority=rebounding");
 
-        Assert.Contains("Υπολογίζεται σε φανταστικά δεδομένα επίδειξης με προεπιλεγμένα βάρη", html);
+        Assert.Contains("Υπολογίζεται με προεπιλεγμένα βάρη", html);
+        Assert.DoesNotContain("επίδειξης", html);
         var results = Regex.Match(html, "<section[^>]*class=\"bp-find-results\".*?</section>", RegexOptions.Singleline).Value;
         Assert.NotEmpty(results);
         Assert.DoesNotMatch(@"\bAI\b|\bΑΙ\b", results);
@@ -195,7 +196,8 @@ public class FindPagesTests(BallpassAppFactory app)
         var html = await Html(client, "/match?position=C&minHeight=185");
 
         Assert.Contains("hidden by filters", html);
-        Assert.Contains("Computed on fictional demo data with default weights", html);
+        Assert.Contains("Computed with default weights", html);
+        Assert.DoesNotContain("demo data", html);
         Assert.Contains("What are you looking for?", html);
     }
 

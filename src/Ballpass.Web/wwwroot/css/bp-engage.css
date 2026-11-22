@@ -21,11 +21,6 @@
     margin: 0 0 var(--bp-sp-3);
 }
 
-.bp-engage-seeded {
-    margin: 0;
-    font-size: var(--bp-fs-sm);
-}
-
 .bp-engage-pill {
     display: inline-flex;
     align-items: center;
@@ -445,10 +440,7 @@
 }
 
 @media (min-width: 1100px) {
-    body .content:has(.bp-engage-side) {
-        max-width: 1160px;
-    }
-
+    /* The page width belongs to the shell (--bp-w-page, flow-release §4); no per-page .content override. */
     .bp-feed:has(.bp-engage-side) {
         max-width: none;
         display: grid;

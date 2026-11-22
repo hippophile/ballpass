@@ -1,30 +1,18 @@
-/* Demo banner: amber on dark, still the loudest strip on the page. */
-.demo-banner {
-    background-color: color-mix(in srgb, var(--bp-warn) 14%, var(--bp-bg));
-    color: var(--bp-warn);
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0.4rem 1rem;
-    text-align: center;
-    font-size: var(--bp-fs-sm);
-    font-weight: 600;
-    border-bottom: 1px solid color-mix(in srgb, var(--bp-warn) 45%, transparent);
-}
-
-    .demo-banner span {
-        display: block;
-    }
-
+/* Shell (flow-release §4): one page width (--bp-w-page 1280 px = 1216 px content + 2 x 32 px), so the page edge never jumps.
+   The topbar pads by the same amount, so the logo and the content share a left edge. */
 .topbar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem 1rem;
-    padding: 0.6rem 1rem;
+    gap: 0.5rem 1.25rem;
+    min-height: 64px;
+    padding-block: 0.6rem;
+    padding-inline: max(32px, calc((100% - var(--bp-w-page)) / 2 + 32px));
     background-color: var(--bp-s1);
     border-bottom: 1px solid var(--bp-border);
     color: var(--bp-text);
+    position: relative;
+    z-index: 20;
 }
 
     .topbar .brand {
@@ -33,6 +21,7 @@
         font-size: 1.5rem;
         font-weight: 800;
         letter-spacing: 0.04em;
+        line-height: 1;
         text-transform: uppercase;
         text-decoration: none;
         border-radius: var(--bp-r-sm);
@@ -41,6 +30,28 @@
         .topbar .brand::first-letter {
             color: var(--bp-accent);
         }
+
+/* Primary nav: coach 3 links, athlete 2 (links come from package components; .bp-navlink in bp-base.css styles them). */
+.bp-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1.25rem;
+    margin-inline-end: auto;
+    font-size: var(--bp-fs-md);
+}
+
+    .bp-nav ::deep .bp-navlink {
+        padding: 0.35rem 0;
+    }
+
+.topbar-switch:empty {
+    display: none;
+}
+
+    .topbar-switch ::deep form {
+        margin: 0;
+    }
 
 .lang-toggle {
     display: flex;
@@ -67,32 +78,62 @@
             text-underline-offset: 4px;
         }
 
-.bp-userbar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.4rem 0.9rem;
-    margin-inline-start: auto;
+/* User menu: 32 px jersey avatar as the summary, a small panel with name, Feed, Search, sign-out. No JavaScript. */
+.bp-usermenu {
+    position: relative;
 }
 
-    .bp-userbar a {
-        color: var(--bp-text);
-        text-decoration: none;
-        font-weight: 600;
-        border-radius: var(--bp-r-sm);
+    .bp-usermenu summary {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        list-style: none;
+        border: 1px solid var(--bp-border);
+        background: var(--bp-s2);
     }
 
-        .bp-userbar a:hover {
-            color: var(--bp-accent);
+        .bp-usermenu summary::-webkit-details-marker {
+            display: none;
         }
 
-    .bp-userbar form {
+        .bp-usermenu summary:hover, .bp-usermenu[open] summary {
+            border-color: var(--bp-border-ui);
+        }
+
+.bp-usermenu-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: var(--bp-sp-4);
+    background: var(--bp-s2);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+    box-shadow: var(--bp-shadow);
+}
+
+    .bp-usermenu-panel form {
         margin: 0;
     }
 
-.bp-whoami small {
-    color: var(--bp-muted);
+.bp-whoami {
+    margin: 0;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
 }
+
+    .bp-whoami small {
+        color: var(--bp-muted);
+        font-weight: 400;
+    }
 
 .bp-logout {
     background: transparent;
@@ -105,7 +146,7 @@
 }
 
     .bp-logout:hover {
-        background: var(--bp-s2);
+        background: var(--bp-s3);
     }
 
 main {
@@ -113,10 +154,31 @@ main {
 }
 
 .content {
-    padding: 1.5rem 1rem;
-    max-width: 960px;
-    margin: 0 auto;
+    max-width: var(--bp-w-page);
+    margin-inline: auto;
+    padding: 24px 32px;
 }
+
+/* Home sections centre their own 1216 px inner box (full-bleed hero). */
+.content:has(.bp-home) {
+    max-width: none;
+    padding: 0;
+}
+
+/* One quiet disclosure (SPEC §8 O1): 12 px, --bp-faint, aligned with the content. */
+.bp-footer {
+    max-width: var(--bp-w-page);
+    margin-inline: auto;
+    padding: 24px 32px 32px;
+}
+
+    .bp-footer p {
+        margin: 0;
+        padding-top: var(--bp-sp-4);
+        border-top: 1px solid var(--bp-border);
+        font-size: var(--bp-fs-xs);
+        color: var(--bp-faint);
+    }
 
 #blazor-error-ui {
     background: var(--bp-s3);
@@ -138,43 +200,41 @@ main {
         top: 0.5rem;
     }
 
-.bp-menu {
-    display: none;
-}
-
+/* Phones: row 1 = logo, language, avatar; row 2 = primary nav (and the switch pill, wrapping if needed). */
 @media (max-width: 640px) {
-    .bp-userbar {
-        display: none;
+    .topbar {
+        padding-inline: 16px;
+        gap: 0.5rem 0.75rem;
     }
 
-    .bp-menu {
-        display: block;
+    .brand {
+        order: 1;
+    }
+
+    .lang-toggle {
+        order: 2;
+        margin-inline-start: auto;
+    }
+
+    .bp-usermenu {
         order: 3;
-        width: 100%;
     }
 
-        .bp-menu summary {
-            cursor: pointer;
-            font-weight: 700;
-            padding: 0.25rem 0;
-            color: var(--bp-text);
-        }
-
-    .bp-menu-links {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.6rem;
-        padding: 0.5rem 0 0.25rem;
+    .bp-nav {
+        order: 4;
+        margin-inline-end: 0;
+        gap: 0.25rem 1rem;
     }
 
-        .bp-menu-links a {
-            color: var(--bp-text);
-            text-decoration: none;
-            font-weight: 600;
-        }
+    .topbar-switch {
+        order: 5;
+    }
 
-        .bp-menu-links form {
-            margin: 0;
-        }
+    .content {
+        padding: 16px;
+    }
+
+    .bp-footer {
+        padding: 16px;
+    }
 }

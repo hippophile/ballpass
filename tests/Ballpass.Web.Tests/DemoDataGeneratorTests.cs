@@ -42,7 +42,7 @@ public class DemoDataGeneratorTests
         Assert.All(Data.Clubs, c => Assert.True(c.IsDemo));
         Assert.All(Data.Coaches, c => Assert.True(c.IsDemo));
         Assert.All(Data.Athletes, a => Assert.True(a.IsDemo));
-        Assert.All(Data.Clubs, c => Assert.EndsWith(" (demo)", c.Name));
+        Assert.All(Data.Clubs, c => Assert.DoesNotContain("(demo)", c.Name));   // flow-release O1: no demo tag in visible names
         Assert.All(Data.Athletes, a => Assert.Null(a.VideoUrl));
     }
 

@@ -373,7 +373,7 @@ public class EvidenceTests(BallpassAppFactory app)
     public void Chart_tokens_meet_3_to_1_on_the_page_background()
     {
         var bg = Regex.Match(File.ReadAllText(Path.Combine(WebRoot, "css", "bp-tokens.css")), "--bp-bg\\s*:\\s*(#[0-9a-fA-F]{6})").Groups[1].Value;
-        Assert.Equal("#0B0F14", bg.ToUpperInvariant());
+        Assert.Equal("#080B10", bg.ToUpperInvariant());   // flow-release §3 deepened --bp-bg (was #0B0F14)
         var css = File.ReadAllText(Path.Combine(WebRoot, "css", "bp-evidence.css"));
         var tokens = Regex.Matches(css, "(--bp-chart-[a-e])\\s*:\\s*(#[0-9a-fA-F]{6})").ToDictionary(m => m.Groups[1].Value, m => m.Groups[2].Value);
 
@@ -468,15 +468,16 @@ public class EvidenceTests(BallpassAppFactory app)
     }
 
     [Fact]
-    public async Task Cohort_label_and_every_percentile_heading_say_demo_sample()
+    public async Task Cohort_label_names_the_comparison_group_without_demo_words()
     {
+        // flow-release O1: the cohort is a "comparison group"; no "δείγμα επίδειξης" / "(φανταστικά)" labels.
         var (_, html) = await Get(app.Client(), $"/p/{Female(Position.C).Slug}");
 
         var evidence = Section(html);
-        Assert.Matches("δείγμα επίδειξης: \\d+ σέντερ \\(φανταστικά\\)", evidence);
+        Assert.Matches("ομάδα σύγκρισης: \\d+ σέντερ", evidence);
         var headings = Regex.Matches(evidence, "<h[23][^>]*>(.*?)</h[23]>", RegexOptions.Singleline).Select(m => m.Groups[1].Value).ToList();
-        Assert.Contains(headings, h => h.Contains("δείγμα επίδειξης"));
-        Assert.All(headings.Where(h => h.Contains("Εκατοστημόρια") || h.Contains("Percentile")), h => Assert.Contains("δείγμα επίδειξης", h));
+        Assert.Contains(headings, h => h.Contains("Εκατοστημόρια"));
+        Assert.DoesNotMatch("(?i)δείγμα|επίδειξ|φανταστικ|demo", evidence);
     }
 
     [Fact]
@@ -722,12 +723,14 @@ public class EvidenceTests(BallpassAppFactory app)
     }
 
     [Fact]
-    public async Task Compare_headings_say_demo_sample_and_unknown_slug_is_404()
+    public async Task Compare_headings_have_no_demo_words_and_unknown_slug_is_404()
     {
         var a = Female(Position.PG);
         var b = Other(Position.SG, a);
         var html = await CompareHtml(a, b);
-        Assert.Contains("δείγμα επίδειξης", Regex.Match(html, "<h2[^>]*>(.*?)</h2>", RegexOptions.Singleline).Value);
+        var h2 = Regex.Match(html, "<h2[^>]*>(.*?)</h2>", RegexOptions.Singleline).Value;
+        Assert.Contains("Σύγκριση εκατοστημορίων", h2);
+        Assert.DoesNotMatch("(?i)δείγμα|επίδειξ|demo", h2);
 
         var coach = app.Client();
         await SignIn(coach, "coach");

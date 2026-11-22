@@ -4,9 +4,8 @@
 @inject TimeProvider Time
 @inject IStringLocalizer<EngageResource> E
 
-@* Below the tabs: the "seeded activity" label, the "N new posts" pill (posts newer than the bp_lastvisit cookie; no polling) and the active tag filter. *@
+@* Below the tabs: the "N new posts" pill (posts newer than the bp_lastvisit cookie; no polling) and the active tag filter. *@
 <div class="bp-engage-strip">
-    <p class="bp-engage-seeded" data-engage="seeded"><span class="bp-feed-chip">@E["Seeded_Label"]</span></p>
     @if (newCount > 0)
     {
         <a class="bp-engage-pill" data-engage="new-posts" data-new-count="@newCount" href="/feed" aria-label="@E["NewPosts_Aria"]">@(newCount == 1 ? E["NewPosts_One"].Value : E["NewPosts_Many", newCount].Value)</a>

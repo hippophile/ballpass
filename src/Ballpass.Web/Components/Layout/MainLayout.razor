@@ -1,32 +1,62 @@
 @inherits LayoutComponentBase
 @using System.Globalization
 @using Ballpass.Web.Data
+@using Ballpass.Web.Components.Media
 @using Microsoft.EntityFrameworkCore
 @inject NavigationManager Navigation
 @inject IServiceScopeFactory ScopeFactory
 @inject IStringLocalizer<SharedResource> L
 
-<div class="demo-banner" role="status">
-    <span lang="el">Περιβάλλον επίδειξης — όλοι οι αθλητές, προπονητές και σύλλογοι είναι φανταστικοί.</span>
-    <span lang="en">Demo environment — all athletes, coaches and clubs are fictional.</span>
-</div>
-
+@* Shell (flow-release §4): one page width, the logo on the content's left edge, role nav (coach 3 links, athlete 2), everything else
+   in the jersey-avatar user menu. The persona switch and EL|EN stay visible. No demo banner: one quiet footer line (SPEC §8 O1). *@
 <header class="topbar">
     <a class="brand" href="/">@L["Brand"]</a>
-    <nav class="bp-userbar" aria-label="@L["Nav_Main"]">
-        @NavItems
+    <nav class="bp-nav" aria-label="@L["Nav_Main"]">
+        <AuthorizeView>
+            <Authorized>
+                @if (context.User.IsInRole("Coach"))
+                {
+                    <MatchNavLink />
+                    <a href="/shortlist" class="bp-navlink" aria-current="@Current("/shortlist")">@L["Nav_Shortlist"]</a>
+                    <LoopNavLink />
+                }
+                else if (context.User.IsInRole("Athlete"))
+                {
+                    <a href="/me/inbox" class="bp-navlink" aria-current="@Current("/me/inbox")">@L["Nav_Inbox"] (@inboxCount)</a>
+                    <a href="/p/@context.User.FindFirst("slug")?.Value" class="bp-navlink" aria-current="@Current($"/p/{context.User.FindFirst("slug")?.Value}")">@L["Nav_Profile"]</a>
+                }
+            </Authorized>
+            <NotAuthorized>
+                <FeedNavLink />
+                <a href="/demo" class="bp-navlink" aria-current="@Current("/demo")">@L["Nav_DemoLogin"]</a>
+            </NotAuthorized>
+        </AuthorizeView>
     </nav>
+    <div class="topbar-switch"><PersonaSwitch /></div>
     <nav class="lang-toggle" aria-label="@L["Nav_Language"]">
         <a href="@LangHref("el")" hreflang="el" class="@(Lang == "el" ? "active" : null)" aria-current="@(Lang == "el" ? "true" : null)">EL</a>
         <span aria-hidden="true">|</span>
         <a href="@LangHref("en")" hreflang="en" class="@(Lang == "en" ? "active" : null)" aria-current="@(Lang == "en" ? "true" : null)">EN</a>
     </nav>
-    <details class="bp-menu">
-        <summary>@L["Nav_Menu"]</summary>
-        <nav class="bp-menu-links" aria-label="@L["Nav_Main"]">
-            @NavItems
-        </nav>
-    </details>
+    <AuthorizeView>
+        <Authorized>
+            <details class="bp-usermenu">
+                <summary aria-label="@L["Nav_Menu"]"><JerseyAvatar Id="entityId" Initials="@Initials(context.User)" Club="@clubName" Coach="@context.User.IsInRole("Coach")" Size="32" /></summary>
+                <div class="bp-usermenu-panel">
+                    <span class="bp-whoami">@PersonaName(context.User) <small>@L[(context.User.IsInRole("Coach") ? "Role_Coach" : "Role_Athlete") + (context.User.FindFirst("gender")?.Value == "F" ? "_F" : "")]</small></span>
+                    <FeedNavLink />
+                    @if (context.User.IsInRole("Coach"))
+                    {
+                        <a href="/search" class="bp-navlink">@L["Nav_Search"]</a>
+                    }
+                    <form method="post" action="/demo/logout">
+                        <AntiforgeryToken />
+                        <button type="submit" class="bp-logout">@L["Nav_Logout"]</button>
+                    </form>
+                </div>
+            </details>
+        </Authorized>
+    </AuthorizeView>
 </header>
 
 <main>
@@ -35,56 +65,46 @@
     </article>
 </main>
 
-@code {
-    // Rendered twice: inline bar on desktop, inside <details> on phones (CSS shows one; no JavaScript).
-    private RenderFragment NavItems => @<text>
-        <AuthorizeView>
-            <Authorized>
-                <FeedNavLink />
-                @if (context.User.IsInRole("Coach"))
-                {
-                    <a href="/search">@L["Nav_Search"]</a>
-                    <MatchNavLink />
-                    <a href="/shortlist">@L["Nav_Shortlist"]</a>
-                    <LoopNavLink />
-                }
-                else if (context.User.IsInRole("Athlete"))
-                {
-                    <a href="/me/inbox">@L["Nav_Inbox"] (@inboxCount)</a>
-                }
-                <PersonaSwitch />
-                <span class="bp-whoami">@PersonaName(context.User) <small>(@L[(context.User.IsInRole("Coach") ? "Role_Coach" : "Role_Athlete") + (context.User.FindFirst("gender")?.Value == "F" ? "_F" : "")])</small></span>
-                <form method="post" action="/demo/logout">
-                    <AntiforgeryToken />
-                    <button type="submit" class="bp-logout">@L["Nav_Logout"]</button>
-                </form>
-            </Authorized>
-            <NotAuthorized>
-                <FeedNavLink />
-                <a href="/demo">@L["Nav_DemoLogin"]</a>
-            </NotAuthorized>
-        </AuthorizeView>
-    </text>;
+<footer class="bp-footer"><p>@L["Footer_Disclosure"]</p></footer>
 
+@code {
     private static string Lang => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 
     private static string PersonaName(System.Security.Claims.ClaimsPrincipal user) =>
         (Lang == "el" ? user.Identity?.Name : user.FindFirst("name_latin")?.Value ?? user.Identity?.Name) ?? "";
 
+    private static string Initials(System.Security.Claims.ClaimsPrincipal user) =>
+        string.Concat(PersonaName(user).Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);
+
     [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
 
     private int inboxCount;
+    private int entityId;
+    private string? clubName;
 
     // Own scope + DbContext: the layout initialises concurrently with the page, which holds the request-scoped context.
     protected override async Task OnInitializedAsync()
     {
         var user = AuthState is null ? null : (await AuthState).User;
-        if (user?.IsInRole("Athlete") != true || !int.TryParse(user.FindFirst("entity_id")?.Value, out var id)) return;
+        if (user?.Identity?.IsAuthenticated != true || !int.TryParse(user.FindFirst("entity_id")?.Value, out entityId)) return;
 
         using var scope = ScopeFactory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<BallpassDbContext>();
-        inboxCount = await db.Interests.CountAsync(i => i.AthleteId == id);
+        if (user.IsInRole("Athlete"))
+        {
+            inboxCount = await db.Interests.CountAsync(i => i.AthleteId == entityId);
+            clubName = await db.Athletes.Where(a => a.Id == entityId).Select(a => a.CurrentClub!.Name).FirstOrDefaultAsync();
+        }
+        else if (int.TryParse(user.FindFirst("club_id")?.Value, out var clubId))
+        {
+            clubName = await db.Clubs.Where(c => c.Id == clubId).Select(c => c.Name).FirstOrDefaultAsync();
+        }
     }
+
+    private string Path => "/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0];
+
+    /// <summary>aria-current="page" for the link of the current page (the active item is the one orange nav text).</summary>
+    private string? Current(string href) => Path == href || Path.StartsWith(href + "/", StringComparison.Ordinal) ? "page" : null;
 
     private string LangHref(string culture) =>
         $"/culture/set?culture={culture}&redirectUri={Uri.EscapeDataString("/" + Navigation.ToBaseRelativePath(Navigation.Uri))}";

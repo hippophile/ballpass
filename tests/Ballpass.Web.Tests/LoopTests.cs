@@ -348,11 +348,12 @@ public class LoopTests(BallpassAppFactory app)
 
         var html = await Html(client, "/me/inbox");
         var li = Regex.Match(html, $"<li[^>]*class=\"interest\"[^>]*data-interest-id=\"{a.InterestId}\".*?</li>", RegexOptions.Singleline).Value;
-        Assert.Contains("επικοινωνία μέσω συλλόγου (demo)", li);
-        Assert.Matches("contact@[a-z0-9-]+\\.demo\\.invalid", li);
+        Assert.Contains("επικοινωνία μέσω συλλόγου", li);
+        Assert.Matches("contact@[a-z0-9-]+\\.invalid", li);   // reserved TLD: never a real mailbox
+        Assert.DoesNotMatch("(?i)demo|φανταστικ|επίδειξ", li);   // flow-release O1: no "(demo)" tag, no "fictional address" note
         Assert.DoesNotContain($"action=\"/me/inbox/{a.InterestId}/reply\"", li);
         foreach (Match m in Regex.Matches(html, "[\\w.+-]+@[\\w.-]+"))
-            Assert.EndsWith(".demo.invalid", m.Value);
+            Assert.EndsWith(".invalid", m.Value);
     }
 
     [Fact]
@@ -369,7 +370,7 @@ public class LoopTests(BallpassAppFactory app)
         var row = Row(a.InterestId);
         Assert.Equal(InterestReply.Declined, row.Reply);
         Assert.Equal(repliedAt, row.RepliedAt);
-        Assert.DoesNotContain("demo.invalid", await Html(client, "/me/inbox"));
+        Assert.DoesNotContain(".invalid", await Html(client, "/me/inbox"));
     }
 
     [Fact]
@@ -592,7 +593,8 @@ public class LoopTests(BallpassAppFactory app)
 
         var html = await Html(app.Client(), "/demo/reset");
 
-        Assert.Contains("όλα τα δεδομένα επίδειξης επανέρχονται", html);
+        Assert.Contains("όλα τα δεδομένα επανέρχονται", html);
+        Assert.DoesNotContain("επίδειξης", html);   // flow-release O1
         Assert.Matches("<form[^>]*method=\"post\"[^>]*action=\"/demo/reset\"", html);
         Assert.False(string.IsNullOrEmpty(FeedHarness.Token(html)));
     }

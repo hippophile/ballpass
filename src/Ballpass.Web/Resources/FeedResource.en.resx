@@ -7,7 +7,6 @@
   <data name="Nav_Feed" xml:space="preserve"><value>Feed</value></data>
   <data name="Page_Title" xml:space="preserve"><value>Feed</value></data>
   <data name="Page_Intro" xml:space="preserve"><value>Updates from athletes, coaches and clubs.</value></data>
-  <data name="Page_DemoNote" xml:space="preserve"><value>Every post is a sample: fictional people, seeded activity.</value></data>
   <data name="Tab_Aria" xml:space="preserve"><value>Feed tabs</value></data>
   <data name="Tab_ForYou" xml:space="preserve"><value>For you</value></data>
   <data name="Tab_Following" xml:space="preserve"><value>Following</value></data>
@@ -16,7 +15,7 @@
   <data name="Empty_ForYou" xml:space="preserve"><value>No posts yet.</value></data>
   <data name="Empty_Following" xml:space="preserve"><value>Follow 3 athletes or shortlist athletes to fill your feed.</value></data>
   <data name="Empty_FollowingCta" xml:space="preserve"><value>See the For you feed</value></data>
-  <data name="Following_SignIn" xml:space="preserve"><value>Sign in with a demo persona to see who you follow.</value></data>
+  <data name="Following_SignIn" xml:space="preserve"><value>Sign in to see who you follow.</value></data>
   <data name="Following_SignInCta" xml:space="preserve"><value>Choose a persona</value></data>
   <data name="Unavailable" xml:space="preserve"><value>The feed is not available right now. Please try again shortly.</value></data>
   <data name="Status_posted" xml:space="preserve"><value>Your post is published.</value></data>
@@ -42,7 +41,7 @@
   <data name="Compose_Note" xml:space="preserve"><value>Note (up to 140 characters)</value></data>
   <data name="Compose_Highlight" xml:space="preserve"><value>Highlight</value></data>
   <data name="Compose_HighlightTitle" xml:space="preserve"><value>Highlight title</value></data>
-  <data name="Compose_HighlightHint" xml:space="preserve"><value>A sample graphic is generated. No photos or video are uploaded.</value></data>
+  <data name="Compose_HighlightHint" xml:space="preserve"><value>A graphic is generated. No photos or video are uploaded.</value></data>
   <data name="Compose_Tryout" xml:space="preserve"><value>Tryout call</value></data>
   <data name="Compose_TryoutHint" xml:space="preserve"><value>For your club.</value></data>
   <data name="Field_Position" xml:space="preserve"><value>Position</value></data>
@@ -64,16 +63,14 @@
   <data name="Type_Highlight" xml:space="preserve"><value>Highlight</value></data>
   <data name="Type_Badge" xml:space="preserve"><value>Badge</value></data>
   <data name="Type_FreeText" xml:space="preserve"><value>Post</value></data>
-  <data name="Chip_Demo" xml:space="preserve"><value>(demo)</value></data>
   <data name="Chip_System" xml:space="preserve"><value>Automatic update</value></data>
   <data name="Role_Club" xml:space="preserve"><value>Club</value></data>
-  <data name="Highlight_Alt" xml:space="preserve"><value>Sample graphic for the highlight "{0}". Not a photo or video.</value></data>
-  <data name="Highlight_Caption" xml:space="preserve"><value>Sample graphic</value></data>
+  <data name="Highlight_Alt" xml:space="preserve"><value>Graphic for the highlight "{0}". Not a photo or video.</value></data>
   <data name="Badge_StatsCoachConfirmed" xml:space="preserve"><value>Stats confirmed by a coach</value></data>
   <data name="Badge_ProfileComplete" xml:space="preserve"><value>Complete profile</value></data>
   <data name="Badge_ThreeSeasons" xml:space="preserve"><value>Three seasons on record</value></data>
   <data name="Badge_FirstSeasonLogged" xml:space="preserve"><value>First season on record</value></data>
-  <data name="Badge_Note" xml:space="preserve"><value>Automatic badge (sample)</value></data>
+  <data name="Badge_Note" xml:space="preserve"><value>Automatic badge</value></data>
   <data name="Kudos" xml:space="preserve"><value>Kudos</value></data>
   <data name="Kudos_On" xml:space="preserve"><value>Give kudos</value></data>
   <data name="Kudos_Off" xml:space="preserve"><value>Remove kudos</value></data>
@@ -97,6 +94,5 @@
   <data name="Reason_other" xml:space="preserve"><value>Other</value></data>
   <data name="Block_Hint" xml:space="preserve"><value>You will not see each other in the feed.</value></data>
   <data name="Preview_Title" xml:space="preserve"><value>What's happening now</value></data>
-  <data name="Preview_Note" xml:space="preserve"><value>Sample activity with fictional people.</value></data>
   <data name="Preview_More" xml:space="preserve"><value>See the whole feed →</value></data>
 </root>

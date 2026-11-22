@@ -11,6 +11,15 @@ namespace Ballpass.Web.Features.Loop;
 public class DemoOptions
 {
     public bool Enabled { get; set; }
+    public FeaturedOptions Featured { get; set; } = new();
+}
+
+public class FeaturedOptions
+{
+    public string CoachFirstName { get; set; } = "";
+    public string CoachLastName { get; set; } = "";
+    public string AthleteSlug { get; set; } = "";
+    public string NeedQuery { get; set; } = "";
 }
 
 /// <summary>Fictional contact of a demo club: never a real mailbox (.invalid is reserved and cannot resolve).</summary>
@@ -41,7 +50,7 @@ public static class ClubContact
         return slug.Length == 0 ? "club" : slug;
     }
 
-    public static string Email(string clubName) => $"contact@{Slug(clubName)}.demo.invalid";
+    public static string Email(string clubName) => $"contact@{Slug(clubName)}.invalid";
 }
 
 /// <summary>Claims for a demo persona. Same shape as the /demo/login endpoint, so every page treats both the same.</summary>

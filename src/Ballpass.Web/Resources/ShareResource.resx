@@ -9,19 +9,18 @@
   <data name="Card_Assists" xml:space="preserve"><value>Ασίστ</value></data>
   <data name="Card_NoClub" xml:space="preserve"><value>Χωρίς ομάδα</value></data>
   <data name="Card_Looking" xml:space="preserve"><value>Ψάχνει ομάδα</value></data>
-  <data name="Card_ClubDemo" xml:space="preserve"><value>{0} (demo)</value></data>
   <data name="Card_NoStats" xml:space="preserve"><value>Δεν υπάρχουν στατιστικά ακόμα</value></data>
   <data name="Share_Heading" xml:space="preserve"><value>Κάρτα κοινοποίησης</value></data>
   <data name="Share_Hint" xml:space="preserve"><value>Η κάρτα εμφανίζεται όταν στέλνετε το προφίλ σε μηνύματα και κοινωνικά δίκτυα.</value></data>
   <data name="Share_Download" xml:space="preserve"><value>Λήψη κάρτας</value></data>
   <data name="Share_PreviewAlt" xml:space="preserve"><value>Προεπισκόπηση της κάρτας κοινοποίησης: {0}</value></data>
   <data name="Share_SeasonLink" xml:space="preserve"><value>Δείτε τη σεζόν (Season Wrapped)</value></data>
-  <data name="Share_OgAlt" xml:space="preserve"><value>{0}, {1}. Κάρτα προφίλ Ballpass, φανταστικό πρόσωπο επίδειξης.</value></data>
+  <data name="Share_OgAlt" xml:space="preserve"><value>{0}, {1}. Κάρτα προφίλ Ballpass.</value></data>
   <data name="Wrapped_PageTitle" xml:space="preserve"><value>Η σεζόν {0} — {1}</value></data>
   <data name="Wrapped_Region" xml:space="preserve"><value>Ανασκόπηση σεζόν (Season Wrapped)</value></data>
   <data name="Wrapped_IntroOf" xml:space="preserve"><value>Η σεζόν {0} της {1}</value></data>
   <data name="Wrapped_IntroPlain" xml:space="preserve"><value>Η σεζόν {0}: {1}</value></data>
-  <data name="Wrapped_IntroSub" xml:space="preserve"><value>Season Wrapped · φανταστικό προφίλ επίδειξης</value></data>
+  <data name="Wrapped_IntroSub" xml:space="preserve"><value>Season Wrapped</value></data>
   <data name="Wrapped_Scroll" xml:space="preserve"><value>Κυλήστε προς τα κάτω ↓</value></data>
   <data name="Wrapped_GamesHeading" xml:space="preserve"><value>Στο παρκέ</value></data>
   <data name="Wrapped_GamesLabel" xml:space="preserve"><value>αγώνες</value></data>
@@ -40,10 +39,9 @@
   <data name="Metric_Assists" xml:space="preserve"><value>Στις ασίστ ανά 40΄</value></data>
   <data name="Metric_Steals" xml:space="preserve"><value>Στα κλεψίματα ανά 40΄</value></data>
   <data name="Metric_FgPct" xml:space="preserve"><value>Στην ευστοχία σουτ (FG%)</value></data>
-  <data name="Wrapped_CohortNoteF" xml:space="preserve"><value>ανάμεσα σε {0} αθλήτριες επίδειξης στην ίδια θέση ({1}), με τουλάχιστον {2} λεπτά ανά αγώνα (φανταστικά)</value></data>
-  <data name="Wrapped_CohortNoteM" xml:space="preserve"><value>ανάμεσα σε {0} αθλητές επίδειξης στην ίδια θέση ({1}), με τουλάχιστον {2} λεπτά ανά αγώνα (φανταστικά)</value></data>
+  <data name="Wrapped_CohortNoteF" xml:space="preserve"><value>ανάμεσα σε {0} αθλήτριες στην ίδια θέση ({1}), με τουλάχιστον {2} λεπτά ανά αγώνα</value></data>
+  <data name="Wrapped_CohortNoteM" xml:space="preserve"><value>ανάμεσα σε {0} αθλητές στην ίδια θέση ({1}), με τουλάχιστον {2} λεπτά ανά αγώνα</value></data>
   <data name="Wrapped_OutroHeading" xml:space="preserve"><value>Δείτε ολόκληρο το προφίλ</value></data>
   <data name="Wrapped_OpenProfile" xml:space="preserve"><value>Άνοιγμα προφίλ</value></data>
   <data name="Wrapped_DownloadCard" xml:space="preserve"><value>Λήψη κάρτας</value></data>
-  <data name="Wrapped_Demo" xml:space="preserve"><value>Φανταστικά δεδομένα επίδειξης, χωρίς αντιστοιχία σε πραγματικό πρόσωπο.</value></data>
 </root>

@@ -1,10 +1,10 @@
 @using Ballpass.Web.Data
 @inject IStringLocalizer<MediaResource> M
-@* One photo or video with its honest label. Photos open a CSS-only lightbox (:target); videos start muted and are played / paused by bp-media.js
-   (never under prefers-reduced-motion); native controls keep working without JS. width/height reserve the space (no layout shift). *@
+@* One photo or video. Photos open a CSS-only lightbox (:target); videos start muted and are played / paused by bp-media.js
+   (never under prefers-reduced-motion); native controls keep working without JS. width/height reserve the space (no layout shift).
+   No "demo" chip (flow-release O1): the alt text never claims the picture shows the named athlete. *@
 @{
     var alt = IsGreek ? Item.AltEl : Item.AltEn;
-    var chip = M[Item.IsGraphic ? "Chip_Graphic" : "Chip_Stock"].Value;
 }
 @if (Item.Kind == MediaKind.Video)
 {
@@ -12,7 +12,6 @@
         <video class="bp-media-video" muted playsinline loop preload="none" controls poster="/media/@Item.Poster" width="@Item.Width" height="@Item.Height" aria-label="@alt" data-media-video>
             <source src="/media/@Item.File" type="video/mp4" />
         </video>
-        <span class="bp-media-chip" data-chip="media">@chip</span>
     </div>
 }
 else
@@ -21,11 +20,9 @@ else
         <a class="bp-media-open" data-media-open href="#@LightboxId" aria-label="@M["Zoom"]: @alt">
             <img class="bp-media-img" src="/media/@Item.File" width="@Item.Width" height="@Item.Height" alt="@alt" loading="lazy" decoding="async" />
         </a>
-        <span class="bp-media-chip" data-chip="media">@chip</span>
         <div id="@LightboxId" class="bp-media-lightbox" role="dialog" aria-label="@alt">
             <a class="bp-media-close" href="#!" aria-label="@M["Close"]"><span aria-hidden="true">×</span></a>
             <img src="/media/@Item.File" width="@Item.Width" height="@Item.Height" alt="@alt" loading="lazy" decoding="async" />
-            <span class="bp-media-chip">@chip</span>
         </div>
     </div>
 }

@@ -212,6 +212,7 @@ public class AuditMiscTests(BallpassAppFactory app)
         Assert.Contains("φόργουορντ", note);                       // the position group
         Assert.Contains("15 λεπτά ανά αγώνα", note);               // the minutes floor
         Assert.Contains("αθλήτριες", note);
+        Assert.DoesNotMatch("επίδειξης|φανταστικ", note);           // flow-release O1
     }
 
     // ---------- 15. surviving mutants N13 / N16 ----------

@@ -118,7 +118,10 @@ public class ShareTests(BallpassAppFactory app)
         var (client, spy) = SpyClient();
         var bytes = await client.GetByteArrayAsync($"/p/{Full.Slug}/og.png");
 
-        Assert.Equal("DEMO · ΦΑΝΤΑΣΤΙΚΟ ΠΡΟΣΩΠΟ · FICTIONAL ATHLETE", spy.Calls.Single().WatermarkText);
+        // flow-release O1: the card travels without the site footer, so it keeps one quiet disclosure but never says "DEMO".
+        Assert.Equal("ΦΑΝΤΑΣΤΙΚΟ ΠΡΟΣΩΠΟ · FICTIONAL PERSON", spy.Calls.Single().WatermarkText);
+        if (Full.CurrentClub is { } club) Assert.Equal(club.Name, spy.Calls.Single().ClubLine);
+        Assert.DoesNotContain("demo", spy.Calls.Single().ClubLine, StringComparison.OrdinalIgnoreCase);
 
         using var bmp = Decode(bytes);
         var band = (int)Math.Ceiling(bmp.Height * 0.05);   // >= 5% of the height
@@ -148,6 +151,7 @@ public class ShareTests(BallpassAppFactory app)
         using var bmp = Decode(png);
         Assert.Equal((1200, 630), (bmp.Width, bmp.Height));
         Assert.Contains("Παπαδοπούλου-Χατζηγεωργίου-Καραμανλή", model.Name);
+        Assert.Equal("Αθλητικός Όμιλος Μεγάλης Ελλάδας Πάτρας", model.ClubLine);   // flow-release O1: no "(demo)" appended
         // Right gutter between the bands stays background-dark: nothing drew past the 1136px content edge.
         for (var y = 80; y < 550; y += 10)
             for (var x = 1170; x < 1200; x += 6)

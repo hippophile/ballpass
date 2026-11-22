@@ -1,14 +1,26 @@
-/* Ballpass design tokens: ONE dark theme (founder decision 2026-11-21). Contrast verified by tests/LookTests. */
+/* Ballpass design tokens: ONE dark theme (founder decision 2026-11-21). Contrast verified by tests/LookTests (flow-release SPEC §3 table).
+   Orange = the coach's move, teal = the athlete's move. White text on orange is never allowed (2.86). */
 :root,[data-theme="dark"]{
- --bp-bg:#0B0F14;--bp-s1:#121821;--bp-s2:#1A2330;--bp-s3:#243044;
- --bp-border:#2C3A50;--bp-border-ui:#5C6E8A;
- --bp-text:#E8EEF5;--bp-muted:#9AA8BB;
- --bp-accent:#FF6A2B;--bp-accent-contrast:#0B0F14;--bp-focus:#8AB4FF;
- --bp-success:#3DDC97;--bp-warn:#FFB020;--bp-danger:#FF5C6C;
- --bp-src-self:#A7B4C6;--bp-src-coach:#4FC3F7;--bp-src-league:#B794F6;
+ --bp-bg:#080B10;--bp-s1:#111823;--bp-s2:#1B2535;--bp-s3:#283652;
+ --bp-border:#2E3B52;--bp-border-ui:#7B8DAB;
+ --bp-text:#F3F6FA;--bp-muted:#A3B0C2;--bp-faint:#93A1B6;
+ --bp-accent:#FF6A2B;--bp-accent-hi:#FF8A4C;--bp-accent-lo:#F2541A;--bp-accent-contrast:#080B10;--bp-focus:#8AB4FF;
+ --bp-athlete:#2DD4BF;--bp-athlete-hi:#5EEAD4;--bp-athlete-lo:#14B8A6;--bp-athlete-contrast:#04201C;
+ --bp-success:#3DDC97;--bp-warn:#FFB020;--bp-danger:#FF7D8A;
+ --bp-src-self:#A7B4C6;--bp-src-coach:#60A5FA;--bp-src-league:#B794F6;
  --bp-r-sm:6px;--bp-r-md:12px;--bp-r-pill:999px;
  --bp-shadow:0 1px 2px rgb(0 0 0/.4),0 8px 24px rgb(0 0 0/.35);
  --bp-sp-1:4px;--bp-sp-2:8px;--bp-sp-3:12px;--bp-sp-4:16px;--bp-sp-5:24px;--bp-sp-6:32px;--bp-sp-7:48px;
- --bp-fs-xs:.75rem;--bp-fs-sm:.875rem;--bp-fs-md:1rem;--bp-fs-lg:1.25rem;--bp-fs-xl:1.75rem;--bp-fs-stat:3rem;
+ --bp-fs-xs:.75rem;--bp-fs-sm:.875rem;--bp-fs-md:1rem;--bp-fs-lg:1.25rem;--bp-fs-xl:2rem;--bp-fs-stat:3rem;--bp-fs-hero:clamp(2.25rem,4vw + 1rem,3.5rem);
  --bp-font-text:"BP Text",system-ui,sans-serif;--bp-font-display:"BP Display","Arial Narrow",sans-serif;
+ --bp-w-page:1280px;
+ --bp-grad-cta:linear-gradient(180deg,#FF8A4C 0%,#FF6A2B 55%,#F2541A 100%);
+ --bp-grad-athlete:linear-gradient(180deg,#5EEAD4 0%,#2DD4BF 55%,#14B8A6 100%);
+ --bp-grad-card:linear-gradient(180deg,#1B2535 0%,#111823 100%);
+ --bp-grad-hero:radial-gradient(900px 420px at 20% -10%,rgb(255 106 43/.22),transparent 70%),radial-gradient(700px 380px at 100% 0%,rgb(45 212 191/.12),transparent 70%);
+ --bp-glow-accent:0 0 0 1px rgb(255 106 43/.45),0 8px 32px rgb(255 106 43/.22);
+ --bp-glow-athlete:0 0 0 1px rgb(45 212 191/.40),0 8px 32px rgb(45 212 191/.18);
+ --bp-scrim:linear-gradient(to top,rgb(5 7 11/.88) 0%,rgb(5 7 11/.80) 35%,rgb(5 7 11/.45) 65%,rgb(5 7 11/0) 100%);
+ --bp-scrim-left:linear-gradient(90deg,rgb(8 11 16/.88) 0%,rgb(8 11 16/.60) 45%,rgb(8 11 16/0) 75%);
+ --bp-scrim-top:linear-gradient(to bottom,rgb(5 7 11/.65) 0%,rgb(5 7 11/0) 100%);
  color-scheme:dark}

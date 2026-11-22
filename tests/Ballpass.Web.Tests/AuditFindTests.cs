@@ -79,7 +79,7 @@ public class AuditFindTests(BallpassAppFactory app)
             }
             else Assert.True(percentile < 50, $"{Slug(article)} percentile {percentile} but no top-% text");
             Assert.Contains("ριμπ./40΄", reason);
-            Assert.Contains("(δείγμα επίδειξης)", reason);
+            Assert.DoesNotContain("δείγμα", reason);   // flow-release O1
             Assert.Contains(group, reason);
         }
         Assert.True(withTop > 0, $"expected at least one top-% reason among {group}");

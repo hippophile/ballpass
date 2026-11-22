@@ -93,7 +93,8 @@ public class AuditFixTests(BallpassAppFactory app)
         var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.Contains("class=\"demo-banner\"", html);
+        Assert.Contains("class=\"bp-footer\"", html);   // flow-release O1: footer disclosure replaces the banner
+        Assert.DoesNotContain("demo-banner", html);
     }
 
     // ---------- M5 403 page from a POST ----------
@@ -111,7 +112,8 @@ public class AuditFixTests(BallpassAppFactory app)
         var html = WebUtility.HtmlDecode(await response.Content.ReadAsStringAsync());
 
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
-        Assert.Contains("class=\"demo-banner\"", html);
+        Assert.Contains("class=\"bp-footer\"", html);   // flow-release O1: footer disclosure replaces the banner
+        Assert.DoesNotContain("demo-banner", html);
         Assert.Contains("μόνο για προπονητές", html);
     }
 

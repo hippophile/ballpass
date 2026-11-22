@@ -72,7 +72,7 @@
     private static string Name(PersonView p) => IsGreek ? p.NameEl : p.NameLatin;
 
     private static string Initials(PersonView p) =>
-        string.Concat(Name(p).Replace("(demo)", "").Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);
+        string.Concat(Name(p).Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);
 
     private string RegionName(string region)
     {

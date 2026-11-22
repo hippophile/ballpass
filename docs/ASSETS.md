@@ -1,6 +1,6 @@
 # Media assets (demo)
 
-All files are self-hosted under `src/Ballpass.Web/wwwroot/media/` (no hotlinking). Total budget 40 MB. Stock photos are labelled in the UI "Εικόνα αρχείου · demo" / "Stock image · demo" and never claim to show the named athlete; videos are generated graphics labelled "Γραφικό · demo".
+All files are self-hosted under `src/Ballpass.Web/wwwroot/media/` (no hotlinking). Total budget 40 MB. Stock media never claims to show the named athlete (alt text says what is in the picture). Since the flow release (2026-11-22, founder: no "demo" labels) the per-image "Εικόνα αρχείου · demo" / "Γραφικό · demo" chips are gone; the one disclosure is the site footer "Φανταστικά πρόσωπα και δεδομένα".
 
 ## Sourcing
 
@@ -55,3 +55,40 @@ All files are self-hosted under `src/Ballpass.Web/wwwroot/media/` (no hotlinking
 | `video/gfx-drill-cones.mp4` | `video/gfx-drill-cones-poster.webp` | generated in-house | n/a (own work, dedicated to the project) | Graphic: slalom dribble between cones | 45 KB |
 | `video/gfx-scoreboard.mp4` | `video/gfx-scoreboard-poster.webp` | generated in-house | n/a (own work, dedicated to the project) | Graphic: scoreboard with game clock and score | 52 KB |
 | `video/gfx-season-bars.mp4` | `video/gfx-season-bars-poster.webp` | generated in-house | n/a (own work, dedicated to the project) | Graphic: bars of points per season growing | 50 KB |
+
+## Stock (flow release, 2026-11-22): `wwwroot/media/stock/`
+
+Source of truth: `stock/credits.json` (staged manifest entry + published `name` + `faces`). Pages never type these names; slots and pools live in `Features/Media/StockMedia.cs`. Rules (SPEC §5): stock is never an avatar (M1); slots next to a named fictional athlete (profile cover pool, highlights, /match top card) use only `faces: no` files, enforced by `StockMediaTests` (M2). Excluded: `pexels-40732461` (possible minor, O4). Pexels licence read on one photo page and assumed for the rest; Mixkit Stock Video Free License read. **Before the demo, open each source page once. Faces "yes" = real, identifiable people: replace before any public launch.** Sizes measured with `stat`; folder total measured with `du -sk`: 7024 KB.
+
+| File | Source page | Author | Licence | Faces | What it shows | Size |
+|---|---|---|---|---|---|---|
+| `stock/hero-loop.mp4` | https://mixkit.co/free-stock-video/player-dribbling-basketball-2282/ | Mixkit (Envato) - no individual creator credited | Mixkit Stock Video Free License | no | Woman in red dribbling past camera, tracking side shot, seamless crossfade loop 9.4 s | 1817 KB |
+| `stock/hero-loop-poster.webp` | https://mixkit.co/free-stock-video/player-dribbling-basketball-2282/ | Mixkit (Envato) - no individual creator credited | Mixkit Stock Video Free License | no | Woman in red dribbling past camera, tracking side shot, seamless crossfade loop 9.4 s | 37 KB |
+| `stock/door-coach.webp` | https://www.pexels.com/photo/6766999/ | cottonbro studio | Pexels License | yes | Coach crouched with seated women's team reviewing a play on a clipboard (wide) | 77 KB |
+| `stock/door-athlete.webp` | https://www.pexels.com/photo/6777185/ | cottonbro studio | Pexels License | yes | Two women in a one-on-one, ball handler vs defender, green gym wall (wide) | 41 KB |
+| `stock/connect-coach-player.webp` | https://www.pexels.com/photo/6767248/ | cottonbro studio | Pexels License | yes | Coach and a woman player talking, ball in hands | 42 KB |
+| `stock/persona-coach.webp` | https://www.pexels.com/photo/6767326/ | cottonbro studio | Pexels License | yes | Coach standing smiling with whistle, players seated around him | 52 KB |
+| `stock/cover-hall-red.webp` | https://www.pexels.com/photo/2807152/ | the happiest face =) | Pexels License | no | Wide empty gym with a lone shooter at the free-throw line, red/white hall | 141 KB |
+| `stock/cover-hall-orange.webp` | https://www.pexels.com/photo/5407033/ | Diana | Pexels License | no | Empty sports hall with orange steel roof beams and hoop, no people | 85 KB |
+| `stock/cover-hall-bright.webp` | https://www.pexels.com/photo/7156048/ | Piotr Arnoldes | Pexels License | no | Very wide bright indoor sports hall, distant players, skylights | 151 KB |
+| `stock/empty-court-balls.webp` | https://www.pexels.com/photo/34688570/ | Reinis Bruzitis | Pexels License | no | Two basketballs on blue/maple court, no people, clean negative space | 63 KB |
+| `stock/team-with-coach.webp` | https://www.pexels.com/photo/6767322/ | cottonbro studio | Pexels License | yes | Women's team lined up in teal/black kit with their male coach, wooden gym wall (wide) | 69 KB |
+| `stock/coach-clipboard.webp` | https://www.pexels.com/photo/6767042/ | cottonbro studio | Pexels License | yes | Coach holding a clipboard with hand-drawn play over seated players | 34 KB |
+| `stock/coach-talk.webp` | https://www.pexels.com/photo/6767224/ | cottonbro studio | Pexels License | yes | Woman player and coach in conversation, ball under arm | 20 KB |
+| `stock/coach-board.webp` | https://www.pexels.com/photo/32688082/ | Coen Crevels | Pexels License | no | Close-up of coach's hands drawing a play on a tactics board | 16 KB |
+| `stock/post-01.webp` | https://www.pexels.com/photo/40732386/ | Mehmet Mert Gunduz | Pexels License | yes | Women shooting a jump shot in a dark arena, purple vs black kit | 38 KB |
+| `stock/post-02.webp` | https://www.pexels.com/photo/40732300/ | Mehmet Mert Gunduz | Pexels License | yes | Women's game, player lays up ball against dark background | 45 KB |
+| `stock/post-03.webp` | https://www.pexels.com/photo/38132441/ | Daniel Duarte | Pexels License | yes | Two women battling for the ball, warm backlit sunset light | 46 KB |
+| `stock/post-04.webp` | https://www.pexels.com/photo/32402125/ | Chris wade NTEZICIMPA | Pexels License | yes | Woman dribbling in white kit, defender in yellow, outdoor league game | 82 KB |
+| `stock/post-05.webp` | https://www.pexels.com/photo/32370455/ | Chris wade NTEZICIMPA | Pexels License | yes | Women's outdoor game, ball handler under pressure from two defenders | 95 KB |
+| `stock/post-06.webp` | https://www.pexels.com/photo/30049751/ | RODOLPHE ASENSI | Pexels License | yes | Women reaching for the ball in a tight indoor contest | 41 KB |
+| `stock/post-07.webp` | https://www.pexels.com/photo/6777161/ | cottonbro studio | Pexels License | yes | Woman dribbling while a defender closes in | 33 KB |
+| `stock/post-08.webp` | https://www.pexels.com/photo/6767223/ | cottonbro studio | Pexels License | yes | Woman in defensive stance guarding ball handler, hoop behind | 35 KB |
+| `stock/post-09.webp` | https://www.pexels.com/photo/6767225/ | cottonbro studio | Pexels License | yes | Two women facing off, one dribbling, wooden gym | 42 KB |
+| `stock/post-10.webp` | https://www.pexels.com/photo/6777236/ | cottonbro studio | Pexels License | yes | Woman dribbling alone on the court, hoop behind (vertical) | 37 KB |
+| `stock/hl-freethrow.mp4` | https://mixkit.co/free-stock-video/basketball-player-shot-at-goal-2278/ | Mixkit (Envato) - no individual creator credited | Mixkit Stock Video Free License | no | Woman in red shooting from distance, static wide shot | 1329 KB |
+| `stock/hl-freethrow-poster.webp` | https://mixkit.co/free-stock-video/basketball-player-shot-at-goal-2278/ | Mixkit (Envato) - no individual creator credited | Mixkit Stock Video Free License | no | Woman in red shooting from distance, static wide shot | 116 KB |
+| `stock/hl-dribble.mp4` | https://mixkit.co/free-stock-video/woman-training-for-basketball-2291/ | Mixkit (Envato) - no individual creator credited | Mixkit Stock Video Free License | no | Legs and hand dribbling close-up on court (woman training) | 1465 KB |
+| `stock/hl-dribble-poster.webp` | https://mixkit.co/free-stock-video/woman-training-for-basketball-2291/ | Mixkit (Envato) - no individual creator credited | Mixkit Stock Video Free License | no | Legs and hand dribbling close-up on court (woman training) | 36 KB |
+| `stock/hl-net.mp4` | https://mixkit.co/free-stock-video/ball-scoring-in-a-basketball-ring-with-metal-mesh-13733/ | Mixkit (Envato) - no individual creator credited | Mixkit Stock Video Free License | no | Ball swishing through chain net, dark background, rim close-up | 837 KB |
+| `stock/hl-net-poster.webp` | https://mixkit.co/free-stock-video/ball-scoring-in-a-basketball-ring-with-metal-mesh-13733/ | Mixkit (Envato) - no individual creator credited | Mixkit Stock Video Free License | no | Ball swishing through chain net, dark background, rim close-up | 20 KB |
