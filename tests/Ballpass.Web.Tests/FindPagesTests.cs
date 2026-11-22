@@ -43,6 +43,19 @@ public class FindPagesTests(BallpassAppFactory app)
 
     // ---------- access ----------
 
+    // Orchestrator walkthrough: submitting the AI box with an empty query showed "no filters found" — say nothing instead.
+    [Fact]
+    public async Task Empty_ai_query_shows_no_status_line()
+    {
+        var client = app.Client();
+        await SignIn(client, "coach");
+
+        var html = await Html(client, "/match?parsed=rules&nlq=");
+
+        Assert.DoesNotContain("data-parsed=", html);
+        Assert.Contains("id=\"bp-find-nlq\"", html); // the box itself still renders
+    }
+
     [Fact]
     public async Task Anonymous_match_redirects_to_demo_login()
     {

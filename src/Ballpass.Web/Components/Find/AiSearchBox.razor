@@ -17,7 +17,8 @@
     </form>
     <p class="bp-find-hint">@F["Ai_Hint"]</p>
 
-    @if (parsed is not null)
+    @* Nothing to report for an empty query with no filters (orchestrator walkthrough). *@
+    @if (parsed is not null && (!string.IsNullOrWhiteSpace(Echo) || chips.Count > 0))
     {
         <p class="bp-find-ailabel" data-parsed="@parsed" role="status">@F[parsed == "ai" ? "Ai_LabelAi" : "Ai_LabelRules"]</p>
         @if (chips.Count == 0)
