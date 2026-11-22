@@ -1,11 +1,34 @@
 # Ballpass
 
-Ballpass is a scouting platform that connects athletes with coaches on verified data instead of personal connections.
+Ballpass is a scouting network ("LinkedIn for athletes") that connects athletes with coaches on data with a clear source label on every stat, instead of personal connections.
 Athletes keep a profile with seasons and stats (each stat carries a trust label), coaches search with filters,
 express interest and keep a shortlist. It starts with women's basketball in Greece. UI in Greek (default) and English.
 
 **Status:** investor proof of concept. All data is fictional (see [DEMO_DATA.md](DEMO_DATA.md)). Static server-rendered
-Blazor, no JavaScript needed.
+Blazor; the core flows need no JavaScript.
+
+## What's in the wow release (branch `wow-release`)
+
+| Area | What you see | Where |
+|---|---|---|
+| Look | One dark theme, self-hosted Inter + Roboto Condensed (Greek), big stat numbers, WCAG-checked colours | everywhere |
+| Feed | "LinkedIn for athletes": looking-for-team, tryout calls, stat updates, highlights, badges, posts; 🔥 kudos, follow, report/hide/block. No comments, no DMs | `/feed`, home strip |
+| Match | Coach describes a need → ranked athletes with fit %, reasons with source labels, trust bar | `/match` (coaches) |
+| AI search | "σέντερ Αττική κάτω των 22" → filter chips. Uses Claude when a key is set; otherwise a rule parser (labelled) | `/search`, `/match` |
+| Evidence | Percentile bars vs the demo cohort, season trend, rule badges, compare two players | profile, `/compare` |
+| Share | Generated share card (WhatsApp/LinkedIn preview) with DEMO watermark, Season Wrapped story | `/p/{slug}/og.png`, `/p/{slug}/season` |
+
+Research and founder decisions behind this: [docs/research/DECISIONS.md](docs/research/DECISIONS.md).
+
+### Optional: turn on Claude for the AI search
+The app works without it (rule-based search). To use Claude, store your key in user-secrets. `dotnet user-secrets set`
+does not prompt for a value, so read it hidden first (it never shows on screen or lands in shell history); never paste it
+in chat or commit it:
+```
+read -s "KEY?Anthropic API key: " && dotnet user-secrets set "Anthropic:ApiKey" "$KEY" --project src/Ballpass.Web; unset KEY
+```
+(or set the environment variable `Anthropic__ApiKey`). Model and limits are in `appsettings.json` under `Ai`
+(`Ai:Model` defaults to `claude-opus-5-5`; `claude-haiku-5-5` is much cheaper). Kill switch: `Ai:Enabled=false`.
 
 ## Screenshots
 
