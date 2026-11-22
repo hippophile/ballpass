@@ -10,6 +10,8 @@
 @inject NavigationManager Navigation
 @inject IStringLocalizer<ShareResource> L
 @inject IStringLocalizer<SharedResource> LS
+@inject IStringLocalizer<EvidenceResource> E
+@inject Microsoft.Extensions.Options.IOptions<Ballpass.Web.Features.Evidence.EvidenceOptions> EvOptions
 
 @* Season Wrapped: public, no JavaScript. Scroll-snap slides; every number carries data-metric + invariant data-value for tests. *@
 @if (athlete is not null && wrapped is not null)
@@ -77,7 +79,7 @@
                         <span class="bp-share-num">@string.Format(Fmt, L["Wrapped_Top"].Value, cohort.TopPercent)</span>
                         <span class="bp-share-unit">@L[$"Metric_{cohort.Metric}"]</span>
                     </p>
-                    <p class="bp-share-note">@string.Format(Fmt, L[athlete.Gender == Gender.Female ? "Wrapped_CohortNoteF" : "Wrapped_CohortNoteM"].Value, cohort.N)</p>
+                    <p class="bp-share-note">@string.Format(Fmt, L[athlete.Gender == Gender.Female ? "Wrapped_CohortNoteF" : "Wrapped_CohortNoteM"].Value, cohort.N, E[$"Group_{Ballpass.Web.Features.Evidence.CohortCalculator.GroupOf(athlete.Position)}"].Value, EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture))</p>
                     <span hidden data-metric="cohort-n" data-value="@cohort.N"></span>
                     <span hidden data-metric="cohort-top" data-value="@cohort.TopPercent"></span>
                 </section>

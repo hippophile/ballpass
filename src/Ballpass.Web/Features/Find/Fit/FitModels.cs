@@ -1,4 +1,5 @@
 using Ballpass.Web.Data;
+using Ballpass.Web.Features.Evidence;
 
 namespace Ballpass.Web.Features.Find.Fit;
 
@@ -27,7 +28,11 @@ public record FitNeed
 public record FitStat(string Season, int Games, decimal Points, decimal Rebounds, decimal Assists, StatSource Source);
 
 /// <summary>Plain data the scorer needs (no EF entities, so the scorer stays pure).</summary>
-public record FitCandidate(string Slug, Position Position, int HeightCm, int Age, string Region, League? League, FitStat? Stat);
+/// <param name="StatRank">Evidence's per-40 value and whole-percent cohort percentile for the requested stat; null when the cohort rule yields none.</param>
+public record FitCandidate(string Slug, Position Position, int HeightCm, int Age, string Region, League? League, FitStat? Stat, FitStatRank? StatRank = null);
+
+/// <summary>The profile's own numbers (same cohort rule as Evidence): value per 40 minutes and the mid-rank percentile 1-99.</summary>
+public record FitStatRank(double Per40, int Percentile);
 
 public enum ReasonState { Met, Partial, Missed }
 
@@ -35,7 +40,7 @@ public enum ReasonState { Met, Partial, Missed }
 /// One templated reason. Actual is the athlete's value (cm, years, per-game stat); ActualKey is the region/league key.
 /// The UI turns this into text; Source is always set (profile fields are self-reported, stats carry their stat line's source).
 /// </summary>
-public record FitReason(FitCriterion Criterion, ReasonState State, StatSource Source, double Actual, string? ActualKey, int? TopPercent, Position? CohortPosition);
+public record FitReason(FitCriterion Criterion, ReasonState State, StatSource Source, double Actual, string? ActualKey, int? TopPercent, PositionGroup? CohortGroup);
 
 public record FitResult(
     FitCandidate Candidate,

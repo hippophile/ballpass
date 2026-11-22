@@ -7,7 +7,8 @@
   <data name="Card_Points" xml:space="preserve"><value>Points</value></data>
   <data name="Card_Rebounds" xml:space="preserve"><value>Rebounds</value></data>
   <data name="Card_Assists" xml:space="preserve"><value>Assists</value></data>
-  <data name="Card_NoClub" xml:space="preserve"><value>No club · looking for a team</value></data>
+  <data name="Card_NoClub" xml:space="preserve"><value>No club</value></data>
+  <data name="Card_Looking" xml:space="preserve"><value>looking for a team</value></data>
   <data name="Card_ClubDemo" xml:space="preserve"><value>{0} (demo)</value></data>
   <data name="Card_NoStats" xml:space="preserve"><value>No stats yet</value></data>
   <data name="Share_Heading" xml:space="preserve"><value>Share card</value></data>
@@ -39,8 +40,8 @@
   <data name="Metric_Assists" xml:space="preserve"><value>In assists per 40 min</value></data>
   <data name="Metric_Steals" xml:space="preserve"><value>In steals per 40 min</value></data>
   <data name="Metric_FgPct" xml:space="preserve"><value>In field-goal percentage (FG%)</value></data>
-  <data name="Wrapped_CohortNoteF" xml:space="preserve"><value>among {0} demo athletes (fictional)</value></data>
-  <data name="Wrapped_CohortNoteM" xml:space="preserve"><value>among {0} demo athletes (fictional)</value></data>
+  <data name="Wrapped_CohortNoteF" xml:space="preserve"><value>among {0} demo athletes in the same position group ({1}), with at least {2} minutes per game (fictional)</value></data>
+  <data name="Wrapped_CohortNoteM" xml:space="preserve"><value>among {0} demo athletes in the same position group ({1}), with at least {2} minutes per game (fictional)</value></data>
   <data name="Wrapped_OutroHeading" xml:space="preserve"><value>See the full profile</value></data>
   <data name="Wrapped_OpenProfile" xml:space="preserve"><value>Open profile</value></data>
   <data name="Wrapped_DownloadCard" xml:space="preserve"><value>Download card</value></data>

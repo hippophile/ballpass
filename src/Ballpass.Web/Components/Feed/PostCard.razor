@@ -195,18 +195,7 @@
         }
     }
 
-    private string RelativeTime
-    {
-        get
-        {
-            var age = Time.GetUtcNow() - Item.Post.CreatedAt;
-            if (age < TimeSpan.FromMinutes(1)) return F["Time_Now"].Value;
-            if (age < TimeSpan.FromHours(1)) return F["Time_Minutes", (int)age.TotalMinutes].Value;
-            if (age < TimeSpan.FromDays(1)) return F["Time_Hours", (int)age.TotalHours].Value;
-            if (age < TimeSpan.FromDays(30)) return F["Time_Days", (int)age.TotalDays].Value;
-            return Item.Post.CreatedAt.ToString("d MMM yyyy", CultureInfo.CurrentCulture);
-        }
-    }
+    private string RelativeTime => RelativeTimeText.Format(L, Item.Post.CreatedAt, Time.GetUtcNow());
 
     private static string Date(DateOnly d) => d.ToString("d MMM yyyy", CultureInfo.CurrentCulture);
 

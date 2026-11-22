@@ -129,8 +129,14 @@
   <data name="Home_Footer" xml:space="preserve"><value>Όλα τα πρόσωπα, οι σύλλογοι και τα στοιχεία είναι φανταστικά (δεδομένα επίδειξης).</value></data>
   <data name="Search_HeightTo" xml:space="preserve"><value>Ύψος έως (εκ.)</value></data>
   <data name="Search_AgeTo" xml:space="preserve"><value>Ηλικία έως</value></data>
+  <data name="TooMany_Title" xml:space="preserve"><value>Πάρα πολλά αιτήματα</value></data>
+  <data name="TooMany_Text" xml:space="preserve"><value>Η επαναφορά των δεδομένων επίδειξης επιτρέπεται μία φορά το λεπτό. Δοκιμάστε ξανά σε λίγο.</value></data>
   <data name="Error_Title" xml:space="preserve"><value>Κάτι πήγε στραβά</value></data>
   <data name="Error_Text" xml:space="preserve"><value>Παρουσιάστηκε σφάλμα κατά την επεξεργασία του αιτήματός σας. Δοκιμάστε ξανά σε λίγο.</value></data>
   <data name="Error_Home" xml:space="preserve"><value>Επιστροφή στην αρχική</value></data>
   <data name="Error_RequestId" xml:space="preserve"><value>Κωδικός αιτήματος:</value></data>
+  <data name="Time_Now" xml:space="preserve"><value>μόλις τώρα</value></data>
+  <data name="Time_Minutes" xml:space="preserve"><value>πριν από {0} λ.</value></data>
+  <data name="Time_Hours" xml:space="preserve"><value>πριν από {0} ώ.</value></data>
+  <data name="Time_Days" xml:space="preserve"><value>πριν από {0} ημ.</value></data>
 </root>

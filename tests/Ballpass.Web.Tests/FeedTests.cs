@@ -244,7 +244,7 @@ public class FeedTests(BallpassAppFactory app)
 
         Assert.Contains("πριν", el);
         Assert.Contains(" ago", en);
-        Assert.Contains("Για εσένα", el);
+        Assert.Contains("Για εσάς", el);
         Assert.Contains("For you", en);
     }
 
@@ -789,7 +789,7 @@ public class ThrowingFeedService : IFeedService, IFollowService
 {
     private static T Boom<T>() => throw new InvalidOperationException("feed is down (test)");
     public Task<FeedPageResult> GetFeedAsync(FeedViewer viewer, FeedTab tab, string? before, CancellationToken ct = default) => Boom<Task<FeedPageResult>>();
-    public Task<IReadOnlyList<FeedItem>> GetPreviewAsync(int count, CancellationToken ct = default) => Boom<Task<IReadOnlyList<FeedItem>>>();
+    public Task<IReadOnlyList<FeedItem>> GetPreviewAsync(FeedViewer viewer, int count, CancellationToken ct = default) => Boom<Task<IReadOnlyList<FeedItem>>>();
     public Task<PostOutcome> CreateAsync(FeedViewer viewer, NewPost input, CancellationToken ct = default) => Boom<Task<PostOutcome>>();
     public Task<bool> SetKudosAsync(FeedViewer viewer, int postId, bool on, CancellationToken ct = default) => Boom<Task<bool>>();
     public Task<ModOutcome> ReportAsync(FeedViewer viewer, int postId, string? reason, CancellationToken ct = default) => Boom<Task<ModOutcome>>();

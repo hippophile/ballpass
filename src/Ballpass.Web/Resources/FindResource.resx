@@ -33,6 +33,7 @@
   <data name="Unsupported_nationality" xml:space="preserve"><value>Υπηκοότητα</value></data>
   <data name="Unsupported_stats" xml:space="preserve"><value>Στατιστικά (δείτε «Προτεραιότητα» στο Ταίριασμα)</value></data>
   <data name="Unsupported_minors" xml:space="preserve"><value>Μόνο ενήλικες: η ηλικία ορίστηκε σε 18+</value></data>
+  <data name="Unsupported_other" xml:space="preserve"><value>Άλλο κριτήριο</value></data>
   <data name="Match_Title" xml:space="preserve"><value>Ταίριασμα παικτών</value></data>
   <data name="Match_Intro" xml:space="preserve"><value>Ορίστε τι χρειάζεστε και δείτε παίκτες σε σειρά συμβατότητας, με εξήγηση ανά κριτήριο.</value></data>
   <data name="Need_Heading" xml:space="preserve"><value>Τι ψάχνετε;</value></data>
@@ -57,12 +58,14 @@
   <data name="Results_Heading" xml:space="preserve"><value>Αποτελέσματα</value></data>
   <data name="Results_Count" xml:space="preserve"><value>{0} αποτελέσματα</value></data>
   <data name="Results_Hidden" xml:space="preserve"><value>{0} κρυμμένοι από φίλτρα</value></data>
+  <data name="Results_Count_One" xml:space="preserve"><value>{0} αποτέλεσμα</value></data>
+  <data name="Results_Hidden_One" xml:space="preserve"><value>{0} κρυμμένος από φίλτρα</value></data>
   <data name="Results_Showing" xml:space="preserve"><value>Εμφανίζονται οι πρώτοι {0}.</value></data>
   <data name="Results_None" xml:space="preserve"><value>Κανένας παίκτης δεν περνά τα φίλτρα.</value></data>
   <data name="Results_Label" xml:space="preserve"><value>Υπολογίζεται σε φανταστικά δεδομένα επίδειξης με προεπιλεγμένα βάρη</value></data>
   <data name="Results_Unranked" xml:space="preserve"><value>Δεν ζητήσατε κριτήριο βαθμολόγησης (ύψος, ηλικία, περιφέρεια, κατηγορία ή στατιστικό): η λίστα δεν είναι ταξινομημένη κατά συμβατότητα.</value></data>
   <data name="Weights_Heading" xml:space="preserve"><value>Πώς υπολογίζεται</value></data>
-  <data name="Weights_Intro" xml:space="preserve"><value>Το ποσοστό είναι σταθμισμένος μέσος των κριτηρίων που ζητήσατε, με προεπιλεγμένα βάρη (εκτιμήσεις, όχι μετρημένα). Αν λείπει δεδομένο, υπολογίζεται στα υπόλοιπα και ο παίκτης σημαίνεται «μερικά δεδομένα». Τα στατιστικά είναι ανά αγώνα· κάτω από {0} αγώνες θεωρούνται ελλιπή. Δεν είναι αξιολόγηση ικανότητας.</value></data>
+  <data name="Weights_Intro" xml:space="preserve"><value>Το ποσοστό είναι σταθμισμένος μέσος των κριτηρίων που ζητήσατε, με προεπιλεγμένα βάρη (εκτιμήσεις, όχι μετρημένα). Αν λείπει δεδομένο, υπολογίζεται στα υπόλοιπα και ο παίκτης σημαίνεται «μερικά δεδομένα». Το στατιστικό είναι ανά 40΄ και συγκρίνεται με το δείγμα επίδειξης ίδιου φύλου και ίδιας θέσης, όπως στο προφίλ· λείπει όταν υπάρχουν λιγότεροι από {0} αγώνες, λιγότερα από {1} λεπτά ανά αγώνα ή λιγότεροι από {2} συνομήλικοι. Δεν είναι αξιολόγηση ικανότητας.</value></data>
   <data name="Weight_Height" xml:space="preserve"><value>Ύψος</value></data>
   <data name="Weight_Stat" xml:space="preserve"><value>Στατιστικό</value></data>
   <data name="Weight_Region" xml:space="preserve"><value>Περιφέρεια</value></data>
@@ -75,7 +78,7 @@
   <data name="Fit_Unranked" xml:space="preserve"><value>Χωρίς βαθμολογία</value></data>
   <data name="Partial_Tag" xml:space="preserve"><value>Μερικά δεδομένα</value></data>
   <data name="Partial_Missing" xml:space="preserve"><value>Λείπει: {0}</value></data>
-  <data name="Missing_Stat" xml:space="preserve"><value>στατιστικό (λιγότεροι από {0} αγώνες ή καθόλου)</value></data>
+  <data name="Missing_Stat" xml:space="preserve"><value>στατιστικό (όχι αρκετά δεδομένα για σύγκριση με το δείγμα)</value></data>
   <data name="Missing_League" xml:space="preserve"><value>κατηγορία (χωρίς σύλλογο)</value></data>
   <data name="Missing_Height" xml:space="preserve"><value>ύψος</value></data>
   <data name="Missing_Age" xml:space="preserve"><value>ηλικία</value></data>
@@ -87,16 +90,14 @@
   <data name="Reason_Region_Met" xml:space="preserve"><value>Περιφέρεια: {0}</value></data>
   <data name="Reason_League" xml:space="preserve"><value>Κατηγορία: {0} (στόχος {1})</value></data>
   <data name="Reason_League_Met" xml:space="preserve"><value>Κατηγορία: {0}</value></data>
-  <data name="Reason_Stat_Top" xml:space="preserve"><value>{0} {1}/αγώνα — top {2}% των {3} (demo)</value></data>
-  <data name="Reason_Stat_Plain" xml:space="preserve"><value>{0} {1}/αγώνα — κάτω από το top 50% των {2} (demo)</value></data>
+  <data name="Reason_Stat_Top" xml:space="preserve"><value>{0} {1}/40΄ — top {2}% των {3} (δείγμα επίδειξης)</value></data>
+  <data name="Reason_Stat_Plain" xml:space="preserve"><value>{0} {1}/40΄ — κάτω από το top 50% των {2} (δείγμα επίδειξης)</value></data>
   <data name="Unit_Rebounding" xml:space="preserve"><value>ριμπ.</value></data>
   <data name="Unit_Scoring" xml:space="preserve"><value>πόντ.</value></data>
   <data name="Unit_Playmaking" xml:space="preserve"><value>ασίστ.</value></data>
-  <data name="Cohort_PG" xml:space="preserve"><value>πόιντ γκαρντ</value></data>
-  <data name="Cohort_SG" xml:space="preserve"><value>σούτινγκ γκαρντ</value></data>
-  <data name="Cohort_SF" xml:space="preserve"><value>σμολ φόργουορντ</value></data>
-  <data name="Cohort_PF" xml:space="preserve"><value>πάουερ φόργουορντ</value></data>
-  <data name="Cohort_C" xml:space="preserve"><value>σέντερ</value></data>
+  <data name="Cohort_Guard" xml:space="preserve"><value>γκαρντ</value></data>
+  <data name="Cohort_Forward" xml:space="preserve"><value>φόργουορντ</value></data>
+  <data name="Cohort_Center" xml:space="preserve"><value>σέντερ</value></data>
   <data name="Mark_Met" xml:space="preserve"><value>ταιριάζει</value></data>
   <data name="Mark_Partial" xml:space="preserve"><value>κοντά</value></data>
   <data name="Mark_Missed" xml:space="preserve"><value>δεν ταιριάζει</value></data>

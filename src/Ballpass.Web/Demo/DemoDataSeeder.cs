@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Ballpass.Web.Demo;
 
 // Applies migrations, then replaces all demo rows with the generated set in one transaction.
-public class DemoDataSeeder(BallpassDbContext db)
+public class DemoDataSeeder(BallpassDbContext db, TimeProvider time)
 {
     public const int Seed = 42;
 
-    public async Task ResetAsync(CancellationToken ct = default)
+    public virtual async Task ResetAsync(CancellationToken ct = default)
     {
         await db.Database.MigrateAsync(ct);
 
@@ -26,15 +26,16 @@ public class DemoDataSeeder(BallpassDbContext db)
         await db.Coaches.Where(c => c.IsDemo).ExecuteDeleteAsync(ct);
         await db.Clubs.Where(c => c.IsDemo).ExecuteDeleteAsync(ct);
 
+        var now = time.GetUtcNow();
         var data = DemoDataGenerator.Generate(Seed);
-        InterestLifecycleSeeder.Apply(data.Interests, TimeProvider.System.GetUtcNow(), Seed);
+        InterestLifecycleSeeder.Apply(data.Interests, now, Seed);
         db.Clubs.AddRange(data.Clubs);
         db.Coaches.AddRange(data.Coaches);
         db.Athletes.AddRange(data.Athletes);
         db.Interests.AddRange(data.Interests);
         db.ShortlistEntries.AddRange(data.Shortlist);
         await db.SaveChangesAsync(ct);
-        await FeedSeeder.ReplaceAsync(db, data, TimeProvider.System.GetUtcNow(), ct);
+        await FeedSeeder.ReplaceAsync(db, data, now, ct);
 
         await tx.CommitAsync(ct);
     }

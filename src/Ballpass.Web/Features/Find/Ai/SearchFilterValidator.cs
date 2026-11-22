@@ -11,6 +11,15 @@ public static class SearchFilterValidator
     public static readonly string[] Genders = ["Female", "Male"];
     public static readonly string[] Regions = GreekNames.Cities.Select(c => c.Region).Distinct().OrderBy(r => r).ToArray();
 
+    /// <summary>Keys the model may put in `unsupported`. The UI has a Greek label (Unsupported_{key}) for every key in <see cref="UnsupportedKeys"/>.</summary>
+    public static readonly string[] ModelUnsupportedKeys = ["handedness", "salary", "nationality", "stats", "other"];
+    public static readonly string[] UnsupportedKeys = [.. ModelUnsupportedKeys, "minors"];
+
+    private static readonly Dictionary<string, string> UnsupportedAliases = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["statistics"] = "stats", ["statistic"] = "stats", ["stat"] = "stats",
+    };
+
     private const int MinHeightCm = 100, MaxHeightCm = 260, MinAdultAge = 18, MaxAgeYears = 80, MaxQLength = 80, MaxUnsupported = 5, MaxUnsupportedLength = 40;
 
     public static SearchFilters Validate(SearchFilters raw)
@@ -24,8 +33,8 @@ public static class SearchFilterValidator
         int? maxAge = raw.MaxAge;
         if (maxAge < MinAdultAge)
         {
-            // "Under 16" cannot be served: adults only. Clamp to 18 and tell the coach.
-            maxAge = MinAdultAge;
+            // "Under 16" cannot be served: adults only. The lower bound becomes 18, the upper bound stays open (not "exactly 18"), and the coach is told.
+            maxAge = null;
             minAge = MinAdultAge;
             unsupported.Add("minors");
         }
@@ -35,7 +44,11 @@ public static class SearchFilterValidator
         foreach (var item in raw.Unsupported)
         {
             var clean = CleanText(item, MaxUnsupportedLength);
-            if (clean.Length > 0 && !unsupported.Contains(clean, StringComparer.OrdinalIgnoreCase)) unsupported.Add(clean);
+            if (clean.Length == 0) continue;
+            // Only known keys leave the validator (each has a label in the UI); anything else is "other".
+            var key = UnsupportedAliases.TryGetValue(clean, out var alias) ? alias
+                : UnsupportedKeys.FirstOrDefault(k => k.Equals(clean, StringComparison.OrdinalIgnoreCase)) ?? "other";
+            if (!unsupported.Contains(key)) unsupported.Add(key);
         }
 
         var q = CleanText(raw.Q, MaxQLength);

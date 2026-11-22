@@ -129,8 +129,14 @@
   <data name="Home_Footer" xml:space="preserve"><value>All people, clubs and data are fictional (demo data).</value></data>
   <data name="Search_HeightTo" xml:space="preserve"><value>Height to (cm)</value></data>
   <data name="Search_AgeTo" xml:space="preserve"><value>Age to</value></data>
+  <data name="TooMany_Title" xml:space="preserve"><value>Too many requests</value></data>
+  <data name="TooMany_Text" xml:space="preserve"><value>The demo data can be reset once per minute. Please try again shortly.</value></data>
   <data name="Error_Title" xml:space="preserve"><value>Something went wrong</value></data>
   <data name="Error_Text" xml:space="preserve"><value>An error occurred while processing your request. Please try again shortly.</value></data>
   <data name="Error_Home" xml:space="preserve"><value>Back to home</value></data>
   <data name="Error_RequestId" xml:space="preserve"><value>Request ID:</value></data>
+  <data name="Time_Now" xml:space="preserve"><value>just now</value></data>
+  <data name="Time_Minutes" xml:space="preserve"><value>{0} min ago</value></data>
+  <data name="Time_Hours" xml:space="preserve"><value>{0} h ago</value></data>
+  <data name="Time_Days" xml:space="preserve"><value>{0} d ago</value></data>
 </root>

@@ -17,13 +17,13 @@
   <data name="Metric_FgPct" xml:space="preserve"><value>Ευστοχία σουτ (FG%)</value></data>
   <data name="Pct_Value" xml:space="preserve"><value>{0}ο εκατοστημόριο</value></data>
   <data name="Insufficient" xml:space="preserve"><value>Δεν υπάρχουν αρκετά δεδομένα (n={0})</value></data>
-  <data name="Insufficient_Peers" xml:space="preserve"><value>λιγότεροι από 20 συνομήλικοι στο δείγμα</value></data>
+  <data name="Insufficient_Peers" xml:space="preserve"><value>λιγότεροι από {0} συνομήλικοι στο δείγμα</value></data>
   <data name="Insufficient_Minutes" xml:space="preserve"><value>λιγότερα από {0} λεπτά ανά αγώνα</value></data>
   <data name="Insufficient_Games" xml:space="preserve"><value>λιγότεροι από 10 αγώνες</value></data>
   <data name="Aria_Row" xml:space="preserve"><value>{0}: {1}, {2}</value></data>
   <data name="Aria_RowNoData" xml:space="preserve"><value>{0}: {1}. {2}</value></data>
   <data name="Source_Note" xml:space="preserve"><value>Πηγή στατιστικών τελευταίας σεζόν:</value></data>
-  <data name="Thresholds_Note" xml:space="preserve"><value>Τα κατώφλια (20 συνομήλικοι, 10 αγώνες, {0} λεπτά ανά αγώνα, ±10%, 8 αγώνες) είναι δικές μας εκτιμήσεις, όχι κανόνες λίγκας. Το δείγμα είναι φανταστικό.</value></data>
+  <data name="Thresholds_Note" xml:space="preserve"><value>Τα κατώφλια ({1} συνομήλικοι, 10 αγώνες, {0} λεπτά ανά αγώνα, ±10%, 8 αγώνες) είναι δικές μας εκτιμήσεις, όχι κανόνες λίγκας. Το δείγμα είναι φανταστικό.</value></data>
   <data name="Toggle_Label" xml:space="preserve"><value>Δείγμα σύγκρισης:</value></data>
   <data name="Toggle_All" xml:space="preserve"><value>Όλες οι πηγές</value></data>
   <data name="Toggle_Confirmed" xml:space="preserve"><value>Μόνο επιβεβαιωμένα από προπονητή</value></data>
@@ -60,10 +60,11 @@
   <data name="Compare_Submit" xml:space="preserve"><value>Σύγκριση</value></data>
   <data name="Compare_Launcher" xml:space="preserve"><value>Σύγκριση δύο παικτών</value></data>
   <data name="Compare_NeedTwo" xml:space="preserve"><value>Χρειάζονται τουλάχιστον δύο παίκτες στη βραχεία λίστα για σύγκριση.</value></data>
-  <data name="Compare_ChooseB" xml:space="preserve"><value>Διάλεξε με ποιον παίκτη από τη βραχεία λίστα σου να συγκριθεί:</value></data>
-  <data name="Compare_NoShortlist" xml:space="preserve"><value>Η βραχεία λίστα σου είναι κενή. Πρόσθεσε παίκτες από την αναζήτηση.</value></data>
-  <data name="Compare_Same" xml:space="preserve"><value>Διάλεξε δύο διαφορετικούς παίκτες.</value></data>
+  <data name="Compare_ChooseB" xml:space="preserve"><value>Διαλέξτε με ποιον παίκτη από τη βραχεία λίστα σας να συγκριθεί:</value></data>
+  <data name="Compare_NoShortlist" xml:space="preserve"><value>Η βραχεία λίστα σας είναι κενή. Προσθέστε παίκτες από την αναζήτηση.</value></data>
+  <data name="Compare_Same" xml:space="preserve"><value>Διαλέξτε δύο διαφορετικούς παίκτες.</value></data>
   <data name="Compare_Warning" xml:space="preserve"><value>Προσοχή: διαφορετικές θέσεις ({0} και {1}). Κάθε εκατοστημόριο αφορά το δικό του δείγμα επίδειξης και δεν συγκρίνονται ευθέως.</value></data>
+  <data name="Compare_WarningGender" xml:space="preserve"><value>Προσοχή: διαφορετικό φύλο ({0} και {1}). Κάθε εκατοστημόριο αφορά το δικό του δείγμα επίδειξης, χωριστά για γυναίκες και άνδρες, και δεν συγκρίνονται ευθέως.</value></data>
   <data name="Compare_Legend" xml:space="preserve"><value>Υπόμνημα</value></data>
   <data name="Compare_Solid" xml:space="preserve"><value>συνεχής γραμμή, κύκλος</value></data>
   <data name="Compare_Dashed" xml:space="preserve"><value>διακεκομμένη γραμμή, τετράγωνο</value></data>

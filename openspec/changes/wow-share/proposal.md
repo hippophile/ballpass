@@ -16,5 +16,5 @@ Player card (1080x1350) only if time remains after the two must items.
 ## Decision
 1. `Features/Share/*`: Skia renderer (`IOgCardRenderer`), disk+memory cache keyed slug+content hash, 2 concurrent renders, ETag/304.
 2. `<ShareMeta Athlete>` (og:image absolute via config `PublicBaseUrl`, fallback request base), `<SharePanel Athlete>` (preview, download, Wrapped link).
-3. `Season.razor` at `/p/{slug}/season`: 6 CSS scroll-snap slides, no JS; cohort slide computed locally (TODO: swap for Evidence `ICohortRank` at merge).
+3. `Season.razor` at `/p/{slug}/season`: 6 CSS scroll-snap slides, no JS; cohort slide uses Evidence's `ICohortRank` (same gender and position group, minutes floor, per-40 values as the profile; swapped in at merge).
 4. Honest demo: card carries solid top/bottom bands "DEMO · ΦΑΝΤΑΣΤΙΚΟ ΠΡΟΣΩΠΟ · FICTIONAL ATHLETE" plus tiled diagonal "DEMO".

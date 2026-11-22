@@ -178,7 +178,7 @@ public static class FeedSeeder
             foreach (var actor in r.Shuffle(actorPool).Where(k => k != post.AuthorKey && k != head).Take(counts[i]))
             {
                 var at = post.CreatedAt.AddMinutes(r.Int(5, 600));
-                kudos.Add(new Kudos { Post = post, ActorKey = actor, CreatedAt = FeedKeys.Truncate(at > reference ? reference : at) });
+                kudos.Add(new Kudos { Post = post, ActorKey = actor, CreatedAt = FeedKeys.Truncate(at > reference ? reference : at), IsDemo = true });
             }
         }
 
@@ -187,7 +187,7 @@ public static class FeedSeeder
         var seen = new HashSet<(string, string)>();
         void AddFollow(string from, string to, DateTimeOffset at)
         {
-            if (from != to && seen.Add((from, to))) follows.Add(new Follow { FollowerKey = from, TargetKey = to, CreatedAt = FeedKeys.Truncate(at) });
+            if (from != to && seen.Add((from, to))) follows.Add(new Follow { FollowerKey = from, TargetKey = to, CreatedAt = FeedKeys.Truncate(at), IsDemo = true });
         }
         foreach (var s in data.Shortlist)
             AddFollow(FeedKeys.Make(AuthorKind.Coach, s.Coach!.Id), FeedKeys.Make(AuthorKind.Athlete, s.Athlete!.Id), reference - TimeSpan.FromDays(r.Int(1, 25)));

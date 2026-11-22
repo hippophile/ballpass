@@ -17,6 +17,7 @@ Blazor; the core flows need no JavaScript.
 | AI search | "σέντερ Αττική κάτω των 22" → filter chips. Uses Claude when a key is set; otherwise a rule parser (labelled) | `/search`, `/match` |
 | Evidence | Percentile bars vs the demo cohort, season trend, rule badges, compare two players | profile, `/compare` |
 | Share | Generated share card (WhatsApp/LinkedIn preview) with DEMO watermark, Season Wrapped story | `/p/{slug}/og.png`, `/p/{slug}/season` |
+| Loop | Coach sees an interest's timeline (sent, seen, replied); one click switches the coach to the athlete's view and back; athlete accepts or declines in the inbox; demo reset (Development only, signed-in persona, 1 per minute) | `/me/sent`, `/me/inbox`, persona switch pill, `/demo/reset` |
 
 Research and founder decisions behind this: [docs/research/DECISIONS.md](docs/research/DECISIONS.md).
 

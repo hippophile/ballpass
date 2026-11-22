@@ -3,6 +3,7 @@
 @using System.Globalization
 @using Ballpass.Web.Data
 @using Ballpass.Web.Demo
+@using Ballpass.Web.Features.Find
 @using Microsoft.EntityFrameworkCore
 @inject BallpassDbContext Db
 @inject TimeProvider Time
@@ -126,18 +127,31 @@
 
     [SupplyParameterFromQuery(Name = "gender")] public string? Gender { get; set; }
     [SupplyParameterFromQuery(Name = "position")] public string[]? Position { get; set; }
-    [SupplyParameterFromQuery(Name = "minHeight")] public int? MinHeight { get; set; }
-    [SupplyParameterFromQuery(Name = "maxHeight")] public int? MaxHeight { get; set; }
-    [SupplyParameterFromQuery(Name = "minAge")] public int? MinAge { get; set; }
-    [SupplyParameterFromQuery(Name = "maxAge")] public int? MaxAge { get; set; }
-    [SupplyParameterFromQuery(Name = "region")] public string? Region { get; set; }
-    [SupplyParameterFromQuery(Name = "league")] public string? League { get; set; }
-    [SupplyParameterFromQuery(Name = "looking")] public bool Looking { get; set; }
-    [SupplyParameterFromQuery(Name = "q")] public string? Q { get; set; }
+    // Raw strings: the typed binder throws on "abc" for an int. Each value is read leniently below (invalid = absent).
+    [SupplyParameterFromQuery(Name = "minHeight")] public string? MinHeightRaw { get; set; }
+    [SupplyParameterFromQuery(Name = "maxHeight")] public string? MaxHeightRaw { get; set; }
+    [SupplyParameterFromQuery(Name = "minAge")] public string? MinAgeRaw { get; set; }
+    [SupplyParameterFromQuery(Name = "maxAge")] public string? MaxAgeRaw { get; set; }
+    [SupplyParameterFromQuery(Name = "region")] public string? RegionRaw { get; set; }
+    [SupplyParameterFromQuery(Name = "league")] public string? LeagueRaw { get; set; }
+    [SupplyParameterFromQuery(Name = "looking")] public string? LookingRaw { get; set; }
+    [SupplyParameterFromQuery(Name = "q")] public string? QRaw { get; set; }
     [SupplyParameterFromQuery(Name = "parsed")] public string? Parsed { get; set; }
-    [SupplyParameterFromQuery(Name = "nlq")] public string? Nlq { get; set; }
-    [SupplyParameterFromQuery(Name = "unsupported")] public string? Unsupported { get; set; }
-    [SupplyParameterFromQuery(Name = "page")] public int? PageNumber { get; set; }
+    [SupplyParameterFromQuery(Name = "nlq")] public string? NlqRaw { get; set; }
+    [SupplyParameterFromQuery(Name = "unsupported")] public string? UnsupportedRaw { get; set; }
+    [SupplyParameterFromQuery(Name = "page")] public string? PageRaw { get; set; }
+
+    private int? MinHeight => LenientQuery.Int(MinHeightRaw, 0, 400);
+    private int? MaxHeight => LenientQuery.Int(MaxHeightRaw, 0, 400);
+    private int? MinAge => LenientQuery.Int(MinAgeRaw, 0, 150);
+    private int? MaxAge => LenientQuery.Int(MaxAgeRaw, 0, 150);
+    private string? Region => Regions.Contains(RegionRaw ?? "") ? RegionRaw : null;
+    private string? League => Leagues.Contains(LeagueRaw ?? "") ? LeagueRaw : null;
+    private bool Looking => LenientQuery.Flag(LookingRaw);
+    private string? Q => LenientQuery.Text(QRaw, 80);
+    private string? Nlq => LenientQuery.Text(NlqRaw, 200);
+    private string? Unsupported => LenientQuery.Text(UnsupportedRaw, 40);
+    private int? PageNumber => LenientQuery.Int(PageRaw, 1, 1_000_000);
 
     private List<Athlete> results = [];
     private int total;
@@ -161,7 +175,7 @@
         if (MinAge is { } minA) query = query.Where(a => a.BirthYear <= year - minA);
         if (MaxAge is { } maxA) query = query.Where(a => a.BirthYear >= year - maxA);
         if (!string.IsNullOrEmpty(Region)) query = query.Where(a => a.Region == Region);
-        if (Enum.TryParse<Data.League>(League, out var league) && Leagues.Contains(League))
+        if (Enum.TryParse<Data.League>(League, out var league) && League is not null)
             query = query.Where(a => a.CurrentClub != null && a.CurrentClub.League == league);
         if (Looking) query = query.Where(a => a.LookingForTeam);
         if (!string.IsNullOrWhiteSpace(Q))

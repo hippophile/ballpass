@@ -4,6 +4,8 @@
 @using System.Security.Claims
 @using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Data
+@using Ballpass.Web.Features.Evidence
+@using Ballpass.Web.Features.Find
 @using Ballpass.Web.Features.Find.Ai
 @using Ballpass.Web.Features.Find.Fit
 @using Microsoft.EntityFrameworkCore
@@ -12,6 +14,8 @@
 @inject TimeProvider Time
 @inject FitScorer Scorer
 @inject IOptions<FitOptions> FitConfig
+@inject IOptions<EvidenceOptions> EvidenceConfig
+@inject ICohortService Cohorts
 @inject IStringLocalizer<FindResource> F
 @inject IStringLocalizer<SharedResource> S
 
@@ -96,8 +100,8 @@
     <section class="bp-find-results" aria-live="polite" aria-labelledby="bp-find-results-h">
         <h2 id="bp-find-results-h" class="visually-hidden">@F["Results_Heading"]</h2>
         <p class="bp-find-count">
-            <strong data-total="@ranking.Results.Count">@F["Results_Count", ranking.Results.Count]</strong>
-            <span class="bp-find-hidden" data-hidden="@ranking.Hidden">@F["Results_Hidden", ranking.Hidden]</span>
+            <strong data-total="@ranking.Results.Count">@F[ranking.Results.Count == 1 ? "Results_Count_One" : "Results_Count", ranking.Results.Count]</strong>
+            <span class="bp-find-hidden" data-hidden="@ranking.Hidden">@F[ranking.Hidden == 1 ? "Results_Hidden_One" : "Results_Hidden", ranking.Hidden]</span>
         </p>
         <p class="bp-find-disclaimer">@F["Results_Label"]</p>
 
@@ -124,7 +128,7 @@
 
         <details class="bp-find-weights">
             <summary>@F["Weights_Heading"]</summary>
-            <p>@F["Weights_Intro", FitConfig.Value.MinGames]</p>
+            <p>@F["Weights_Intro", FitConfig.Value.MinGames, EvidenceConfig.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture), EvidenceConfig.Value.MinPeers]</p>
             <ul>
                 <li>@F["Weight_Height"]: @Pct(FitConfig.Value.Weights.Height)</li>
                 <li>@F["Weight_Stat"]: @Pct(FitConfig.Value.Weights.Stat)</li>
@@ -224,14 +228,21 @@
 
     [SupplyParameterFromQuery(Name = "gender")] public string? Gender { get; set; }
     [SupplyParameterFromQuery(Name = "position")] public string[]? Position { get; set; }
-    [SupplyParameterFromQuery(Name = "minHeight")] public int? MinHeight { get; set; }
-    [SupplyParameterFromQuery(Name = "maxHeight")] public int? MaxHeight { get; set; }
-    [SupplyParameterFromQuery(Name = "minAge")] public int? MinAge { get; set; }
-    [SupplyParameterFromQuery(Name = "maxAge")] public int? MaxAge { get; set; }
+    // Raw strings: the typed binder throws on "abc" for an int or "maybe" for a bool. Read leniently (invalid = absent).
+    [SupplyParameterFromQuery(Name = "minHeight")] public string? MinHeightRaw { get; set; }
+    [SupplyParameterFromQuery(Name = "maxHeight")] public string? MaxHeightRaw { get; set; }
+    [SupplyParameterFromQuery(Name = "minAge")] public string? MinAgeRaw { get; set; }
+    [SupplyParameterFromQuery(Name = "maxAge")] public string? MaxAgeRaw { get; set; }
     [SupplyParameterFromQuery(Name = "region")] public string? Region { get; set; }
     [SupplyParameterFromQuery(Name = "league")] public string? League { get; set; }
     [SupplyParameterFromQuery(Name = "priority")] public string? Priority { get; set; }
-    [SupplyParameterFromQuery(Name = "confirmed")] public bool Confirmed { get; set; }
+    [SupplyParameterFromQuery(Name = "confirmed")] public string? ConfirmedRaw { get; set; }
+
+    private int? MinHeight => LenientQuery.Int(MinHeightRaw, 0, 400);
+    private int? MaxHeight => LenientQuery.Int(MaxHeightRaw, 0, 400);
+    private int? MinAge => LenientQuery.Int(MinAgeRaw, 0, 150);
+    private int? MaxAge => LenientQuery.Int(MaxAgeRaw, 0, 150);
+    private bool Confirmed => LenientQuery.Flag(ConfirmedRaw);
 
     private FitNeed need = new();
     private FitRanking ranking = new([], 0);
@@ -267,11 +278,15 @@
         var rows = await Db.Athletes.AsNoTracking().Where(a => a.IsDemo && a.Gender == gender)
             .Include(a => a.CurrentClub).Include(a => a.Stats).ToListAsync();
         athletes = rows.ToDictionary(a => a.Slug);
+        // The stat criterion uses the profile's own percentile (same cohort rule as Evidence); no percentile = criterion missing.
+        var metric = StatMetric(need.Priority);
+        var percentiles = metric is { } m ? await Cohorts.PercentilesAsync(gender, m) : new Dictionary<int, CohortPercentile>();
         var cohort = rows.Select(a =>
         {
             var line = a.Stats.OrderByDescending(s => s.Season, StringComparer.Ordinal).FirstOrDefault();
             var stat = line is null ? null : new FitStat(line.Season, line.Games, line.Points, line.Rebounds, line.Assists, line.Source);
-            return new FitCandidate(a.Slug, a.Position, a.HeightCm, year - a.BirthYear, a.Region, a.CurrentClub?.League, stat);
+            var rank = percentiles.TryGetValue(a.Id, out var p) ? new FitStatRank(p.Value, p.Percentile) : null;
+            return new FitCandidate(a.Slug, a.Position, a.HeightCm, year - a.BirthYear, a.Region, a.CurrentClub?.League, stat, rank);
         }).ToList();
 
         ranking = Scorer.Rank(need, cohort);
@@ -290,6 +305,14 @@
                 .Select(i => i.Athlete!.Slug).ToListAsync()).ToHashSet();
         }
     }
+
+    private static EvidenceMetric? StatMetric(FitPriority priority) => priority switch
+    {
+        FitPriority.Rebounding => EvidenceMetric.Rebounds,
+        FitPriority.Scoring => EvidenceMetric.Points,
+        FitPriority.Playmaking => EvidenceMetric.Assists,
+        _ => null,
+    };
 
     private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
     private string FullName(Athlete a) => IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
@@ -321,8 +344,8 @@
             ? F["Reason_League_Met", S[$"League_{r.ActualKey}"].Value].Value
             : F["Reason_League", S[$"League_{r.ActualKey}"].Value, S[$"League_{need.League}"].Value].Value,
         _ => r.TopPercent is { } top and <= 50
-            ? F["Reason_Stat_Top", r.Actual.ToString("0.0"), F[$"Unit_{need.Priority}"].Value, top, F[$"Cohort_{r.CohortPosition}"].Value].Value
-            : F["Reason_Stat_Plain", r.Actual.ToString("0.0"), F[$"Unit_{need.Priority}"].Value, F[$"Cohort_{r.CohortPosition}"].Value].Value,
+            ? F["Reason_Stat_Top", r.Actual.ToString("0.0"), F[$"Unit_{need.Priority}"].Value, top, F[$"Cohort_{r.CohortGroup}"].Value].Value
+            : F["Reason_Stat_Plain", r.Actual.ToString("0.0"), F[$"Unit_{need.Priority}"].Value, F[$"Cohort_{r.CohortGroup}"].Value].Value,
     };
 
     private string MissingText(FitResult r) => string.Join(", ", r.Missing.Select(m => m switch

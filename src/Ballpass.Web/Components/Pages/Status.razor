@@ -1,10 +1,14 @@
 @page "/status/{Code:int}"
 @attribute [RequireAntiforgeryToken(required: false)]
 
-@* Re-execution target for status codes: 403 -> Denied, everything else -> NotFound. *@
+@* Re-execution target for status codes: 403 -> Denied, 429 -> TooManyRequests, everything else -> NotFound. *@
 @if (Code == StatusCodes.Status403Forbidden)
 {
     <Denied />
+}
+else if (Code == StatusCodes.Status429TooManyRequests)
+{
+    <TooManyRequests />
 }
 else
 {

@@ -1,4 +1,5 @@
 using Ballpass.Web.Data;
+using Ballpass.Web.Features.Evidence;
 
 namespace Ballpass.Web.Features.Find.Fit;
 
@@ -8,7 +9,10 @@ namespace Ballpass.Web.Features.Find.Fit;
 ///
 /// Rules: position and coach-confirmed-only are hard filters (hide + count). Every other requested criterion is soft, scored 0..1.
 /// Weights renormalise over the requested criteria; a criterion with no usable data for an athlete (stat line missing or
-/// under MinGames games, no club league) is "missing": the score renormalises over what is available and the athlete is tagged partial.
+/// under MinGames games, no cohort percentile from Evidence, no club league) is "missing": the score renormalises over what is
+/// available and the athlete is tagged partial.
+/// The stat criterion never ranks anything itself: it consumes the percentile Evidence computed for the profile
+/// (<see cref="FitCandidate.StatRank"/>), so Match and the profile always show the same number.
 /// Ties break on coverage, best stat source, recency, slug.
 /// </summary>
 public class FitScorer(FitOptions options)
@@ -18,10 +22,9 @@ public class FitScorer(FitOptions options)
         var visible = cohort.Where(c => Passes(need, c)).ToList();
         var requested = Requested(need);
         var requestedWeight = requested.Sum(x => x.Weight);
-        var statValues = StatCohort(need.Priority, cohort);
 
         var results = visible
-            .Select(c => Score(need, c, requested, requestedWeight, statValues))
+            .Select(c => Score(need, c, requested, requestedWeight))
             .OrderByDescending(r => r.FitPercent ?? -1)
             .ThenByDescending(r => Math.Round(r.Coverage, 6))
             .ThenByDescending(r => SourceRank(r.Candidate.Stat))
@@ -53,30 +56,7 @@ public class FitScorer(FitOptions options)
         return list;
     }
 
-    private static double? PerGame(FitPriority priority, FitStat stat) => priority switch
-    {
-        FitPriority.Rebounding => (double)stat.Rebounds,
-        FitPriority.Scoring => (double)stat.Points,
-        FitPriority.Playmaking => (double)stat.Assists,
-        _ => null,
-    };
-
-    /// <summary>Per-game values of the requested stat among same-position athletes with enough games (the "demo cohort").</summary>
-    private Dictionary<Position, List<double>> StatCohort(FitPriority priority, IReadOnlyList<FitCandidate> cohort)
-    {
-        var map = new Dictionary<Position, List<double>>();
-        if (priority == FitPriority.None) return map;
-        foreach (var c in cohort)
-        {
-            if (c.Stat is null || c.Stat.Games < options.MinGames) continue;
-            if (!map.TryGetValue(c.Position, out var list)) map[c.Position] = list = [];
-            list.Add(PerGame(priority, c.Stat)!.Value);
-        }
-        return map;
-    }
-
-    private FitResult Score(FitNeed need, FitCandidate c, List<(FitCriterion Criterion, double Weight)> requested, double requestedWeight,
-        Dictionary<Position, List<double>> statValues)
+    private FitResult Score(FitNeed need, FitCandidate c, List<(FitCriterion Criterion, double Weight)> requested, double requestedWeight)
     {
         double sum = 0, available = 0;
         var missing = new List<FitCriterion>();
@@ -84,7 +64,7 @@ public class FitScorer(FitOptions options)
 
         foreach (var (criterion, weight) in requested)
         {
-            var s = ScoreCriterion(need, c, criterion, statValues);
+            var s = ScoreCriterion(need, c, criterion);
             if (s is null) { missing.Add(criterion); continue; }
             var (score, reason) = s.Value;
             sum += weight * score;
@@ -101,8 +81,7 @@ public class FitScorer(FitOptions options)
         return new FitResult(c, percent, coverage, reasons, missing);
     }
 
-    private (double Score, FitReason Reason)? ScoreCriterion(FitNeed need, FitCandidate c, FitCriterion criterion,
-        Dictionary<Position, List<double>> statValues)
+    private (double Score, FitReason Reason)? ScoreCriterion(FitNeed need, FitCandidate c, FitCriterion criterion)
     {
         switch (criterion)
         {
@@ -130,15 +109,11 @@ public class FitScorer(FitOptions options)
             }
             default:
             {
-                if (c.Stat is null || c.Stat.Games < options.MinGames) return null;
-                var value = PerGame(need.Priority, c.Stat)!.Value;
-                var cohort = statValues[c.Position];
-                var below = cohort.Count(v => v < value);
-                var equal = cohort.Count(v => v == value);
-                var pct = (below + 0.5 * equal) / cohort.Count;
+                if (c.Stat is null || c.Stat.Games < options.MinGames || c.StatRank is not { } rank) return null;
+                var pct = rank.Percentile / 100.0;
                 var state = pct >= 0.8 ? ReasonState.Met : pct < 0.2 ? ReasonState.Missed : ReasonState.Partial;
-                var top = (int)Math.Max(1, Math.Round(100 * (1 - pct), MidpointRounding.AwayFromZero));
-                return (pct, new FitReason(criterion, state, c.Stat.Source, value, null, top, c.Position));
+                var top = Math.Max(1, 100 - rank.Percentile);
+                return (pct, new FitReason(criterion, state, c.Stat.Source, rank.Per40, null, top, CohortCalculator.GroupOf(c.Position)));
             }
         }
     }

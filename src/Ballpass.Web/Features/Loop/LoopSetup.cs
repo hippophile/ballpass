@@ -5,18 +5,38 @@ using Ballpass.Web.Features.Loop;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Threading.RateLimiting;
 
 // Root namespace on purpose: Program.cs already imports Ballpass.Web, so it needs no extra using for AddLoop/MapLoop.
 namespace Ballpass.Web;
 
 public static class LoopSetup
 {
+    public const string ResetPolicy = "demo-reset";
+
     public static IServiceCollection AddLoop(this IServiceCollection services)
     {
         services.AddOptions<DemoOptions>().BindConfiguration("Demo");
         services.AddScoped<LoopService>();
+        services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            // The status-code page (re-executed by Program.cs) renders the 429 body; this only adds the standard Retry-After hint.
+            options.OnRejected = (context, _) =>
+            {
+                if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+                    context.HttpContext.Response.Headers.RetryAfter = ((int)Math.Ceiling(retryAfter.TotalSeconds)).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                return ValueTask.CompletedTask;
+            };
+            // One reset per minute per signed-in persona. Anonymous callers are not counted: the endpoint sends them to /demo.
+            options.AddPolicy(ResetPolicy, http => http.User.Identity?.IsAuthenticated == true
+                ? RateLimitPartition.GetFixedWindowLimiter(http.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "persona",
+                    _ => new FixedWindowRateLimiterOptions { PermitLimit = 1, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 })
+                : RateLimitPartition.GetNoLimiter("anonymous"));
+        });
         return services;
     }
 
@@ -25,7 +45,7 @@ public static class LoopSetup
     {
         app.MapPost("/me/inbox/{id:int}/reply", async (int id, HttpContext http, IAntiforgery antiforgery, BallpassDbContext db, TimeProvider time) =>
         {
-            if (!await TokenValidAsync(antiforgery, http)) return Results.BadRequest();
+            if (!await antiforgery.IsValidAsync(http)) return Results.BadRequest();
             if (http.User.Identity?.IsAuthenticated != true) return Results.Redirect("/demo");
             if (!http.User.IsInRole("Athlete") || !int.TryParse(http.User.FindFirstValue("entity_id"), out var athleteId))
                 return Results.StatusCode(StatusCodes.Status403Forbidden);
@@ -53,7 +73,7 @@ public static class LoopSetup
         app.MapPost("/demo/switch", async (string? to, HttpContext http, IAntiforgery antiforgery, BallpassDbContext db, IOptions<DemoOptions> demo) =>
         {
             if (!demo.Value.Enabled) return Results.NotFound();
-            if (!await TokenValidAsync(antiforgery, http)) return Results.BadRequest();
+            if (!await antiforgery.IsValidAsync(http)) return Results.BadRequest();
             if (http.User.Identity?.IsAuthenticated != true) return Results.Redirect("/demo");
 
             ClaimsPrincipal principal;
@@ -85,13 +105,15 @@ public static class LoopSetup
         app.MapPost("/demo/reset", async (HttpContext http, IAntiforgery antiforgery, DemoDataSeeder seeder, IOptions<DemoOptions> demo) =>
         {
             if (!demo.Value.Enabled) return Results.NotFound();
-            if (!await TokenValidAsync(antiforgery, http)) return Results.BadRequest();
+            if (!await antiforgery.IsValidAsync(http)) return Results.BadRequest();
+            // Anyone could otherwise wipe the shared demo: a signed-in persona is required (and the limiter policy applies to it).
+            if (http.User.Identity?.IsAuthenticated != true) return Results.Redirect("/demo");
             await seeder.ResetAsync();
             await http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Results.Redirect("/?demo=reset");
             // The confirmation page (a routable component) lives on the same path and matches every HTTP method:
             // an explicit lower Order makes this POST endpoint win instead of throwing AmbiguousMatchException.
-        }).DisableAntiforgery().WithOrder(-1);
+        }).DisableAntiforgery().RequireRateLimiting(ResetPolicy).WithOrder(-1);
         return app;
     }
 
@@ -110,11 +132,5 @@ public static class LoopSetup
         return await db.Athletes.AsNoTracking().Where(a => a.IsDemo && a.Gender == gender)
             .OrderByDescending(a => db.Interests.Count(i => i.AthleteId == a.Id)).ThenByDescending(a => a.Stats.Count).ThenBy(a => a.Id)
             .FirstOrDefaultAsync();
-    }
-
-    private static async Task<bool> TokenValidAsync(IAntiforgery antiforgery, HttpContext http)
-    {
-        try { await antiforgery.ValidateRequestAsync(http); return true; }
-        catch (AntiforgeryValidationException) { return false; }
     }
 }

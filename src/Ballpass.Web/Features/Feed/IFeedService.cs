@@ -6,8 +6,8 @@ public interface IFeedService
 {
     Task<FeedPageResult> GetFeedAsync(FeedViewer viewer, FeedTab tab, string? before, CancellationToken ct = default);
 
-    /// <summary>Newest public posts for the home strip (read-only, no viewer state).</summary>
-    Task<IReadOnlyList<FeedItem>> GetPreviewAsync(int count, CancellationToken ct = default);
+    /// <summary>Newest public posts for the home strip (read-only), with the viewer's hide / block / report filters.</summary>
+    Task<IReadOnlyList<FeedItem>> GetPreviewAsync(FeedViewer viewer, int count, CancellationToken ct = default);
 
     Task<PostOutcome> CreateAsync(FeedViewer viewer, NewPost input, CancellationToken ct = default);
 

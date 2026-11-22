@@ -28,7 +28,8 @@ public static class FindSetup
                 sp.GetRequiredService<ClaudeParser>(),
                 sp.GetRequiredService<IOptionsMonitor<AiOptions>>(),
                 sp.GetRequiredService<IOptionsMonitor<AnthropicOptions>>(),
-                () => SessionKey(accessor.HttpContext));
+                () => SessionKey(accessor.HttpContext),
+                sp.GetService<ILogger<GuardedNlQueryParser>>());
         });
         return services;
     }

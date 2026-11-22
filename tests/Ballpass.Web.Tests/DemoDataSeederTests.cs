@@ -18,7 +18,7 @@ public class DemoDataSeederTests
         await using var db = new BallpassDbContext(options);
         await db.Database.EnsureDeletedAsync();
 
-        var seeder = new DemoDataSeeder(db);
+        var seeder = new DemoDataSeeder(db, TimeProvider.System);
         await seeder.ResetAsync();
         await seeder.ResetAsync();
 

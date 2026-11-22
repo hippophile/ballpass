@@ -1,11 +1,13 @@
 @page "/me/sent"
 @attribute [Authorize(Policy = "CoachOnly")]
 @using System.Globalization
+@using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Data
 @using Microsoft.EntityFrameworkCore
 @inject BallpassDbContext Db
 @inject TimeProvider Time
 @inject IStringLocalizer<LoopResource> T
+@inject IStringLocalizer<SharedResource> S
 
 <PageTitle>@T["Sent_Title"]</PageTitle>
 
@@ -89,15 +91,5 @@ else
     private static string Initials(Athlete a) => IsGreek ? $"{a.FirstName[0]}{a.LastName[0]}" : $"{a.FirstNameLatin[0]}{a.LastNameLatin[0]}";
 
     // Relative text, exact UTC time on hover/title, machine-readable datetime.
-    private RenderFragment Stamp(DateTimeOffset at) => @<time class="bp-loop-time" datetime="@at.UtcDateTime.ToString("o", CultureInfo.InvariantCulture)" title="@at.UtcDateTime.ToString("g", CultureInfo.CurrentCulture) UTC">@Relative(at)</time>;
-
-    private string Relative(DateTimeOffset at)
-    {
-        var age = Time.GetUtcNow() - at;
-        if (age < TimeSpan.FromMinutes(1)) return T["Time_Now"].Value;
-        if (age < TimeSpan.FromHours(1)) return T["Time_Minutes", (int)age.TotalMinutes].Value;
-        if (age < TimeSpan.FromDays(1)) return T["Time_Hours", (int)age.TotalHours].Value;
-        if (age < TimeSpan.FromDays(30)) return T["Time_Days", (int)age.TotalDays].Value;
-        return at.ToString("d MMM yyyy", CultureInfo.CurrentCulture);
-    }
+    private RenderFragment Stamp(DateTimeOffset at) => @<time class="bp-loop-time" datetime="@at.UtcDateTime.ToString("o", CultureInfo.InvariantCulture)" title="@at.UtcDateTime.ToString("g", CultureInfo.CurrentCulture) UTC">@RelativeTimeText.Format(S, at, Time.GetUtcNow())</time>;
 }

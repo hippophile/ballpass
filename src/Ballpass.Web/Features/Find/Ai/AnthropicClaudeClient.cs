@@ -24,7 +24,10 @@ public sealed class AnthropicClaudeClient(IOptionsMonitor<AnthropicOptions> key,
         if (string.IsNullOrWhiteSpace(apiKey)) throw new AiUnavailableException("no API key configured");
         if (client is null || clientKey != apiKey)
         {
-            client = new AnthropicClient { ApiKey = apiKey };
+            var baseUrl = key.CurrentValue.BaseUrl;
+            client = string.IsNullOrWhiteSpace(baseUrl)
+                ? new AnthropicClient { ApiKey = apiKey, MaxRetries = 0 }
+                : new AnthropicClient { ApiKey = apiKey, BaseUrl = baseUrl, MaxRetries = 0 };   // no SDK retries: one 500 = one request (a retry storm costs money and time)
             clientKey = apiKey;
         }
 
@@ -44,11 +47,11 @@ public sealed class AnthropicClaudeClient(IOptionsMonitor<AnthropicOptions> key,
         }
         catch (AnthropicRateLimitException e)
         {
-            throw new AiUnavailableException("rate or spend limit reached", e);
+            throw new AiUnavailableException("rate or spend limit reached", AiFallbackReason.HttpStatus, 429, e);
         }
         catch (AnthropicApiException e)
         {
-            throw new AiUnavailableException("API error", e);
+            throw new AiUnavailableException("API error", AiFallbackReason.HttpStatus, (int)e.StatusCode, e);
         }
     }
 }

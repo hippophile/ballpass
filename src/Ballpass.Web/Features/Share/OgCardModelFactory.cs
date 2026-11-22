@@ -28,7 +28,7 @@ public static class OgCardModelFactory
             $"{athlete.HeightCm} {ShareText.GreekShared("Profile_Cm")}",
             $"{currentYear - athlete.BirthYear} {ShareText.GreekShared("Profile_Years")}");
         var club = athlete.CurrentClub is null
-            ? ShareText.Greek("Card_NoClub")
+            ? ShareText.Greek("Card_NoClub") + (athlete.LookingForTeam ? " · " + ShareText.Greek("Card_Looking") : "")   // follows the profile flag; the hash (cache key) covers this line
             : athlete.CurrentClub.Name.Contains("(demo)", StringComparison.OrdinalIgnoreCase)   // demo club names already carry the tag
                 ? athlete.CurrentClub.Name
                 : string.Format(ShareText.El, ShareText.Greek("Card_ClubDemo"), athlete.CurrentClub.Name);

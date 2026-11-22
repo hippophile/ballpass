@@ -35,7 +35,11 @@ else
     <section class="bp-card bp-panel bp-ev-cmp" data-compare>
         <h2>@E["Compare_Heading"]</h2>
 
-        @if (Warn)
+        @if (a.Gender != b.Gender)
+        {
+            <p class="bp-ev-warning" role="note">⚠ @E["Compare_WarningGender", L[$"Gender_{a.Gender}"].Value, L[$"Gender_{b.Gender}"].Value]</p>
+        }
+        @if (CohortCalculator.GroupOf(a.Position) != CohortCalculator.GroupOf(b.Position))
         {
             <p class="bp-ev-warning" role="note">⚠ @E["Compare_Warning", L[$"Position_{a.Position}"].Value, L[$"Position_{b.Position}"].Value]</p>
         }
@@ -130,10 +134,10 @@ else
             var missing = ev?.Metrics.FirstOrDefault(x => x.Percentile is null);
             if (ev is null || missing is not null)
             {
-                <p class="bp-ev-note" data-athlete="@who">@FullName(ath): @E["Insufficient", missing?.N ?? 0] · @(missing?.Reason switch { InsufficientReason.TooFewGames => E["Insufficient_Games"].Value, InsufficientReason.TooFewMinutes => E["Insufficient_Minutes", EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture)].Value, _ => E["Insufficient_Peers"].Value })</p>
+                <p class="bp-ev-note" data-athlete="@who">@FullName(ath): @E["Insufficient", missing?.N ?? 0] · @(missing?.Reason switch { InsufficientReason.TooFewGames => E["Insufficient_Games"].Value, InsufficientReason.TooFewMinutes => E["Insufficient_Minutes", EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture)].Value, _ => E["Insufficient_Peers", EvOptions.Value.MinPeers].Value })</p>
             }
         }
-        <p class="bp-ev-note">@E["Thresholds_Note", EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture)]</p>
+        <p class="bp-ev-note">@E["Thresholds_Note", EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture), EvOptions.Value.MinPeers]</p>
     </section>
 
     <p><a href="/shortlist">← @L["Shortlist_Title"]</a></p>
@@ -185,8 +189,6 @@ else
             yield return ("b", b!, evB);
         }
     }
-
-    private bool Warn => a!.Gender != b!.Gender || CohortCalculator.GroupOf(a.Position) != CohortCalculator.GroupOf(b.Position);
 
     private static string FullName(Athlete x) => IsGreek ? $"{x.FirstName} {x.LastName}" : $"{x.FirstNameLatin} {x.LastNameLatin}";
 

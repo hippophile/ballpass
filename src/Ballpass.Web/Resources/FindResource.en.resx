@@ -33,6 +33,7 @@
   <data name="Unsupported_nationality" xml:space="preserve"><value>Nationality</value></data>
   <data name="Unsupported_stats" xml:space="preserve"><value>Statistics (see “Priority” in Match)</value></data>
   <data name="Unsupported_minors" xml:space="preserve"><value>Adults only: age set to 18+</value></data>
+  <data name="Unsupported_other" xml:space="preserve"><value>Other criterion</value></data>
   <data name="Match_Title" xml:space="preserve"><value>Player match</value></data>
   <data name="Match_Intro" xml:space="preserve"><value>Say what you need and see players ranked by fit, with a reason for each criterion.</value></data>
   <data name="Need_Heading" xml:space="preserve"><value>What are you looking for?</value></data>
@@ -57,12 +58,14 @@
   <data name="Results_Heading" xml:space="preserve"><value>Results</value></data>
   <data name="Results_Count" xml:space="preserve"><value>{0} results</value></data>
   <data name="Results_Hidden" xml:space="preserve"><value>{0} hidden by filters</value></data>
+  <data name="Results_Count_One" xml:space="preserve"><value>{0} result</value></data>
+  <data name="Results_Hidden_One" xml:space="preserve"><value>{0} hidden by filters</value></data>
   <data name="Results_Showing" xml:space="preserve"><value>Showing the top {0}.</value></data>
   <data name="Results_None" xml:space="preserve"><value>No player passes the filters.</value></data>
   <data name="Results_Label" xml:space="preserve"><value>Computed on fictional demo data with default weights</value></data>
   <data name="Results_Unranked" xml:space="preserve"><value>No scoring criterion was requested (height, age, region, league or stat): the list is not ranked by fit.</value></data>
   <data name="Weights_Heading" xml:space="preserve"><value>How it is calculated</value></data>
-  <data name="Weights_Intro" xml:space="preserve"><value>The percentage is a weighted average of the criteria you asked for, with default weights (estimates, not measured). If a value is missing it is computed on the rest and the player is tagged “partial data”. Stats are per game; under {0} games counts as missing. It is not an assessment of ability.</value></data>
+  <data name="Weights_Intro" xml:space="preserve"><value>The percentage is a weighted average of the criteria you asked for, with default weights (estimates, not measured). If a value is missing it is computed on the rest and the player is tagged “partial data”. The stat is per 40 minutes and compared with the demo sample of the same gender and position group, as on the profile; it counts as missing with under {0} games, under {1} minutes per game or fewer than {2} peers. It is not an assessment of ability.</value></data>
   <data name="Weight_Height" xml:space="preserve"><value>Height</value></data>
   <data name="Weight_Stat" xml:space="preserve"><value>Stat</value></data>
   <data name="Weight_Region" xml:space="preserve"><value>Region</value></data>
@@ -75,7 +78,7 @@
   <data name="Fit_Unranked" xml:space="preserve"><value>Not scored</value></data>
   <data name="Partial_Tag" xml:space="preserve"><value>Partial data</value></data>
   <data name="Partial_Missing" xml:space="preserve"><value>Missing: {0}</value></data>
-  <data name="Missing_Stat" xml:space="preserve"><value>stat (under {0} games or none)</value></data>
+  <data name="Missing_Stat" xml:space="preserve"><value>stat (not enough data to compare with the sample)</value></data>
   <data name="Missing_League" xml:space="preserve"><value>league (no club)</value></data>
   <data name="Missing_Height" xml:space="preserve"><value>height</value></data>
   <data name="Missing_Age" xml:space="preserve"><value>age</value></data>
@@ -87,16 +90,14 @@
   <data name="Reason_Region_Met" xml:space="preserve"><value>Region: {0}</value></data>
   <data name="Reason_League" xml:space="preserve"><value>League: {0} (target {1})</value></data>
   <data name="Reason_League_Met" xml:space="preserve"><value>League: {0}</value></data>
-  <data name="Reason_Stat_Top" xml:space="preserve"><value>{0} {1}/game — top {2}% of {3} (demo)</value></data>
-  <data name="Reason_Stat_Plain" xml:space="preserve"><value>{0} {1}/game — below the top 50% of {2} (demo)</value></data>
+  <data name="Reason_Stat_Top" xml:space="preserve"><value>{0} {1}/40 min — top {2}% of {3} (demo sample)</value></data>
+  <data name="Reason_Stat_Plain" xml:space="preserve"><value>{0} {1}/40 min — below the top 50% of {2} (demo sample)</value></data>
   <data name="Unit_Rebounding" xml:space="preserve"><value>reb.</value></data>
   <data name="Unit_Scoring" xml:space="preserve"><value>pts</value></data>
   <data name="Unit_Playmaking" xml:space="preserve"><value>ast</value></data>
-  <data name="Cohort_PG" xml:space="preserve"><value>point guards</value></data>
-  <data name="Cohort_SG" xml:space="preserve"><value>shooting guards</value></data>
-  <data name="Cohort_SF" xml:space="preserve"><value>small forwards</value></data>
-  <data name="Cohort_PF" xml:space="preserve"><value>power forwards</value></data>
-  <data name="Cohort_C" xml:space="preserve"><value>centers</value></data>
+  <data name="Cohort_Guard" xml:space="preserve"><value>guards</value></data>
+  <data name="Cohort_Forward" xml:space="preserve"><value>forwards</value></data>
+  <data name="Cohort_Center" xml:space="preserve"><value>centers</value></data>
   <data name="Mark_Met" xml:space="preserve"><value>matches</value></data>
   <data name="Mark_Partial" xml:space="preserve"><value>close</value></data>
   <data name="Mark_Missed" xml:space="preserve"><value>does not match</value></data>

@@ -14,17 +14,11 @@ public class FeedService(BallpassDbContext db, TimeProvider time, IOptions<FeedO
 
     public async Task<FeedPageResult> GetFeedAsync(FeedViewer viewer, FeedTab tab, string? before, CancellationToken ct = default)
     {
-        var q = db.Set<Post>().AsNoTracking().Where(p => !p.IsHidden);
-        if (viewer.Key is { } key)
+        var q = await VisiblePostsAsync(viewer, ct);
+        if (viewer.Key is { } key && tab == FeedTab.Following)
         {
-            var hidden = await db.Set<PostHide>().Where(h => h.ActorKey == key).Select(h => h.PostId).ToListAsync(ct);
-            var blocked = await BlockedKeysAsync(key, ct);
-            q = q.Where(p => !hidden.Contains(p.Id) && !blocked.Contains(p.AuthorKey));
-            if (tab == FeedTab.Following)
-            {
-                var followed = await db.Set<Follow>().Where(f => f.FollowerKey == key).Select(f => f.TargetKey).ToListAsync(ct);
-                q = q.Where(p => followed.Contains(p.AuthorKey));
-            }
+            var followed = await db.Set<Follow>().Where(f => f.FollowerKey == key).Select(f => f.TargetKey).ToListAsync(ct);
+            q = q.Where(p => followed.Contains(p.AuthorKey));
         }
 
         var shown = 0;
@@ -42,11 +36,21 @@ public class FeedService(BallpassDbContext db, TimeProvider time, IOptions<FeedO
         return new FeedPageResult(items, next);
     }
 
-    public async Task<IReadOnlyList<FeedItem>> GetPreviewAsync(int count, CancellationToken ct = default)
+    public async Task<IReadOnlyList<FeedItem>> GetPreviewAsync(FeedViewer viewer, int count, CancellationToken ct = default)
     {
-        var rows = await db.Set<Post>().AsNoTracking().Where(p => !p.IsHidden)
+        var rows = await (await VisiblePostsAsync(viewer, ct))
             .OrderByDescending(p => p.CreatedAt).ThenByDescending(p => p.Id).Take(Math.Clamp(count, 1, 10)).ToListAsync(ct);
-        return await HydrateAsync(rows, FeedViewer.Anonymous, ct);
+        return await HydrateAsync(rows, FeedViewer.Anonymous, ct);   // the strip is read-only: no viewer state on the cards
+    }
+
+    /// <summary>Posts not hidden for everyone and, for a signed-in viewer, not hidden by them and not by an author they blocked or who blocked them. One rule for /feed and the home strip.</summary>
+    private async Task<IQueryable<Post>> VisiblePostsAsync(FeedViewer viewer, CancellationToken ct)
+    {
+        var q = db.Set<Post>().AsNoTracking().Where(p => !p.IsHidden);
+        if (viewer.Key is not { } key) return q;
+        var hidden = await db.Set<PostHide>().Where(h => h.ActorKey == key).Select(h => h.PostId).ToListAsync(ct);
+        var blocked = await BlockedKeysAsync(key, ct);
+        return q.Where(p => !hidden.Contains(p.Id) && !blocked.Contains(p.AuthorKey));
     }
 
     private static bool TryParseCursor(string? cursor, out DateTimeOffset sortAt, out int id, out int shown)
@@ -240,7 +244,7 @@ public class FeedService(BallpassDbContext db, TimeProvider time, IOptions<FeedO
             return true;
         }
         if (!await db.Set<Kudos>().AnyAsync(k => k.PostId == postId && k.ActorKey == key, ct))
-            await TryAddAsync(new Kudos { PostId = postId, ActorKey = key, CreatedAt = time.GetUtcNow() }, ct);
+            await TryAddAsync(new Kudos { PostId = postId, ActorKey = key, CreatedAt = time.GetUtcNow(), IsDemo = true }, ct);
         return true;
     }
 
@@ -255,7 +259,7 @@ public class FeedService(BallpassDbContext db, TimeProvider time, IOptions<FeedO
         if (reason is null || !Safeguards.ReportReasons.Contains(reason)) return ModOutcome.Invalid;
 
         if (!await db.Set<Report>().AnyAsync(r => r.PostId == postId && r.ReporterKey == key, ct))
-            await TryAddAsync(new Report { PostId = postId, ReporterKey = key, Reason = reason, CreatedAt = time.GetUtcNow() }, ct);
+            await TryAddAsync(new Report { PostId = postId, ReporterKey = key, Reason = reason, CreatedAt = time.GetUtcNow(), IsDemo = true }, ct);
         await HideForAsync(postId, key, ct); // hidden for the reporter at once; the reported author is never notified
 
         var reporters = await db.Set<Report>().Where(r => r.PostId == postId).Select(r => r.ReporterKey).Distinct().CountAsync(ct);
@@ -281,7 +285,7 @@ public class FeedService(BallpassDbContext db, TimeProvider time, IOptions<FeedO
         if (target == key) return ModOutcome.Forbidden;
 
         if (!await db.Set<Block>().AnyAsync(b => b.BlockerKey == key && b.BlockedKey == target, ct))
-            await TryAddAsync(new Block { BlockerKey = key, BlockedKey = target, CreatedAt = time.GetUtcNow() }, ct);
+            await TryAddAsync(new Block { BlockerKey = key, BlockedKey = target, CreatedAt = time.GetUtcNow(), IsDemo = true }, ct);
         await db.Set<Follow>().Where(f => (f.FollowerKey == key && f.TargetKey == target) || (f.FollowerKey == target && f.TargetKey == key)).ExecuteDeleteAsync(ct);
         return ModOutcome.Ok;
     }
@@ -322,7 +326,7 @@ public class FollowService(BallpassDbContext db, TimeProvider time) : IFollowSer
             return false;
         if (await db.Set<Follow>().AnyAsync(f => f.FollowerKey == followerKey && f.TargetKey == targetKey, ct)) return true;
 
-        db.Add(new Follow { FollowerKey = followerKey, TargetKey = targetKey, CreatedAt = time.GetUtcNow() });
+        db.Add(new Follow { FollowerKey = followerKey, TargetKey = targetKey, CreatedAt = time.GetUtcNow(), IsDemo = true });
         try { await db.SaveChangesAsync(ct); }
         catch (DbUpdateException e) when (e.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
         {

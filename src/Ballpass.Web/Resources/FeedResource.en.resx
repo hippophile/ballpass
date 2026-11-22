@@ -96,10 +96,6 @@
   <data name="Reason_minor" xml:space="preserve"><value>Involves a minor</value></data>
   <data name="Reason_other" xml:space="preserve"><value>Other</value></data>
   <data name="Block_Hint" xml:space="preserve"><value>You will not see each other in the feed.</value></data>
-  <data name="Time_Now" xml:space="preserve"><value>just now</value></data>
-  <data name="Time_Minutes" xml:space="preserve"><value>{0} min ago</value></data>
-  <data name="Time_Hours" xml:space="preserve"><value>{0} h ago</value></data>
-  <data name="Time_Days" xml:space="preserve"><value>{0} d ago</value></data>
   <data name="Preview_Title" xml:space="preserve"><value>What's happening now</value></data>
   <data name="Preview_Note" xml:space="preserve"><value>Sample activity with fictional people.</value></data>
   <data name="Preview_More" xml:space="preserve"><value>See the whole feed →</value></data>

@@ -9,26 +9,26 @@
   <data name="Page_Intro" xml:space="preserve"><value>Ενημερώσεις από αθλητές, προπονητές και συλλόγους.</value></data>
   <data name="Page_DemoNote" xml:space="preserve"><value>Όλες οι αναρτήσεις είναι δείγματα: φανταστικά πρόσωπα, δείγμα δραστηριότητας (seeded activity).</value></data>
   <data name="Tab_Aria" xml:space="preserve"><value>Καρτέλες ροής</value></data>
-  <data name="Tab_ForYou" xml:space="preserve"><value>Για εσένα</value></data>
-  <data name="Tab_Following" xml:space="preserve"><value>Ακολουθείς</value></data>
+  <data name="Tab_ForYou" xml:space="preserve"><value>Για εσάς</value></data>
+  <data name="Tab_Following" xml:space="preserve"><value>Ακολουθείτε</value></data>
   <data name="More" xml:space="preserve"><value>Περισσότερα</value></data>
   <data name="BackToNewest" xml:space="preserve"><value>Πίσω στα νεότερα</value></data>
   <data name="Empty_ForYou" xml:space="preserve"><value>Δεν υπάρχουν αναρτήσεις ακόμα.</value></data>
-  <data name="Empty_Following" xml:space="preserve"><value>Ακολούθησε 3 αθλητές ή πρόσθεσε αθλητές στη λίστα σου για να γεμίσει η ροή σου.</value></data>
-  <data name="Empty_FollowingCta" xml:space="preserve"><value>Δες τη ροή Για εσένα</value></data>
-  <data name="Following_SignIn" xml:space="preserve"><value>Συνδέσου με ένα δοκιμαστικό προφίλ για να δεις όσους ακολουθείς.</value></data>
+  <data name="Empty_Following" xml:space="preserve"><value>Ακολουθήστε 3 αθλητές ή προσθέστε αθλητές στη λίστα σας για να γεμίσει η ροή σας.</value></data>
+  <data name="Empty_FollowingCta" xml:space="preserve"><value>Δείτε τη ροή Για εσάς</value></data>
+  <data name="Following_SignIn" xml:space="preserve"><value>Συνδεθείτε με ένα δοκιμαστικό προφίλ για να δείτε όσους ακολουθείτε.</value></data>
   <data name="Following_SignInCta" xml:space="preserve"><value>Επιλογή προφίλ</value></data>
-  <data name="Unavailable" xml:space="preserve"><value>Η ροή δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκίμασε ξανά σε λίγο.</value></data>
+  <data name="Unavailable" xml:space="preserve"><value>Η ροή δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκιμάστε ξανά σε λίγο.</value></data>
   <data name="Status_posted" xml:space="preserve"><value>Η ανάρτηση δημοσιεύθηκε.</value></data>
   <data name="Status_lft-off" xml:space="preserve"><value>Η ένδειξη «Ψάχνω ομάδα» απενεργοποιήθηκε.</value></data>
-  <data name="Status_rate" xml:space="preserve"><value>Μία ανάρτηση ανά λεπτό. Περίμενε λίγο και δοκίμασε ξανά.</value></data>
+  <data name="Status_rate" xml:space="preserve"><value>Μία ανάρτηση ανά λεπτό. Περιμένετε λίγο και δοκιμάστε ξανά.</value></data>
   <data name="Status_too-long" xml:space="preserve"><value>Το κείμενο είναι πολύ μεγάλο.</value></data>
-  <data name="Status_invalid" xml:space="preserve"><value>Συμπλήρωσε τα απαιτούμενα πεδία (και ημερομηνία που δεν έχει περάσει).</value></data>
-  <data name="Status_reported" xml:space="preserve"><value>Ευχαριστούμε. Η ανάρτηση αναφέρθηκε και δεν θα τη βλέπεις πια.</value></data>
+  <data name="Status_invalid" xml:space="preserve"><value>Συμπληρώστε τα απαιτούμενα πεδία (και ημερομηνία που δεν έχει περάσει).</value></data>
+  <data name="Status_reported" xml:space="preserve"><value>Ευχαριστούμε. Η ανάρτηση αναφέρθηκε και δεν θα τη βλέπετε πια.</value></data>
   <data name="Status_hidden" xml:space="preserve"><value>Η ανάρτηση κρύφτηκε.</value></data>
   <data name="Status_blocked" xml:space="preserve"><value>Ο χρήστης αποκλείστηκε. Δεν θα βλέπετε ο ένας τον άλλον στη ροή.</value></data>
-  <data name="Status_following" xml:space="preserve"><value>Ακολουθείς πλέον.</value></data>
-  <data name="Status_unfollowed" xml:space="preserve"><value>Δεν ακολουθείς πια.</value></data>
+  <data name="Status_following" xml:space="preserve"><value>Ακολουθείτε πλέον.</value></data>
+  <data name="Status_unfollowed" xml:space="preserve"><value>Δεν ακολουθείτε πια.</value></data>
   <data name="Status_follow-refused" xml:space="preserve"><value>Δεν ήταν δυνατή η ακολούθηση.</value></data>
   <data name="Compose_Title" xml:space="preserve"><value>Νέα ανάρτηση</value></data>
   <data name="Compose_Aria" xml:space="preserve"><value>Σύνταξη ανάρτησης</value></data>
@@ -44,7 +44,7 @@
   <data name="Compose_HighlightTitle" xml:space="preserve"><value>Τίτλος στιγμιοτύπου</value></data>
   <data name="Compose_HighlightHint" xml:space="preserve"><value>Δημιουργείται γραφικό δείγματος. Δεν ανεβαίνουν φωτογραφίες ή βίντεο.</value></data>
   <data name="Compose_Tryout" xml:space="preserve"><value>Προσκλητήριο</value></data>
-  <data name="Compose_TryoutHint" xml:space="preserve"><value>Για τον σύλλογό σου.</value></data>
+  <data name="Compose_TryoutHint" xml:space="preserve"><value>Για τον σύλλογό σας.</value></data>
   <data name="Field_Position" xml:space="preserve"><value>Θέση</value></data>
   <data name="Field_Region" xml:space="preserve"><value>Περιοχή</value></data>
   <data name="Field_Available" xml:space="preserve"><value>Διαθεσιμότητα από</value></data>
@@ -75,14 +75,14 @@
   <data name="Badge_FirstSeasonLogged" xml:space="preserve"><value>Πρώτη περίοδος καταγεγραμμένη</value></data>
   <data name="Badge_Note" xml:space="preserve"><value>Αυτόματη διάκριση (δείγμα)</value></data>
   <data name="Kudos" xml:space="preserve"><value>Μπράβο</value></data>
-  <data name="Kudos_On" xml:space="preserve"><value>Δώσε μπράβο</value></data>
+  <data name="Kudos_On" xml:space="preserve"><value>Δώστε μπράβο</value></data>
   <data name="Kudos_Off" xml:space="preserve"><value>Αφαίρεση μπράβο</value></data>
   <data name="Kudos_Count" xml:space="preserve"><value>Μπράβο: {0}</value></data>
-  <data name="Follow" xml:space="preserve"><value>Ακολούθησε</value></data>
-  <data name="Unfollow" xml:space="preserve"><value>Ακολουθείς</value></data>
-  <data name="Unfollow_Aria" xml:space="preserve"><value>Σταμάτα να ακολουθείς</value></data>
+  <data name="Follow" xml:space="preserve"><value>Ακολουθήστε</value></data>
+  <data name="Unfollow" xml:space="preserve"><value>Ακολουθείτε</value></data>
+  <data name="Unfollow_Aria" xml:space="preserve"><value>Σταματήστε να ακολουθείτε</value></data>
   <data name="Interest" xml:space="preserve"><value>Εκδήλωση ενδιαφέροντος</value></data>
-  <data name="Interest_Sent" xml:space="preserve"><value>✓ Έχεις ήδη εκδηλώσει ενδιαφέρον</value></data>
+  <data name="Interest_Sent" xml:space="preserve"><value>✓ Έχετε ήδη εκδηλώσει ενδιαφέρον</value></data>
   <data name="ProfileLink" xml:space="preserve"><value>Προφίλ →</value></data>
   <data name="Menu_Label" xml:space="preserve"><value>Περισσότερες ενέργειες</value></data>
   <data name="Menu_Report" xml:space="preserve"><value>Αναφορά</value></data>
@@ -96,11 +96,7 @@
   <data name="Reason_minor" xml:space="preserve"><value>Αφορά ανήλικο</value></data>
   <data name="Reason_other" xml:space="preserve"><value>Άλλος λόγος</value></data>
   <data name="Block_Hint" xml:space="preserve"><value>Δεν θα βλέπετε ο ένας τον άλλον στη ροή.</value></data>
-  <data name="Time_Now" xml:space="preserve"><value>μόλις τώρα</value></data>
-  <data name="Time_Minutes" xml:space="preserve"><value>πριν από {0} λ.</value></data>
-  <data name="Time_Hours" xml:space="preserve"><value>πριν από {0} ώ.</value></data>
-  <data name="Time_Days" xml:space="preserve"><value>πριν από {0} ημ.</value></data>
   <data name="Preview_Title" xml:space="preserve"><value>Τι γίνεται τώρα</value></data>
   <data name="Preview_Note" xml:space="preserve"><value>Δείγματα δραστηριότητας με φανταστικά πρόσωπα.</value></data>
-  <data name="Preview_More" xml:space="preserve"><value>Δες όλη τη ροή →</value></data>
+  <data name="Preview_More" xml:space="preserve"><value>Δείτε όλη τη ροή →</value></data>
 </root>

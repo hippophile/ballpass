@@ -2,6 +2,7 @@ using Ballpass.Web;
 using Ballpass.Web.Components;
 using Ballpass.Web.Data;
 using Ballpass.Web.Demo;
+using Ballpass.Web.Features.Loop;
 using Ballpass.Web.Features.Share;
 using Ballpass.Web.Features.Find;
 using System.Globalization;
@@ -133,6 +134,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();   // policies are registered by AddLoop
 app.UseAntiforgery();
 
 app.MapStaticAssets();
@@ -149,51 +151,26 @@ app.MapGet("/culture/set", (string? culture, string? redirectUri, HttpContext ht
     return Results.Redirect(LocalRedirect.IsSafe(redirectUri) ? redirectUri! : "/");
 });
 
-// Explicit antiforgery check (single source): invalid/missing token -> 400, never a 500.
-static async Task<bool> TokenValidAsync(IAntiforgery antiforgery, HttpContext http)
-{
-    try { await antiforgery.ValidateRequestAsync(http); return true; }
-    catch (AntiforgeryValidationException) { return false; }
-}
-
 static bool IsUniqueViolation(DbUpdateException e) => e.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation };
 
 app.MapPost("/demo/login", async ([FromForm] string? personaType, [FromForm] int personaId, [FromForm] string? returnUrl,
     BallpassDbContext db, HttpContext http, IAntiforgery antiforgery) =>
 {
-    if (!await TokenValidAsync(antiforgery, http)) return Results.BadRequest();
+    if (!await antiforgery.IsValidAsync(http)) return Results.BadRequest();
     List<Claim> claims;
     string home;
     if (personaType == "coach")
     {
         var coach = await db.Coaches.AsNoTracking().FirstOrDefaultAsync(c => c.Id == personaId && c.IsDemo);
         if (coach is null) return Results.BadRequest();
-        claims =
-        [
-            new(ClaimTypes.NameIdentifier, $"coach:{coach.Id}"),
-            new(ClaimTypes.Name, $"{coach.FirstName} {coach.LastName}"),
-            new("name_latin", $"{coach.FirstNameLatin} {coach.LastNameLatin}"),
-            new(ClaimTypes.Role, "Coach"),
-            new("gender", GreekNames.IsFemaleFirstName(coach.FirstName) ? "F" : "M"),
-            new("club_id", coach.ClubId.ToString()),
-            new("entity_id", coach.Id.ToString()),
-        ];
+        claims = PersonaClaims.ForCoach(coach);
         home = "/search";
     }
     else if (personaType == "athlete")
     {
         var athlete = await db.Athletes.AsNoTracking().FirstOrDefaultAsync(a => a.Id == personaId && a.IsDemo);
         if (athlete is null) return Results.BadRequest();
-        claims =
-        [
-            new(ClaimTypes.NameIdentifier, $"athlete:{athlete.Id}"),
-            new(ClaimTypes.Name, $"{athlete.FirstName} {athlete.LastName}"),
-            new("name_latin", $"{athlete.FirstNameLatin} {athlete.LastNameLatin}"),
-            new(ClaimTypes.Role, "Athlete"),
-            new("gender", athlete.Gender == Gender.Female ? "F" : "M"),
-            new("slug", athlete.Slug),
-            new("entity_id", athlete.Id.ToString()),
-        ];
+        claims = PersonaClaims.ForAthlete(athlete);
         home = $"/p/{athlete.Slug}";
     }
     else return Results.BadRequest();
@@ -205,7 +182,7 @@ app.MapPost("/demo/login", async ([FromForm] string? personaType, [FromForm] int
 // Coach actions on a profile. Role is enforced here (plain 403), not only by hiding the buttons.
 app.MapPost("/p/{slug}/interest", async (string slug, [FromForm] string? note, BallpassDbContext db, HttpContext http, TimeProvider time, IAntiforgery antiforgery) =>
 {
-    if (!await TokenValidAsync(antiforgery, http)) return Results.BadRequest();
+    if (!await antiforgery.IsValidAsync(http)) return Results.BadRequest();
     if (!http.User.IsInRole("Coach") || !int.TryParse(http.User.FindFirstValue("entity_id"), out var coachId))
         return Results.StatusCode(StatusCodes.Status403Forbidden);
     var athlete = await db.Athletes.AsNoTracking().FirstOrDefaultAsync(a => a.Slug == slug && a.IsDemo);
@@ -233,7 +210,7 @@ app.MapPost("/p/{slug}/interest", async (string slug, [FromForm] string? note, B
 }).DisableAntiforgery();
 app.MapPost("/p/{slug}/shortlist", async (string slug, BallpassDbContext db, HttpContext http, TimeProvider time, IAntiforgery antiforgery) =>
 {
-    if (!await TokenValidAsync(antiforgery, http)) return Results.BadRequest();
+    if (!await antiforgery.IsValidAsync(http)) return Results.BadRequest();
     if (!http.User.IsInRole("Coach") || !int.TryParse(http.User.FindFirstValue("entity_id"), out var coachId))
         return Results.StatusCode(StatusCodes.Status403Forbidden);
     var athlete = await db.Athletes.AsNoTracking().FirstOrDefaultAsync(a => a.Slug == slug && a.IsDemo);
@@ -262,7 +239,7 @@ app.MapPost("/p/{slug}/shortlist", async (string slug, BallpassDbContext db, Htt
 });
 app.MapPost("/demo/logout", async (HttpContext http, IAntiforgery antiforgery) =>
 {
-    if (!await TokenValidAsync(antiforgery, http)) return Results.BadRequest();
+    if (!await antiforgery.IsValidAsync(http)) return Results.BadRequest();
     await http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     return Results.Redirect("/");
 });

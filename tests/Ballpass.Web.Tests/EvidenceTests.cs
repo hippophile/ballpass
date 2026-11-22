@@ -101,15 +101,16 @@ public class EvidenceTests(BallpassAppFactory app)
     }
 
     [Fact]
-    public void Nineteen_peers_give_no_fill_and_report_n()
+    public void One_peer_below_the_minimum_gives_no_fill_and_reports_n()
     {
-        var result = Eval(Line("2025-26", points: 15), Cohort(19));
+        var justBelow = CohortCalculator.DefaultMinPeers - 1;
+        var result = Eval(Line("2025-26", points: 15), Cohort(justBelow));
 
         Assert.All(result.Metrics, m =>
         {
             Assert.Null(m.Percentile);
             Assert.Equal(InsufficientReason.TooFewPeers, m.Reason);
-            Assert.Equal(19, m.N);
+            Assert.Equal(justBelow, m.N);
         });
     }
 
@@ -494,8 +495,9 @@ public class EvidenceTests(BallpassAppFactory app)
         var maleCenter = Data.Athletes.First(a => a.Gender == Gender.Male && a.Position == Position.C && a.Stats.Count > 0);
         var (peers, _) = Expected(maleCenter, EvidenceMetric.Points, false);
         Assert.True(peers < 20, "seed assumption: fewer than 20 male centers");
+        using var strict = app.WithWebHostBuilder(b => b.UseSetting("Evidence:MinPeers", "20")); // threshold is config
 
-        var (_, html) = await Get(app.Client(), $"/p/{maleCenter.Slug}");
+        var (_, html) = await Get(strict.CreateClient(new Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryClientOptions { AllowAutoRedirect = false }), $"/p/{maleCenter.Slug}");
 
         var evidence = Section(html);
         Assert.DoesNotContain("bp-ev-fill", evidence);
@@ -614,7 +616,8 @@ public class EvidenceTests(BallpassAppFactory app)
     public async Task Cohort_rank_is_null_for_a_too_small_cohort_or_unknown_athlete()
     {
         var maleCenter = Data.Athletes.First(a => a.Gender == Gender.Male && a.Position == Position.C && a.Stats.Count > 0);
-        using var scope = app.Services.CreateScope();
+        using var strict = app.WithWebHostBuilder(b => b.UseSetting("Evidence:MinPeers", "20")); // threshold is config
+        using var scope = strict.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<BallpassDbContext>();
         var id = db.Athletes.Where(x => x.Slug == maleCenter.Slug).Select(x => x.Id).Single();
         var rank = scope.ServiceProvider.GetRequiredService<ICohortRank>();
@@ -689,6 +692,20 @@ public class EvidenceTests(BallpassAppFactory app)
         Assert.Matches("<rect[^>]*data-marker=\"square\"", html);
         Assert.Matches("class=\"bp-ev-cmp-fill\"[^>]*data-athlete=\"b\"[^>]*stroke-dasharray=\"[\\d. ]+\"", html);
         Assert.DoesNotMatch("class=\"bp-ev-cmp-fill\"[^>]*data-athlete=\"a\"[^>]*stroke-dasharray", html);
+    }
+
+    [Fact]
+    public async Task Compare_warns_when_the_genders_differ()
+    {
+        var woman = Female(Position.PG);
+        var man = Data.Athletes.First(a => a.Gender == Gender.Male && a.Position == Position.PG && a.Stats.Count > 0);
+
+        var html = await CompareHtml(woman, man);
+
+        var warning = Regex.Match(html, "<p class=\"bp-ev-warning\"[^>]*>(.*?)</p>", RegexOptions.Singleline).Groups[1].Value;
+        Assert.Contains("φύλο", warning);
+        Assert.Contains("Γυναίκες", warning);   // names both genders (Greek labels)
+        Assert.Contains("Άνδρες", warning);
     }
 
     [Fact]

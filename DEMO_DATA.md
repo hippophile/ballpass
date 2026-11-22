@@ -9,13 +9,33 @@ All athletes, coaches and clubs in the demo database are **fictional**. They are
 | Clubs | 20 (12 women, 8 men) |
 | Coaches | 30 (20 head, 10 assistant) |
 | Seasons / stat lines | 1-3 per athlete (2023-24 to 2025-26) |
+| Interests | 40 (coach to athlete), 12 seen and 6 replied (4 accepted, 2 declined) |
+| Shortlist entries | 74 |
+| Feed posts | 40 by 25 authors (18 athletes, 5 coaches, 2 clubs) |
+| Kudos | 45 on 25 of the posts (at most 5 on one post) |
+| Follows | 128 |
 
 ## Rules
-- **`IsDemo` flag**: every club, coach and athlete row has `IsDemo = true`. Reset deletes only flagged rows.
+- **`IsDemo` flag**: every club, coach, athlete, interest, shortlist, post, kudos, follow, block and report row has `IsDemo = true`
+  (rows created while using the demo too: the whole database is demo data). Reset deletes the flagged coach, athlete and club rows and
+  everything that belongs to them, and clears the feed tables.
 - **"(demo)" clubs**: every club name ends with ` (demo)` and uses an invented nickname, not a real club name.
 - **No minors**: birth years 1992–2007, so every athlete is 18 or older on every day of 2026 (at most 34).
 - **No videos**: `VideoUrl` is always empty.
 - **Bios** are generic Greek text; they mention no real clubs or people.
+
+## Feed, kudos and follows
+Seeded by `src/Ballpass.Web/Demo/FeedSeeder.cs` from the same seed, relative to the reset time (so "2 days ago" stays true after every reset).
+- **Posts (40):** 8 looking-for-team, 6 tryout calls (4 by head coaches, 2 by clubs through their head coach), 10 stat updates and 4 badges
+  (both generated from the athlete's own latest line, marked as automatic), 6 highlights (a generated graphic, never a photo or video), 6 free-text.
+  6 are from the last 24 hours, 14 from 2-7 days ago, 20 from 8-30 days ago; none is newer than 30 minutes (the posting cooldown).
+- **Text:** invented Greek sentences, no real club, person or link. Links typed by users are removed by the composer.
+- **Kudos (45):** given by head coaches and the athlete authors; never on the giver's own post.
+- **Follows (128):** every shortlist entry is a coach following that athlete; every athlete author follows 3 other authors.
+- **Interest lifecycle (Loop):** about 30% of the interests have a `SeenAt` (12 of 40) and about 15% a reply (6 of 40, mostly accepted),
+  all strictly after the interest was sent and never later than the reset time. Coaches see the steps on `/me/sent`, athletes answer in `/me/inbox`.
+  The contact shown after an accepted reply is a fictional `*.demo.invalid` address.
+- **Reset time:** the seeder uses the injected `TimeProvider`, so a test can fix the clock.
 
 ## Stat source labels
 Each stat line carries a `Source` (trust label): `SelfReported` (about 60%), `CoachConfirmed` (about 25%),
@@ -28,6 +48,8 @@ label would look like. Stats are plausible, not real distributions.
 make reset
 ```
 Applies migrations, deletes all demo rows and inserts the generated set in one transaction. Safe to run repeatedly.
+In the running app the same reset is `POST /demo/reset` (confirmation page `/demo/reset`): it needs `Demo:Enabled=true`
+(on in `appsettings.Development.json`, off in `appsettings.json`), a signed-in demo persona, and allows one reset per minute per persona.
 `make setup` runs it at the end. Normal app startup does not migrate or seed.
 
 ## Caveat

@@ -16,10 +16,6 @@
   <data name="Step_Pending" xml:space="preserve"><value>waiting</value></data>
   <data name="Reply_Accepted" xml:space="preserve"><value>Accepted</value></data>
   <data name="Reply_Declined" xml:space="preserve"><value>Declined</value></data>
-  <data name="Time_Now" xml:space="preserve"><value>just now</value></data>
-  <data name="Time_Minutes" xml:space="preserve"><value>{0} min ago</value></data>
-  <data name="Time_Hours" xml:space="preserve"><value>{0} h ago</value></data>
-  <data name="Time_Days" xml:space="preserve"><value>{0} d ago</value></data>
   <data name="Inbox_New" xml:space="preserve"><value>new</value></data>
   <data name="Inbox_Accept" xml:space="preserve"><value>Accept</value></data>
   <data name="Inbox_Decline" xml:space="preserve"><value>Decline</value></data>

@@ -7,7 +7,7 @@ context: |
   MVP items (every scenario must trace to one): M0 skeleton, M1 athlete profile, M2 coach search,
   M3 express interest, M4 shortlist, M5 demo login, M6 Greek/English.
   IN SCOPE since 2026-11-21 (founder decision: "LinkedIn for athletes", "one very good MVP, not multiple"): feed with
-  structured + free-text posts, one reaction type, comments with safeguards (adults only, report button, no DMs),
+  structured + free-text posts, one reaction type, safeguards (adults only, report button, no comments, no DMs),
   follows, ONE polished dark theme (no theme variants), shareable player cards, stats charts, fit scores.
   OUT OF SCOPE (reject in review): chat/DMs, payments, uploads of real photos/video files, Trust Score with negative
   points, computer vision on real video, ESKA/EOK/Mismatch endorsement claims, anything involving minors.

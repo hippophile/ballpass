@@ -23,6 +23,7 @@
 
 @code {
     [Parameter] public int Count { get; set; } = 3;
+    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
 
     private IReadOnlyList<FeedItem> items = [];
 
@@ -31,8 +32,9 @@
     {
         try
         {
+            var viewer = FeedViewer.From(AuthState is null ? null : (await AuthState).User);   // same hide / block filters as /feed
             using var scope = ScopeFactory.CreateScope();
-            items = await scope.ServiceProvider.GetRequiredService<IFeedService>().GetPreviewAsync(Count);
+            items = await scope.ServiceProvider.GetRequiredService<IFeedService>().GetPreviewAsync(viewer, Count);
         }
         catch (Exception e)
         {

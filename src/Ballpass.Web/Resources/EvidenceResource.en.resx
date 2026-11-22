@@ -17,13 +17,13 @@
   <data name="Metric_FgPct" xml:space="preserve"><value>Field goal % (FG%)</value></data>
   <data name="Pct_Value" xml:space="preserve"><value>{0}th percentile</value></data>
   <data name="Insufficient" xml:space="preserve"><value>Not enough data (n={0})</value></data>
-  <data name="Insufficient_Peers" xml:space="preserve"><value>fewer than 20 peers in the cohort</value></data>
+  <data name="Insufficient_Peers" xml:space="preserve"><value>fewer than {0} peers in the cohort</value></data>
   <data name="Insufficient_Minutes" xml:space="preserve"><value>under {0} minutes per game</value></data>
   <data name="Insufficient_Games" xml:space="preserve"><value>fewer than 10 games</value></data>
   <data name="Aria_Row" xml:space="preserve"><value>{0}: {1}, {2}</value></data>
   <data name="Aria_RowNoData" xml:space="preserve"><value>{0}: {1}. {2}</value></data>
   <data name="Source_Note" xml:space="preserve"><value>Source of the latest season stats:</value></data>
-  <data name="Thresholds_Note" xml:space="preserve"><value>The thresholds (20 peers, 10 games, {0} minutes per game, ±10%, 8 games) are our own estimates, not league rules. The cohort is fictional.</value></data>
+  <data name="Thresholds_Note" xml:space="preserve"><value>The thresholds ({1} peers, 10 games, {0} minutes per game, ±10%, 8 games) are our own estimates, not league rules. The cohort is fictional.</value></data>
   <data name="Toggle_Label" xml:space="preserve"><value>Comparison cohort:</value></data>
   <data name="Toggle_All" xml:space="preserve"><value>All sources</value></data>
   <data name="Toggle_Confirmed" xml:space="preserve"><value>Coach-confirmed only</value></data>
@@ -64,6 +64,7 @@
   <data name="Compare_NoShortlist" xml:space="preserve"><value>Your shortlist is empty. Add players from search.</value></data>
   <data name="Compare_Same" xml:space="preserve"><value>Pick two different players.</value></data>
   <data name="Compare_Warning" xml:space="preserve"><value>Careful: different positions ({0} and {1}). Each percentile is within its own demo cohort, so they are not directly comparable.</value></data>
+  <data name="Compare_WarningGender" xml:space="preserve"><value>Careful: different gender ({0} and {1}). Each percentile is within its own demo cohort (women and men are ranked separately), so they are not directly comparable.</value></data>
   <data name="Compare_Legend" xml:space="preserve"><value>Legend</value></data>
   <data name="Compare_Solid" xml:space="preserve"><value>solid line, circle</value></data>
   <data name="Compare_Dashed" xml:space="preserve"><value>dashed line, square</value></data>

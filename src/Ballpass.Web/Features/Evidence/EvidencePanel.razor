@@ -63,7 +63,7 @@
                 </tbody>
             </table></div>
             <p class="bp-ev-source">@E["Source_Note"] <span class="bp-ev-src" data-ev-source="@latest.Source">@L[$"Source_{latest.Source}"]</span></p>
-            <p class="bp-ev-note">@E["Thresholds_Note", EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture)]</p>
+            <p class="bp-ev-note">@E["Thresholds_Note", EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture), EvOptions.Value.MinPeers]</p>
         </section>
 
         <section class="bp-ev-block" aria-labelledby="bp-ev-line-h">
@@ -184,7 +184,7 @@
     {
         InsufficientReason.TooFewGames => E["Insufficient_Games"].Value,
         InsufficientReason.TooFewMinutes => E["Insufficient_Minutes", EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture)].Value,
-        _ => E["Insufficient_Peers"].Value,
+        _ => E["Insufficient_Peers", EvOptions.Value.MinPeers].Value,
     };
 
     private string AriaText(MetricPercentile m) => m.Percentile is { } pct

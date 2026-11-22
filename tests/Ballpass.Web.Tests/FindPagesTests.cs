@@ -116,7 +116,8 @@ public class FindPagesTests(BallpassAppFactory app)
     public async Task Results_are_ranked_with_reasons_sources_and_an_interest_form()
     {
         var client = await CoachClient();
-        var html = await Html(client, "/match?position=C&minHeight=185&priority=rebounding");
+        // Forwards: the profile cohort (same gender + position group, n >= 20 after the minutes floor) exists for them; female centers have none.
+        var html = await Html(client, "/match?position=PF&position=SF&minHeight=175&priority=rebounding");
 
         var articles = Articles(html);
         Assert.InRange(articles.Count, 1, 20);
@@ -128,7 +129,7 @@ public class FindPagesTests(BallpassAppFactory app)
         {
             var slug = Regex.Match(a, "data-slug=\"([^\"]+)\"").Groups[1].Value;
             var reasons = Regex.Matches(a, "<li[^>]*class=\"bp-find-reason\"[^>]*>(.*?)</li>", RegexOptions.Singleline);
-            Assert.InRange(reasons.Count, 2, 3);
+            Assert.InRange(reasons.Count, 1, 3);                                      // stat reason is missing when the cohort rule yields no percentile
             Assert.All(reasons, r => Assert.Contains("data-source=", r.Value));      // every reason carries its source badge
             Assert.Contains($"href=\"/p/{slug}\"", a);
             Assert.Matches($"<form[^>]*method=\"post\"[^>]*action=\"/p/{slug}/interest\"|<form[^>]*action=\"/p/{slug}/interest\"[^>]*method=\"post\"", a);
@@ -137,8 +138,8 @@ public class FindPagesTests(BallpassAppFactory app)
 
         Assert.Contains("εκ.", html);
         Assert.Contains("στόχος", html);
-        Assert.Contains("ριμπ./αγώνα", html);
-        Assert.Contains("(demo)", html);   // cohort labelled demo
+        Assert.Contains("ριμπ./40΄", html);
+        Assert.Contains("(δείγμα επίδειξης)", html);   // cohort labelled demo
     }
 
     [Fact]
@@ -216,7 +217,8 @@ public class FindPagesTests(BallpassAppFactory app)
         try
         {
             var client = await CoachClient();
-            var html = await Html(client, "/match?position=C&minHeight=185&priority=rebounding");
+            // minHeight 199: she is the tallest, so she ranks first (female centers all lack a cohort percentile and tie on height otherwise).
+            var html = await Html(client, "/match?position=C&minHeight=199&priority=rebounding");
 
             var card = Articles(html).Single(a => a.Contains($"data-slug=\"{slug}\""));
             Assert.Contains("bp-find-partial", card);

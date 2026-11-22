@@ -1,4 +1,5 @@
 using Ballpass.Web.Data;
+using Ballpass.Web.Features.Evidence;
 using Ballpass.Web.Features.Find.Fit;
 
 namespace Ballpass.Web.Tests;
@@ -9,8 +10,10 @@ public class FitScorerTests
     private static FitStat Stat(decimal reb = 0, decimal pts = 0, decimal ast = 0, int games = 12,
         StatSource src = StatSource.SelfReported, string season = "2025-26") => new(season, games, pts, reb, ast, src);
 
+    // pct = the whole-percent cohort percentile Evidence computed (passed in, the scorer never ranks); null = the cohort rule gave none.
     private static FitCandidate Cand(string slug, Position pos, int h, int age = 22, string region = "Attica",
-        League? league = null, FitStat? stat = null) => new(slug, pos, h, age, region, league, stat);
+        League? league = null, FitStat? stat = null, int? pct = null) =>
+        new(slug, pos, h, age, region, league, stat, pct is { } p ? new FitStatRank(stat is null ? 0 : (double)stat.Rebounds * 2, p) : null);
 
     private static FitScorer Scorer(Action<FitOptions>? configure = null)
     {
@@ -29,11 +32,11 @@ public class FitScorerTests
         var need = new FitNeed { Positions = [Position.C], MinHeight = 185, Priority = FitPriority.Rebounding };
         FitCandidate[] cohort =
         [
-            Cand("a", Position.C, 191, stat: Stat(reb: 9.0m)),
-            Cand("b", Position.C, 183, stat: Stat(reb: 7.0m, src: StatSource.CoachConfirmed)),
-            Cand("c", Position.C, 180, stat: Stat(reb: 3.0m)),
-            Cand("d", Position.C, 186, stat: Stat(reb: 5.0m)),
-            Cand("e", Position.C, 170, stat: Stat(reb: 2.0m)),
+            Cand("a", Position.C, 191, stat: Stat(reb: 9.0m), pct: 90),
+            Cand("b", Position.C, 183, stat: Stat(reb: 7.0m, src: StatSource.CoachConfirmed), pct: 70),
+            Cand("c", Position.C, 180, stat: Stat(reb: 3.0m), pct: 30),
+            Cand("d", Position.C, 186, stat: Stat(reb: 5.0m), pct: 50),
+            Cand("e", Position.C, 170, stat: Stat(reb: 2.0m), pct: 10),
         ];
 
         var r = Scorer().Rank(need, cohort);
@@ -53,8 +56,8 @@ public class FitScorerTests
         var need = new FitNeed { Positions = [Position.C], MinHeight = 185, Priority = FitPriority.Rebounding };
         FitCandidate[] cohort =
         [
-            Cand("q", Position.C, 182, stat: Stat(reb: 8.0m)),
-            Cand("r", Position.C, 180, stat: Stat(reb: 4.0m)),
+            Cand("q", Position.C, 182, stat: Stat(reb: 8.0m), pct: 75),
+            Cand("r", Position.C, 180, stat: Stat(reb: 4.0m), pct: 25),
             // Only 5 games: rebounds count as missing. Better source than q, still loses on coverage.
             Cand("p", Position.C, 181, stat: Stat(reb: 5.0m, games: 5, src: StatSource.LeagueVerifiedMock)),
         ];
@@ -84,11 +87,11 @@ public class FitScorerTests
         };
         FitCandidate[] cohort =
         [
-            Cand("x", Position.PG, 175, age: 22, region: "Attica", stat: Stat(ast: 6.0m, src: StatSource.CoachConfirmed)),
-            Cand("y", Position.PG, 170, age: 26, region: "Crete", stat: Stat(ast: 4.0m, src: StatSource.CoachConfirmed)),
+            Cand("x", Position.PG, 175, age: 22, region: "Attica", stat: Stat(ast: 6.0m, src: StatSource.CoachConfirmed), pct: 88),
+            Cand("y", Position.PG, 170, age: 26, region: "Crete", stat: Stat(ast: 4.0m, src: StatSource.CoachConfirmed), pct: 63),
             Cand("v1", Position.PG, 170, age: 21, region: "Attica", stat: Stat(ast: 3.0m)),   // self-reported: hidden
             Cand("v2", Position.PG, 170, age: 21, region: "Attica", stat: Stat(ast: 2.0m)),   // self-reported: hidden
-            Cand("z", Position.SG, 178, age: 30, region: "Attica", stat: Stat(ast: 3.0m, src: StatSource.LeagueVerifiedMock)),
+            Cand("z", Position.SG, 178, age: 30, region: "Attica", stat: Stat(ast: 3.0m, src: StatSource.LeagueVerifiedMock), pct: 50),
             Cand("u", Position.C, 195, age: 22, region: "Attica", stat: Stat(ast: 1.0m, src: StatSource.CoachConfirmed)), // wrong position: hidden
         ];
 
@@ -131,7 +134,7 @@ public class FitScorerTests
     public void Fewer_than_ten_games_is_missing(int games, bool missing)
     {
         var need = new FitNeed { MinHeight = 180, Priority = FitPriority.Scoring };
-        var r = Scorer().Rank(need, [Cand("a", Position.SG, 185, stat: Stat(pts: 10, games: games))]).Results[0];
+        var r = Scorer().Rank(need, [Cand("a", Position.SG, 185, stat: Stat(pts: 10, games: games), pct: 60)]).Results[0];
 
         Assert.Equal(missing, r.Missing.Contains(FitCriterion.Stat));
         Assert.Equal(missing, r.Partial);
@@ -197,9 +200,9 @@ public class FitScorerTests
         var need = new FitNeed { Positions = [Position.C], MinHeight = 185, Region = "Attica", MinAge = 20, MaxAge = 24, Priority = FitPriority.Rebounding };
         FitCandidate[] cohort =
         [
-            Cand("a", Position.C, 191, stat: Stat(reb: 9.0m, src: StatSource.CoachConfirmed)),
-            Cand("b", Position.C, 183, stat: Stat(reb: 7.0m)),
-            Cand("c", Position.C, 180, stat: Stat(reb: 3.0m)),
+            Cand("a", Position.C, 191, stat: Stat(reb: 9.0m, src: StatSource.CoachConfirmed), pct: 83),
+            Cand("b", Position.C, 183, stat: Stat(reb: 7.0m), pct: 50),
+            Cand("c", Position.C, 180, stat: Stat(reb: 3.0m), pct: 17),
         ];
 
         var r = Scorer().Rank(need, cohort);
@@ -212,9 +215,9 @@ public class FitScorerTests
         var a = r.Results.Single(x => x.Candidate.Slug == "a");
         var stat = a.Reasons.Single(x => x.Criterion == FitCriterion.Stat);
         Assert.Equal(StatSource.CoachConfirmed, stat.Source);   // stat reasons carry the stat line's source
-        Assert.Equal(9.0, stat.Actual, 3);
-        Assert.Equal(Position.C, stat.CohortPosition);
-        Assert.Equal(17, stat.TopPercent);                       // percentile rank (2+.5)/3 = .833 -> top 17%
+        Assert.Equal(18.0, stat.Actual, 3);                      // the per-40 value Evidence computed, not a per-game value
+        Assert.Equal(PositionGroup.Center, stat.CohortGroup);
+        Assert.Equal(17, stat.TopPercent);                       // 100 - profile percentile (83)
         var height = a.Reasons.Single(x => x.Criterion == FitCriterion.Height);
         Assert.Equal(StatSource.SelfReported, height.Source);    // profile fields are self-declared
         Assert.Equal(ReasonState.Met, height.State);
@@ -227,6 +230,37 @@ public class FitScorerTests
         var r = Scorer().Rank(need, [Cand("a", Position.PG, 160, region: "Attica")]).Results[0];
 
         Assert.All(r.Reasons, x => Assert.Equal(ReasonState.Missed, x.State));
+    }
+
+    // ---------- cohort rule (audit finding 2): the scorer only consumes the percentile Evidence computed ----------
+
+    [Fact]
+    public void Stat_without_a_cohort_percentile_is_missing_and_shows_no_top_reason()
+    {
+        var need = new FitNeed { MinHeight = 180, Priority = FitPriority.Rebounding };
+        // 12 games, plenty of rebounds, but Evidence gave no percentile (fewer than 20 peers / minutes floor).
+        var r = Scorer().Rank(need, [Cand("a", Position.C, 190, stat: Stat(reb: 9.0m))]).Results[0];
+
+        Assert.Equal([FitCriterion.Stat], r.Missing);
+        Assert.True(r.Partial);
+        Assert.Equal(100, r.FitPercent);
+        Assert.DoesNotContain(r.Reasons, x => x.Criterion == FitCriterion.Stat);
+        Assert.All(r.Reasons, x => Assert.Null(x.TopPercent));
+    }
+
+    [Theory]
+    [InlineData(1, 99)]
+    [InlineData(50, 50)]
+    [InlineData(83, 17)]
+    [InlineData(99, 1)]
+    public void Top_percent_is_100_minus_the_profile_percentile(int percentile, int top)
+    {
+        var need = new FitNeed { Priority = FitPriority.Rebounding };
+        var r = Scorer().Rank(need, [Cand("a", Position.PF, 190, stat: Stat(reb: 5m), pct: percentile)]).Results[0];
+
+        Assert.Equal(top, r.Reasons.Single().TopPercent);
+        Assert.Equal(percentile, r.FitPercent);
+        Assert.Equal(PositionGroup.Forward, r.Reasons.Single().CohortGroup);
     }
 
     // ---------- trust bar ----------

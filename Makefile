@@ -16,4 +16,5 @@ run:
 	dotnet run --project $(PROJECT)
 
 test:
-	dotnet test
+	# A hang (seen twice, right after a new migration) fails after 5 min with a dump instead of blocking forever.
+	dotnet test --blame-hang-timeout 5m

@@ -7,8 +7,8 @@
   <data name="Nav_Sent" xml:space="preserve"><value>Αποστολές</value></data>
   <data name="Nav_SentUnread" xml:space="preserve"><value>νέες απαντήσεις</value></data>
   <data name="Sent_Title" xml:space="preserve"><value>Αποστολές</value></data>
-  <data name="Sent_Intro" xml:space="preserve"><value>Κάθε ενδιαφέρον που έστειλες και πού βρίσκεται: στάλθηκε, το είδε η αθλήτρια ή ο αθλητής, απάντησε.</value></data>
-  <data name="Sent_Empty" xml:space="preserve"><value>Δεν έχεις στείλει ακόμη ενδιαφέρον. Βρες αθλητές από την αναζήτηση.</value></data>
+  <data name="Sent_Intro" xml:space="preserve"><value>Κάθε ενδιαφέρον που στείλατε και πού βρίσκεται: στάλθηκε, το είδε η αθλήτρια ή ο αθλητής, απάντησε.</value></data>
+  <data name="Sent_Empty" xml:space="preserve"><value>Δεν έχετε στείλει ακόμη ενδιαφέρον. Βρείτε αθλητές από την αναζήτηση.</value></data>
   <data name="Sent_Aria" xml:space="preserve"><value>Πρόοδος: στάλθηκε, είδε, απάντησε</value></data>
   <data name="Step_Sent" xml:space="preserve"><value>Στάλθηκε</value></data>
   <data name="Step_Seen" xml:space="preserve"><value>Είδε</value></data>
@@ -16,31 +16,27 @@
   <data name="Step_Pending" xml:space="preserve"><value>σε αναμονή</value></data>
   <data name="Reply_Accepted" xml:space="preserve"><value>Αποδοχή</value></data>
   <data name="Reply_Declined" xml:space="preserve"><value>Απόρριψη</value></data>
-  <data name="Time_Now" xml:space="preserve"><value>μόλις τώρα</value></data>
-  <data name="Time_Minutes" xml:space="preserve"><value>πριν {0} λ.</value></data>
-  <data name="Time_Hours" xml:space="preserve"><value>πριν {0} ώρ.</value></data>
-  <data name="Time_Days" xml:space="preserve"><value>πριν {0} ημ.</value></data>
   <data name="Inbox_New" xml:space="preserve"><value>νέο</value></data>
   <data name="Inbox_Accept" xml:space="preserve"><value>Αποδοχή</value></data>
   <data name="Inbox_Decline" xml:space="preserve"><value>Απόρριψη</value></data>
   <data name="Inbox_ReplyAria" xml:space="preserve"><value>Απάντηση στο ενδιαφέρον</value></data>
-  <data name="Inbox_YouAccepted" xml:space="preserve"><value>Αποδέχτηκες αυτό το ενδιαφέρον.</value></data>
-  <data name="Inbox_YouDeclined" xml:space="preserve"><value>Απέρριψες αυτό το ενδιαφέρον.</value></data>
+  <data name="Inbox_YouAccepted" xml:space="preserve"><value>Αποδεχτήκατε αυτό το ενδιαφέρον.</value></data>
+  <data name="Inbox_YouDeclined" xml:space="preserve"><value>Απορρίψατε αυτό το ενδιαφέρον.</value></data>
   <data name="Inbox_Contact" xml:space="preserve"><value>επικοινωνία μέσω συλλόγου (demo)</value></data>
   <data name="Inbox_ContactNote" xml:space="preserve"><value>Φανταστική διεύθυνση επίδειξης, όχι πραγματικό email.</value></data>
   <data name="Actions_List" xml:space="preserve"><value>Λίστα</value></data>
   <data name="Actions_NoteToggle" xml:space="preserve"><value>Προσθήκη σημείωσης (προαιρετικό)</value></data>
-  <data name="Switch_ToAthlete" xml:space="preserve"><value>Δες το ως αθλήτρια</value></data>
+  <data name="Switch_ToAthlete" xml:space="preserve"><value>Δείτε το ως αθλήτρια</value></data>
   <data name="Switch_ToCoach" xml:space="preserve"><value>Πίσω στον προπονητή</value></data>
   <data name="Reset_Title" xml:space="preserve"><value>Επαναφορά δεδομένων επίδειξης</value></data>
   <data name="Reset_Intro" xml:space="preserve"><value>Θα γίνει επαναφορά του περιβάλλοντος επίδειξης στην αρχική του κατάσταση.</value></data>
   <data name="Reset_Effect1" xml:space="preserve"><value>Τι θα γίνει: όλα τα δεδομένα επίδειξης επανέρχονται (αθλητές, προπονητές, σύλλογοι, ενδιαφέροντα, λίστες, αναρτήσεις).</value></data>
-  <data name="Reset_Effect2" xml:space="preserve"><value>Ό,τι πρόσθεσες ή άλλαξες στην επίδειξη (ενδιαφέροντα, απαντήσεις, αναρτήσεις) χάνεται.</value></data>
-  <data name="Reset_Effect3" xml:space="preserve"><value>Θα αποσυνδεθείς και θα γυρίσεις στην αρχική σελίδα.</value></data>
+  <data name="Reset_Effect2" xml:space="preserve"><value>Ό,τι προσθέσατε ή αλλάξατε στην επίδειξη (ενδιαφέροντα, απαντήσεις, αναρτήσεις) χάνεται.</value></data>
+  <data name="Reset_Effect3" xml:space="preserve"><value>Θα αποσυνδεθείτε και θα επιστρέψετε στην αρχική σελίδα.</value></data>
   <data name="Reset_Confirm" xml:space="preserve"><value>Επαναφορά τώρα</value></data>
   <data name="Reset_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
   <data name="Reset_Link" xml:space="preserve"><value>Επαναφορά δεδομένων επίδειξης</value></data>
-  <data name="Toast_Reset" xml:space="preserve"><value>Τα δεδομένα επίδειξης επανήλθαν. Ξεκίνα από την αρχή.</value></data>
-  <data name="Switch_ToAthleteMale" xml:space="preserve"><value>Δες το ως αθλητής</value></data>
+  <data name="Toast_Reset" xml:space="preserve"><value>Τα δεδομένα επίδειξης επανήλθαν. Ξεκινήστε από την αρχή.</value></data>
+  <data name="Switch_ToAthleteMale" xml:space="preserve"><value>Δείτε το ως αθλητής</value></data>
   <data name="Switch_ToCoachFemale" xml:space="preserve"><value>Πίσω στην προπονήτρια</value></data>
 </root>

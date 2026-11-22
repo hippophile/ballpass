@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ballpass.Web.Features.Loop;
 
-/// <summary>Config section Demo. Default on for this proof of concept; set Demo:Enabled=false to hide the switch and reset.</summary>
+/// <summary>Config section Demo. Off by default (production); appsettings.Development.json turns the persona switch and /demo/reset on.</summary>
 public class DemoOptions
 {
-    public bool Enabled { get; set; } = true;
+    public bool Enabled { get; set; }
 }
 
 /// <summary>Fictional contact of a demo club: never a real mailbox (.invalid is reserved and cannot resolve).</summary>

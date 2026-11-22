@@ -145,6 +145,9 @@ namespace Ballpass.Web.Data.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("IsDemo")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BlockedKey");
@@ -252,6 +255,9 @@ namespace Ballpass.Web.Data.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
+                    b.Property<bool>("IsDemo")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("TargetKey")
                         .IsRequired()
                         .HasMaxLength(32)
@@ -332,6 +338,9 @@ namespace Ballpass.Web.Data.Migrations
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDemo")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("PostId")
                         .HasColumnType("integer");
@@ -505,6 +514,9 @@ namespace Ballpass.Web.Data.Migrations
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDemo")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("PostId")
                         .HasColumnType("integer");

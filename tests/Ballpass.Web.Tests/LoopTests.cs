@@ -92,13 +92,14 @@ public class LoopTests(BallpassAppFactory app)
     }
 
     [Fact]
-    public void Minutes_floor_can_push_the_cohort_below_twenty_peers()
+    public void Minutes_floor_can_push_the_cohort_below_the_peer_minimum()
     {
-        var cohort = Members(19, 100, 20).Concat(Members(5, 500, 9)).ToList();
+        var justBelow = CohortCalculator.DefaultMinPeers - 1;
+        var cohort = Members(justBelow, 100, 20).Concat(Members(5, 500, 9)).ToList();
 
         var result = Eval(Line(), cohort);
 
-        Assert.Equal(19, result.PeerCount);
+        Assert.Equal(justBelow, result.PeerCount);
         Assert.All(result.Metrics, m => Assert.Equal(InsufficientReason.TooFewPeers, m.Reason));
     }
 
@@ -257,10 +258,10 @@ public class LoopTests(BallpassAppFactory app)
             .First(c => GreekNames.IsFemaleFirstName(c.FirstName) == femaleCoach).Id);
 
         var menClubCoach = await h.LoginAsync("coach", HeadCoach(Gender.Male, femaleCoach: false));
-        Assert.Contains("Δες το ως αθλητής", await Html(menClubCoach, "/search"));
+        Assert.Contains("Δείτε το ως αθλητής", await Html(menClubCoach, "/search"));
 
         var womanCoach = await h.LoginAsync("coach", HeadCoach(Gender.Female, femaleCoach: true));
-        Assert.Contains("Δες το ως αθλήτρια", await Html(womanCoach, "/search"));
+        Assert.Contains("Δείτε το ως αθλήτρια", await Html(womanCoach, "/search"));
         var switched = await h.PostAsync(womanCoach, "/demo/switch?to=athlete", [], tokenPage: "/search");
         Assert.Equal(HttpStatusCode.Redirect, switched.StatusCode);
         Assert.Contains("Πίσω στην προπονήτρια", await Html(womanCoach, "/me/inbox"));
@@ -501,7 +502,7 @@ public class LoopTests(BallpassAppFactory app)
         var (coachId, _, athleteName, coachName) = CoachWithInterests();
         var client = await h.LoginAsync("coach", coachId);
         var page = await Html(client, "/shortlist");
-        Assert.Contains("Δες το ως αθλήτρια", page);
+        Assert.Contains("Δείτε το ως αθλήτρια", page);
         Assert.Contains("action=\"/demo/switch?to=athlete\"", page);
 
         var toAthlete = await h.PostAsync(client, "/demo/switch?to=athlete", new(), tokenPage: "/shortlist");
@@ -513,7 +514,7 @@ public class LoopTests(BallpassAppFactory app)
         // Gendered label (orchestrator fix): "στην προπονήτρια" for a woman coach, "στον προπονητή" otherwise.
         var coachFirst = h.Db(db => db.Coaches.Where(c => c.Id == coachId).Select(c => c.FirstName).First());
         Assert.Contains(GreekNames.IsFemaleFirstName(coachFirst) ? "Πίσω στην προπονήτρια" : "Πίσω στον προπονητή", inbox);
-        Assert.DoesNotContain("Δες το ως αθλήτρια", inbox);
+        Assert.DoesNotContain("Δείτε το ως αθλήτρια", inbox);
 
         var back = await h.PostAsync(client, "/demo/switch?to=coach", new(), tokenPage: "/me/inbox");
 
@@ -521,7 +522,7 @@ public class LoopTests(BallpassAppFactory app)
         Assert.Equal("/me/sent", back.Headers.Location!.OriginalString);
         var sent = await Html(client, "/me/sent");
         Assert.Contains(coachName, Regex.Match(sent, "<span class=\"bp-whoami\"[^>]*>.*?</span>", RegexOptions.Singleline).Value);
-        Assert.Contains("Δες το ως αθλήτρια", sent);
+        Assert.Contains("Δείτε το ως αθλήτρια", sent);
     }
 
     [Fact]
@@ -599,8 +600,10 @@ public class LoopTests(BallpassAppFactory app)
     [Fact]
     public async Task Reset_requires_antiforgery_signs_out_redirects_with_toast_and_is_idempotent()
     {
+        // The limiter counts every request of a persona (token or not), so the bad-token probe uses a different persona.
+        var probe = await h.LoginAsync("coach", h.CoachId(3));
+        Assert.Equal(HttpStatusCode.BadRequest, (await h.PostAsync(probe, "/demo/reset", new(), withToken: false)).StatusCode);
         var coach = await h.LoginAsync("coach", h.CoachId(2));
-        Assert.Equal(HttpStatusCode.BadRequest, (await h.PostAsync(coach, "/demo/reset", new(), withToken: false)).StatusCode);
 
         var first = await h.PostAsync(coach, "/demo/reset", new(), tokenPage: "/demo/reset");
         Assert.Equal(HttpStatusCode.Redirect, first.StatusCode);
@@ -617,8 +620,9 @@ public class LoopTests(BallpassAppFactory app)
         Assert.Equal(HttpStatusCode.Redirect, signedOut.StatusCode);
         Assert.StartsWith("/demo", signedOut.Headers.Location!.OriginalString);
 
-        var anon = app.Client();
-        var second = await h.PostAsync(anon, "/demo/reset", new(), tokenPage: "/demo/reset");
+        // The first reset re-created every persona with new ids: another signed-in persona has its own allowance.
+        var other = await h.LoginAsync("coach", h.CoachId(2));
+        var second = await h.PostAsync(other, "/demo/reset", new(), tokenPage: "/demo/reset");
         Assert.Equal(HttpStatusCode.Redirect, second.StatusCode);
         var afterSecond = Counts();
 

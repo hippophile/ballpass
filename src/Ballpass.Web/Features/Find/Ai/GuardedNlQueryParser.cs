@@ -10,7 +10,7 @@ namespace Ballpass.Web.Features.Find.Ai;
 /// No retries. Only the (length-capped) query text is sent; the demo data never leaves the app.
 /// </summary>
 public class GuardedNlQueryParser(RuleParser rules, INlQueryParser model, IOptionsMonitor<AiOptions> ai,
-    IOptionsMonitor<AnthropicOptions> key, Func<string> sessionKey) : INlQueryParser
+    IOptionsMonitor<AnthropicOptions> key, Func<string> sessionKey, ILogger<GuardedNlQueryParser>? log = null) : INlQueryParser
 {
     private const int MaxCachedQueries = 500;
 
@@ -25,11 +25,11 @@ public class GuardedNlQueryParser(RuleParser rules, INlQueryParser model, IOptio
         if (text.Length == 0 || NlText.LooksLikeInjection(text)) return new SearchFilters();
 
         var fromRules = SearchFilterValidator.Validate(rules.Parse(text));
-        if (!ModelAllowed(options)) return fromRules;
+        if (!ModelAllowed(options)) { Fallback(AiFallbackReason.Disabled); return fromRules; }
 
         var cacheKey = NlText.Normalize(text);
         if (cache.TryGetValue(cacheKey, out var cached)) return cached;
-        if (!TryReserveCall(options)) return fromRules;
+        if (!TryReserveCall(options)) { Fallback(AiFallbackReason.Cap); return fromRules; }
 
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
         cts.CancelAfter(TimeSpan.FromSeconds(options.TimeoutSeconds));
@@ -45,12 +45,27 @@ public class GuardedNlQueryParser(RuleParser rules, INlQueryParser model, IOptio
         {
             throw;   // the request itself was abandoned: do not turn it into an answer
         }
+        catch (AiUnavailableException e)
+        {
+            // Refusal, max_tokens, bad JSON, HTTP error (rate / spend limit included): rules answer, no retry.
+            Fallback(e.Reason, e.StatusCode);
+            return fromRules;
+        }
+        catch (OperationCanceledException)
+        {
+            Fallback(AiFallbackReason.Timeout);   // our own timeout fired (the request itself was not cancelled, see above)
+            return fromRules;
+        }
         catch (Exception)
         {
-            // Timeout, refusal, max_tokens, bad JSON, rate limit / spend limit, network: rules answer, no retry.
+            Fallback(AiFallbackReason.Error);     // network and anything else; the exception text may carry request data, so it is not logged
             return fromRules;
         }
     }
+
+    /// <summary>One Information line per fallback: the reason only, never the query text.</summary>
+    private void Fallback(AiFallbackReason reason, int? status = null) =>
+        log?.LogInformation("AI query answered by the rule parser: reason={Reason} status={Status}", reason.Code(), status);
 
     private bool ModelAllowed(AiOptions options)
     {

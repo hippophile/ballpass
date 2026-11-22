@@ -1,0 +1,17 @@
+@attribute [RequireAntiforgeryToken(required: false)]
+@inject IStringLocalizer<SharedResource> L
+
+<PageTitle>@L["TooMany_Title"]</PageTitle>
+
+<h1>@L["TooMany_Title"]</h1>
+<p>@L["TooMany_Text"]</p>
+<p><a href="/">@L["Error_Home"]</a></p>
+
+@code {
+    [CascadingParameter] private HttpContext? Http { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Http is not null) Http.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+    }
+}

@@ -99,8 +99,7 @@ public static class FeedSetup
         Func<IFormCollection, FeedViewer, IFeedService, IFollowService, Task<object>> handler) =>
         app.MapPost(path, async (HttpContext http, IAntiforgery antiforgery, IFeedService svc, IFollowService follows) =>
         {
-            try { await antiforgery.ValidateRequestAsync(http); }
-            catch (AntiforgeryValidationException) { return Results.BadRequest(); }
+            if (!await antiforgery.IsValidAsync(http)) return Results.BadRequest();
             if (!http.Request.HasFormContentType) return Results.BadRequest();
 
             var form = await http.Request.ReadFormAsync();

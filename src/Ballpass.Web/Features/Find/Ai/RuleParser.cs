@@ -21,7 +21,7 @@ public partial class RuleParser : INlQueryParser
     // Specific positions first; they are blanked out before the generic "guard" / "forward" words are tried.
     private static readonly (string Code, Regex Rx)[] SpecificPositions =
     [
-        ("PG", Rx(@"point\s*guard|πλει\s*μεικερ|play\s*maker|pg")),
+        ("PG", Rx(@"point\s*guard|ποιντ\s*γκαρντ|πλει\s*μεικερ|play\s*maker|pg")),
         ("SG", Rx(@"shooting\s*guard|σουτινγκ\s*γκαρντ|sg")),
         ("SF", Rx(@"small\s*forward|σμολ\s*φορ\p{L}{2,8}ντ|sf")),
         ("PF", Rx(@"power\s*forward|παουερ\s*φορ\p{L}{2,8}ντ|pf")),

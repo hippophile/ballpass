@@ -25,7 +25,10 @@ public class AiSearchTests
         new object?[] { "ψάχνω σέντερ για την Α1 πάνω από 190", null, new[] {"C"}, 190, null, null, null, null, "A1", false, new string[0] },
         new object?[] { "forward ηλικία πάνω από 20", null, new[] {"SF", "PF"}, null, null, 20, null, null, null, false, new string[0] },
         new object?[] { "σέντερ μισθός 1000 ευρώ", null, new[] {"C"}, null, null, null, null, null, null, false, new[] {"salary"} },
-        new object?[] { "under 16", null, new string[0], null, null, 18, 18, null, null, false, new[] {"minors"} },
+        new object?[] { "under 16", null, new string[0], null, null, 18, null, null, null, false, new[] {"minors"} },
+        new object?[] { "γυναίκες κάτω των 16", "Female", new string[0], null, null, 18, null, null, null, false, new[] {"minors"} },
+        new object?[] { "πόιντ γκαρντ", null, new[] {"PG"}, null, null, null, null, null, null, false, new string[0] },
+        new object?[] { "σούτινγκ γκαρντ", null, new[] {"SG"}, null, null, null, null, null, null, false, new string[0] },
         new object?[] { "", null, new string[0], null, null, null, null, null, null, false, new string[0] },
     };
 
@@ -75,7 +78,7 @@ public class AiSearchTests
         var f = SearchFilterValidator.Validate(new SearchFilters { MinAge = 12, MaxAge = 15 });
 
         Assert.Equal(18, f.MinAge);
-        Assert.Equal(18, f.MaxAge);
+        Assert.Null(f.MaxAge);   // "under 15" is not "exactly 18": the upper bound stays open
         Assert.Contains("minors", f.Unsupported);
         Assert.Equal(80, SearchFilterValidator.Validate(new SearchFilters { MinAge = 200 }).MinAge);
     }
@@ -116,8 +119,8 @@ public class AiSearchTests
         });
 
         Assert.Equal(80, f.Q!.Length);
-        Assert.Equal(5, f.Unsupported.Count);
-        Assert.All(f.Unsupported, u => Assert.True(u.Length <= 40));
+        Assert.Equal(["handedness", "other"], f.Unsupported);   // free text collapses to the known key set
+        Assert.All(f.Unsupported, u => Assert.Contains(u, SearchFilterValidator.UnsupportedKeys));
     }
 
     [Theory]

@@ -65,6 +65,7 @@ public class Kudos
     public Post? Post { get; set; }
     public required string ActorKey { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
+    public bool IsDemo { get; set; }
 }
 
 public class Follow
@@ -73,6 +74,7 @@ public class Follow
     public required string FollowerKey { get; set; }
     public required string TargetKey { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
+    public bool IsDemo { get; set; }
 }
 
 public class Block
@@ -81,6 +83,7 @@ public class Block
     public required string BlockerKey { get; set; }
     public required string BlockedKey { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
+    public bool IsDemo { get; set; }
 }
 
 public class Report
@@ -91,6 +94,7 @@ public class Report
     public required string ReporterKey { get; set; }
     public required string Reason { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
+    public bool IsDemo { get; set; }
 }
 
 /// <summary>A post one actor hid for themselves (also created by reporting).</summary>

@@ -36,7 +36,15 @@ public interface INlQueryParser
 }
 
 /// <summary>Thrown by the model parser for any outcome the guard must answer with the rule parser (refusal, bad JSON, API error).</summary>
-public class AiUnavailableException(string message, Exception? inner = null) : Exception(message, inner);
+public class AiUnavailableException(string message, AiFallbackReason reason = AiFallbackReason.Error, int? statusCode = null, Exception? inner = null)
+    : Exception(message, inner)
+{
+    public AiFallbackReason Reason { get; } = reason;
+    public int? StatusCode { get; } = statusCode;
+}
+
+/// <summary>Why the guard answered with the rule parser. <see cref="AiFallback.Code"/> gives the log token.</summary>
+public enum AiFallbackReason { Disabled, Cap, Timeout, Refusal, MaxTokens, HttpStatus, InvalidJson, EmptyReply, Error }
 
 /// <summary>Reply of one model call, already reduced to what the parser needs.</summary>
 public record ClaudeReply(string? StopReason, string? Text);
@@ -54,7 +62,7 @@ public class AiOptions
 
     public bool? Enabled { get; set; }
     public string Model { get; set; } = "claude-opus-5-5";
-    public double TimeoutSeconds { get; set; } = 4;
+    public double TimeoutSeconds { get; set; } = 10;
     public int MaxCallsPerSession { get; set; } = 20;
     public int MaxQueryLength { get; set; } = 200;
 }
@@ -65,4 +73,23 @@ public class AnthropicOptions
     public const string Section = "Anthropic";
 
     public string? ApiKey { get; set; }
+
+    /// <summary>Optional API base URL (proxy, tests). Empty = the SDK default.</summary>
+    public string? BaseUrl { get; set; }
+}
+
+public static class AiFallback
+{
+    public static string Code(this AiFallbackReason reason) => reason switch
+    {
+        AiFallbackReason.Disabled => "disabled",
+        AiFallbackReason.Cap => "cap",
+        AiFallbackReason.Timeout => "timeout",
+        AiFallbackReason.Refusal => "refusal",
+        AiFallbackReason.MaxTokens => "max_tokens",
+        AiFallbackReason.HttpStatus => "http_status",
+        AiFallbackReason.InvalidJson => "invalid_json",
+        AiFallbackReason.EmptyReply => "empty_reply",
+        _ => "error",
+    };
 }
