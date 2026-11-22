@@ -474,3 +474,28 @@
         display: none;
     }
 }
+
+/* Collapsed comment composer: a quiet one-line affordance; opens the form. */
+.bp-engage-csummary {
+    list-style: none;
+    cursor: pointer;
+    color: var(--bp-muted);
+    font-weight: 600;
+    padding: var(--bp-sp-2) 0;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+    .bp-engage-csummary::-webkit-details-marker {
+        display: none;
+    }
+
+    .bp-engage-csummary:hover,
+    .bp-engage-csummary:focus-visible {
+        color: var(--bp-text);
+    }
+
+.bp-engage-cdetails[open] > .bp-engage-csummary {
+    display: none;
+}

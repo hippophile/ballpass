@@ -91,6 +91,9 @@
 
         @if (Viewer.SignedIn)
         {
+            @* Collapsed like LinkedIn's "Comment" so every post doesn't carry an open text box. *@
+            <details class="bp-engage-cdetails">
+            <summary class="bp-engage-csummary">💬 @E["Comment_Placeholder"]</summary>
             <form method="post" action="/feed/comment" class="bp-engage-compose" data-engage-compose>
                 <AntiforgeryToken />
                 <input type="hidden" name="postId" value="@p.Id" />
@@ -99,6 +102,7 @@
                 <textarea id="ctext-@p.Id" name="text" maxlength="280" rows="1" required placeholder="@E["Comment_Placeholder"]" aria-describedby="chint-@p.Id"></textarea>
                 <button type="submit" class="bp-btn">@E["Comment_Submit"]</button>
             </form>
+            </details>
             <p class="bp-engage-sr" id="chint-@p.Id">@E["Comment_Hint"]</p>
         }
         else

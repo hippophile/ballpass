@@ -214,22 +214,22 @@ public class EngageService(BallpassDbContext db, TimeProvider time, IOptions<Fee
         var candidates = new List<(Suggestion S, int Score, int Tie)>();
         var year = now.Year;
         var athletes = await db.Athletes.AsNoTracking().Where(a => a.IsDemo && a.BirthYear + 18 < year)
-            .Select(a => new { a.Id, a.FirstName, a.LastName, a.FirstNameLatin, a.LastNameLatin, a.Slug, a.Region, a.LookingForTeam, a.Gender }).ToListAsync(ct);
+            .Select(a => new { a.Id, a.FirstName, a.LastName, a.FirstNameLatin, a.LastNameLatin, a.Slug, a.Region, a.LookingForTeam, a.Gender, ClubName = a.CurrentClub != null ? a.CurrentClub.Name : null }).ToListAsync(ct);
         foreach (var a in athletes)
         {
             var k = FeedKeys.Make(AuthorKind.Athlete, a.Id);
             if (exclude.Contains(k)) continue;
             var score = (a.Region == myRegion ? 3 : 0) + (a.LookingForTeam ? 2 : 0) + (active.Contains(k) ? 1 : 0);
             candidates.Add((new Suggestion(new PersonView(k, $"{a.FirstName} {a.LastName}", $"{a.FirstNameLatin} {a.LastNameLatin}", a.Slug),
-                a.Gender == Gender.Female ? "Role_Athlete_F" : "Role_Athlete", a.Region, a.LookingForTeam), score, Tie(a.Id, viewer)));
+                a.Gender == Gender.Female ? "Role_Athlete_F" : "Role_Athlete", a.Region, a.LookingForTeam, a.Id, a.ClubName), score, Tie(a.Id, viewer)));
         }
-        foreach (var c in await db.Coaches.AsNoTracking().Where(c => c.IsDemo).Select(c => new { c.Id, c.FirstName, c.LastName, c.FirstNameLatin, c.LastNameLatin, c.Region }).ToListAsync(ct))
+        foreach (var c in await db.Coaches.AsNoTracking().Where(c => c.IsDemo).Select(c => new { c.Id, c.FirstName, c.LastName, c.FirstNameLatin, c.LastNameLatin, c.Region, ClubName = c.Club != null ? c.Club.Name : null }).ToListAsync(ct))
         {
             var k = FeedKeys.Make(AuthorKind.Coach, c.Id);
             if (exclude.Contains(k)) continue;
             var score = (c.Region == myRegion ? 3 : 0) + (active.Contains(k) ? 1 : 0);
             candidates.Add((new Suggestion(new PersonView(k, $"{c.FirstName} {c.LastName}", $"{c.FirstNameLatin} {c.LastNameLatin}", null),
-                GreekNames.IsFemaleFirstName(c.FirstName) ? "Role_Coach_F" : "Role_Coach", c.Region, false), score, Tie(c.Id + 100_000, viewer)));
+                GreekNames.IsFemaleFirstName(c.FirstName) ? "Role_Coach_F" : "Role_Coach", c.Region, false, c.Id, c.ClubName, IsCoach: true), score, Tie(c.Id + 100_000, viewer)));
         }
         return candidates.OrderByDescending(c => c.Score).ThenBy(c => c.Tie).Take(Math.Clamp(take, 1, 5)).Select(c => c.S).ToList();
 

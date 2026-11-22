@@ -31,7 +31,7 @@ public record TagView(string Tag, string Label);
 
 public record TrendingTag(string Tag, string Label, int Count);
 
-public record Suggestion(PersonView Person, string RoleKey, string? Region, bool LookingForTeam);
+public record Suggestion(PersonView Person, string RoleKey, string? Region, bool LookingForTeam, int EntityId = 0, string? ClubName = null, bool IsCoach = false);
 
 /// <summary>Everything the engagement bar and the comment section of one post need.</summary>
 public record PostEngagement(

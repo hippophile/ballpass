@@ -12,7 +12,7 @@
             @foreach (var s in suggestions)
             {
                 <li data-follow-key="@s.Person.Key" data-region="@s.Region">
-                    <span class="bp-engage-avatar" aria-hidden="true">@Initials(s.Person)</span>
+                    <JerseyAvatar Id="s.EntityId" Initials="@Initials(s.Person)" Club="@s.ClubName" Coach="s.IsCoach" Size="40" Class="bp-engage-avatar" />
                     <span class="bp-engage-who">
                         <span class="bp-engage-pname">
                             @if (s.Person.Slug is not null)
