@@ -246,6 +246,26 @@ public class LoopTests(BallpassAppFactory app)
         Assert.Matches("\\.bp-loop-actionbar\\s*\\{[^}]*flex-wrap:\\s*wrap", css);
     }
 
+    // Orchestrator review: the pill said "αθλήτρια" even for a men's club, and "στον προπονητή" for a female coach.
+    [Fact]
+    public async Task Switch_pill_wording_follows_the_gender_of_who_you_switch_to()
+    {
+        var h = new FeedHarness(app);
+        int HeadCoach(Gender clubGender, bool femaleCoach) => h.Db(db => db.Coaches
+            .Where(c => c.IsDemo && c.Role == CoachRole.Head && c.Club!.Gender == clubGender)
+            .OrderBy(c => c.Id).AsEnumerable()
+            .First(c => GreekNames.IsFemaleFirstName(c.FirstName) == femaleCoach).Id);
+
+        var menClubCoach = await h.LoginAsync("coach", HeadCoach(Gender.Male, femaleCoach: false));
+        Assert.Contains("Δες το ως αθλητής", await Html(menClubCoach, "/search"));
+
+        var womanCoach = await h.LoginAsync("coach", HeadCoach(Gender.Female, femaleCoach: true));
+        Assert.Contains("Δες το ως αθλήτρια", await Html(womanCoach, "/search"));
+        var switched = await h.PostAsync(womanCoach, "/demo/switch?to=athlete", [], tokenPage: "/search");
+        Assert.Equal(HttpStatusCode.Redirect, switched.StatusCode);
+        Assert.Contains("Πίσω στην προπονήτρια", await Html(womanCoach, "/me/inbox"));
+    }
+
     private static string RepoRoot()
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
@@ -262,7 +282,7 @@ public class LoopTests(BallpassAppFactory app)
 
         var html = await Html(client, "/feed");
 
-        Assert.Equal(1, Regex.Matches(html, "Έως 280 χαρακτήρες").Count);
+        Assert.Single(Regex.Matches(html, "Έως 280 χαρακτήρες"));
         var textarea = Regex.Match(html, "<textarea[^>]*id=\"bp-feed-text\"[^>]*>").Value;
         Assert.NotEmpty(textarea);
         Assert.DoesNotContain("placeholder", textarea);
@@ -417,7 +437,7 @@ public class LoopTests(BallpassAppFactory app)
 
         // Done steps carry the exact time as a title and a machine-readable datetime; the chip links to the profile.
         Assert.Equal(3, Regex.Matches(acc, "<time[^>]*datetime=\"[^\"]+\"[^>]*title=\"[^\"]+\"").Count);
-        Assert.Equal(1, Regex.Matches(Item(unseen.InterestId), "<time[^>]*title=").Count);
+        Assert.Single(Regex.Matches(Item(unseen.InterestId), "<time[^>]*title="));
         Assert.Matches($"<a[^>]*class=\"bp-loop-chip\"[^>]*href=\"/p/{accepted.Slug}\"", acc);
     }
 
@@ -490,7 +510,9 @@ public class LoopTests(BallpassAppFactory app)
         Assert.Equal("/me/inbox", toAthlete.Headers.Location!.OriginalString);
         var inbox = await Html(client, "/me/inbox");
         Assert.Contains(athleteName, Regex.Match(inbox, "<span class=\"bp-whoami\"[^>]*>.*?</span>", RegexOptions.Singleline).Value);
-        Assert.Contains("Πίσω στον προπονητή", inbox);
+        // Gendered label (orchestrator fix): "στην προπονήτρια" for a woman coach, "στον προπονητή" otherwise.
+        var coachFirst = h.Db(db => db.Coaches.Where(c => c.Id == coachId).Select(c => c.FirstName).First());
+        Assert.Contains(GreekNames.IsFemaleFirstName(coachFirst) ? "Πίσω στην προπονήτρια" : "Πίσω στον προπονητή", inbox);
         Assert.DoesNotContain("Δες το ως αθλήτρια", inbox);
 
         var back = await h.PostAsync(client, "/demo/switch?to=coach", new(), tokenPage: "/me/inbox");
@@ -529,7 +551,9 @@ public class LoopTests(BallpassAppFactory app)
         // A plain athlete (not switched from a coach) cannot "go back", and an athlete cannot switch to athlete.
         Assert.Equal(HttpStatusCode.Forbidden, (await h.PostAsync(athlete, "/demo/switch?to=coach", new(), tokenPage: "/me/inbox")).StatusCode);
         Assert.Equal(HttpStatusCode.Forbidden, (await h.PostAsync(athlete, "/demo/switch?to=athlete", new(), tokenPage: "/me/inbox")).StatusCode);
-        Assert.DoesNotContain("Πίσω στον προπονητή", await Html(athlete, "/me/inbox"));
+        var plainInbox = await Html(athlete, "/me/inbox");
+        Assert.DoesNotContain("Πίσω στον προπονητή", plainInbox);
+        Assert.DoesNotContain("Πίσω στην προπονήτρια", plainInbox);
         Assert.Equal(HttpStatusCode.BadRequest, (await h.PostAsync(coach, "/demo/switch?to=robot", new(), tokenPage: "/shortlist")).StatusCode);
     }
 

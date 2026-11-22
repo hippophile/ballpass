@@ -41,4 +41,6 @@
   <data name="Reset_Cancel" xml:space="preserve"><value>Ακύρωση</value></data>
   <data name="Reset_Link" xml:space="preserve"><value>Επαναφορά δεδομένων επίδειξης</value></data>
   <data name="Toast_Reset" xml:space="preserve"><value>Τα δεδομένα επίδειξης επανήλθαν. Ξεκίνα από την αρχή.</value></data>
+  <data name="Switch_ToAthleteMale" xml:space="preserve"><value>Δες το ως αθλητής</value></data>
+  <data name="Switch_ToCoachFemale" xml:space="preserve"><value>Πίσω στην προπονήτρια</value></data>
 </root>

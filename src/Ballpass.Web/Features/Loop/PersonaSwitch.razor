@@ -1,15 +1,19 @@
 @namespace Ballpass.Web.Components
 @using Ballpass.Web.Features.Loop
+@using Ballpass.Web.Data
+@using Ballpass.Web.Demo
+@using Microsoft.EntityFrameworkCore
 @using Microsoft.Extensions.Options
 @inject IOptions<DemoOptions> Demo
 @inject IStringLocalizer<LoopResource> T
+@inject IServiceScopeFactory Scopes
 
 @* One-click persona switch pill. Coach: see it as the athlete. Switched athlete: back to the coach. Hidden when Demo:Enabled=false. *@
 @if (Demo.Value.Enabled && direction is not null)
 {
     <form method="post" action="/demo/switch?to=@direction" data-demo-switch="@direction" class="bp-loop-switch">
         <AntiforgeryToken />
-        <button type="submit" class="bp-loop-pill">@T[direction == "athlete" ? "Switch_ToAthlete" : "Switch_ToCoach"]</button>
+        <button type="submit" class="bp-loop-pill">@T[labelKey]</button>
     </form>
 }
 
@@ -17,12 +21,29 @@
     [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
 
     private string? direction;
+    private string labelKey = "Switch_ToAthlete";
 
     protected override async Task OnInitializedAsync()
     {
         var user = AuthState is null ? null : (await AuthState).User;
-        if (user?.Identity?.IsAuthenticated != true) return;
-        if (user.IsInRole("Coach")) direction = "athlete";
-        else if (user.IsInRole("Athlete") && user.FindFirst(PersonaClaims.SwitchFromCoach) is not null) direction = "coach";
+        if (user?.Identity?.IsAuthenticated != true || !Demo.Value.Enabled) return;
+        // Own scope: the layout renders while the page may still be using its DbContext.
+        using var scope = Scopes.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BallpassDbContext>();
+        if (user.IsInRole("Coach"))
+        {
+            direction = "athlete";
+            // The switch target is an athlete of the coach's club gender (see LoopSupport), so word the pill by it.
+            var clubGender = int.TryParse(user.FindFirst("club_id")?.Value, out var clubId)
+                ? await db.Clubs.Where(c => c.Id == clubId).Select(c => (Gender?)c.Gender).FirstOrDefaultAsync()
+                : null;
+            labelKey = clubGender == Gender.Male ? "Switch_ToAthleteMale" : "Switch_ToAthlete";
+        }
+        else if (user.IsInRole("Athlete") && int.TryParse(user.FindFirst(PersonaClaims.SwitchFromCoach)?.Value, out var coachId))
+        {
+            direction = "coach";
+            var firstName = await db.Coaches.Where(c => c.Id == coachId).Select(c => c.FirstName).FirstOrDefaultAsync();
+            labelKey = firstName is not null && GreekNames.IsFemaleFirstName(firstName) ? "Switch_ToCoachFemale" : "Switch_ToCoach";
+        }
     }
 }

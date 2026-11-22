@@ -41,4 +41,6 @@
   <data name="Reset_Cancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="Reset_Link" xml:space="preserve"><value>Reset demo data</value></data>
   <data name="Toast_Reset" xml:space="preserve"><value>Demo data restored. Start again from the top.</value></data>
+  <data name="Switch_ToAthleteMale" xml:space="preserve"><value>See it as the athlete</value></data>
+  <data name="Switch_ToCoachFemale" xml:space="preserve"><value>Back to the coach</value></data>
 </root>
