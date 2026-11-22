@@ -125,7 +125,6 @@ public record FeedItem(
     string? ClubName,
     bool IsOwn,
     bool KudoedByMe,
-    int? KudosCount,
     bool Following,
     bool InterestSent);
 

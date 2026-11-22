@@ -111,9 +111,9 @@
                 </p>
                 break;
             case PostType.Highlight:
-                <PostMedia PostId="p.Id"><Fallback><CourtArt Initials="@Initials" Label="@(F["Highlight_Alt", p.Title ?? ""].Value)" /></Fallback></PostMedia>
+                @* The "sample graphic" caption belongs to the drawn court only; real media carries its own stock/graphic chip. *@
+                <PostMedia PostId="p.Id"><Fallback><CourtArt Initials="@Initials" Label="@(F["Highlight_Alt", p.Title ?? ""].Value)" /><p class="bp-feed-hint">@F["Highlight_Caption"]</p></Fallback></PostMedia>
                 <p class="bp-feed-text" data-field="title">@p.Title</p>
-                <p class="bp-feed-hint">@F["Highlight_Caption"]</p>
                 break;
             case PostType.Badge:
                 <p class="bp-feed-badge" data-field="badge">

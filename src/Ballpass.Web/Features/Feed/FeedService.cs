@@ -84,15 +84,11 @@ public class FeedService(BallpassDbContext db, TimeProvider time, IOptions<FeedO
 
         var ids = posts.Select(p => p.Id).ToList();
         var own = new HashSet<string>();
-        var counts = new Dictionary<int, int>();
         var kudoed = new HashSet<int>();
         var following = new HashSet<string>();
         var interested = new HashSet<int>();
         if (viewer.Key is { } key)
         {
-            var ownIds = posts.Where(p => p.AuthorKey == key).Select(p => p.Id).ToList();
-            counts = await db.Set<Kudos>().Where(k => ownIds.Contains(k.PostId)).GroupBy(k => k.PostId)
-                .Select(g => new { g.Key, Count = g.Count() }).ToDictionaryAsync(x => x.Key, x => x.Count, ct);
             kudoed = (await db.Set<Kudos>().Where(k => k.ActorKey == key && ids.Contains(k.PostId)).Select(k => k.PostId).ToListAsync(ct)).ToHashSet();
             var authorKeys = posts.Select(p => p.AuthorKey).Distinct().ToList();
             following = (await db.Set<Follow>().Where(f => f.FollowerKey == key && authorKeys.Contains(f.TargetKey)).Select(f => f.TargetKey).ToListAsync(ct)).ToHashSet();
@@ -126,7 +122,7 @@ public class FeedService(BallpassDbContext db, TimeProvider time, IOptions<FeedO
             }
             var isOwn = viewer.Key is not null && p.AuthorKey == viewer.Key;
             items.Add(new FeedItem(p, nameEl, nameLatin, roleKey, slug, clubName, isOwn,
-                kudoed.Contains(p.Id), isOwn ? counts.GetValueOrDefault(p.Id) : null,
+                kudoed.Contains(p.Id),
                 following.Contains(p.AuthorKey), interestAthlete is { } id && interested.Contains(id)));
         }
         return items;
