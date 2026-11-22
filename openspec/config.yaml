@@ -7,7 +7,7 @@ context: |
   MVP items (every scenario must trace to one): M0 skeleton, M1 athlete profile, M2 coach search,
   M3 express interest, M4 shortlist, M5 demo login, M6 Greek/English.
   IN SCOPE since 2026-11-21 (founder decision: "LinkedIn for athletes", "one very good MVP, not multiple"): feed with
-  structured + free-text posts, one reaction type, safeguards (adults only, report button, no comments, no DMs),
+  structured + free-text posts, one reaction type, safeguards (adults only, report button, no DMs; comments since 2026-11-22, see below),
   follows, ONE polished dark theme (no theme variants), shareable player cards, stats charts, fit scores.
   Since 2026-11-22 ("alive feed"): self-hosted stock photos/videos WITHOUT recognisable faces (logged in docs/ASSETS.md),
   comments with safeguards (adults only, rate limit, delete/hide/report, no replies-to-replies), public kudos counts,
