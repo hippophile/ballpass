@@ -9,7 +9,10 @@ context: |
   IN SCOPE since 2026-11-21 (founder decision: "LinkedIn for athletes", "one very good MVP, not multiple"): feed with
   structured + free-text posts, one reaction type, safeguards (adults only, report button, no comments, no DMs),
   follows, ONE polished dark theme (no theme variants), shareable player cards, stats charts, fit scores.
-  OUT OF SCOPE (reject in review): chat/DMs, payments, uploads of real photos/video files, Trust Score with negative
+  Since 2026-11-22 ("alive feed"): self-hosted stock photos/videos WITHOUT recognisable faces (logged in docs/ASSETS.md),
+  comments with safeguards (adults only, rate limit, delete/hide/report, no replies-to-replies), public kudos counts,
+  stories bar, jersey avatars, who-to-follow, trending tags.
+  OUT OF SCOPE (reject in review): chat/DMs, payments, user uploads of photos/video files, recognisable faces in any media, Trust Score with negative
   points, computer vision on real video, ESKA/EOK/Mismatch endorsement claims, anything involving minors.
   Demo data is fictional only: every seeded row is flagged demo, every page shows the demo banner,
   no real people, no minors (under 18) in search results.

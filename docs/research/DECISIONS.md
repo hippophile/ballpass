@@ -13,3 +13,12 @@ Source research: `wow-plan.md` (20 agents, 8 research lanes + founder-critic). T
 | Loop | One-click persona switch, interest timeline (sent → seen → replied) with Accept/Decline, reset button. No presenter bar, no pulse funnel, no club needs board. |
 
 Build order: Phase A Look (sequential) → Phase B Feed / Find / Evidence / Share in parallel worktrees → Phase C Loop + audit.
+
+## Update 2026-11-22 — "alive feed" (founder: "something is missing, a feed photos images videos, people engaging, this is too stiff")
+
+| Area | Decision (reverses earlier cuts where noted) |
+|---|---|
+| Photos & video | IN. Free-licence stock (Unsplash/Pexels/CC0) with **no recognisable faces**, self-hosted, compressed, every asset logged in docs/ASSETS.md; caption chip "stock · demo". Generated motion graphics allowed when labelled. |
+| Comments | IN (reverses "No comments"). Flat, adults only, 280 chars, rate-limited, author deletes, post author hides, report → 3 reports hide, no replies-to-replies, no DMs. |
+| Kudos count | PUBLIC (reverses "author only") + likers line. |
+| Liveliness | Stories bar (highlight reels), jersey avatars (illustrated, no faces), who-to-follow, trending #tags, "new posts" pill. All seeded activity labelled. |
