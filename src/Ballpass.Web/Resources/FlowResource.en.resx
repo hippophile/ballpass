@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Home_Eyebrow" xml:space="preserve"><value>Women's basketball · Greece</value></data>
+  <data name="Home_Title1" xml:space="preserve"><value>Players find a team.</value></data>
+  <data name="Home_Title2" xml:space="preserve"><value>Teams find players.</value></data>
+  <data name="Home_Sub" xml:space="preserve"><value>One profile with proof. One expression of interest. One contact.</value></data>
+  <data name="Door_CoachLabel" xml:space="preserve"><value>For coaches</value></data>
+  <data name="Door_CoachTitle" xml:space="preserve"><value>Looking for a player?</value></data>
+  <data name="Door_CoachText" xml:space="preserve"><value>Say what you need. We show who fits, and why.</value></data>
+  <data name="Door_CoachCta" xml:space="preserve"><value>Find a player →</value></data>
+  <data name="Door_AthleteLabel" xml:space="preserve"><value>For players</value></data>
+  <data name="Door_AthleteTitle" xml:space="preserve"><value>Looking for a team?</value></data>
+  <data name="Door_AthleteText" xml:space="preserve"><value>Clubs find you. You decide who to answer.</value></data>
+  <data name="Door_AthleteCta" xml:space="preserve"><value>See who wants you →</value></data>
+  <data name="How_Title" xml:space="preserve"><value>How the connection happens</value></data>
+  <data name="How_Step1" xml:space="preserve"><value>The player marks herself “Looking for a team”</value></data>
+  <data name="How_Step1Text" xml:space="preserve"><value>A profile with stats, team history and a source for every number.</value></data>
+  <data name="How_Step2" xml:space="preserve"><value>A coach sees a match and sends interest</value></data>
+  <data name="How_Step2Text" xml:space="preserve"><value>Ranked with reasons: position, height, region, output. Every number says where it comes from:</value></data>
+  <data name="How_Step3" xml:space="preserve"><value>She accepts; they exchange contacts</value></data>
+  <data name="How_Step3Text" xml:space="preserve"><value>No middlemen. The player decides.</value></data>
+  <data name="Counts_Aria" xml:space="preserve"><value>Ballpass right now</value></data>
+  <data name="Count_Looking" xml:space="preserve"><value>looking for a team</value></data>
+  <data name="Count_Interests" xml:space="preserve"><value>expressions of interest</value></data>
+  <data name="Count_Connections" xml:space="preserve"><value>connections</value></data>
+  <data name="Connections_Title" xml:space="preserve"><value>Recent connections</value></data>
+  <data name="Connections_Aria" xml:space="preserve"><value>{0} and {1} connected</value></data>
+  <data name="Final_Title" xml:space="preserve"><value>Start from your side</value></data>
+  <data name="Demo_AsCoach" xml:space="preserve"><value>Enter as a coach</value></data>
+  <data name="Demo_AsCoachF" xml:space="preserve"><value>Enter as a coach</value></data>
+  <data name="Demo_AsAthlete" xml:space="preserve"><value>Enter as a player</value></data>
+  <data name="Demo_AsAthleteF" xml:space="preserve"><value>Enter as a player</value></data>
+  <data name="Demo_All" xml:space="preserve"><value>All ({0})</value></data>
+  <data name="Chip_Looking" xml:space="preserve"><value>Looking for a team</value></data>
+  <data name="Inbox_Sub" xml:space="preserve"><value>Coaches who are interested in you</value></data>
+  <data name="Inbox_Connected" xml:space="preserve"><value>You're connected ✓</value></data>
+  <data name="Inbox_Email" xml:space="preserve"><value>Send an email</value></data>
+  <data name="Sent_Next" xml:space="preserve"><value>Next match →</value></data>
+  <data name="Sent_EmptyCta" xml:space="preserve"><value>Find players →</value></data>
+  <data name="Sent_Connected" xml:space="preserve"><value>Connected: they now have your club's email.</value></data>
+  <data name="NotFound_BackMatch" xml:space="preserve"><value>Back to Match</value></data>
+  <data name="NotFound_BackFeed" xml:space="preserve"><value>Back to the feed</value></data>
+  <data name="Rail_AnonTitle" xml:space="preserve"><value>Players ↔ coaches</value></data>
+  <data name="Rail_AnonText" xml:space="preserve"><value>Enter with one click, no password, and see how a connection happens.</value></data>
+  <data name="Rail_AnonCta" xml:space="preserve"><value>Try it →</value></data>
+  <data name="Rail_Aria" xml:space="preserve"><value>Your profile</value></data>
+  <data name="Rail_LookingTitle" xml:space="preserve"><value>Looking for a team now</value></data>
+  <data name="Feed_StockAlt" xml:space="preserve"><value>A moment from basketball practice</value></data>
+</root>

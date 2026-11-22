@@ -227,11 +227,11 @@ public class FeedTests(BallpassAppFactory app)
         foreach (var f in new[] { "season", "games", "points", "rebounds", "assists" })
             Assert.Contains($"data-field=\"{f}\"", stat);
 
+        // flow-release §4.3: a highlight always shows a real picture (its photos or the feed-pool stock photo), never generated art.
         var highlight = cards.First(c => c.Type == "Highlight").Html;
-        Assert.Contains("<svg", highlight);
-        Assert.Contains("role=\"img\"", highlight);
-        Assert.DoesNotContain("<img", highlight);
-        Assert.DoesNotContain("<video", highlight);
+        Assert.Matches("<img\\b[^>]*src=\"/media/[^\"]+\"[^>]*alt=\"[^\"]{5,}\"", highlight);
+        Assert.DoesNotContain("bp-feed-art", highlight);
+        Assert.DoesNotContain("video/gfx-", highlight);
 
         Assert.Contains("data-field=\"badge\"", cards.First(c => c.Type == "Badge").Html);
         Assert.Contains("data-field=\"text\"", cards.First(c => c.Type == "FreeText").Html);
@@ -867,5 +867,71 @@ public static class UnitDb
     public sealed class FixedTime(DateTimeOffset now) : TimeProvider
     {
         public override DateTimeOffset GetUtcNow() => now;
+    }
+}
+
+// Spec: openspec/changes/flow-release/specs/feed/spec.md (SPEC §4.3): three columns, rails.
+[Collection("db")]
+public class FeedLayoutTests(BallpassAppFactory app)
+{
+    private readonly FeedHarness h = new(app);
+
+    private static string Css(string file) =>
+        Regex.Replace(File.ReadAllText(Path.Combine(Repo(), "src", "Ballpass.Web", "wwwroot", "css", file)), "\\s+", " ");
+
+    private static string Repo()
+    {
+        var dir = AppContext.BaseDirectory;
+        while (dir is not null && !File.Exists(Path.Combine(dir, "Ballpass.slnx"))) dir = Path.GetDirectoryName(dir);
+        return dir ?? throw new InvalidOperationException("repo root not found");
+    }
+
+    [Fact]
+    public void Feed_grid_is_240_600_320_and_the_old_width_override_is_gone()
+    {
+        Assert.Contains("grid-template-columns: 240px minmax(0, 600px) 320px", Css("bp-feed.css"));
+        Assert.Contains("column-gap: 28px", Css("bp-feed.css"));
+        var engage = Css("bp-engage.css");
+        Assert.DoesNotContain(":has(.bp-engage-side)", engage);
+        Assert.DoesNotContain("minmax(0, 720px) 340px", engage);
+    }
+
+    [Fact]
+    public async Task Feed_has_a_left_rail_a_centre_column_and_a_right_rail()
+    {
+        var html = await FeedHarness.Html(app.Client(), "/feed");
+
+        var left = html.IndexOf("data-feed-rail=\"left\"", StringComparison.Ordinal);
+        var centre = html.IndexOf("data-feed-main", StringComparison.Ordinal);
+        var right = html.IndexOf("data-engage=\"sidebar\"", StringComparison.Ordinal);
+        Assert.True(left > 0 && centre > left && right > centre, "rails must be left, centre, right");
+        var rail = Regex.Match(html, "<aside[^>]*data-feed-rail=\"left\".*?</aside>", RegexOptions.Singleline).Value;
+        Assert.Contains("href=\"/demo", rail);   // anonymous: one way in
+    }
+
+    [Fact]
+    public async Task Coach_left_rail_has_the_me_card_and_the_coach_links()
+    {
+        var coachId = h.CoachId(2);
+        var name = h.Db(db => db.Coaches.Where(c => c.Id == coachId).Select(c => c.FirstName + " " + c.LastName).Single());
+        var html = await FeedHarness.Html(await h.LoginAsync("coach", coachId), "/feed");
+
+        var rail = Regex.Match(html, "<aside[^>]*data-feed-rail=\"left\".*?</aside>", RegexOptions.Singleline).Value;
+        Assert.Contains(name, rail);
+        Assert.Matches("<svg[^>]*class=\"[^\"]*bp-jersey[^>]*width=\"64\"", rail);
+        var links = Regex.Matches(rail, "<a[^>]*href=\"([^\"]+)\"").Select(m => m.Groups[1].Value).ToList();
+        Assert.Equal(["/match", "/shortlist", "/me/sent"], links);
+    }
+
+    [Fact]
+    public async Task Athlete_left_rail_links_to_the_inbox_and_the_own_profile()
+    {
+        var athleteId = h.AthleteId(3);
+        var slug = h.Db(db => db.Athletes.Where(a => a.Id == athleteId).Select(a => a.Slug).Single());
+        var html = await FeedHarness.Html(await h.LoginAsync("athlete", athleteId), "/feed");
+
+        var rail = Regex.Match(html, "<aside[^>]*data-feed-rail=\"left\".*?</aside>", RegexOptions.Singleline).Value;
+        var links = Regex.Matches(rail, "<a[^>]*href=\"([^\"]+)\"").Select(m => m.Groups[1].Value).ToList();
+        Assert.Equal(["/me/inbox", $"/p/{slug}"], links);
     }
 }

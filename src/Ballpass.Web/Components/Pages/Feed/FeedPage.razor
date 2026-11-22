@@ -10,69 +10,73 @@
 
 <PageTitle>@F["Page_Title"]</PageTitle>
 
+@* flow-release §4.3: three columns at 1512 (240 / 600 / 320): who you are and your next moves, the feed, who is looking for a team. *@
 <div class="bp-feed">
-    <h1>@F["Page_Title"]</h1>
-    <p class="bp-feed-intro">@F["Page_Intro"]</p>
+    <FeedRail />
+    <div class="bp-feed-main" data-feed-main>
+        <h1>@F["Page_Title"]</h1>
+        <p class="bp-feed-intro">@F["Page_Intro"]</p>
 
-    <StoriesBar />
+        <StoriesBar />
 
-    @if (StatusText is not null)
-    {
-        <p class="bp-status" role="status" data-feed-status="@Status">@StatusText</p>
-    }
+        @if (StatusText is not null)
+        {
+            <p class="bp-status" role="status" data-feed-status="@Status">@StatusText</p>
+        }
 
-    <nav class="bp-feed-tabs" aria-label="@F["Tab_Aria"]">
-        <a href="/feed" aria-current="@(following ? null : "page")">@F["Tab_ForYou"]</a>
-        <a href="/feed?tab=following" aria-current="@(following ? "page" : null)">@F["Tab_Following"]</a>
-    </nav>
-    <EngageBelowTabs Viewer="viewer" Following="following" Tag="@Tag" Before="@Before" />
+        <nav class="bp-feed-tabs" aria-label="@F["Tab_Aria"]">
+            <a href="/feed" aria-current="@(following ? null : "page")">@F["Tab_ForYou"]</a>
+            <a href="/feed?tab=following" aria-current="@(following ? "page" : null)">@F["Tab_Following"]</a>
+        </nav>
+        <EngageBelowTabs Viewer="viewer" Following="following" Tag="@Tag" Before="@Before" />
 
-    @if (viewer.SignedIn)
-    {
-        <Composer Viewer="viewer" ReturnUrl="@ReturnUrl" />
-    }
+        @if (viewer.SignedIn)
+        {
+            <Composer Viewer="viewer" ReturnUrl="@ReturnUrl" />
+        }
 
-    @if (unavailable)
-    {
-        <p class="bp-empty" data-feed-unavailable>@F["Unavailable"]</p>
-    }
-    else if (following && !viewer.SignedIn)
-    {
-        <div class="bp-feed-empty" data-feed-empty>
-            <p>@F["Following_SignIn"]</p>
-            <a class="bp-btn" href="/demo?ReturnUrl=%2Ffeed%3Ftab%3Dfollowing">@F["Following_SignInCta"]</a>
-        </div>
-    }
-    else if (page.Items.Count == 0)
-    {
-        <div class="bp-feed-empty" data-feed-empty>
-            <p>@F[following ? "Empty_Following" : "Empty_ForYou"]</p>
-            @if (following)
-            {
-                <a class="bp-btn" href="/feed">@F["Empty_FollowingCta"]</a>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="bp-feed-list">
-            @foreach (var item in page.Items)
-            {
-                <PostCard Item="item" Viewer="viewer" ReturnUrl="@ReturnUrl" />
-                <EngageInline Item="item" Items="page.Items" Viewer="viewer" />
-            }
-        </div>
-        <p class="bp-feed-paging">
-            @if (!string.IsNullOrEmpty(Before))
-            {
-                <a class="bp-btn bp-btn-secondary" href="@BaseUrl">@F["BackToNewest"]</a>
-            }
-            @if (page.NextCursor is not null)
-            {
-                <a class="bp-btn bp-btn-secondary" data-feed-more href="@MoreHref">@F["More"]</a>
-            }
-        </p>
-    }
+        @if (unavailable)
+        {
+            <p class="bp-empty" data-feed-unavailable>@F["Unavailable"]</p>
+        }
+        else if (following && !viewer.SignedIn)
+        {
+            <div class="bp-feed-empty" data-feed-empty>
+                <p>@F["Following_SignIn"]</p>
+                <a class="bp-btn" href="/demo?ReturnUrl=%2Ffeed%3Ftab%3Dfollowing">@F["Following_SignInCta"]</a>
+            </div>
+        }
+        else if (page.Items.Count == 0)
+        {
+            <div class="bp-feed-empty" data-feed-empty>
+                <p>@F[following ? "Empty_Following" : "Empty_ForYou"]</p>
+                @if (following)
+                {
+                    <a class="bp-btn" href="/feed">@F["Empty_FollowingCta"]</a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="bp-feed-list">
+                @foreach (var (item, index) in page.Items.Select((item, index) => (item, index)))
+                {
+                    <PostCard Item="item" Viewer="viewer" ReturnUrl="@ReturnUrl" Eager="@(index < 4 && string.IsNullOrEmpty(Before))" />
+                    <EngageInline Item="item" Items="page.Items" Viewer="viewer" />
+                }
+            </div>
+            <p class="bp-feed-paging">
+                @if (!string.IsNullOrEmpty(Before))
+                {
+                    <a class="bp-btn bp-btn-secondary" href="@BaseUrl">@F["BackToNewest"]</a>
+                }
+                @if (page.NextCursor is not null)
+                {
+                    <a class="bp-btn bp-btn-secondary" data-feed-more href="@MoreHref">@F["More"]</a>
+                }
+            </p>
+        }
+    </div>
     <EngageSidebar Viewer="viewer" />
 </div>
 

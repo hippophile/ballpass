@@ -1,0 +1,195 @@
+/* /demo (flow-release §4.2): page glow, featured photo cards, two compact persona lists. */
+.bp-demo {
+    position: relative;
+    isolation: isolate;
+}
+
+    .bp-demo::before {
+        content: "";
+        position: absolute;
+        inset: -24px 0 auto 0;
+        height: 480px;
+        z-index: -1;
+        pointer-events: none;
+        background: var(--bp-grad-hero);
+        /* Fade the glow out at the content box edges so it never reads as a tinted rectangle. */
+        -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+        mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+    }
+
+    .bp-demo h1 {
+        margin: 0 0 var(--bp-sp-1);
+    }
+
+.bp-demo-intro {
+    color: var(--bp-muted);
+    margin: 0 0 var(--bp-sp-5);
+}
+
+/* ---- featured row ---- */
+.bp-persona-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: var(--bp-sp-6);
+}
+
+    .bp-persona-hero ::deep .bp-persona-hero-card {
+        height: 260px;
+        border-radius: var(--bp-r-md);
+        border: 1px solid var(--bp-border);
+        box-shadow: var(--bp-shadow);
+        transition: box-shadow 150ms ease-out;
+    }
+
+        .bp-persona-hero ::deep .bp-persona-hero-card.bp-door-coach:hover, .bp-persona-hero ::deep .bp-persona-hero-card.bp-door-coach:focus-within {
+            box-shadow: var(--bp-shadow), var(--bp-glow-accent);
+        }
+
+        .bp-persona-hero ::deep .bp-persona-hero-card.bp-door-athlete:hover, .bp-persona-hero ::deep .bp-persona-hero-card.bp-door-athlete:focus-within {
+            box-shadow: var(--bp-shadow), var(--bp-glow-athlete);
+        }
+
+    /* Portrait coach photo: keep faces in frame. */
+    .bp-persona-hero ::deep .bp-persona-hero-card > img {
+        object-position: center 30%;
+    }
+
+/* ---- two compact lists ---- */
+.bp-persona-lists {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+.bp-persona-list {
+    background: var(--bp-s1);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+    padding: var(--bp-sp-2) var(--bp-sp-4) var(--bp-sp-3);
+    min-width: 0;
+}
+
+.bp-persona-list-title {
+    font-size: var(--bp-fs-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bp-muted);
+    margin: var(--bp-sp-3) 0 var(--bp-sp-1);
+}
+
+.bp-persona-row {
+    margin: 0;
+    border-bottom: 1px solid var(--bp-border);
+}
+
+.bp-persona-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--bp-sp-3);
+    width: calc(100% + 2 * var(--bp-sp-2));
+    min-height: 64px;
+    padding: var(--bp-sp-2);
+    margin: 0 calc(-1 * var(--bp-sp-2));
+    box-sizing: border-box;
+    background: transparent;
+    border: 0;
+    border-radius: var(--bp-r-sm);
+    color: var(--bp-text);
+    text-align: start;
+    font: inherit;
+    cursor: pointer;
+    transition: background-color 150ms ease-out;
+}
+
+    .bp-persona-btn:hover, .bp-persona-btn:focus-visible {
+        background: var(--bp-s2);
+    }
+
+        .bp-persona-btn:hover .bp-persona-chevron {
+            color: var(--bp-accent);
+            transform: translateX(2px);
+        }
+
+.bp-persona-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.bp-persona-name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--bp-sp-2);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.bp-persona-info {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--bp-muted);
+    overflow-wrap: anywhere;
+}
+
+.bp-persona-chevron {
+    flex: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--bp-faint);
+    transition: transform 150ms ease-out, color 150ms ease-out;
+}
+
+.bp-persona-more > summary {
+    cursor: pointer;
+    list-style: none;
+    padding: var(--bp-sp-3) 0 var(--bp-sp-1);
+    font-weight: 600;
+    color: var(--bp-muted);
+}
+
+    .bp-persona-more > summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .bp-persona-more > summary::after {
+        content: " ▾";
+    }
+
+    .bp-persona-more > summary:hover {
+        color: var(--bp-text);
+    }
+
+.bp-persona-more[open] > summary {
+    border-bottom: 1px solid var(--bp-border);
+    padding-bottom: var(--bp-sp-2);
+}
+
+/* ---- phones ---- */
+@media (max-width: 767px) {
+    .bp-persona-hero {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-bottom: var(--bp-sp-5);
+    }
+
+        .bp-persona-hero ::deep .bp-persona-hero-card {
+            height: 200px;
+        }
+
+    .bp-persona-lists {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bp-persona-btn, .bp-persona-chevron, .bp-persona-hero ::deep .bp-persona-hero-card {
+        transition: none;
+    }
+}

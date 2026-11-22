@@ -110,7 +110,7 @@
                 </p>
                 break;
             case PostType.Highlight:
-                <PostMedia PostId="p.Id"><Fallback><CourtArt Initials="@Initials" Label="@(F["Highlight_Alt", p.Title ?? ""].Value)" /></Fallback></PostMedia>
+                @if (!HideMedia) { <PostMedia PostId="p.Id" Pool="true" Eager="Eager" /> }
                 <p class="bp-feed-text" data-field="title">@p.Title</p>
                 break;
             case PostType.Badge:
@@ -124,9 +124,9 @@
                 <p class="bp-feed-text" data-field="text">@p.Text</p>
                 break;
         }
-        @if (p.Type is PostType.FreeText or PostType.TryoutCall or PostType.LookingForTeam)
+        @if (!HideMedia && p.Type is PostType.FreeText or PostType.TryoutCall or PostType.LookingForTeam)
         {
-            <PostMedia PostId="p.Id" />
+            <PostMedia PostId="p.Id" Eager="Eager" />
         }
     </div>
 
@@ -163,7 +163,7 @@
                 {
                     <form method="post" action="/p/@Item.Slug/interest" data-feed-action="interest" class="bp-feed-inline">
                         <AntiforgeryToken />
-                        <button type="submit" class="bp-btn">@F["Interest"]</button>
+                        <button type="submit" class="bp-btn-outline">@F["Interest"]</button>
                     </form>
                 }
                 <a class="bp-feed-profile" href="/p/@Item.Slug">@F["ProfileLink"]</a>
@@ -179,6 +179,10 @@
     /// <summary>Home strip and anonymous visitors: no forms at all.</summary>
     [Parameter] public bool ReadOnly { get; set; }
     [Parameter] public string ReturnUrl { get; set; } = "/feed";
+    /// <summary>Above the fold (first posts of a page): media load eagerly.</summary>
+    [Parameter] public bool Eager { get; set; }
+    /// <summary>The host shows its own photo header (home strip): no media inside the card.</summary>
+    [Parameter] public bool HideMedia { get; set; }
 
     private bool CanAct => !ReadOnly && Viewer.SignedIn;
 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Home_Eyebrow" xml:space="preserve"><value>Γυναικείο μπάσκετ · Ελλάδα</value></data>
+  <data name="Home_Title1" xml:space="preserve"><value>Η αθλήτρια βρίσκει ομάδα.</value></data>
+  <data name="Home_Title2" xml:space="preserve"><value>Η ομάδα βρίσκει αθλήτρια.</value></data>
+  <data name="Home_Sub" xml:space="preserve"><value>Ένα προφίλ με αποδείξεις. Μία εκδήλωση ενδιαφέροντος. Μία επαφή.</value></data>
+  <data name="Door_CoachLabel" xml:space="preserve"><value>Για προπονητές</value></data>
+  <data name="Door_CoachTitle" xml:space="preserve"><value>Ψάχνετε παίκτρια;</value></data>
+  <data name="Door_CoachText" xml:space="preserve"><value>Πείτε τι χρειάζεστε. Σας δείχνουμε ποιες ταιριάζουν και γιατί.</value></data>
+  <data name="Door_CoachCta" xml:space="preserve"><value>Βρείτε παίκτρια →</value></data>
+  <data name="Door_AthleteLabel" xml:space="preserve"><value>Για αθλήτριες</value></data>
+  <data name="Door_AthleteTitle" xml:space="preserve"><value>Ψάχνετε ομάδα;</value></data>
+  <data name="Door_AthleteText" xml:space="preserve"><value>Οι σύλλογοι σάς βρίσκουν. Εσείς αποφασίζετε ποιον θα απαντήσετε.</value></data>
+  <data name="Door_AthleteCta" xml:space="preserve"><value>Δείτε ποιος σας θέλει →</value></data>
+  <data name="How_Title" xml:space="preserve"><value>Πώς γίνεται η σύνδεση</value></data>
+  <data name="How_Step1" xml:space="preserve"><value>Η αθλήτρια δηλώνει «Ψάχνει ομάδα»</value></data>
+  <data name="How_Step1Text" xml:space="preserve"><value>Προφίλ με στατιστικά, ιστορικό ομάδων και πηγή για κάθε αριθμό.</value></data>
+  <data name="How_Step2" xml:space="preserve"><value>Ο προπονητής ή η προπονήτρια βλέπει ταίριασμα και στέλνει ενδιαφέρον</value></data>
+  <data name="How_Step2Text" xml:space="preserve"><value>Κατάταξη με λόγο: θέση, ύψος, περιοχή, απόδοση. Κάθε αριθμός λέει από πού προέρχεται:</value></data>
+  <data name="How_Step3" xml:space="preserve"><value>Εκείνη αποδέχεται, ανταλλάσσουν επαφή</value></data>
+  <data name="How_Step3Text" xml:space="preserve"><value>Χωρίς μεσάζοντες. Η αθλήτρια αποφασίζει.</value></data>
+  <data name="Counts_Aria" xml:space="preserve"><value>Το Ballpass τώρα</value></data>
+  <data name="Count_Looking" xml:space="preserve"><value>ψάχνουν ομάδα</value></data>
+  <data name="Count_Interests" xml:space="preserve"><value>εκδηλώσεις ενδιαφέροντος</value></data>
+  <data name="Count_Connections" xml:space="preserve"><value>συνδέσεις</value></data>
+  <data name="Connections_Title" xml:space="preserve"><value>Πρόσφατες συνδέσεις</value></data>
+  <data name="Connections_Aria" xml:space="preserve"><value>{0} και {1} συνδέθηκαν</value></data>
+  <data name="Final_Title" xml:space="preserve"><value>Ξεκινήστε από την πλευρά σας</value></data>
+  <data name="Demo_AsCoach" xml:space="preserve"><value>Μπείτε ως προπονητής</value></data>
+  <data name="Demo_AsCoachF" xml:space="preserve"><value>Μπείτε ως προπονήτρια</value></data>
+  <data name="Demo_AsAthlete" xml:space="preserve"><value>Μπείτε ως αθλητής</value></data>
+  <data name="Demo_AsAthleteF" xml:space="preserve"><value>Μπείτε ως αθλήτρια</value></data>
+  <data name="Demo_All" xml:space="preserve"><value>Όλοι ({0})</value></data>
+  <data name="Chip_Looking" xml:space="preserve"><value>Ψάχνει ομάδα</value></data>
+  <data name="Inbox_Sub" xml:space="preserve"><value>Προπονητές και προπονήτριες που ενδιαφέρθηκαν για εσάς</value></data>
+  <data name="Inbox_Connected" xml:space="preserve"><value>Συνδεθήκατε ✓</value></data>
+  <data name="Inbox_Email" xml:space="preserve"><value>Στείλτε email</value></data>
+  <data name="Sent_Next" xml:space="preserve"><value>Επόμενο ταίριασμα →</value></data>
+  <data name="Sent_EmptyCta" xml:space="preserve"><value>Βρείτε αθλήτριες →</value></data>
+  <data name="Sent_Connected" xml:space="preserve"><value>Συνδεθήκατε: έχει πλέον το email του συλλόγου σας.</value></data>
+  <data name="NotFound_BackMatch" xml:space="preserve"><value>Πίσω στο Ταίριασμα</value></data>
+  <data name="NotFound_BackFeed" xml:space="preserve"><value>Πίσω στη Ροή</value></data>
+  <data name="Rail_AnonTitle" xml:space="preserve"><value>Αθλήτριες ↔ προπονητές</value></data>
+  <data name="Rail_AnonText" xml:space="preserve"><value>Μπείτε με ένα κλικ, χωρίς κωδικό, και δείτε πώς γίνεται η σύνδεση.</value></data>
+  <data name="Rail_AnonCta" xml:space="preserve"><value>Δοκιμάστε το →</value></data>
+  <data name="Rail_Aria" xml:space="preserve"><value>Το προφίλ σας</value></data>
+  <data name="Rail_LookingTitle" xml:space="preserve"><value>Ψάχνουν ομάδα τώρα</value></data>
+  <data name="Feed_StockAlt" xml:space="preserve"><value>Στιγμή από προπόνηση μπάσκετ</value></data>
+</root>

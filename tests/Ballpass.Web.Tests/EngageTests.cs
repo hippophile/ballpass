@@ -826,6 +826,25 @@ public class EngageTests(BallpassAppFactory app)
     }
 
     [Fact]
+    public async Task Right_rail_shows_four_athletes_looking_for_a_team_then_at_most_five_trends()
+    {
+        var html = await FeedHarness.Html(app.Client(), "/feed");
+
+        var rail = Regex.Match(html, "<aside[^>]*data-engage=\"sidebar\"[^>]*>.*?</aside>", RegexOptions.Singleline).Value;
+        Assert.NotEmpty(rail);
+        var looking = Regex.Match(rail, "<section[^>]*data-engage=\"looking\".*?</section>", RegexOptions.Singleline).Value;
+        Assert.Contains("Ψάχνουν ομάδα τώρα", looking);
+        var slugs = Regex.Matches(looking, "href=\"/p/([^\"]+)\"").Select(m => m.Groups[1].Value).Distinct().ToList();
+        Assert.Equal(4, slugs.Count);
+        Assert.All(slugs, s => Assert.True(h.Db(db => db.Athletes.Single(a => a.Slug == s).LookingForTeam), $"{s} is not looking for a team"));
+        Assert.Matches("<svg[^>]*class=\"[^\"]*bp-jersey", looking);
+        Assert.DoesNotContain("data-engage=\"follow\"", rail);   // who-to-follow leaves the rail (phones keep it inline)
+        var trends = Regex.Match(rail, "data-engage=\"trends\".*?</section>", RegexOptions.Singleline).Value;
+        Assert.InRange(Regex.Matches(trends, "data-tag-key=").Count, 1, 5);
+        Assert.True(rail.IndexOf("data-engage=\"looking\"", StringComparison.Ordinal) < rail.IndexOf("data-engage=\"trends\"", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public async Task Other_pages_are_not_affected()
     {
         var client = await h.LoginAsync("coach", h.CoachId(8));

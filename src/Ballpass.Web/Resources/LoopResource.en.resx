@@ -8,7 +8,7 @@
   <data name="Nav_SentUnread" xml:space="preserve"><value>new replies</value></data>
   <data name="Sent_Title" xml:space="preserve"><value>Sent interests</value></data>
   <data name="Sent_Intro" xml:space="preserve"><value>Every interest you sent and where it stands: sent, seen, replied.</value></data>
-  <data name="Sent_Empty" xml:space="preserve"><value>You have not sent any interest yet. Find athletes through search.</value></data>
+  <data name="Sent_Empty" xml:space="preserve"><value>You have not sent any interest yet.</value></data>
   <data name="Sent_Aria" xml:space="preserve"><value>Progress: sent, seen, replied</value></data>
   <data name="Step_Sent" xml:space="preserve"><value>Sent</value></data>
   <data name="Step_Seen" xml:space="preserve"><value>Seen</value></data>
@@ -16,9 +16,9 @@
   <data name="Step_Pending" xml:space="preserve"><value>waiting</value></data>
   <data name="Reply_Accepted" xml:space="preserve"><value>Accepted</value></data>
   <data name="Reply_Declined" xml:space="preserve"><value>Declined</value></data>
-  <data name="Inbox_New" xml:space="preserve"><value>new</value></data>
+  <data name="Inbox_New" xml:space="preserve"><value>New</value></data>
   <data name="Inbox_Accept" xml:space="preserve"><value>Accept</value></data>
-  <data name="Inbox_Decline" xml:space="preserve"><value>Decline</value></data>
+  <data name="Inbox_Decline" xml:space="preserve"><value>Not now</value></data>
   <data name="Inbox_ReplyAria" xml:space="preserve"><value>Reply to this interest</value></data>
   <data name="Inbox_YouAccepted" xml:space="preserve"><value>You accepted this interest.</value></data>
   <data name="Inbox_YouDeclined" xml:space="preserve"><value>You declined this interest.</value></data>

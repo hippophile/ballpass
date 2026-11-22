@@ -3,12 +3,16 @@
 @inject IServiceScopeFactory ScopeFactory
 @inject ILogger<PostMedia> Logger
 @inject IStringLocalizer<MediaResource> M
+@inject IStringLocalizer<FlowResource> F
 
 @* Media of one post: one item, or a scroll-snap carousel with dot links (swipe on a phone, no JS). Own scope + DbContext: sibling cards
-   initialise while the host page still holds the request-scoped context. A media failure never breaks the post. *@
+   initialise while the host page still holds the request-scoped context. A media failure never breaks the post.
+   flow-release §4.3: never an empty or generated-graphic tile. Generated graphics (dark schematic videos with a baked-in demo label)
+   are skipped; when nothing real is left and the post wants a picture (Pool, or it only had graphics), the feed pool photo for
+   postId % pool size is shown. A text-only post renders nothing. *@
 @if (items.Count == 1)
 {
-    <div class="bp-media" data-media-count="1"><MediaTile Item="items[0]" Key="@($"p{PostId}-0")" /></div>
+    <div class="bp-media" data-media-count="1"><MediaTile Item="items[0]" Key="@($"p{PostId}-0")" Eager="Eager" Tall="@(items[0].Kind == MediaKind.Photo && items[0].Height > items[0].Width)" /></div>
 }
 else if (items.Count > 1)
 {
@@ -16,7 +20,7 @@ else if (items.Count > 1)
         <ul class="bp-media-carousel" data-media-carousel aria-label="@M["Carousel_Label"]">
             @for (var i = 0; i < items.Count; i++)
             {
-                <li class="bp-media-slide" id="ms-p@(PostId)-@i" data-media-slide><MediaTile Item="items[i]" Key="@($"p{PostId}-{i}")" /></li>
+                <li class="bp-media-slide" id="ms-p@(PostId)-@i" data-media-slide><MediaTile Item="items[i]" Key="@($"p{PostId}-{i}")" Eager="@(Eager && i == 0)" /></li>
             }
         </ul>
         <nav class="bp-media-dots">
@@ -27,15 +31,13 @@ else if (items.Count > 1)
         </nav>
     </div>
 }
-else if (Fallback is not null)
-{
-    @Fallback
-}
 
 @code {
     [Parameter, EditorRequired] public int PostId { get; set; }
-    /// <summary>Shown when the post has no media (the old generated art of highlight posts).</summary>
-    [Parameter] public RenderFragment? Fallback { get; set; }
+    /// <summary>The post wants a picture (highlight): use the feed pool photo when it has no real media.</summary>
+    [Parameter] public bool Pool { get; set; }
+    /// <summary>Above the fold: the first picture loads eagerly.</summary>
+    [Parameter] public bool Eager { get; set; }
 
     private IReadOnlyList<MediaItem> items = [];
 
@@ -44,11 +46,27 @@ else if (Fallback is not null)
         try
         {
             using var scope = ScopeFactory.CreateScope();
-            items = await scope.ServiceProvider.GetRequiredService<IMediaService>().ForPostAsync(PostId);
+            var all = await scope.ServiceProvider.GetRequiredService<IMediaService>().ForPostAsync(PostId);
+            items = all.Where(m => !m.IsGraphic).ToList();
+            if (items.Count == 0 && (Pool || all.Count > 0)) items = [PoolItem()];
         }
         catch (Exception e)
         {
             Logger.LogError(e, "Media of post {PostId} failed to load", PostId);
+            items = Pool ? [PoolItem()] : [];
         }
     }
+
+    /// <summary>A transient (never stored) photo item for the feed-pool stock picture; the alt never names the author.</summary>
+    private MediaItem PoolItem()
+    {
+        var image = StockMedia.Feed(PostId);
+        return new MediaItem
+        {
+            PostId = PostId, Kind = MediaKind.Photo, File = image.Url[MediaRoot.Length..], Width = image.Width, Height = image.Height,
+            AltEl = F["Feed_StockAlt"].Value, AltEn = F["Feed_StockAlt"].Value,
+        };
+    }
+
+    private const string MediaRoot = "/media/";
 }

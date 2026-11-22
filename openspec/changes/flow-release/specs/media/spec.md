@@ -2,14 +2,23 @@
 
 ### Requirement: Post media renders without layout shift and with an honest label
 
-Every media item SHALL render with `width`/`height`, a localized `alt`, `loading="lazy"` and `decoding="async"`. It SHALL NOT carry a visible "demo" chip (SPEC §8 O1); the alt text never claims to show the named athlete. Anonymous, athlete and coach SHALL all see the same markup.
+Every media item SHALL render with `width`/`height`, a localized `alt`, `loading="lazy"` and `decoding="async"`, except the media of the first four posts of the first feed page, which load eagerly (above the fold). It SHALL NOT carry a visible "demo" chip (SPEC §8 O1); the alt text never claims to show the named athlete. Anonymous, athlete and coach SHALL all see the same markup. The feed SHALL never show an empty or generated-graphic tile: generated motion graphics (which carry a baked-in "ΓΡΑΦΙΚΟ · DEMO" label) are not shown in posts, and a highlight post, or a post whose only media were graphics, shows a stock photo from the feed pool picked by `postId % pool size`; a post that is text-only by design shows no tile.
 
 #### Scenario: Photo markup
-- **WHEN** a post with a photo is rendered
+- **WHEN** a post with a photo is rendered below the first four posts
 - **THEN** the `img` has width, height, non-empty alt and lazy loading, and no "Εικόνα αρχείου · demo" chip is present
 
+#### Scenario: Above the fold
+- **WHEN** the first four posts of the first feed page have media
+- **THEN** their images have no `loading="lazy"`
+
+#### Scenario: No empty or graphic tile
+- **WHEN** every feed page is rendered
+- **THEN** every media block contains an `img` with a `src` or a `video` with a `poster`, no generated graphic file is referenced, no generated court-art SVG is rendered
+- **AND** each highlight post and each post whose media were only graphics shows the feed-pool stock photo for its id
+
 #### Scenario: Video markup
-- **WHEN** a post with a video is rendered
+- **WHEN** a video tile is rendered (athlete stories and highlights)
 - **THEN** the `video` has `muted playsinline preload="none"` and a `poster`, and no `autoplay` attribute
 - **AND** it keeps native `controls` and no "Γραφικό · demo" chip is present
 

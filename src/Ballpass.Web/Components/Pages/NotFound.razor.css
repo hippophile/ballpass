@@ -1,0 +1,22 @@
+/* 404 (flow-release §4.9): a photo band (320 px minimum, taller on tall screens so the page is not one strip and a void) with the left scrim; text and the one button in the bottom-left zone. */
+.bp-notfound-wrap ::deep .bp-notfound {
+    height: clamp(320px, 55vh, 520px);
+    border-radius: var(--bp-r-md);
+    border: 1px solid var(--bp-border);
+}
+
+.bp-notfound-wrap h1 {
+    margin: 0 0 var(--bp-sp-1);
+}
+
+.bp-notfound-wrap p {
+    margin: 0 0 var(--bp-sp-4);
+    color: var(--bp-muted);
+    max-width: 32rem;
+}
+
+@media (max-width: 640px) {
+    .bp-notfound-wrap ::deep .bp-notfound {
+        height: 280px;
+    }
+}

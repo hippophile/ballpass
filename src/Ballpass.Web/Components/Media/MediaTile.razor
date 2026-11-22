@@ -18,7 +18,14 @@ else
 {
     <div class="bp-media-tile">
         <a class="bp-media-open" data-media-open href="#@LightboxId" aria-label="@M["Zoom"]: @alt">
-            <img class="bp-media-img" src="/media/@Item.File" width="@Item.Width" height="@Item.Height" alt="@alt" loading="lazy" decoding="async" />
+            @if (Eager)
+            {
+                <img class="bp-media-img@(Tall ? " bp-media-img-tall" : "")" src="/media/@Item.File" width="@Item.Width" height="@Item.Height" alt="@alt" decoding="async" />
+            }
+            else
+            {
+                <img class="bp-media-img@(Tall ? " bp-media-img-tall" : "")" src="/media/@Item.File" width="@Item.Width" height="@Item.Height" alt="@alt" loading="lazy" decoding="async" />
+            }
         </a>
         <div id="@LightboxId" class="bp-media-lightbox" role="dialog" aria-label="@alt">
             <a class="bp-media-close" href="#!" aria-label="@M["Close"]"><span aria-hidden="true">×</span></a>
@@ -31,6 +38,10 @@ else
     [Parameter, EditorRequired] public MediaItem Item { get; set; } = default!;
     /// <summary>Unique within the page, used for the lightbox target id.</summary>
     [Parameter, EditorRequired] public string Key { get; set; } = "";
+    /// <summary>Above the fold (first feed posts): no lazy loading, so the picture is there on first paint.</summary>
+    [Parameter] public bool Eager { get; set; }
+    /// <summary>Portrait photo shown alone: 4:5 instead of 16:9 (flow-release §4.3).</summary>
+    [Parameter] public bool Tall { get; set; }
 
     private string LightboxId => $"lb-{Key}";
     private static bool IsGreek => System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";

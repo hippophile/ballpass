@@ -1,22 +1,38 @@
 @page "/me/sent"
 @attribute [Authorize(Policy = "CoachOnly")]
 @using System.Globalization
+@using Ballpass.Web.Components.Media
 @using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Data
+@using Ballpass.Web.Features.Media
 @using Microsoft.EntityFrameworkCore
 @inject BallpassDbContext Db
 @inject TimeProvider Time
 @inject IStringLocalizer<LoopResource> T
+@inject IStringLocalizer<FlowResource> F
 @inject IStringLocalizer<SharedResource> S
 
 <PageTitle>@T["Sent_Title"]</PageTitle>
 
-<h1>@T["Sent_Title"]</h1>
-<p class="bp-loop-intro">@T["Sent_Intro"]</p>
+@* flow-release §4.7: one card per interest, two columns, a horizontal stepper. Coach steps (sent, seen) are orange dots, the athlete's
+   reply is teal; the connector runs orange -> teal (shared .bp-stepper). The page's one primary action: the next match. *@
+<header class="bp-loop-head">
+    <div>
+        <h1>@T["Sent_Title"]</h1>
+        <p class="bp-loop-intro">@T["Sent_Intro"]</p>
+    </div>
+    @if (items.Count > 0)
+    {
+        <a class="bp-btn-primary" href="/match">@F["Sent_Next"]</a>
+    }
+</header>
 
 @if (items.Count == 0)
 {
-    <p class="bp-empty">@T["Sent_Empty"]</p>
+    <StockPhoto Image="StockMedia.SentEmpty" Class="bp-loop-empty">
+        <p class="bp-loop-empty-text">@T["Sent_Empty"]</p>
+        <a class="bp-btn-primary" href="/match">@F["Sent_EmptyCta"]</a>
+    </StockPhoto>
 }
 else
 {
@@ -24,24 +40,22 @@ else
         @foreach (var i in items)
         {
             var a = i.Athlete!;
+            var name = Name(a);
             <article class="bp-loop-sent" data-interest-id="@i.Id" data-state="@State(i)">
                 <header class="bp-loop-sent-head">
-                    <a class="bp-loop-chip" href="/p/@a.Slug"><span class="bp-loop-chip-ini" aria-hidden="true">@Initials(a)</span>@Name(a)</a>
-                    <span class="bp-loop-sent-meta">@(a.CurrentClub?.Name)</span>
+                    <a class="bp-loop-chip" href="/p/@a.Slug"><JerseyAvatar Id="a.Id" Initials="@Initials(name)" Club="@a.CurrentClub?.Name" Size="32" />@name</a>
+                    <span class="bp-loop-sent-meta">@a.Position · @(a.CurrentClub?.Name ?? S["Profile_NoClub"].Value)</span>
                 </header>
-                <ol class="bp-loop-stepper" aria-label="@T["Sent_Aria"]">
-                    <li class="bp-loop-step" data-step="sent" data-state="done">
-                        <span class="bp-loop-dot" aria-hidden="true"></span>
+                <ol class="bp-stepper bp-loop-stepper" aria-label="@T["Sent_Aria"]">
+                    <li class="bp-step-coach bp-step-done" data-step="sent" data-state="done">
                         <span class="bp-loop-step-label">@T["Step_Sent"]</span>
                         @Stamp(i.CreatedAt)
                     </li>
-                    <li class="bp-loop-step" data-step="seen" data-state="@(i.SeenAt is null ? "pending" : "done")">
-                        <span class="bp-loop-dot" aria-hidden="true"></span>
+                    <li class="bp-step-coach@(i.SeenAt is null ? "" : " bp-step-done")" data-step="seen" data-state="@(i.SeenAt is null ? "pending" : "done")">
                         <span class="bp-loop-step-label">@T["Step_Seen"]</span>
                         @if (i.SeenAt is { } seen) { @Stamp(seen) } else { <span class="bp-loop-pending">@T["Step_Pending"]</span> }
                     </li>
-                    <li class="bp-loop-step" data-step="replied" data-state="@(i.Reply == InterestReply.None ? "pending" : "done")">
-                        <span class="bp-loop-dot" aria-hidden="true"></span>
+                    <li class="bp-step-athlete@(i.Reply == InterestReply.None ? "" : " bp-step-done")" data-step="replied" data-state="@(i.Reply == InterestReply.None ? "pending" : "done")">
                         <span class="bp-loop-step-label">@T["Step_Replied"]</span>
                         @if (i.Reply != InterestReply.None && i.RepliedAt is { } replied)
                         {
@@ -51,6 +65,10 @@ else
                         else { <span class="bp-loop-pending">@T["Step_Pending"]</span> }
                     </li>
                 </ol>
+                @if (i.Reply == InterestReply.Accepted)
+                {
+                    <p class="bp-loop-sent-contact">@F["Sent_Connected"]</p>
+                }
             </article>
         }
     </div>
@@ -88,7 +106,8 @@ else
 
     private static string Name(Athlete a) => IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
 
-    private static string Initials(Athlete a) => IsGreek ? $"{a.FirstName[0]}{a.LastName[0]}" : $"{a.FirstNameLatin[0]}{a.LastNameLatin[0]}";
+    private static string Initials(string name) =>
+        string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);
 
     // Relative text, exact UTC time on hover/title, machine-readable datetime.
     private RenderFragment Stamp(DateTimeOffset at) => @<time class="bp-loop-time" datetime="@at.UtcDateTime.ToString("o", CultureInfo.InvariantCulture)" title="@at.UtcDateTime.ToString("g", CultureInfo.CurrentCulture) UTC">@RelativeTimeText.Format(S, at, Time.GetUtcNow())</time>;

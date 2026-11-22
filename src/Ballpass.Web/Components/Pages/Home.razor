@@ -1,65 +1,148 @@
 @page "/"
+@using System.Globalization
+@using Ballpass.Web.Components.Flow
 @using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Data
+@using Ballpass.Web.Features.Flow
+@using Ballpass.Web.Features.Loop
+@using Ballpass.Web.Features.Media
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.Extensions.Options
 @inject BallpassDbContext Db
+@inject IOptions<DemoOptions> Demo
+@inject TimeProvider Time
 @inject IStringLocalizer<SharedResource> L
+@inject IStringLocalizer<FlowResource> T
 
 <PageTitle>@L["Brand"]</PageTitle>
 
-<ResetToast />
+@* Front door (flow-release §4.1): hero video, two persona doors above the fold, how the connection happens, live counts from the
+   database, the latest connections, recent activity, the doors again. No demo captions (O1); formal Greek (O2). *@
+<div class="bp-home">
+    <HeroVideo Class="bp-home-hero">
+        <div class="bp-home-hero-text">
+            <span class="bp-chip-athlete">@T["Home_Eyebrow"]</span>
+            <h1 class="bp-hero-title">@T["Home_Title1"]<br />@T["Home_Title2"]</h1>
+            <p class="bp-home-sub">@T["Home_Sub"]</p>
+        </div>
+    </HeroVideo>
 
-<section class="bp-hero">
-    <h1>@L["Brand"]</h1>
-    <p class="bp-value">@L["Home_Value"]</p>
-    <p class="bp-sub">@L["Home_Sub"]</p>
-    <div class="bp-ctas">
-        <a class="bp-cta bp-cta-primary" data-cta="demo" href="/demo">@L["Home_CtaDemo"]</a>
-        @if (sampleSlug is not null)
+    <div class="bp-home-inner">
+        <ResetToast />
+
+        <section class="bp-doors" id="doors">
+            <PersonaDoor Image="StockMedia.DoorCoach" PersonaType="coach" PersonaId="CoachId" ReturnUrl="@FeaturedPersonas.CoachReturnUrl" Priority="true"
+                         Label="@T["Door_CoachLabel"]" Title="@T["Door_CoachTitle"]" Text="@T["Door_CoachText"]" Cta="@T["Door_CoachCta"]"
+                         data-door="coach" />
+            <PersonaDoor Image="StockMedia.DoorAthlete" PersonaType="athlete" PersonaId="AthleteId" ReturnUrl="@FeaturedPersonas.AthleteReturnUrl" Priority="true"
+                         Label="@T["Door_AthleteLabel"]" Title="@T["Door_AthleteTitle"]" Text="@T["Door_AthleteText"]" Cta="@T["Door_AthleteCta"]"
+                         data-door="athlete" />
+        </section>
+
+        <section class="bp-howband" aria-labelledby="bp-how-title">
+            <StockPhoto Image="StockMedia.ConnectCoachPlayer" Class="bp-howband-photo" />
+            <div class="bp-howband-text">
+                <h2 id="bp-how-title">@T["How_Title"]</h2>
+                <ol class="bp-stepper bp-stepper-vertical bp-howband-steps">
+                    <li class="bp-step-athlete bp-step-done"><strong>@T["How_Step1"]</strong><span>@T["How_Step1Text"]</span></li>
+                    <li class="bp-step-coach bp-step-done">
+                        <strong>@T["How_Step2"]</strong><span>@T["How_Step2Text"]</span>
+                        <span class="bp-howband-sources">
+                            <SourceBadge Source="StatSource.SelfReported" />
+                            <SourceBadge Source="StatSource.CoachConfirmed" />
+                            <SourceBadge Source="StatSource.LeagueVerifiedMock" />
+                        </span>
+                    </li>
+                    <li class="bp-step-athlete bp-step-done"><strong>@T["How_Step3"]</strong><span>@T["How_Step3Text"]</span></li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="bp-home-counters" aria-label="@T["Counts_Aria"]">
+            <div class="bp-home-counter"><span class="bp-home-count-num" data-count="looking">@looking</span><span class="bp-home-count-label">@T["Count_Looking"]</span></div>
+            <div class="bp-home-counter"><span class="bp-home-count-num" data-count="interests">@interests</span><span class="bp-home-count-label">@T["Count_Interests"]</span></div>
+            <div class="bp-home-counter"><span class="bp-home-count-num" data-count="connections">@connectionCount</span><span class="bp-home-count-label">@T["Count_Connections"]</span></div>
+        </section>
+
+        @if (connections.Count > 0)
         {
-            <a class="bp-cta" data-cta="sample" href="/p/@sampleSlug">@L["Home_CtaSample"]</a>
+            <section class="bp-connections" aria-labelledby="bp-connections-title">
+                <h2 id="bp-connections-title">@T["Connections_Title"]</h2>
+                <ol class="bp-connections-row">
+                    @foreach (var c in connections)
+                    {
+                        var athlete = Name(c.Athlete!);
+                        var club = c.Coach!.Club?.Name ?? "";
+                        <li class="bp-connection" data-connection-id="@c.Id" aria-label="@T["Connections_Aria", athlete, club]">
+                            <JerseyAvatar Id="c.AthleteId" Initials="@Initials(athlete)" Club="@c.Athlete!.CurrentClub?.Name" Size="40" />
+                            <span class="bp-connection-who">
+                                <a class="bp-connection-name" href="/p/@c.Athlete.Slug">@athlete</a>
+                                <span class="bp-connection-club"><span class="bp-connection-link" aria-hidden="true"></span>@club</span>
+                                <time class="bp-connection-time" datetime="@c.RepliedAt!.Value.UtcDateTime.ToString("o", CultureInfo.InvariantCulture)">@RelativeTimeText.Format(L, c.RepliedAt.Value, Time.GetUtcNow())</time>
+                            </span>
+                        </li>
+                    }
+                </ol>
+            </section>
         }
+
+        <FeedPreview Count="3" />
+
+        <section class="bp-home-final" aria-labelledby="bp-final-title">
+            <h2 id="bp-final-title">@T["Final_Title"]</h2>
+            <div class="bp-home-final-actions">
+                @DoorButton("coach", CoachId, FeaturedPersonas.CoachReturnUrl, T["Door_CoachCta"])
+                @DoorButton("athlete", AthleteId, FeaturedPersonas.AthleteReturnUrl, T["Door_AthleteCta"])
+            </div>
+        </section>
     </div>
-</section>
-
-<FeedPreview Count="3" />
-
-<section class="bp-counters" aria-label="@L["Home_CountsCaption"]">
-    <div class="bp-counter"><span class="bp-count-num" data-count="athletes" style="--bp-n:@athletes">@athletes</span><span class="bp-count-label">@L["Home_CountAthletes"]</span></div>
-    <div class="bp-counter"><span class="bp-count-num" data-count="clubs" style="--bp-n:@clubs">@clubs</span><span class="bp-count-label">@L["Home_CountClubs"]</span></div>
-    <div class="bp-counter"><span class="bp-count-num" data-count="coaches" style="--bp-n:@coaches">@coaches</span><span class="bp-count-label">@L["Home_CountCoaches"]</span></div>
-</section>
-
-<section class="bp-home-section">
-    <h2>@L["Home_HowTitle"]</h2>
-    <ol class="bp-steps">
-        <li><span class="bp-step-num" aria-hidden="true">1</span><strong>@L["Home_Step1Title"]</strong><span>@L["Home_Step1Text"]</span></li>
-        <li><span class="bp-step-num" aria-hidden="true">2</span><strong>@L["Home_Step2Title"]</strong><span>@L["Home_Step2Text"]</span></li>
-        <li><span class="bp-step-num" aria-hidden="true">3</span><strong>@L["Home_Step3Title"]</strong><span>@L["Home_Step3Text"]</span></li>
-    </ol>
-</section>
-
-<section class="bp-home-section">
-    <h2>@L["Home_TrustTitle"]</h2>
-    <ul class="bp-trust">
-        <li><SourceBadge Source="StatSource.SelfReported" /><span>@L["Home_TrustSelf"]</span></li>
-        <li><SourceBadge Source="StatSource.CoachConfirmed" /><span>@L["Home_TrustCoach"]</span></li>
-        <li><SourceBadge Source="StatSource.LeagueVerifiedMock" /><span>@L["Home_TrustLeague"]</span></li>
-    </ul>
-</section>
+</div>
 
 @code {
-    private int athletes, clubs, coaches;
-    private string? sampleSlug;
+    private FeaturedPersonas featured = new(null, null);
+    private int looking, interests, connectionCount;
+    private List<Interest> connections = [];
+
+    private int? CoachId => Demo.Value.Enabled ? featured.Coach?.Id : null;
+    private int? AthleteId => Demo.Value.Enabled ? featured.Athlete?.Id : null;
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
 
     protected override async Task OnInitializedAsync()
     {
-        athletes = await Db.Athletes.CountAsync(a => a.IsDemo);
-        clubs = await Db.Clubs.CountAsync(c => c.IsDemo);
-        coaches = await Db.Coaches.CountAsync(c => c.IsDemo);
-        sampleSlug = await Db.Athletes
-            .Where(a => a.IsDemo && a.Gender == Gender.Female && a.CurrentClubId != null)
-            .OrderByDescending(a => a.Stats.Count).ThenBy(a => a.Id)
-            .Select(a => a.Slug).FirstOrDefaultAsync();
+        featured = await FeaturedPersonas.LoadAsync(Db, Demo.Value.Featured);
+        looking = await Db.Athletes.CountAsync(a => a.IsDemo && a.LookingForTeam);
+        interests = await Db.Interests.CountAsync();
+        connectionCount = await Db.Interests.CountAsync(i => i.Reply == InterestReply.Accepted);
+        connections = await Db.Interests.AsNoTracking()
+            .Include(i => i.Athlete).ThenInclude(a => a!.CurrentClub)
+            .Include(i => i.Coach).ThenInclude(c => c!.Club)
+            .Where(i => i.Reply == InterestReply.Accepted && i.RepliedAt != null)
+            .OrderByDescending(i => i.RepliedAt).ThenByDescending(i => i.Id)
+            .Take(6).ToListAsync();
     }
+
+    private static string Name(Athlete a) => IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
+
+    private static string Initials(string name) =>
+        string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);
+
+    // The doors' buttons again at the end of the page (same POST, or a link to /demo without a persona).
+    private RenderFragment DoorButton(string type, int? id, string returnUrl, string cta) =>
+        @<text>
+            @if (id is { } personaId)
+            {
+                <form method="post" action="/demo/login" data-door-repeat="@type" class="bp-door-form">
+                    <input type="hidden" name="personaType" value="@type">
+                    <input type="hidden" name="personaId" value="@personaId">
+                    <input type="hidden" name="returnUrl" value="@returnUrl">
+                    <AntiforgeryToken />
+                    <button type="submit" class="@(type == "athlete" ? "bp-btn-athlete" : "bp-btn-primary")">@cta</button>
+                </form>
+            }
+            else
+            {
+                <a data-door-repeat="@type" href="/demo" class="@(type == "athlete" ? "bp-btn-athlete" : "bp-btn-primary")">@cta</a>
+            }
+        </text>;
 }

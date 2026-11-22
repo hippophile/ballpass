@@ -1,8 +1,70 @@
-@* Desktop sidebar (>= 1100 px): who to follow + trends. Hidden by CSS on phones, where EngageInline shows the same boxes after the 3rd post. *@
+@using System.Globalization
+@using Ballpass.Web.Data
+@using Microsoft.EntityFrameworkCore
+@inject IServiceScopeFactory ScopeFactory
+@inject ILogger<EngageSidebar> Logger
+@inject IStringLocalizer<FlowResource> T
+@inject IStringLocalizer<SharedResource> L
+
+@* Desktop right rail (>= 1100 px, flow-release §4.3): "Ψάχνουν ομάδα τώρα" - 4 athletes looking for a team, the thing a coach came
+   for - then trends (5 at most). Who-to-follow stays in the phone layout (EngageInline after the 3rd post). *@
 <aside class="bp-engage-side" data-engage="sidebar">
-    <EngageBoxes Viewer="Viewer" />
+    @if (looking.Count > 0)
+    {
+        <section class="bp-engage-box bp-engage-looking" data-engage="looking" aria-labelledby="bp-looking-title">
+            <h2 id="bp-looking-title">@T["Rail_LookingTitle"]</h2>
+            <ul class="bp-engage-people">
+                @foreach (var a in looking)
+                {
+                    var name = IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
+                    <li data-slug="@a.Slug">
+                        <JerseyAvatar Id="a.Id" Initials="@Initials(name)" Club="@a.CurrentClub?.Name" Size="40" Class="bp-engage-avatar" />
+                        <span class="bp-engage-who">
+                            <span class="bp-engage-pname"><a href="/p/@a.Slug">@name</a></span>
+                            <span class="bp-engage-prole">@a.Position · @RegionName(a.Region)</span>
+                        </span>
+                        <span class="bp-engage-dot" aria-hidden="true"></span>
+                    </li>
+                }
+            </ul>
+        </section>
+    }
+    <EngageBoxes Viewer="Viewer" ShowFollow="false" MaxTrends="5" />
 </aside>
 
 @code {
     [Parameter] public Ballpass.Web.Features.Feed.FeedViewer Viewer { get; set; } = Ballpass.Web.Features.Feed.FeedViewer.Anonymous;
+
+    private List<Athlete> looking = [];
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    private static string Initials(string name) =>
+        string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);
+
+    private string RegionName(string region)
+    {
+        var r = L[$"Region_{region}"];
+        return r.ResourceNotFound ? region : r.Value;
+    }
+
+    // Own scope + DbContext (the page holds the request-scoped one). Women first (the product starts there), then the fullest record.
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            using var scope = ScopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<BallpassDbContext>();
+            var viewerAthlete = Viewer.IsAthlete ? Viewer.EntityId : 0;
+            looking = await db.Athletes.AsNoTracking().Include(a => a.CurrentClub)
+                .Where(a => a.IsDemo && a.LookingForTeam && a.Id != viewerAthlete)
+                .OrderBy(a => a.Gender == Gender.Female ? 0 : 1).ThenByDescending(a => a.Stats.Count).ThenBy(a => a.Id)
+                .Take(4).ToListAsync();
+        }
+        catch (Exception e)
+        {
+            Logger.LogWarning(e, "Looking-for-team rail failed; rendering without it");
+            looking = [];
+        }
+    }
 }

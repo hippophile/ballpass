@@ -8,7 +8,7 @@
   <data name="Nav_SentUnread" xml:space="preserve"><value>νέες απαντήσεις</value></data>
   <data name="Sent_Title" xml:space="preserve"><value>Αποστολές</value></data>
   <data name="Sent_Intro" xml:space="preserve"><value>Κάθε ενδιαφέρον που στείλατε και πού βρίσκεται: στάλθηκε, το είδε η αθλήτρια ή ο αθλητής, απάντησε.</value></data>
-  <data name="Sent_Empty" xml:space="preserve"><value>Δεν έχετε στείλει ακόμη ενδιαφέρον. Βρείτε αθλητές από την αναζήτηση.</value></data>
+  <data name="Sent_Empty" xml:space="preserve"><value>Δεν έχετε στείλει ακόμη ενδιαφέρον.</value></data>
   <data name="Sent_Aria" xml:space="preserve"><value>Πρόοδος: στάλθηκε, είδε, απάντησε</value></data>
   <data name="Step_Sent" xml:space="preserve"><value>Στάλθηκε</value></data>
   <data name="Step_Seen" xml:space="preserve"><value>Είδε</value></data>
@@ -16,9 +16,9 @@
   <data name="Step_Pending" xml:space="preserve"><value>σε αναμονή</value></data>
   <data name="Reply_Accepted" xml:space="preserve"><value>Αποδοχή</value></data>
   <data name="Reply_Declined" xml:space="preserve"><value>Απόρριψη</value></data>
-  <data name="Inbox_New" xml:space="preserve"><value>νέο</value></data>
+  <data name="Inbox_New" xml:space="preserve"><value>Νέο</value></data>
   <data name="Inbox_Accept" xml:space="preserve"><value>Αποδοχή</value></data>
-  <data name="Inbox_Decline" xml:space="preserve"><value>Απόρριψη</value></data>
+  <data name="Inbox_Decline" xml:space="preserve"><value>Όχι τώρα</value></data>
   <data name="Inbox_ReplyAria" xml:space="preserve"><value>Απάντηση στο ενδιαφέρον</value></data>
   <data name="Inbox_YouAccepted" xml:space="preserve"><value>Αποδεχτήκατε αυτό το ενδιαφέρον.</value></data>
   <data name="Inbox_YouDeclined" xml:space="preserve"><value>Απορρίψατε αυτό το ενδιαφέρον.</value></data>

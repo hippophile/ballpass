@@ -1,0 +1,80 @@
+@using System.Globalization
+@using Ballpass.Web.Data
+@using Microsoft.EntityFrameworkCore
+@inject IServiceScopeFactory ScopeFactory
+@inject IStringLocalizer<SharedResource> L
+@inject IStringLocalizer<FlowResource> T
+
+@* /feed left rail (flow-release §4.3): the "me" card (64 px jersey, name, role) and the persona's next moves - coach: Ταίριασμα,
+   Λίστα, Αποστολές (n); athlete: Εισερχόμενα (n), Το προφίλ μου. Anonymous: one way in. Sticky from 1180 px, a strip below. *@
+<aside class="bp-feed-rail" data-feed-rail="left" aria-label="@T["Rail_Aria"]">
+    @if (user?.Identity?.IsAuthenticated == true && entityId > 0)
+    {
+        <div class="bp-feed-me">
+            <JerseyAvatar Id="entityId" Initials="@Initials" Club="@clubName" Coach="isCoach" Size="64" Class="bp-feed-me-avatar" />
+            <div class="bp-feed-me-who">
+                <span class="bp-feed-me-name">@Name</span>
+                <span class="bp-feed-me-role">@L[(isCoach ? "Role_Coach" : "Role_Athlete") + (user.FindFirst("gender")?.Value == "F" ? "_F" : "")]@(clubName is null ? "" : " · " + clubName)</span>
+            </div>
+        </div>
+        <nav class="bp-feed-rail-links">
+            @if (isCoach)
+            {
+                <MatchNavLink />
+                <a href="/shortlist" class="bp-navlink">@L["Nav_Shortlist"]</a>
+                <LoopNavLink />
+            }
+            else
+            {
+                <a href="/me/inbox" class="bp-navlink">@L["Nav_Inbox"] (@inboxCount)</a>
+                <a href="/p/@user.FindFirst("slug")?.Value" class="bp-navlink">@L["Nav_Profile"]</a>
+            }
+        </nav>
+    }
+    else
+    {
+        <div class="bp-feed-me bp-feed-me-anon">
+            <span class="bp-feed-me-name">@T["Rail_AnonTitle"]</span>
+            <p class="bp-feed-me-role">@T["Rail_AnonText"]</p>
+            <a class="bp-btn-outline" href="/demo?ReturnUrl=%2Ffeed">@T["Rail_AnonCta"]</a>
+        </div>
+    }
+</aside>
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
+
+    private System.Security.Claims.ClaimsPrincipal? user;
+    private int entityId;
+    private bool isCoach;
+    private string? clubName;
+    private int inboxCount;
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    private string Name => (IsGreek ? user?.Identity?.Name : user?.FindFirst("name_latin")?.Value ?? user?.Identity?.Name) ?? "";
+
+    private string Initials =>
+        string.Concat(Name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);
+
+    // Own scope + DbContext: the page initialises concurrently and holds the request-scoped context.
+    protected override async Task OnInitializedAsync()
+    {
+        user = AuthState is null ? null : (await AuthState).User;
+        if (user?.Identity?.IsAuthenticated != true || !int.TryParse(user.FindFirst("entity_id")?.Value, out entityId)) return;
+        isCoach = user.IsInRole("Coach");
+
+        using var scope = ScopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BallpassDbContext>();
+        if (isCoach)
+        {
+            if (int.TryParse(user.FindFirst("club_id")?.Value, out var clubId))
+                clubName = await db.Clubs.Where(c => c.Id == clubId).Select(c => c.Name).FirstOrDefaultAsync();
+        }
+        else
+        {
+            inboxCount = await db.Interests.CountAsync(i => i.AthleteId == entityId);
+            clubName = await db.Athletes.Where(a => a.Id == entityId).Select(a => a.CurrentClub!.Name).FirstOrDefaultAsync();
+        }
+    }
+}

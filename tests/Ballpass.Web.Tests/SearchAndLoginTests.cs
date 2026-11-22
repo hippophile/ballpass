@@ -2,10 +2,13 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Ballpass.Web.Data;
 using Ballpass.Web.Demo;
+using Ballpass.Web.Features.Loop;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Ballpass.Web.Tests;
 
-// Specs: openspec/changes/add-demo-login-and-search/specs/{demo-login,coach-search}/spec.md
+// Specs: openspec/changes/add-demo-login-and-search/specs/{demo-login,coach-search}/spec.md + flow-release/specs/demo-login/spec.md
 [Collection("db")]
 public class SearchAndLoginTests(BallpassAppFactory app)
 {
@@ -27,15 +30,81 @@ public class SearchAndLoginTests(BallpassAppFactory app)
     }
 
     [Fact]
-    public async Task Coach_login_redirects_to_search_and_shows_name()
+    public async Task Coach_login_from_the_list_redirects_to_search_and_shows_name()
     {
         var client = app.Client();
-        var (login, name) = await SignIn(client, "coach");
+        var (login, name) = await SignIn(client, "coach", listRow: true);
 
         Assert.Equal(HttpStatusCode.Redirect, login.StatusCode);
         Assert.Equal("/search", PathOf(login.Headers.Location!));
         var html = await Html(client, "/search");
         Assert.Contains(name, html);
+    }
+
+    // ---------- /demo layout (flow-release §4.2, O7) ----------
+
+    private Featured FeaturedPersonas()
+    {
+        var f = app.Services.GetRequiredService<IOptions<DemoOptions>>().Value.Featured;
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<BallpassDbContext>();
+        return new(db.Coaches.Where(c => c.IsDemo && c.FirstName == f.CoachFirstName && c.LastName == f.CoachLastName).Select(c => c.Id).Single(),
+            db.Athletes.Where(a => a.IsDemo && a.Slug == f.AthleteSlug).Select(a => a.Id).Single(),
+            "/match?need=featured");
+    }
+
+    private sealed record Featured(int CoachId, int AthleteId, string CoachReturn);
+
+    [Fact]
+    public async Task Demo_page_leads_with_the_two_featured_personas_in_photo_cards()
+    {
+        var featured = FeaturedPersonas();
+        var page = await Html(app.Client(), "/demo");
+
+        var cards = Regex.Matches(page, "<div[^>]*class=\"[^\"]*bp-persona-hero-card[^\"]*\"[^>]*>.*?</form>", RegexOptions.Singleline).Select(m => m.Value).ToList();
+        Assert.Equal(2, cards.Count);
+        Assert.All(cards, c => Assert.Matches("<img[^>]*src=\"/media/stock/", c));
+        var coach = Regex.Match(page, "<form[^>]*data-persona=\"coach\"[^>]*>.*?</form>", RegexOptions.Singleline).Value;
+        var athlete = Regex.Match(page, "<form[^>]*data-persona=\"athlete\"[^>]*>.*?</form>", RegexOptions.Singleline).Value;
+        Assert.Contains("data-featured", coach);
+        Assert.Contains("data-featured", athlete);
+        Assert.Contains($"name=\"personaId\" value=\"{featured.CoachId}\"", coach);
+        Assert.Contains($"name=\"returnUrl\" value=\"{featured.CoachReturn}\"", coach);
+        Assert.Contains($"name=\"personaId\" value=\"{featured.AthleteId}\"", athlete);
+        Assert.Contains("bp-btn-primary", coach);
+        Assert.Contains("bp-btn-athlete", athlete);
+        // Featured personas are not repeated in the lists.
+        Assert.Single(Regex.Matches(page, $"name=\"personaType\" value=\"coach\"[^>]*>\\s*<input[^>]*name=\"personaId\" value=\"{featured.CoachId}\""));
+        Assert.Single(Regex.Matches(page, $"name=\"personaType\" value=\"athlete\"[^>]*>\\s*<input[^>]*name=\"personaId\" value=\"{featured.AthleteId}\""));
+    }
+
+    [Fact]
+    public async Task Featured_athlete_card_signs_in_and_opens_the_inbox()
+    {
+        var client = app.Client();
+        var (login, _) = await SignIn(client, "athlete");
+
+        Assert.Equal(HttpStatusCode.Redirect, login.StatusCode);
+        Assert.Equal("/me/inbox", login.Headers.Location!.OriginalString);
+        Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/me/inbox")).StatusCode);
+    }
+
+    [Theory]
+    [InlineData("coaches")]
+    [InlineData("athletes")]
+    public async Task Demo_lists_show_at_most_8_rows_before_a_details_with_the_total(string list)
+    {
+        var page = await Html(app.Client(), "/demo");
+
+        var section = Regex.Match(page, $"<section[^>]*data-list=\"{list}\"[^>]*>.*?</section>", RegexOptions.Singleline).Value;
+        Assert.NotEmpty(section);
+        var details = section.IndexOf("<details", StringComparison.Ordinal);
+        var visible = details < 0 ? section : section[..details];
+        var shown = Regex.Matches(visible, "<form[^>]*class=\"bp-persona-row\"").Count;
+        var total = Regex.Matches(section, "<form[^>]*class=\"bp-persona-row\"").Count;
+        Assert.InRange(shown, 1, 8);
+        if (total > 8)
+            Assert.Matches($"<summary[^>]*>[^<]*\\({total}\\)", section);
     }
 
     [Fact]
@@ -153,10 +222,10 @@ public class SearchAndLoginTests(BallpassAppFactory app)
     }
 
     /// Submits the first persona form of the given type on /demo. Returns the login response and the persona name.
-    private static async Task<(HttpResponseMessage response, string name)> SignIn(HttpClient client, string type, string? returnUrl = null)
+    private static async Task<(HttpResponseMessage response, string name)> SignIn(HttpClient client, string type, string? returnUrl = null, bool listRow = false)
     {
         var page = await Html(client, "/demo");
-        var form = Regex.Match(page, $"<form[^>]*data-persona=\"{type}\"[^>]*>(.*?)</form>", RegexOptions.Singleline);
+        var form = Regex.Match(page, $"<form{(listRow ? "(?![^>]*data-featured)" : "")}[^>]*data-persona=\"{type}\"[^>]*>(.*?)</form>", RegexOptions.Singleline);
         Assert.True(form.Success, $"no {type} persona form on /demo");
 
         var fields = Regex.Matches(form.Groups[1].Value, "<input[^>]*name=\"([^\"]+)\"[^>]*value=\"([^\"]*)\"")

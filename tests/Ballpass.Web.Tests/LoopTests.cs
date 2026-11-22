@@ -337,6 +337,12 @@ public class LoopTests(BallpassAppFactory app)
         var client = await h.LoginAsync("athlete", a.AthleteId);
         var inbox = await Html(client, "/me/inbox");
         Assert.Contains($"action=\"/me/inbox/{a.InterestId}/reply\"", inbox);
+        // flow-release §4.8: the athlete's move is teal, the card carries a coach scene photo from the pool.
+        var pending = Regex.Match(inbox, $"<li[^>]*class=\"interest\"[^>]*data-interest-id=\"{a.InterestId}\".*?</li>", RegexOptions.Singleline).Value;
+        Assert.Matches("<button[^>]*name=\"reply\"[^>]*value=\"accept\"[^>]*class=\"bp-btn-athlete\"", pending);
+        Assert.Matches("<button[^>]*name=\"reply\"[^>]*value=\"decline\"[^>]*class=\"bp-btn-ghost\"", pending);
+        var female = GreekNames.IsFemaleFirstName(h.Db(db => db.Coaches.Single(c => c.Id == a.CoachId).FirstName));
+        Assert.Contains($"src=\"{Ballpass.Web.Features.Flow.FlowMedia.CoachScene(a.CoachId, female).Url}\"", pending);
 
         var response = await h.PostAsync(client, $"/me/inbox/{a.InterestId}/reply", new() { ["reply"] = "accept" }, tokenPage: "/me/inbox");
 
@@ -352,6 +358,9 @@ public class LoopTests(BallpassAppFactory app)
         Assert.Matches("contact@[a-z0-9-]+\\.invalid", li);   // reserved TLD: never a real mailbox
         Assert.DoesNotMatch("(?i)demo|φανταστικ|επίδειξ", li);   // flow-release O1: no "(demo)" tag, no "fictional address" note
         Assert.DoesNotContain($"action=\"/me/inbox/{a.InterestId}/reply\"", li);
+        Assert.Contains("Συνδεθήκατε", li);
+        var addr = Regex.Match(li, "contact@[a-z0-9-]+\\.invalid").Value;
+        Assert.Matches($"<a[^>]*class=\"bp-btn-athlete\"[^>]*href=\"mailto:{Regex.Escape(addr)}\"", li);
         foreach (Match m in Regex.Matches(html, "[\\w.+-]+@[\\w.-]+"))
             Assert.EndsWith(".invalid", m.Value);
     }
@@ -441,6 +450,30 @@ public class LoopTests(BallpassAppFactory app)
         Assert.Equal(3, Regex.Matches(acc, "<time[^>]*datetime=\"[^\"]+\"[^>]*title=\"[^\"]+\"").Count);
         Assert.Single(Regex.Matches(Item(unseen.InterestId), "<time[^>]*title="));
         Assert.Matches($"<a[^>]*class=\"bp-loop-chip\"[^>]*href=\"/p/{accepted.Slug}\"", acc);
+
+        // flow-release §4.7: dots orange (sent), orange (seen), teal (reply); done steps carry bp-step-done.
+        string Classes(string item, string step) => Regex.Match(item, $"<li[^>]*class=\"([^\"]*)\"[^>]*data-step=\"{step}\"").Groups[1].Value;
+        Assert.Contains("bp-step-coach", Classes(acc, "sent"));
+        Assert.Contains("bp-step-coach", Classes(acc, "seen"));
+        Assert.Contains("bp-step-athlete", Classes(acc, "replied"));
+        Assert.All(new[] { "sent", "seen", "replied" }, s => Assert.Contains("bp-step-done", Classes(acc, s)));
+        Assert.DoesNotContain("bp-step-done", Classes(Item(unseen.InterestId), "seen"));
+        Assert.Matches("<ol[^>]*class=\"bp-stepper", acc);
+        // One primary action on the page: the next match.
+        Assert.Single(Regex.Matches(html, "class=\"bp-btn-primary\""));
+        Assert.Matches("<a[^>]*class=\"bp-btn-primary\"[^>]*href=\"/match\"", html);
+    }
+
+    [Fact]
+    public async Task Sent_page_empty_state_has_a_photo_and_leads_to_match()
+    {
+        var coachId = h.Db(db => db.Coaches.Where(c => c.IsDemo && !db.Interests.Any(i => i.CoachId == c.Id)).OrderBy(c => c.Id).Select(c => c.Id).First());
+        var client = await h.LoginAsync("coach", coachId);
+
+        var html = await Html(client, "/me/sent");
+
+        Assert.Contains($"src=\"{Ballpass.Web.Features.Media.StockMedia.SentEmpty.Url}\"", html);
+        Assert.Matches("<a[^>]*class=\"bp-btn-primary\"[^>]*href=\"/match\"", html);
     }
 
     [Fact]

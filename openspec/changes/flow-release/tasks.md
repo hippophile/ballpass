@@ -29,14 +29,38 @@
 - [ ] B4. Shortlist grid + compare panel + empty state.
 - [ ] B5. Green + screenshots (lead reads).
 
-## WP-C Front door, athlete path, feed (placeholder, separate worktree after WP-A)
+## WP-C Front door, athlete path, feed
 
-- [ ] C1. Red tests: home doors post `/demo/login` with the right returnUrls; counters equal DB counts; `/demo` featured cards + ≤ 8 rows;
+- [x] C1. Red tests: home doors post `/demo/login` with the right returnUrls; counters equal DB counts; `/demo` featured cards + ≤ 8 rows;
       feed 0 empty tiles and 240/600/320 grid; inbox accept is `bp-btn-athlete`; sent stepper orange, orange, teal.
-- [ ] C2. Home hero (HeroVideo), doors, connection band, counters, recent connections.
-- [ ] C3. `/demo` featured row + persona lists; inbox and sent restyle; not-found band.
-- [ ] C4. Feed 3-column grid, rails, PostMedia pool fallback.
-- [ ] C5. Green + screenshots (lead reads).
+- [x] C2. Home hero (HeroVideo), doors (`PersonaDoor`), connection band, counters, recent connections, activity photo headers, doors again.
+- [x] C3. `/demo` featured row + persona lists; inbox and sent restyle; not-found band.
+- [x] C4. Feed 3-column grid, rails (me card + links; "Ψάχνουν ομάδα τώρα" + trends ≤ 5), PostMedia pool fallback (graphics skipped).
+- [x] C5. Green + screenshots (lead reads).
+
+### Red run (C1) — 2026-11-22
+`BALLPASS_TESTDB_SUFFIX=_flowc dotnet test --filter "<Home|SearchAndLogin|Loop|Feed|FeedLayout|Engage|Media>Tests"`, with a compile-only
+stub `FlowResource` (empty resx), so every failure is an assertion, not a build error:
+```
+Failed!  - Failed:    24, Passed:   182, Skipped:     0, Total:   206
+  HomeTests (10): doors   Assert.Equal() Expected: 2 (door forms)        hero  Pattern not found <video ... autoplay
+                  counters FormatException (no data-count="looking")    Flow resource  Collection was empty
+                  english  "Find a player" not found                     404   stock photo not found
+  SearchAndLoginTests (4): featured cards Expected: 2 · lists Collection was empty · featured athlete → /me/inbox Strings differ
+  LoopTests (3): accept button class bp-btn-athlete not found · stepper bp-step-coach not found · empty-state photo not found
+  FeedLayoutTests (4): "grid-template-columns: 240px minmax(0, 600px) 320px" not found · left rail missing
+  EngageTests (1): "Ψάχνουν ομάδα τώρα" not found       MediaTests (2): "video/gfx-" found in the feed · no eager image
+```
+
+### Green (C5) — 2026-11-22
+`dotnet build`: 0 warnings, 0 errors. Full suite, once: `BALLPASS_TESTDB_SUFFIX=_flowc dotnet test --blame-hang-timeout 5m`
+```
+Passed!  - Failed:     0, Passed:   589, Skipped:     0, Total:   589
+```
+Visual, app on :5303 against `ballpass_flowc_dev` (Brave headless, read): `/`, `/demo`, `/feed` (anonymous, coach), `/me/inbox`
+(pending, accepted), `/me/sent` (pending + accepted), 404, at 1512 and 390. scrollWidth = 390 on every 390 shot. Home at 1512×900:
+both doors end at y = 887 (above the fold). `/feed` grid computes to `240px 600px 320px`, 0 media blocks without `img[src]`/`video[poster]`.
+Hero video after a full load and after enhanced navigation from /feed: `paused=false`, `currentTime > 3`, `muted=true`.
 
 ## Red run (A1) — 2026-11-22
 `BALLPASS_TESTDB_SUFFIX=_flowa dotnet test --filter "<Look|StockMedia|Skeleton|DemoDataGenerator|Evidence|FindPages|AuditFind|Feed|Engage|Media|Loop|Share|Profile|AuditFix|AuditMisc>Tests"`,

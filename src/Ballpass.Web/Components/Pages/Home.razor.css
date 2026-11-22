@@ -1,96 +1,332 @@
-.bp-hero {
-    position: relative;
-    background:
-        radial-gradient(60% 120% at 50% -20%, color-mix(in srgb, var(--bp-accent) 22%, transparent), transparent 70%),
-        var(--bp-s1);
-    border: 1px solid var(--bp-border);
-    border-top: 1px solid var(--bp-accent);
-    border-radius: var(--bp-r-md);
-    padding: var(--bp-sp-7) var(--bp-sp-4);
-    text-align: center;
+/* Home (flow-release §4.1). The shell drops its padding for .bp-home (MainLayout); the hero is full-bleed, every other section sits in
+   the 1216 px inner box. Child components (HeroVideo, StockPhoto, PersonaDoor) are styled through ::deep. */
+
+/* ---- hero ---- */
+.bp-home ::deep .bp-home-hero {
+    height: min(600px, 78vh);
+    min-height: 420px;
 }
 
-    .bp-hero h1 {
-        font-size: clamp(2.6rem, 9vw, 4rem);
-        font-weight: 800;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-        margin: 0 0 var(--bp-sp-2);
+    .bp-home ::deep .bp-home-hero > .bp-photo-body {
+        padding: 0 max(32px, calc((100% - var(--bp-w-page)) / 2 + 32px)) 144px;
     }
 
-        .bp-hero h1::first-letter {
-            color: var(--bp-accent);
-        }
-
-.bp-value {
-    font-size: var(--bp-fs-lg);
-    max-width: 38rem;
-    margin: 0 auto var(--bp-sp-2);
+.bp-home-hero-text {
+    max-width: 760px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--bp-sp-3);
 }
 
-.bp-sub {
-    color: var(--bp-muted);
-    font-weight: 600;
+    .bp-home-hero-text h1 {
+        margin: 0;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-wrap: balance;
+    }
+
+.bp-home-sub {
+    margin: 0;
+    font-size: 1.125rem;
+    line-height: 1.45;
+    color: var(--bp-text);
+    max-width: 40rem;
+}
+
+/* ---- inner box ---- */
+.bp-home-inner {
+    max-width: var(--bp-w-page);
+    margin-inline: auto;
+    padding: 0 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    position: relative;
+    z-index: 1;
+}
+
+    .bp-home-inner > ::deep .bp-loop-toast {
+        margin: var(--bp-sp-4) 0 -24px;
+    }
+
+/* ---- doors: overlap the hero by 96 px ---- */
+.bp-doors {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: -96px;
+}
+
+    .bp-doors ::deep .bp-door {
+        height: 320px;
+        border-radius: var(--bp-r-md);
+        border: 1px solid var(--bp-border);
+        box-shadow: var(--bp-shadow);
+        transition: box-shadow 150ms ease-out, transform 150ms ease-out;
+    }
+
+    .bp-doors ::deep .bp-door-coach:hover, .bp-doors ::deep .bp-door-coach:focus-within {
+        box-shadow: var(--bp-shadow), var(--bp-glow-accent);
+    }
+
+    .bp-doors ::deep .bp-door-athlete:hover, .bp-doors ::deep .bp-door-athlete:focus-within {
+        box-shadow: var(--bp-shadow), var(--bp-glow-athlete);
+    }
+
+/* ---- connection band ---- */
+.bp-howband {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 48px;
+    align-items: center;
+}
+
+    .bp-howband ::deep .bp-howband-photo {
+        aspect-ratio: 4 / 5;
+        max-height: 440px;
+        width: 100%;
+        border-radius: var(--bp-r-md);
+    }
+
+.bp-howband-text h2 {
+    font-size: var(--bp-fs-xl);
+    line-height: 1.15;
     margin: 0 0 var(--bp-sp-5);
 }
 
-.bp-ctas {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--bp-sp-3);
-}
-
-.bp-counters {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--bp-sp-3);
-    margin: var(--bp-sp-5) 0;
-}
-
-.bp-counter {
-    flex: 1 1 8rem;
+.bp-howband-steps li {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    padding: var(--bp-sp-4) 0.5rem;
+    gap: 4px;
 }
 
-.bp-home-section h2 {
-    font-size: var(--bp-fs-lg);
-    font-weight: 700;
-    margin: var(--bp-sp-6) 0 var(--bp-sp-3);
+    .bp-howband-steps li strong {
+        font-size: 1.125rem;
+        line-height: 1.3;
+    }
+
+    .bp-howband-steps li > span {
+        color: var(--bp-muted);
+        font-size: var(--bp-fs-md);
+    }
+
+.bp-howband-sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bp-sp-2);
+    margin-top: var(--bp-sp-2);
 }
 
-.bp-steps, .bp-trust {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+/* ---- live counters: one 96 px s1 row, 3 columns, 1 px dividers ---- */
+.bp-home-counters {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+    min-height: 96px;
+    background: var(--bp-s1);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+}
+
+.bp-home-counter {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: var(--bp-sp-3);
+    padding: var(--bp-sp-4);
+}
+
+    .bp-home-counter + .bp-home-counter {
+        border-inline-start: 1px solid var(--bp-border);
+    }
+
+.bp-home-count-num {
+    font-family: var(--bp-font-display);
+    font-size: var(--bp-fs-stat);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--bp-accent-hi);
+    font-variant-numeric: tabular-nums;
+}
+
+.bp-home-count-label {
+    color: var(--bp-muted);
+    font-size: var(--bp-fs-md);
+}
+
+/* ---- recent connections: one horizontal row that scrolls inside the section ---- */
+.bp-connections h2, .bp-home-final h2 {
+    font-size: var(--bp-fs-lg);
+    margin: 0 0 var(--bp-sp-3);
+}
+
+.bp-connections-row {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 var(--bp-sp-2);
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(280px, 1fr);
+    gap: 16px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.bp-connection {
+    display: flex;
+    align-items: center;
+    gap: var(--bp-sp-3);
+    padding: var(--bp-sp-3) var(--bp-sp-4);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--bp-athlete) 7%, var(--bp-s2)) 0%, var(--bp-s1) 100%);
+    border: 1px solid color-mix(in srgb, var(--bp-athlete) 30%, var(--bp-border));
+    border-radius: var(--bp-r-md);
+    min-width: 0;
+}
+
+.bp-connection-who {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.bp-connection-name {
+    color: var(--bp-text);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+    .bp-connection-name:hover {
+        text-decoration: underline;
+        color: var(--bp-text);
+    }
+
+.bp-connection-club {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--bp-muted);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bp-connection-link {
+    flex: none;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--bp-athlete), var(--bp-accent));
+}
+
+.bp-connection-time {
+    color: var(--bp-faint);
+    font-size: var(--bp-fs-xs);
+}
+
+/* ---- activity strip spacing (FeedPreview owns its look) ---- */
+.bp-home-inner ::deep .bp-feed-preview {
+    margin: 0;
+}
+
+/* ---- the doors again ---- */
+.bp-home-final {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--bp-sp-4);
+    padding: var(--bp-sp-5);
+    background: var(--bp-grad-hero), var(--bp-s1);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+}
+
+    .bp-home-final h2 {
+        margin: 0;
+    }
+
+.bp-home-final-actions {
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--bp-sp-3);
 }
 
-    .bp-steps li, .bp-trust li {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.35rem;
-        min-width: 0;
+    .bp-home-final-actions ::deep form {
+        margin: 0;
     }
 
-.bp-step-num {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    background: var(--bp-accent);
-    color: var(--bp-accent-contrast);
-    font-family: var(--bp-font-display);
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* ---- phones ---- */
+@media (max-width: 767px) {
+    .bp-home ::deep .bp-home-hero {
+        height: 460px;
+        min-height: 0;
+    }
+
+        .bp-home ::deep .bp-home-hero > .bp-photo-body {
+            padding: 0 16px 72px;
+        }
+
+    .bp-home-hero-text h1 {
+        font-size: 2.25rem;
+    }
+
+    .bp-home-sub {
+        font-size: var(--bp-fs-md);
+    }
+
+    .bp-home-inner {
+        padding: 0 16px 16px;
+        gap: 32px;
+    }
+
+    .bp-doors {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-top: -48px;
+    }
+
+        .bp-doors ::deep .bp-door {
+            height: 240px;
+        }
+
+    .bp-howband {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+        .bp-howband ::deep .bp-howband-photo {
+            aspect-ratio: 16 / 10;
+            max-height: none;
+        }
+
+    .bp-home-counter {
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: var(--bp-sp-3) var(--bp-sp-2);
+        text-align: center;
+    }
+
+    .bp-home-count-num {
+        font-size: 2rem;
+    }
+
+    .bp-home-count-label {
+        font-size: 0.8125rem;
+    }
+
+    .bp-home-final-actions, .bp-home-final-actions ::deep form, .bp-home-final-actions ::deep .bp-btn-primary, .bp-home-final-actions ::deep .bp-btn-athlete {
+        width: 100%;
+    }
 }
 
+@media (prefers-reduced-motion: reduce) {
+    .bp-doors ::deep .bp-door {
+        transition: none;
+    }
+}

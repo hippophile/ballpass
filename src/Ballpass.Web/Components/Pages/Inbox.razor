@@ -3,73 +3,112 @@
 @using System.Globalization
 @using Ballpass.Web.Data
 @using Ballpass.Web.Demo
+@using Ballpass.Web.Features.Flow
 @using Ballpass.Web.Features.Loop
 @using Microsoft.EntityFrameworkCore
 @inject BallpassDbContext Db
 @inject TimeProvider Time
 @inject IStringLocalizer<SharedResource> L
 @inject IStringLocalizer<LoopResource> T
+@inject IStringLocalizer<FlowResource> F
 
 <PageTitle>@L["Inbox_Title"]</PageTitle>
 
-<h1>@L["Inbox_Title"]</h1>
+@* flow-release §4.8: the athlete decides. Pending = coach scene photo + note + teal "Αποδοχή" (her move) and a ghost "Όχι τώρα".
+   Accepted = teal banner, her jersey joined to the club, the club contact and a teal mailto. No "fictional contact" note (O1). *@
+<div class="bp-inbox">
+    <h1>@L["Inbox_Title"]</h1>
+    <p class="bp-inbox-sub">@F["Inbox_Sub"]</p>
 
-@if (interests.Count == 0)
-{
-    <p class="bp-empty">@L["Inbox_Empty"]</p>
-}
-else
-{
-    <ul class="bp-interest-list">
-        @foreach (var i in interests)
+    <div class="bp-inbox-grid">
+        @if (interests.Count == 0)
         {
-            var coach = i.Coach!;
-            var name = CoachName(coach);
-            <li class="interest" data-coach="@name" data-interest-id="@i.Id">
-                <div class="bp-result-name">@name @if (newIds.Contains(i.Id)) { <span class="bp-loop-new">@T["Inbox_New"]</span> }</div>
-                <div class="bp-result-meta">@L[GreekNames.IsFemaleFirstName(coach.FirstName) ? "Role_Coach_F" : "Role_Coach"] · @coach.Club?.Name</div>
-                <div class="bp-result-meta">@i.CreatedAt.ToString("d", CultureInfo.CurrentCulture)</div>
-                <p class="bp-interest-note">@(string.IsNullOrWhiteSpace(i.Note) ? L["Inbox_NoNote"].Value : i.Note)</p>
-                @if (i.Reply == InterestReply.None)
-                {
-                    <form method="post" action="/me/inbox/@i.Id/reply" data-action="reply" class="bp-loop-reply" aria-label="@T["Inbox_ReplyAria"]">
-                        <AntiforgeryToken />
-                        <button type="submit" name="reply" value="accept" class="bp-btn">@T["Inbox_Accept"]</button>
-                        <button type="submit" name="reply" value="decline" class="bp-btn bp-btn-secondary">@T["Inbox_Decline"]</button>
-                    </form>
-                }
-                else if (i.Reply == InterestReply.Accepted)
-                {
-                    <p class="bp-loop-replied" data-reply="Accepted">✓ @T["Inbox_YouAccepted"]</p>
-                    <p class="bp-loop-contact"><strong>@T["Inbox_Contact"]:</strong> <span class="bp-loop-contact-addr">@ClubContact.Email(coach.Club?.Name ?? "club")</span></p>
-                }
-                else
-                {
-                    <p class="bp-loop-replied" data-reply="Declined">@T["Inbox_YouDeclined"]</p>
-                }
-            </li>
+            <p class="bp-empty">@L["Inbox_Empty"]</p>
         }
-    </ul>
-}
+        else
+        {
+            <ul class="bp-interest-list">
+                @foreach (var i in interests)
+                {
+                    var coach = i.Coach!;
+                    var name = CoachName(coach);
+                    <li class="interest" data-coach="@name" data-interest-id="@i.Id" data-reply="@i.Reply">
+                        <StockPhoto Image="FlowMedia.CoachScene(coach.Id, GreekNames.IsFemaleFirstName(coach.FirstName))" Class="bp-interest-photo" />
+                        <div class="bp-interest-body">
+                            @if (i.Reply == InterestReply.Accepted)
+                            {
+                                <p class="bp-interest-connected" data-reply="Accepted">@F["Inbox_Connected"]</p>
+                            }
+                            <div class="bp-interest-head">
+                                @if (newIds.Contains(i.Id)) { <span class="bp-loop-new">@T["Inbox_New"]</span> }
+                                <span class="bp-interest-coach">@name</span>
+                            </div>
+                            <div class="bp-interest-meta">@L[GreekNames.IsFemaleFirstName(coach.FirstName) ? "Role_Coach_F" : "Role_Coach"] · @coach.Club?.Name@if (coach.Club is { } club) {<text> · @L[$"League_{club.League}"]</text>} · <time datetime="@i.CreatedAt.UtcDateTime.ToString("o", CultureInfo.InvariantCulture)">@i.CreatedAt.ToString("d", CultureInfo.CurrentCulture)</time></div>
+                            <blockquote class="bp-interest-note">@(string.IsNullOrWhiteSpace(i.Note) ? L["Inbox_NoNote"].Value : i.Note)</blockquote>
+                            @if (i.Reply == InterestReply.None)
+                            {
+                                <form method="post" action="/me/inbox/@i.Id/reply" data-action="reply" class="bp-loop-reply" aria-label="@T["Inbox_ReplyAria"]">
+                                    <AntiforgeryToken />
+                                    <button type="submit" name="reply" value="accept" class="bp-btn-athlete">@T["Inbox_Accept"]</button>
+                                    <button type="submit" name="reply" value="decline" class="bp-btn-ghost">@T["Inbox_Decline"]</button>
+                                </form>
+                            }
+                            else if (i.Reply == InterestReply.Accepted)
+                            {
+                                var email = ClubContact.Email(coach.Club?.Name ?? "club");
+                                <div class="bp-interest-link" aria-hidden="true">
+                                    <JerseyAvatar Id="athleteId" Initials="@initials" Club="@athleteClub" Size="40" />
+                                    <span class="bp-interest-connector"></span>
+                                    <span class="bp-interest-club">@coach.Club?.Name</span>
+                                </div>
+                                <p class="bp-loop-contact"><span class="bp-loop-contact-label">@T["Inbox_Contact"]</span> <span class="bp-loop-contact-addr">@email</span></p>
+                                <a class="bp-btn-athlete" href="mailto:@email">@F["Inbox_Email"]</a>
+                            }
+                            else
+                            {
+                                <p class="bp-loop-replied" data-reply="Declined">@T["Inbox_YouDeclined"]</p>
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        @* What happens next, beside the cards (the same three steps as the home page; her moves teal, the coach's orange). *@
+        <aside class="bp-inbox-aside bp-card bp-panel" aria-labelledby="bp-inbox-how">
+            <h2 id="bp-inbox-how">@F["How_Title"]</h2>
+            <ol class="bp-stepper bp-stepper-vertical">
+                <li class="bp-step-athlete bp-step-done"><strong>@F["How_Step1"]</strong><span>@F["How_Step1Text"]</span></li>
+                <li class="bp-step-coach bp-step-done"><strong>@F["How_Step2"]</strong></li>
+                <li class="bp-step-athlete@(interests.Any(i => i.Reply == InterestReply.Accepted) ? " bp-step-done" : "")"><strong>@F["How_Step3"]</strong><span>@F["How_Step3Text"]</span></li>
+            </ol>
+        </aside>
+    </div>
+</div>
 
 @code {
     [CascadingParameter] private Task<AuthenticationState> AuthState { get; set; } = default!;
 
     private List<Interest> interests = [];
     private HashSet<int> newIds = [];
+    private int athleteId;
+    private string initials = "";
+    private string? athleteClub;
 
     private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
 
     protected override async Task OnInitializedAsync()
     {
         var user = (await AuthState).User;
-        if (!int.TryParse(user.FindFirst("entity_id")?.Value, out var athleteId)) return;
+        if (!int.TryParse(user.FindFirst("entity_id")?.Value, out athleteId)) return;
+        var me = IsGreek ? user.Identity?.Name : user.FindFirst("name_latin")?.Value ?? user.Identity?.Name;
+        initials = string.Concat((me ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);
 
         interests = await Db.Interests.AsNoTracking()
             .Include(i => i.Coach).ThenInclude(c => c!.Club)
             .Where(i => i.AthleteId == athleteId)
             .OrderByDescending(i => i.CreatedAt).ThenByDescending(i => i.Id)
             .ToListAsync();
+        athleteClub = await Db.Athletes.Where(a => a.Id == athleteId).Select(a => a.CurrentClub!.Name).FirstOrDefaultAsync();
 
         // Opening the inbox marks the unseen interests seen, once (SeenAt is never overwritten).
         newIds = interests.Where(i => i.SeenAt is null).Select(i => i.Id).ToHashSet();

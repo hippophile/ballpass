@@ -13,7 +13,7 @@
 {
     <form method="post" action="/demo/switch?to=@direction" data-demo-switch="@direction" class="bp-loop-switch">
         <AntiforgeryToken />
-        <button type="submit" class="bp-loop-pill">@T[labelKey]</button>
+        <button type="submit" class="bp-loop-pill bp-loop-pill-@direction">@T[labelKey]</button>
     </form>
 }
 

@@ -1,9 +1,33 @@
 @page "/not-found"
 @attribute [RequireAntiforgeryToken(required: false)]
 @layout MainLayout
+@using Ballpass.Web.Features.Media
 @inject IStringLocalizer<SharedResource> L
+@inject IStringLocalizer<FlowResource> F
 
 <PageTitle>@L["NotFound_Title"]</PageTitle>
 
-<h1>@L["NotFound_Title"]</h1>
-<p>@L["NotFound_Text"]</p>
+@* flow-release §4.9: a photo band and one way back into the flow (coach: Ταίριασμα, everyone else: Ροή). *@
+<div class="bp-notfound-wrap">
+    <StockPhoto Image="StockMedia.NotFound" Left="true" Class="bp-notfound">
+        <h1>@L["NotFound_Title"]</h1>
+        <p>@L["NotFound_Text"]</p>
+        @if (isCoach)
+        {
+            <a class="bp-btn-primary" href="/match">@F["NotFound_BackMatch"]</a>
+        }
+        else
+        {
+            <a class="bp-btn-primary" href="/feed">@F["NotFound_BackFeed"]</a>
+        }
+    </StockPhoto>
+</div>
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
+
+    private bool isCoach;
+
+    protected override async Task OnInitializedAsync() =>
+        isCoach = AuthState is not null && (await AuthState).User.IsInRole("Coach");
+}

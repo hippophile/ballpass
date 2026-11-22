@@ -156,13 +156,13 @@ public class MediaTests(BallpassAppFactory app)
 
     // ---- UI: post media ----
 
-    private async Task<(int PostId, string Card)> CardWith(HttpClient client, Func<List<MediaItem>, bool> pick)
+    private async Task<(int PostId, string Card)> CardWith(HttpClient client, Func<List<MediaItem>, bool> pick, IReadOnlySet<int>? skip = null)
     {
         var groups = h.Db(db => db.Set<MediaItem>().Where(m => m.PostId != null).AsNoTracking().ToList()).GroupBy(m => m.PostId!.Value)
             .Where(g => pick(g.OrderBy(m => m.Position).ToList())).Select(g => g.Key).ToHashSet();
         Assert.NotEmpty(groups);
         var cards = await FeedHarness.AllPages(client, "/feed");
-        var hit = cards.FirstOrDefault(c => groups.Contains(c.Id));
+        var hit = cards.FirstOrDefault(c => groups.Contains(c.Id) && skip?.Contains(c.Id) != true);
         Assert.True(hit.Id != 0, "no feed page shows a post with the wanted media");
         return (hit.Id, hit.Html);
     }
@@ -170,7 +170,9 @@ public class MediaTests(BallpassAppFactory app)
     [Fact]
     public async Task Photo_renders_with_size_alt_lazy_loading_and_the_stock_chip()
     {
-        var (_, card) = await CardWith(app.Client(), items => items.Count == 1 && items[0].Kind == MediaKind.Photo);
+        // Below the fold: skip the first four cards of the first page, which load eagerly (flow-release §4.3).
+        var firstFour = FeedHarness.Cards(await FeedHarness.Html(app.Client(), "/feed")).Take(4).Select(c => c.Id).ToHashSet();
+        var (_, card) = await CardWith(app.Client(), items => items.Count == 1 && items[0].Kind == MediaKind.Photo, skip: firstFour);
         var img = Regex.Match(card, "<img\\b[^>]*src=\"/media/[^\"]+\"[^>]*>").Value;
         Assert.NotEmpty(img);
         Assert.Matches("width=\"\\d+\"", img);
@@ -185,7 +187,9 @@ public class MediaTests(BallpassAppFactory app)
     [Fact]
     public async Task Video_has_muted_playsinline_preload_none_poster_and_no_autoplay()
     {
-        var (_, card) = await CardWith(app.Client(), items => items.Any(m => m.Kind == MediaKind.Video));
+        // Feed posts no longer show the generated graphics (flow-release §4.3); athlete stories still play videos through MediaTile.
+        var slug = h.Db(db => db.Set<MediaItem>().Where(m => m.AthleteId != null && m.Kind == MediaKind.Video).OrderBy(m => m.Id).Select(m => m.Athlete!.Slug).First());
+        var card = await FeedHarness.Html(app.Client(), $"/stories/{slug}");
         var video = Regex.Match(card, "<video\\b[^>]*>").Value;
         Assert.NotEmpty(video);
         Assert.Matches("\\smuted(\\s|=|>)", video);
@@ -198,6 +202,50 @@ public class MediaTests(BallpassAppFactory app)
         Assert.DoesNotContain("Γραφικό · demo", card);   // flow-release O1: no graphic chip
         Assert.DoesNotContain("data-chip=\"media\"", card);
         Assert.Matches("<source\\b[^>]*src=\"/media/[^\"]+\\.mp4\"[^>]*type=\"video/mp4\"", card);
+    }
+
+    // ---- UI: no empty or graphic tile in the feed (flow-release §4.3) ----
+
+    [Fact]
+    public async Task Feed_has_no_empty_or_graphic_tile_and_highlights_fall_back_to_the_stock_pool()
+    {
+        var media = h.Db(db => db.Set<MediaItem>().Where(m => m.PostId != null).AsNoTracking().ToList()).GroupBy(m => m.PostId!.Value)
+            .ToDictionary(g => g.Key, g => g.ToList());
+        var cards = await FeedHarness.AllPages(app.Client(), "/feed");
+        Assert.NotEmpty(cards);
+
+        foreach (var c in cards)
+        {
+            foreach (Match block in Regex.Matches(c.Html, "<div class=\"bp-media\"[^>]*>"))
+            {
+                // The first picture element after the block opens must carry a real source.
+                var first = Regex.Match(c.Html[block.Index..], "<(img|video|svg)\\b[^>]*>").Value;
+                Assert.Matches("^<img\\b[^>]*src=\"/media/[^\"]+\"|^<video\\b[^>]*poster=\"/media/[^\"]+\"", first);
+            }
+            Assert.DoesNotContain("video/gfx-", c.Html);
+            Assert.DoesNotContain("bp-feed-art", c.Html);
+            var items = media.GetValueOrDefault(c.Id) ?? [];
+            var realItems = items.Count(m => !m.IsGraphic);
+            if (c.Type == "Highlight" || (items.Count > 0 && realItems == 0))
+            {
+                Assert.True(realItems > 0 || c.Html.Contains($"src=\"{StockMedia.Feed(c.Id).Url}\""), $"post {c.Id} ({c.Type}) has no picture");
+                Assert.Contains("class=\"bp-media", c.Html);
+            }
+        }
+        Assert.Contains(cards, c => media.GetValueOrDefault(c.Id) is { } i && i.All(m => m.IsGraphic));   // the fallback is exercised
+    }
+
+    [Fact]
+    public async Task First_four_posts_load_their_media_eagerly()
+    {
+        var html = await FeedHarness.Html(app.Client(), "/feed");
+        var cards = FeedHarness.Cards(html).ToList();
+
+        var firstImages = cards.Take(4).Select(c => Regex.Match(c.Html, "<div class=\"bp-media\".*?(<img\\b[^>]*>)", RegexOptions.Singleline).Groups[1].Value)
+            .Where(img => img.Length > 0).ToList();
+        Assert.NotEmpty(firstImages);
+        Assert.All(firstImages, img => Assert.DoesNotContain("loading=\"lazy\"", img));
+        Assert.Contains(cards.Skip(4), c => c.Html.Contains("loading=\"lazy\""));
     }
 
     [Fact]

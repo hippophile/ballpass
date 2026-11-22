@@ -65,7 +65,6 @@
   <data name="Type_FreeText" xml:space="preserve"><value>Post</value></data>
   <data name="Chip_System" xml:space="preserve"><value>Automatic update</value></data>
   <data name="Role_Club" xml:space="preserve"><value>Club</value></data>
-  <data name="Highlight_Alt" xml:space="preserve"><value>Graphic for the highlight "{0}". Not a photo or video.</value></data>
   <data name="Badge_StatsCoachConfirmed" xml:space="preserve"><value>Stats confirmed by a coach</value></data>
   <data name="Badge_ProfileComplete" xml:space="preserve"><value>Complete profile</value></data>
   <data name="Badge_ThreeSeasons" xml:space="preserve"><value>Three seasons on record</value></data>

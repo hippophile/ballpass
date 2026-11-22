@@ -1,0 +1,40 @@
+/* Door content sits in the bottom zone of the photo (scrim alpha >= .80). The host page sets the door's height. */
+.bp-door-label {
+    display: block;
+    font-size: var(--bp-fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--bp-muted);
+    margin-bottom: var(--bp-sp-1);
+}
+
+.bp-door-title {
+    font-size: 1.75rem;
+    line-height: 1.15;
+    font-weight: 800;
+    margin: 0 0 var(--bp-sp-1);
+    color: var(--bp-text);
+}
+
+.bp-door-text {
+    margin: 0 0 var(--bp-sp-4);
+    color: var(--bp-muted);
+    font-size: var(--bp-fs-md);
+    max-width: 30rem;
+}
+
+.bp-door-form {
+    margin: 0;
+}
+
+@media (max-width: 767px) {
+    .bp-door-title {
+        font-size: 1.5rem;
+    }
+
+    .bp-door-text {
+        margin-bottom: var(--bp-sp-3);
+        font-size: var(--bp-fs-sm);
+    }
+}

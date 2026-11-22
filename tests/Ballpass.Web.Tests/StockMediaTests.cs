@@ -197,8 +197,8 @@ public class StockMediaTests(BallpassAppFactory app)
     {
         var featured = app.Services.GetRequiredService<IOptions<DemoOptions>>().Value.Featured;
 
-        Assert.Equal("Ευτυχία", featured.CoachFirstName);
-        Assert.Equal("Σωτηρίου", featured.CoachLastName);
+        Assert.Equal("Αικατερίνη", featured.CoachFirstName);   // SPEC §8 O7
+        Assert.Equal("Φωτοπούλου", featured.CoachLastName);
         Assert.Equal("danai-bakali", featured.AthleteSlug);
         var data = DemoDataGenerator.Generate(42);
         Assert.Single(data.Coaches, c => c.FirstName == featured.CoachFirstName && c.LastName == featured.CoachLastName);

@@ -1,0 +1,48 @@
+@using Ballpass.Web.Features.Media
+@* A photo "door" into one side of the market (flow-release §4.1/§4.2): stock photo + scrim, label, title, one line, one button.
+   The button signs in as the persona (plain POST /demo/login, antiforgery) and lands on ReturnUrl; without a persona (unset config,
+   Demo:Enabled=false) it is a link to /demo. Coach = orange gradient, athlete = teal gradient. Extra attributes go on the form/link. *@
+<StockPhoto Image="Image" Priority="Priority" Class="@($"bp-door bp-door-{PersonaType}{(string.IsNullOrEmpty(Class) ? "" : " " + Class)}")">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <span class="bp-door-label">@Label</span>
+    }
+    <h2 class="bp-door-title">@Title</h2>
+    @if (!string.IsNullOrEmpty(Text))
+    {
+        <p class="bp-door-text">@Text</p>
+    }
+    @if (PersonaId is { } id)
+    {
+        <form method="post" action="/demo/login" @attributes="Attributes" class="bp-door-form">
+            <input type="hidden" name="personaType" value="@PersonaType">
+            <input type="hidden" name="personaId" value="@id">
+            <input type="hidden" name="returnUrl" value="@ReturnUrl">
+            <AntiforgeryToken />
+            <button type="submit" class="@ButtonClass">@Cta</button>
+        </form>
+    }
+    else
+    {
+        <a @attributes="Attributes" href="/demo" class="@ButtonClass">@Cta</a>
+    }
+</StockPhoto>
+
+@code {
+    [Parameter, EditorRequired] public StockImage Image { get; set; } = default!;
+    /// <summary>"coach" or "athlete" (the /demo/login personaType).</summary>
+    [Parameter, EditorRequired] public string PersonaType { get; set; } = "coach";
+    /// <summary>Null = no persona to sign in as: the button links to /demo.</summary>
+    [Parameter] public int? PersonaId { get; set; }
+    [Parameter] public string ReturnUrl { get; set; } = "";
+    [Parameter] public string? Label { get; set; }
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    [Parameter] public string? Text { get; set; }
+    [Parameter, EditorRequired] public string Cta { get; set; } = "";
+    /// <summary>Above the fold: eager image with high fetch priority.</summary>
+    [Parameter] public bool Priority { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? Attributes { get; set; }
+
+    private string ButtonClass => PersonaType == "athlete" ? "bp-btn-athlete" : "bp-btn-primary";
+}

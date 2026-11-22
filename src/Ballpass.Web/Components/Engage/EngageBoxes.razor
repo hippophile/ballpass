@@ -4,7 +4,7 @@
 @inject IStringLocalizer<SharedResource> L
 
 @* "Who to follow" and "Trending" boxes. Used twice on /feed: in the desktop sidebar and inline after the 3rd post on phones (CSS shows one of them). *@
-@if (suggestions.Count > 0)
+@if (ShowFollow && suggestions.Count > 0)
 {
     <section class="bp-engage-box" data-engage="follow" aria-label="@E["Follow_Title"]">
         <h2>@E["Follow_Title"]</h2>
@@ -50,7 +50,7 @@
         <h2>@E["Trends_Title"]</h2>
         <p class="bp-feed-hint">@E["Trends_Window"]</p>
         <ol class="bp-engage-trends">
-            @foreach (var t in trends)
+            @foreach (var t in trends.Take(MaxTrends))
             {
                 <li data-tag-key="@t.Tag" data-tag-count="@t.Count">
                     <a href="/feed?tag=@Uri.EscapeDataString(t.Label)">#@t.Label</a>
@@ -63,6 +63,9 @@
 
 @code {
     [Parameter] public FeedViewer Viewer { get; set; } = FeedViewer.Anonymous;
+    /// <summary>The desktop rail drops who-to-follow (flow-release §4.3); the phone inline boxes keep it.</summary>
+    [Parameter] public bool ShowFollow { get; set; } = true;
+    [Parameter] public int MaxTrends { get; set; } = int.MaxValue;
 
     private IReadOnlyList<Suggestion> suggestions = [];
     private IReadOnlyList<TrendingTag> trends = [];
@@ -83,6 +86,6 @@
     protected override async Task OnInitializedAsync()
     {
         trends = await Cache.TrendingAsync();
-        suggestions = await Cache.SuggestionsAsync(Viewer);
+        if (ShowFollow) suggestions = await Cache.SuggestionsAsync(Viewer);
     }
 }
