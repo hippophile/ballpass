@@ -281,7 +281,7 @@ public class FindPagesTests(BallpassAppFactory app)
 
         await client.GetAsync("/culture/set?culture=en&redirectUri=%2Fsearch");
         Assert.Contains("From rules (no AI model)", await Html(client, "/search?parsed=rules&position=C"));
-        Assert.Contains("AI-interpreted search. Check the filters.", await Html(client, "/search?parsed=ai&position=C"));
+        Assert.Contains("Interpreted by AI. Double-check the filters.", await Html(client, "/search?parsed=ai&position=C"));
     }
 
     [Fact]

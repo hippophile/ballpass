@@ -13,7 +13,7 @@
   <data name="Hook_Scroll" xml:space="preserve"><value>See why ↓</value></data>
   <data name="Today_Label" xml:space="preserve"><value>Today</value></data>
   <data name="Today_Title" xml:space="preserve"><value>Connections happen blind.</value></data>
-  <data name="Today_AthleteLabel" xml:space="preserve"><value>The player</value></data>
+  <data name="Today_AthleteLabel" xml:space="preserve"><value>The athlete</value></data>
   <data name="Today_AthleteQuote" xml:space="preserve"><value>“I don't know who's looking.”</value></data>
   <data name="Today_CoachLabel" xml:space="preserve"><value>The coach</value></data>
   <data name="Today_CoachQuote" xml:space="preserve"><value>“I don't know who's out there.”</value></data>
@@ -23,7 +23,7 @@
   <data name="Frag_CallTag" xml:space="preserve"><value>Incoming call</value></data>
   <data name="Frag_CallWho" xml:space="preserve"><value>A coach friend</value></data>
   <data name="Frag_CallText" xml:space="preserve"><value>“Know any guards?”</value></data>
-  <data name="Frag_PdfFile" xml:space="preserve"><value>womens_league_stats.pdf</value></data>
+  <data name="Frag_PdfFile" xml:space="preserve"><value>womens_stats.pdf</value></data>
   <data name="Frag_PdfText" xml:space="preserve"><value>Stats buried in a PDF.</value></data>
   <data name="Frag_VideoTag" xml:space="preserve"><value>Video link</value></data>
   <data name="Frag_VideoText" xml:space="preserve"><value>A highlight video, lost in a chat.</value></data>
@@ -31,13 +31,13 @@
   <data name="Frag_GroupText" xml:space="preserve"><value>Looking for a team in Thessaloniki, I play forward.</value></data>
   <data name="Frag_GroupNoReply" xml:space="preserve"><value>No replies</value></data>
   <data name="Cost_Label" xml:space="preserve"><value>The cost</value></data>
-  <data name="Cost_Title" xml:space="preserve"><value>What is lost when nobody is looking.</value></data>
+  <data name="Cost_Title" xml:space="preserve"><value>What's lost when nobody's looking.</value></data>
   <data name="Cost_Source" xml:space="preserve"><value>Source:</value></data>
-  <data name="Cost1_Title" xml:space="preserve"><value>She moves city. Basketball loses her.</value></data>
+  <data name="Cost1_Title" xml:space="preserve"><value>She moves away. Basketball loses her.</value></data>
   <data name="Cost1_Figure" xml:space="preserve"><value>27.5%</value></data>
-  <data name="Cost1_Text" xml:space="preserve"><value>of first-year students stayed in their school's prefecture. The rest move city, and the team stays behind.</value></data>
+  <data name="Cost1_Text" xml:space="preserve"><value>of first-year students stayed in their school's prefecture. The rest move away, and their team is left behind.</value></data>
   <data name="Cost1_Source" xml:space="preserve"><value>KANEP-GSEE, 2011 data, via alfavita.gr</value></data>
-  <data name="Cost2_Title" xml:space="preserve"><value>Contacts, not evidence.</value></data>
+  <data name="Cost2_Title" xml:space="preserve"><value>Who you know, not your stats.</value></data>
   <data name="Cost2_Figure" xml:space="preserve"><value>30</value></data>
   <data name="Cost2_Text" xml:space="preserve"><value>active, licensed members in the Greek basketball agents' association. In the lower leagues, it comes down to who knows whom.</value></data>
   <data name="Cost2_Source" xml:space="preserve"><value>Eurohoops, June 2025 list</value></data>
@@ -48,13 +48,13 @@
   <data name="Cost3_Text2" xml:space="preserve"><value>of participants.</value></data>
   <data name="Cost3_Source" xml:space="preserve"><value>UNESCO, Gender Equality in Sports Media</value></data>
   <data name="How_Label" xml:space="preserve"><value>With Ballpass</value></data>
-  <data name="How_Title" xml:space="preserve"><value>Three moves. One connection.</value></data>
-  <data name="Step1_Title" xml:space="preserve"><value>The player raises her hand</value></data>
-  <data name="Step1_Text" xml:space="preserve"><value>She marks “Looking for a team”. Her profile shows stats with a source.</value></data>
+  <data name="How_Title" xml:space="preserve"><value>Three steps. One connection.</value></data>
+  <data name="Step1_Title" xml:space="preserve"><value>The athlete raises her hand</value></data>
+  <data name="Step1_Text" xml:space="preserve"><value>She turns on “Looking for a team”. Her profile shows stats with their source.</value></data>
   <data name="Step2_Title" xml:space="preserve"><value>A club sends interest</value></data>
-  <data name="Step2_Text" xml:space="preserve"><value>A coach finds her by need and writes to her.</value></data>
+  <data name="Step2_Text" xml:space="preserve"><value>A coach finds her by what the team needs and reaches out.</value></data>
   <data name="Step3_Title" xml:space="preserve"><value>She accepts</value></data>
-  <data name="Step3_Text" xml:space="preserve"><value>The player decides. No middlemen.</value></data>
+  <data name="Step3_Text" xml:space="preserve"><value>The athlete decides. No middlemen.</value></data>
   <data name="Step4_Title" xml:space="preserve"><value>Connected</value></data>
   <data name="Step4_Text" xml:space="preserve"><value>They swap contacts and talk directly.</value></data>
   <data name="Pv_Looking" xml:space="preserve"><value>Looking for a team</value></data>
@@ -75,18 +75,18 @@
   <data name="Door_CoachTitle" xml:space="preserve"><value>Try it as a coach</value></data>
   <data name="Door_CoachText" xml:space="preserve"><value>Say what you need. See who fits, and why.</value></data>
   <data name="Door_CoachCta" xml:space="preserve"><value>Find a player →</value></data>
-  <data name="Door_AthleteLabel" xml:space="preserve"><value>For players</value></data>
-  <data name="Door_AthleteTitle" xml:space="preserve"><value>Try it as a player</value></data>
+  <data name="Door_AthleteLabel" xml:space="preserve"><value>For athletes</value></data>
+  <data name="Door_AthleteTitle" xml:space="preserve"><value>Try it as an athlete</value></data>
   <data name="Door_AthleteText" xml:space="preserve"><value>See which clubs are looking for you. You decide.</value></data>
-  <data name="Door_AthleteCta" xml:space="preserve"><value>See who wants you →</value></data>
+  <data name="Door_AthleteCta" xml:space="preserve"><value>See who's interested →</value></data>
   <data name="Band_Label" xml:space="preserve"><value>The problem</value></data>
   <data name="Band_Title" xml:space="preserve"><value>The talent is there. The connection is missing.</value></data>
   <data name="Band_Today" xml:space="preserve"><value>Today</value></data>
   <data name="Band_With" xml:space="preserve"><value>With Ballpass</value></data>
-  <data name="Band_T1" xml:space="preserve"><value>Players don't know who is looking.</value></data>
+  <data name="Band_T1" xml:space="preserve"><value>Athletes don't know who's looking.</value></data>
   <data name="Band_T2" xml:space="preserve"><value>Coaches ask around by phone and chat.</value></data>
   <data name="Band_T3" xml:space="preserve"><value>Stats get lost in PDFs and chats.</value></data>
-  <data name="Band_W1" xml:space="preserve"><value>She marks “Looking for a team” in one click.</value></data>
+  <data name="Band_W1" xml:space="preserve"><value>She turns on “Looking for a team” in one click.</value></data>
   <data name="Band_W2" xml:space="preserve"><value>A club finds her and sends interest.</value></data>
   <data name="Band_W3" xml:space="preserve"><value>One profile, with a source for every number.</value></data>
   <data name="Band_Link" xml:space="preserve"><value>See the story →</value></data>

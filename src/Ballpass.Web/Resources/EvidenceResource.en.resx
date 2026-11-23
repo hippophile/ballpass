@@ -4,9 +4,9 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="Panel_Heading" xml:space="preserve"><value>Performance evidence</value></data>
+  <data name="Panel_Heading" xml:space="preserve"><value>Performance data</value></data>
   <data name="Pct_Heading" xml:space="preserve"><value>Percentiles</value></data>
-  <data name="Cohort_Label" xml:space="preserve"><value>comparison group: {0} {1}</value></data>
+  <data name="Cohort_Label" xml:space="preserve"><value>compared with {0} {1}</value></data>
   <data name="Group_Guard" xml:space="preserve"><value>guards</value></data>
   <data name="Group_Forward" xml:space="preserve"><value>forwards</value></data>
   <data name="Group_Center" xml:space="preserve"><value>centers</value></data>
@@ -15,22 +15,22 @@
   <data name="Metric_Assists" xml:space="preserve"><value>Assists / 40'</value></data>
   <data name="Metric_Steals" xml:space="preserve"><value>Steals / 40'</value></data>
   <data name="Metric_FgPct" xml:space="preserve"><value>Field goal % (FG%)</value></data>
-  <data name="Pct_Value" xml:space="preserve"><value>{0}th percentile</value></data>
+  <data name="Pct_Value" xml:space="preserve"><value>Percentile {0}</value></data>
   <data name="Insufficient" xml:space="preserve"><value>Not enough data (n={0})</value></data>
-  <data name="Insufficient_Peers" xml:space="preserve"><value>fewer than {0} peers in the cohort</value></data>
+  <data name="Insufficient_Peers" xml:space="preserve"><value>fewer than {0} peers</value></data>
   <data name="Insufficient_Minutes" xml:space="preserve"><value>under {0} minutes per game</value></data>
   <data name="Insufficient_Games" xml:space="preserve"><value>fewer than 10 games</value></data>
   <data name="Aria_Row" xml:space="preserve"><value>{0}: {1}, {2}</value></data>
   <data name="Aria_RowNoData" xml:space="preserve"><value>{0}: {1}. {2}</value></data>
-  <data name="Source_Note" xml:space="preserve"><value>Source of the latest season stats:</value></data>
+  <data name="Source_Note" xml:space="preserve"><value>Source for the latest season:</value></data>
   <data name="Thresholds_Note" xml:space="preserve"><value>The thresholds ({1} peers, 10 games, {0} minutes per game, ±10%, 8 games) are our own estimates, not league rules.</value></data>
-  <data name="Toggle_Label" xml:space="preserve"><value>Comparison cohort:</value></data>
+  <data name="Toggle_Label" xml:space="preserve"><value>Compare with:</value></data>
   <data name="Toggle_All" xml:space="preserve"><value>All sources</value></data>
   <data name="Toggle_Confirmed" xml:space="preserve"><value>Coach-confirmed only</value></data>
   <data name="Col_Metric" xml:space="preserve"><value>Metric</value></data>
   <data name="Col_Value" xml:space="preserve"><value>Value</value></data>
   <data name="Col_Pct" xml:space="preserve"><value>Percentile</value></data>
-  <data name="Col_N" xml:space="preserve"><value>Cohort (n)</value></data>
+  <data name="Col_N" xml:space="preserve"><value>Peers (n)</value></data>
   <data name="Line_Heading" xml:space="preserve"><value>Points per game by season</value></data>
   <data name="Line_Aria" xml:space="preserve"><value>Points per game by season: {0}</value></data>
   <data name="Line_Col_Season" xml:space="preserve"><value>Season</value></data>
@@ -47,10 +47,10 @@
   <data name="Badges_Heading" xml:space="preserve"><value>Rule-based badges</value></data>
   <data name="Badge_coach-confirmed" xml:space="preserve"><value>Coach-confirmed: {0} seasons</value></data>
   <data name="Badge_league-verified" xml:space="preserve"><value>League-verified (mock): {0} seasons</value></data>
-  <data name="Badge_multi-season" xml:space="preserve"><value>Experience: stats for {0} seasons</value></data>
+  <data name="Badge_multi-season" xml:space="preserve"><value>Experienced: stats across {0} seasons</value></data>
   <data name="Badge_regular" xml:space="preserve"><value>Regular: {0} games in the latest season (rule: 25+)</value></data>
   <data name="Badge_rising" xml:space="preserve"><value>Rising: +{0}% points per game (rule: +10% or more)</value></data>
-  <data name="Badge_top-quartile" xml:space="preserve"><value>Top quartile: {0}th percentile in points/40'</value></data>
+  <data name="Badge_top-quartile" xml:space="preserve"><value>Top quartile: percentile {0} in points/40'</value></data>
   <data name="Badge_Source" xml:space="preserve"><value>source: {0}</value></data>
   <data name="Compare_Link" xml:space="preserve"><value>Compare with…</value></data>
   <data name="Compare_Title" xml:space="preserve"><value>Compare players</value></data>
@@ -60,15 +60,15 @@
   <data name="Compare_Submit" xml:space="preserve"><value>Compare</value></data>
   <data name="Compare_Launcher" xml:space="preserve"><value>Compare two players</value></data>
   <data name="Compare_NeedTwo" xml:space="preserve"><value>You need at least two players on your shortlist to compare.</value></data>
-  <data name="Compare_ChooseB" xml:space="preserve"><value>Pick which shortlisted player to compare with:</value></data>
+  <data name="Compare_ChooseB" xml:space="preserve"><value>Pick a shortlisted player to compare with:</value></data>
   <data name="Compare_NoShortlist" xml:space="preserve"><value>Your shortlist is empty. Add players from search.</value></data>
   <data name="Compare_Same" xml:space="preserve"><value>Pick two different players.</value></data>
-  <data name="Compare_Warning" xml:space="preserve"><value>Careful: different positions ({0} and {1}). Each percentile is within its own comparison group, so they are not directly comparable.</value></data>
-  <data name="Compare_WarningGender" xml:space="preserve"><value>Careful: different gender ({0} and {1}). Each percentile is within its own comparison group (women and men are ranked separately), so they are not directly comparable.</value></data>
+  <data name="Compare_Warning" xml:space="preserve"><value>Heads up: different positions ({0} and {1}). Each percentile is within its own comparison group, so they aren't directly comparable.</value></data>
+  <data name="Compare_WarningGender" xml:space="preserve"><value>Heads up: different gender ({0} and {1}). Each percentile is within its own comparison group (women and men are ranked separately), so they aren't directly comparable.</value></data>
   <data name="Compare_Legend" xml:space="preserve"><value>Legend</value></data>
   <data name="Compare_Solid" xml:space="preserve"><value>solid line, circle</value></data>
   <data name="Compare_Dashed" xml:space="preserve"><value>dashed line, square</value></data>
-  <data name="Compare_Cohort" xml:space="preserve"><value>Cohort</value></data>
+  <data name="Compare_Cohort" xml:space="preserve"><value>Peer group</value></data>
   <data name="Compare_NoValue" xml:space="preserve"><value>—</value></data>
   <data name="Back_ToProfile" xml:space="preserve"><value>Back to profile</value></data>
 </root>

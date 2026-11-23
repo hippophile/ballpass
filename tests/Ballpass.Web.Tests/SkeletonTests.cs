@@ -46,7 +46,7 @@ public class SkeletonTests(WebApplicationFactory<Program> factory) : IClassFixtu
         Assert.DoesNotContain("demo-banner", html);
         var footer = Regex.Match(html, "<footer[^>]*class=\"bp-footer\"[^>]*>(.*?)</footer>", RegexOptions.Singleline);
         Assert.True(footer.Success, $"footer disclosure missing on {path}");
-        Assert.Contains("Φανταστικά πρόσωπα και δεδομένα", footer.Groups[1].Value);
+        Assert.Contains("Fictional people and data", footer.Groups[1].Value);   // unpinned host: shipped default culture (en)
     }
 
     [Fact]

@@ -7,7 +7,7 @@
   <data name="Brand" xml:space="preserve"><value>Ballpass</value></data>
   <data name="Nav_Language" xml:space="preserve"><value>Language</value></data>
   <data name="Nav_Main" xml:space="preserve"><value>Main navigation</value></data>
-  <data name="Badge_LookingForTeam" xml:space="preserve"><value>Looking for team</value></data>
+  <data name="Badge_LookingForTeam" xml:space="preserve"><value>Looking for a team</value></data>
   <data name="Profile_NoClub" xml:space="preserve"><value>No club</value></data>
   <data name="Profile_CurrentClub" xml:space="preserve"><value>Current club</value></data>
   <data name="Profile_Stats" xml:space="preserve"><value>Stats</value></data>
@@ -17,11 +17,11 @@
   <data name="Profile_Video" xml:space="preserve"><value>Video</value></data>
   <data name="Profile_NoVideo" xml:space="preserve"><value>No video added yet</value></data>
   <data name="Profile_Share" xml:space="preserve"><value>Share profile</value></data>
-  <data name="Profile_ShareHint" xml:space="preserve"><value>Copy the link to send it</value></data>
+  <data name="Profile_ShareHint" xml:space="preserve"><value>Copy the link to share it</value></data>
   <data name="Profile_Region" xml:space="preserve"><value>Region</value></data>
   <data name="Profile_Cm" xml:space="preserve"><value>cm</value></data>
   <data name="Profile_Years" xml:space="preserve"><value>years old</value></data>
-  <data name="Profile_OgLookingForTeam" xml:space="preserve"><value>Looking for team</value></data>
+  <data name="Profile_OgLookingForTeam" xml:space="preserve"><value>Looking for a team</value></data>
   <data name="Stat_Season" xml:space="preserve"><value>Season</value></data>
   <data name="Stat_League" xml:space="preserve"><value>League</value></data>
   <data name="Stat_Games" xml:space="preserve"><value>GP</value></data>
@@ -56,25 +56,25 @@
   <data name="Region_East Macedonia and Thrace" xml:space="preserve"><value>East Macedonia and Thrace</value></data>
   <data name="Region_South Aegean" xml:space="preserve"><value>South Aegean</value></data>
   <data name="NotFound_Title" xml:space="preserve"><value>Not found</value></data>
-  <data name="NotFound_Text" xml:space="preserve"><value>Sorry, the content you are looking for does not exist.</value></data>
+  <data name="NotFound_Text" xml:space="preserve"><value>Sorry, we couldn't find that page.</value></data>
   <data name="Nav_Search" xml:space="preserve"><value>Search</value></data>
-  <data name="Nav_Logout" xml:space="preserve"><value>Log out</value></data>
+  <data name="Nav_Logout" xml:space="preserve"><value>Sign out</value></data>
   <data name="Nav_DemoLogin" xml:space="preserve"><value>Sign in</value></data>
   <data name="Role_Coach" xml:space="preserve"><value>Coach</value></data>
   <data name="Role_Athlete" xml:space="preserve"><value>Athlete</value></data>
   <data name="Demo_Title" xml:space="preserve"><value>Try Ballpass</value></data>
-  <data name="Demo_Intro" xml:space="preserve"><value>Pick a fictional person to try the platform. No password needed.</value></data>
+  <data name="Demo_Intro" xml:space="preserve"><value>Pick a fictional person and try Ballpass. No password needed.</value></data>
   <data name="Demo_Coaches" xml:space="preserve"><value>Coaches</value></data>
   <data name="Demo_Athletes" xml:space="preserve"><value>Athletes</value></data>
-  <data name="Denied_Title" xml:space="preserve"><value>This action is for coaches only</value></data>
+  <data name="Denied_Title" xml:space="preserve"><value>Only coaches can do this</value></data>
   <data name="Denied_Switch" xml:space="preserve"><value>Sign in as a coach</value></data>
   <data name="Search_Title" xml:space="preserve"><value>Search athletes</value></data>
   <data name="Search_Gender" xml:space="preserve"><value>Gender</value></data>
   <data name="Gender_Female" xml:space="preserve"><value>Women</value></data>
   <data name="Gender_Male" xml:space="preserve"><value>Men</value></data>
   <data name="Search_Position" xml:space="preserve"><value>Position</value></data>
-  <data name="Search_Height" xml:space="preserve"><value>Height from / to (cm)</value></data>
-  <data name="Search_Age" xml:space="preserve"><value>Age from / to</value></data>
+  <data name="Search_Height" xml:space="preserve"><value>Height range (cm)</value></data>
+  <data name="Search_Age" xml:space="preserve"><value>Age range</value></data>
   <data name="Search_Any" xml:space="preserve"><value>Any</value></data>
   <data name="Search_Name" xml:space="preserve"><value>Name</value></data>
   <data name="Search_Submit" xml:space="preserve"><value>Search</value></data>
@@ -88,53 +88,53 @@
   <data name="Nav_Shortlist" xml:space="preserve"><value>Shortlist</value></data>
   <data name="Nav_Inbox" xml:space="preserve"><value>Inbox</value></data>
   <data name="Interest_Heading" xml:space="preserve"><value>Coach actions</value></data>
-  <data name="Interest_NoteLabel" xml:space="preserve"><value>Note (optional, up to 280 characters)</value></data>
-  <data name="Interest_Submit" xml:space="preserve"><value>Express interest</value></data>
-  <data name="Interest_AlreadySent" xml:space="preserve"><value>You have already expressed interest</value></data>
+  <data name="Interest_NoteLabel" xml:space="preserve"><value>Add a note (optional, 280 characters max)</value></data>
+  <data name="Interest_Submit" xml:space="preserve"><value>Send interest</value></data>
+  <data name="Interest_AlreadySent" xml:space="preserve"><value>You already sent interest</value></data>
   <data name="Shortlist_Add" xml:space="preserve"><value>Add to shortlist</value></data>
   <data name="Shortlist_Remove" xml:space="preserve"><value>Remove from shortlist</value></data>
-  <data name="Status_interest-sent" xml:space="preserve"><value>Your interest was sent.</value></data>
-  <data name="Status_interest-exists" xml:space="preserve"><value>You have already expressed interest in this athlete.</value></data>
-  <data name="Status_note-too-long" xml:space="preserve"><value>The note cannot be longer than 280 characters.</value></data>
-  <data name="Status_shortlist-added" xml:space="preserve"><value>The athlete was added to your shortlist.</value></data>
-  <data name="Status_shortlist-removed" xml:space="preserve"><value>The athlete was removed from your shortlist.</value></data>
+  <data name="Status_interest-sent" xml:space="preserve"><value>Interest sent.</value></data>
+  <data name="Status_interest-exists" xml:space="preserve"><value>You already sent interest to this athlete.</value></data>
+  <data name="Status_note-too-long" xml:space="preserve"><value>Notes can be up to 280 characters.</value></data>
+  <data name="Status_shortlist-added" xml:space="preserve"><value>Added to your shortlist.</value></data>
+  <data name="Status_shortlist-removed" xml:space="preserve"><value>Removed from your shortlist.</value></data>
   <data name="Profile_InterestReceived" xml:space="preserve"><value>Interest received</value></data>
   <data name="Shortlist_Title" xml:space="preserve"><value>My shortlist</value></data>
-  <data name="Shortlist_Empty" xml:space="preserve"><value>You have not added any athletes to your shortlist yet.</value></data>
+  <data name="Shortlist_Empty" xml:space="preserve"><value>No athletes on your shortlist yet.</value></data>
   <data name="Inbox_Title" xml:space="preserve"><value>Inbox</value></data>
-  <data name="Inbox_Empty" xml:space="preserve"><value>You have not received any interest yet.</value></data>
+  <data name="Inbox_Empty" xml:space="preserve"><value>No interest received yet.</value></data>
   <data name="Nav_Menu" xml:space="preserve"><value>Menu</value></data>
-  <data name="Home_Value" xml:space="preserve"><value>Where athletes meet coaches — on data with a clear source label, not connections.</value></data>
+  <data name="Home_Value" xml:space="preserve"><value>Where athletes and coaches connect — on stats with a clear source, not on who you know.</value></data>
   <data name="Home_Sub" xml:space="preserve"><value>Starting with women's basketball in Greece.</value></data>
-  <data name="Home_CtaDemo" xml:space="preserve"><value>Try as a coach</value></data>
-  <data name="Home_CtaSample" xml:space="preserve"><value>See a sample athlete profile</value></data>
+  <data name="Home_CtaDemo" xml:space="preserve"><value>Try it as a coach</value></data>
+  <data name="Home_CtaSample" xml:space="preserve"><value>See an athlete profile</value></data>
   <data name="Home_CountAthletes" xml:space="preserve"><value>athletes</value></data>
   <data name="Home_CountClubs" xml:space="preserve"><value>clubs</value></data>
   <data name="Home_CountCoaches" xml:space="preserve"><value>coaches</value></data>
-  <data name="Home_CountsCaption" xml:space="preserve"><value>Ballpass in numbers</value></data>
+  <data name="Home_CountsCaption" xml:space="preserve"><value>Ballpass by the numbers</value></data>
   <data name="Home_HowTitle" xml:space="preserve"><value>How it works</value></data>
-  <data name="Home_Step1Title" xml:space="preserve"><value>The athlete's profile</value></data>
-  <data name="Home_Step1Text" xml:space="preserve"><value>Details, club history and stats with a source label — with a link to share.</value></data>
-  <data name="Home_Step2Title" xml:space="preserve"><value>The coach searches</value></data>
+  <data name="Home_Step1Title" xml:space="preserve"><value>The athlete profile</value></data>
+  <data name="Home_Step1Text" xml:space="preserve"><value>Bio, club history and stats, each with its source — plus a link to share.</value></data>
+  <data name="Home_Step2Title" xml:space="preserve"><value>Coaches search</value></data>
   <data name="Home_Step2Text" xml:space="preserve"><value>Filter by position, height, age, region and league.</value></data>
-  <data name="Home_Step3Title" xml:space="preserve"><value>Expressing interest</value></data>
-  <data name="Home_Step3Text" xml:space="preserve"><value>The coach expresses interest and the athlete sees it in her inbox.</value></data>
-  <data name="Home_TrustTitle" xml:space="preserve"><value>Trust in the numbers</value></data>
-  <data name="Home_TrustSelf" xml:space="preserve"><value>Entered by the athlete herself or himself.</value></data>
+  <data name="Home_Step3Title" xml:space="preserve"><value>Sending interest</value></data>
+  <data name="Home_Step3Text" xml:space="preserve"><value>The coach sends interest and the athlete sees it in her inbox.</value></data>
+  <data name="Home_TrustTitle" xml:space="preserve"><value>Numbers you can trust</value></data>
+  <data name="Home_TrustSelf" xml:space="preserve"><value>Entered by the athletes themselves.</value></data>
   <data name="Home_TrustCoach" xml:space="preserve"><value>Confirmed by a coach who knows the athlete.</value></data>
-  <data name="Home_TrustLeague" xml:space="preserve"><value>A mock — there is no league partner yet.</value></data>
-  <data name="Search_HeightTo" xml:space="preserve"><value>Height to (cm)</value></data>
-  <data name="Search_AgeTo" xml:space="preserve"><value>Age to</value></data>
+  <data name="Home_TrustLeague" xml:space="preserve"><value>Simulated — no league partnership yet.</value></data>
+  <data name="Search_HeightTo" xml:space="preserve"><value>Max height (cm)</value></data>
+  <data name="Search_AgeTo" xml:space="preserve"><value>Max age</value></data>
   <data name="TooMany_Title" xml:space="preserve"><value>Too many requests</value></data>
-  <data name="TooMany_Text" xml:space="preserve"><value>The data can be reset once per minute. Please try again shortly.</value></data>
+  <data name="TooMany_Text" xml:space="preserve"><value>Data can be reset once a minute. Try again in a moment.</value></data>
   <data name="Error_Title" xml:space="preserve"><value>Something went wrong</value></data>
-  <data name="Error_Text" xml:space="preserve"><value>An error occurred while processing your request. Please try again shortly.</value></data>
+  <data name="Error_Text" xml:space="preserve"><value>We couldn't process your request. Try again in a moment.</value></data>
   <data name="Error_Home" xml:space="preserve"><value>Back to home</value></data>
   <data name="Error_RequestId" xml:space="preserve"><value>Request ID:</value></data>
   <data name="Time_Now" xml:space="preserve"><value>just now</value></data>
-  <data name="Time_Minutes" xml:space="preserve"><value>{0} min ago</value></data>
-  <data name="Time_Hours" xml:space="preserve"><value>{0} h ago</value></data>
-  <data name="Time_Days" xml:space="preserve"><value>{0} d ago</value></data>
+  <data name="Time_Minutes" xml:space="preserve"><value>{0}m ago</value></data>
+  <data name="Time_Hours" xml:space="preserve"><value>{0}h ago</value></data>
+  <data name="Time_Days" xml:space="preserve"><value>{0}d ago</value></data>
   <data name="Nav_Profile" xml:space="preserve"><value>My profile</value></data>
   <data name="Footer_Disclosure" xml:space="preserve"><value>Fictional people and data</value></data>
 </root>

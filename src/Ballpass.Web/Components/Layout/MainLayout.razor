@@ -37,9 +37,9 @@
     </nav>
     <div class="topbar-switch"><PersonaSwitch /></div>
     <nav class="lang-toggle" aria-label="@L["Nav_Language"]">
-        <a href="@LangHref("el")" hreflang="el" class="@(Lang == "el" ? "active" : null)" aria-current="@(Lang == "el" ? "true" : null)">EL</a>
-        <span aria-hidden="true">|</span>
         <a href="@LangHref("en")" hreflang="en" class="@(Lang == "en" ? "active" : null)" aria-current="@(Lang == "en" ? "true" : null)">EN</a>
+        <span aria-hidden="true">|</span>
+        <a href="@LangHref("el")" hreflang="el" class="@(Lang == "el" ? "active" : null)" aria-current="@(Lang == "el" ? "true" : null)">EL</a>
     </nav>
     <AuthorizeView>
         <Authorized>

@@ -5,17 +5,17 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="Nav_Match" xml:space="preserve"><value>Match</value></data>
-  <data name="MatchLink_Title" xml:space="preserve"><value>Looking for a specific profile?</value></data>
-  <data name="MatchLink_Body" xml:space="preserve"><value>Tell us what your team needs and see players ranked by fit, with a reason for each criterion.</value></data>
-  <data name="MatchLink_Cta" xml:space="preserve"><value>Player match</value></data>
+  <data name="MatchLink_Title" xml:space="preserve"><value>Looking for a specific player?</value></data>
+  <data name="MatchLink_Body" xml:space="preserve"><value>Tell us what your team needs and see players ranked by fit, with a reason for every criterion.</value></data>
+  <data name="MatchLink_Cta" xml:space="preserve"><value>Match players</value></data>
   <data name="Ai_Heading" xml:space="preserve"><value>Search in your own words</value></data>
-  <data name="Ai_Hint" xml:space="preserve"><value>Type what you need, e.g. “center over 185 in Attica”.</value></data>
+  <data name="Ai_Hint" xml:space="preserve"><value>Describe who you need, e.g. “center over 185 in Attica”.</value></data>
   <data name="Ai_Placeholder" xml:space="preserve"><value>e.g. center over 185 in Attica</value></data>
   <data name="Ai_Submit" xml:space="preserve"><value>Search</value></data>
-  <data name="Ai_LabelAi" xml:space="preserve"><value>AI-interpreted search. Check the filters.</value></data>
+  <data name="Ai_LabelAi" xml:space="preserve"><value>Interpreted by AI. Double-check the filters.</value></data>
   <data name="Ai_LabelRules" xml:space="preserve"><value>From rules (no AI model)</value></data>
-  <data name="Ai_Filters" xml:space="preserve"><value>Filters (remove one with ×, or change them in the form)</value></data>
-  <data name="Ai_NoFilters" xml:space="preserve"><value>No filters found in the text.</value></data>
+  <data name="Ai_Filters" xml:space="preserve"><value>Filters (× removes one, or edit them in the form)</value></data>
+  <data name="Ai_NoFilters" xml:space="preserve"><value>We couldn't find any filters in your text.</value></data>
   <data name="Ai_Remove" xml:space="preserve"><value>Remove filter</value></data>
   <data name="Chip_gender" xml:space="preserve"><value>Gender</value></data>
   <data name="Chip_position" xml:space="preserve"><value>Position</value></data>
@@ -25,25 +25,25 @@
   <data name="Chip_maxAge" xml:space="preserve"><value>Age up to</value></data>
   <data name="Chip_region" xml:space="preserve"><value>Region</value></data>
   <data name="Chip_league" xml:space="preserve"><value>League</value></data>
-  <data name="Chip_looking" xml:space="preserve"><value>Looking for team</value></data>
+  <data name="Chip_looking" xml:space="preserve"><value>Looking for a team</value></data>
   <data name="Chip_q" xml:space="preserve"><value>Name</value></data>
   <data name="Chip_Unsupported" xml:space="preserve"><value>Not filterable</value></data>
   <data name="Unsupported_handedness" xml:space="preserve"><value>Handedness</value></data>
   <data name="Unsupported_salary" xml:space="preserve"><value>Salary</value></data>
   <data name="Unsupported_nationality" xml:space="preserve"><value>Nationality</value></data>
-  <data name="Unsupported_stats" xml:space="preserve"><value>Statistics (see “Priority” in Match)</value></data>
+  <data name="Unsupported_stats" xml:space="preserve"><value>Stats (use “Stat priority” in Match)</value></data>
   <data name="Unsupported_minors" xml:space="preserve"><value>Adults only: age set to 18+</value></data>
   <data name="Unsupported_other" xml:space="preserve"><value>Other criterion</value></data>
   <data name="Match_Title" xml:space="preserve"><value>Match</value></data>
-  <data name="Match_Intro" xml:space="preserve"><value>Say what you need and see players ranked by fit, with a reason for each criterion.</value></data>
+  <data name="Match_Intro" xml:space="preserve"><value>Tell us what you need and see players ranked by fit, with a reason for every criterion.</value></data>
   <data name="Need_Heading" xml:space="preserve"><value>What are you looking for?</value></data>
-  <data name="Need_HardHint" xml:space="preserve"><value>Position and “confirmed only” hide players. The other criteria score them.</value></data>
+  <data name="Need_HardHint" xml:space="preserve"><value>Position and “Confirmed stats only” filter players out. Everything else adjusts the score.</value></data>
   <data name="Need_Gender" xml:space="preserve"><value>Gender</value></data>
-  <data name="Need_Position" xml:space="preserve"><value>Position (hides)</value></data>
+  <data name="Need_Position" xml:space="preserve"><value>Position (filter)</value></data>
   <data name="Need_Height" xml:space="preserve"><value>Height (cm)</value></data>
-  <data name="Need_HeightTo" xml:space="preserve"><value>Maximum height</value></data>
+  <data name="Need_HeightTo" xml:space="preserve"><value>Max height</value></data>
   <data name="Need_Age" xml:space="preserve"><value>Age (18+)</value></data>
-  <data name="Need_AgeTo" xml:space="preserve"><value>Maximum age</value></data>
+  <data name="Need_AgeTo" xml:space="preserve"><value>Max age</value></data>
   <data name="Need_Region" xml:space="preserve"><value>Region</value></data>
   <data name="Need_League" xml:space="preserve"><value>Current league</value></data>
   <data name="Need_Any" xml:space="preserve"><value>Any</value></data>
@@ -61,29 +61,29 @@
   <data name="Results_Count_One" xml:space="preserve"><value>{0} result</value></data>
   <data name="Results_Hidden_One" xml:space="preserve"><value>{0} hidden by filters</value></data>
   <data name="Results_Showing" xml:space="preserve"><value>Showing the top {0}.</value></data>
-  <data name="Results_None" xml:space="preserve"><value>No player passes the filters.</value></data>
+  <data name="Results_None" xml:space="preserve"><value>No players match these filters.</value></data>
   <data name="Results_Label" xml:space="preserve"><value>Computed with default weights</value></data>
-  <data name="Results_Unranked" xml:space="preserve"><value>No scoring criterion was requested (height, age, region, league or stat): the list is not ranked by fit.</value></data>
-  <data name="Weights_Heading" xml:space="preserve"><value>How it is calculated</value></data>
-  <data name="Weights_Intro" xml:space="preserve"><value>The percentage is a weighted average of the criteria you asked for, with default weights (estimates, not measured). If a value is missing it is computed on the rest and the player is tagged “partial data”. The stat is per 40 minutes and compared with the comparison group of the same gender and position group, as on the profile; it counts as missing with under {0} games, under {1} minutes per game or fewer than {2} peers. It is not an assessment of ability.</value></data>
+  <data name="Results_Unranked" xml:space="preserve"><value>Add a scoring criterion (height, age, region, league or stat) to rank this list by fit.</value></data>
+  <data name="Weights_Heading" xml:space="preserve"><value>How the score works</value></data>
+  <data name="Weights_Intro" xml:space="preserve"><value>The score is a weighted average of the criteria you picked, using default weights (estimates, not measured). If a value is missing, the score uses the rest and the player is tagged “Partial data”. Stats are per 40 minutes and compared with players of the same gender and position group, as on the profile; a stat counts as missing with fewer than {0} games, under {1} minutes per game or fewer than {2} peers. It is not a rating of ability.</value></data>
   <data name="Weight_Height" xml:space="preserve"><value>Height</value></data>
   <data name="Weight_Stat" xml:space="preserve"><value>Stat</value></data>
   <data name="Weight_Region" xml:space="preserve"><value>Region</value></data>
   <data name="Weight_Age" xml:space="preserve"><value>Age</value></data>
   <data name="Weight_League" xml:space="preserve"><value>League</value></data>
-  <data name="Trust_Heading" xml:space="preserve"><value>Stat sources among the results</value></data>
+  <data name="Trust_Heading" xml:space="preserve"><value>Where these stats come from</value></data>
   <data name="Trust_Count" xml:space="preserve"><value>Based on {0} results with stats</value></data>
   <data name="Trust_Aria" xml:space="preserve"><value>Stat sources: self-reported {0}%, coach-confirmed {1}%, league-verified (mock) {2}%</value></data>
-  <data name="Fit_Aria" xml:space="preserve"><value>Fit {0}%</value></data>
+  <data name="Fit_Aria" xml:space="preserve"><value>{0}% fit</value></data>
   <data name="Fit_Unranked" xml:space="preserve"><value>Not scored</value></data>
   <data name="Partial_Tag" xml:space="preserve"><value>Partial data</value></data>
   <data name="Partial_Missing" xml:space="preserve"><value>Missing: {0}</value></data>
-  <data name="Missing_Stat" xml:space="preserve"><value>stat (not enough data to compare with the comparison group)</value></data>
+  <data name="Missing_Stat" xml:space="preserve"><value>stat (not enough data to compare with peers)</value></data>
   <data name="Missing_League" xml:space="preserve"><value>league (no club)</value></data>
   <data name="Missing_Height" xml:space="preserve"><value>height</value></data>
   <data name="Missing_Age" xml:space="preserve"><value>age</value></data>
   <data name="Missing_Region" xml:space="preserve"><value>region</value></data>
-  <data name="Reasons_Heading" xml:space="preserve"><value>Why it fits</value></data>
+  <data name="Reasons_Heading" xml:space="preserve"><value>Why it's a fit</value></data>
   <data name="Reason_Height" xml:space="preserve"><value>Height {0} cm (target {1})</value></data>
   <data name="Reason_Age" xml:space="preserve"><value>Age {0} (target {1})</value></data>
   <data name="Reason_Region" xml:space="preserve"><value>Region: {0} (target {1})</value></data>
@@ -91,8 +91,8 @@
   <data name="Reason_League" xml:space="preserve"><value>League: {0} (target {1})</value></data>
   <data name="Reason_League_Met" xml:space="preserve"><value>League: {0}</value></data>
   <data name="Reason_Stat_Top" xml:space="preserve"><value>{0} {1}/40 min — top {2}% of {3}</value></data>
-  <data name="Reason_Stat_Plain" xml:space="preserve"><value>{0} {1}/40 min — below the top 50% of {2}</value></data>
-  <data name="Unit_Rebounding" xml:space="preserve"><value>reb.</value></data>
+  <data name="Reason_Stat_Plain" xml:space="preserve"><value>{0} {1}/40 min — outside the top 50% of {2}</value></data>
+  <data name="Unit_Rebounding" xml:space="preserve"><value>reb</value></data>
   <data name="Unit_Scoring" xml:space="preserve"><value>pts</value></data>
   <data name="Unit_Playmaking" xml:space="preserve"><value>ast</value></data>
   <data name="Cohort_Guard" xml:space="preserve"><value>guards</value></data>
@@ -100,11 +100,11 @@
   <data name="Cohort_Center" xml:space="preserve"><value>centers</value></data>
   <data name="Mark_Met" xml:space="preserve"><value>matches</value></data>
   <data name="Mark_Partial" xml:space="preserve"><value>close</value></data>
-  <data name="Mark_Missed" xml:space="preserve"><value>does not match</value></data>
-  <data name="Result_Looking" xml:space="preserve"><value>Looking for team</value></data>
+  <data name="Mark_Missed" xml:space="preserve"><value>doesn't match</value></data>
+  <data name="Result_Looking" xml:space="preserve"><value>Looking for a team</value></data>
   <data name="Match_TopLabel" xml:space="preserve"><value>Top match</value></data>
   <data name="Match_ViewProfile" xml:space="preserve"><value>View profile →</value></data>
-  <data name="Match_NeedAria" xml:space="preserve"><value>What you are looking for</value></data>
+  <data name="Match_NeedAria" xml:space="preserve"><value>What you're looking for</value></data>
   <data name="Match_NeedChange" xml:space="preserve"><value>Change</value></data>
   <data name="Match_NeedAges" xml:space="preserve"><value>{0}–{1} yrs</value></data>
   <data name="Match_NeedAgeMin" xml:space="preserve"><value>{0}+ yrs</value></data>
@@ -112,7 +112,7 @@
   <data name="Match_NeedConfirmed" xml:space="preserve"><value>Confirmed only</value></data>
   <data name="Match_PromptTitle" xml:space="preserve"><value>Tell us what you need → position, height, region</value></data>
   <data name="Match_PromptBody" xml:space="preserve"><value>Add one criterion and every card shows a fit score with its reasons.</value></data>
-  <data name="Match_PromptFill" xml:space="preserve"><value>Fill in the filters</value></data>
+  <data name="Match_PromptFill" xml:space="preserve"><value>Set filters</value></data>
   <data name="Match_PromptTry" xml:space="preserve"><value>Try: {0} →</value></data>
   <data name="Match_More" xml:space="preserve"><value>More</value></data>
   <data name="Match_Filters" xml:space="preserve"><value>Filters ({0})</value></data>
@@ -122,7 +122,7 @@
   <data name="Ai_Example3" xml:space="preserve"><value>Forward in Thessaloniki, up to 26 years</value></data>
   <data name="Card_Sent" xml:space="preserve"><value>✓ Sent</value></data>
   <data name="Card_Remove" xml:space="preserve"><value>Remove</value></data>
-  <data name="Card_RemoveAria" xml:space="preserve"><value>Remove from the list: {0}</value></data>
+  <data name="Card_RemoveAria" xml:space="preserve"><value>Remove {0} from your shortlist</value></data>
   <data name="Card_Ppg" xml:space="preserve"><value>pts/g</value></data>
   <data name="Card_Rpg" xml:space="preserve"><value>reb/g</value></data>
   <data name="Card_Apg" xml:space="preserve"><value>ast/g</value></data>
@@ -143,17 +143,17 @@
   <data name="Rail_StepReply" xml:space="preserve"><value>Reply</value></data>
   <data name="Rail_SeeAs_F" xml:space="preserve"><value>See what {0} sees →</value></data>
   <data name="Rail_SeeAs_M" xml:space="preserve"><value>See what {0} sees →</value></data>
-  <data name="Rail_AllSent" xml:space="preserve"><value>All sent interests</value></data>
+  <data name="Rail_AllSent" xml:space="preserve"><value>View all sent</value></data>
   <data name="Rail_Received" xml:space="preserve"><value>Interest received: {0}</value></data>
-  <data name="Status_shortlist-added_F" xml:space="preserve"><value>Added to your list.</value></data>
-  <data name="Status_shortlist-added_M" xml:space="preserve"><value>Added to your list.</value></data>
-  <data name="Status_shortlist-removed_F" xml:space="preserve"><value>Removed from your list.</value></data>
-  <data name="Status_shortlist-removed_M" xml:space="preserve"><value>Removed from your list.</value></data>
+  <data name="Status_shortlist-added_F" xml:space="preserve"><value>Added to your shortlist.</value></data>
+  <data name="Status_shortlist-added_M" xml:space="preserve"><value>Added to your shortlist.</value></data>
+  <data name="Status_shortlist-removed_F" xml:space="preserve"><value>Removed from your shortlist.</value></data>
+  <data name="Status_shortlist-removed_M" xml:space="preserve"><value>Removed from your shortlist.</value></data>
   <data name="Hl_Alt_Main" xml:space="preserve"><value>Free throw in an indoor gym, wide shot</value></data>
   <data name="Hl_Alt_Dribble" xml:space="preserve"><value>Dribble, close on the ball</value></data>
   <data name="Hl_Alt_Net" xml:space="preserve"><value>The ball drops through the net</value></data>
-  <data name="Shortlist_EmptyTitle" xml:space="preserve"><value>Your list is empty</value></data>
+  <data name="Shortlist_EmptyTitle" xml:space="preserve"><value>Your shortlist is empty</value></data>
   <data name="Shortlist_EmptyBody" xml:space="preserve"><value>Add profiles from Match and compare them here.</value></data>
-  <data name="Shortlist_EmptyCta" xml:space="preserve"><value>Find athletes →</value></data>
-  <data name="Shortlist_Count" xml:space="preserve"><value>{0} on the list</value></data>
+  <data name="Shortlist_EmptyCta" xml:space="preserve"><value>Find a player →</value></data>
+  <data name="Shortlist_Count" xml:space="preserve"><value>{0} shortlisted</value></data>
 </root>

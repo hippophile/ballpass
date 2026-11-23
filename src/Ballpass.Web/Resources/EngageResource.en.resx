@@ -32,13 +32,13 @@
   <data name="Comment_Hide" xml:space="preserve"><value>Hide comment</value></data>
   <data name="Comment_Report" xml:space="preserve"><value>Report</value></data>
   <data name="Comment_HideHint" xml:space="preserve"><value>The comment will be hidden for everyone.</value></data>
-  <data name="Cs_posted" xml:space="preserve"><value>Your comment was posted.</value></data>
-  <data name="Cs_rate" xml:space="preserve"><value>One comment per 20 seconds. Try again shortly.</value></data>
-  <data name="Cs_too-long" xml:space="preserve"><value>The comment is too long (up to 280 characters).</value></data>
+  <data name="Cs_posted" xml:space="preserve"><value>Comment posted.</value></data>
+  <data name="Cs_rate" xml:space="preserve"><value>One comment every 20 seconds. Try again in a moment.</value></data>
+  <data name="Cs_too-long" xml:space="preserve"><value>Comment too long (280 characters max).</value></data>
   <data name="Cs_invalid" xml:space="preserve"><value>Write a comment (links are not allowed).</value></data>
-  <data name="Cs_deleted" xml:space="preserve"><value>The comment was deleted.</value></data>
-  <data name="Cs_hidden" xml:space="preserve"><value>The comment was hidden.</value></data>
-  <data name="Cs_reported" xml:space="preserve"><value>Thank you. The comment was reported and you will not see it again.</value></data>
+  <data name="Cs_deleted" xml:space="preserve"><value>Comment deleted.</value></data>
+  <data name="Cs_hidden" xml:space="preserve"><value>Comment hidden.</value></data>
+  <data name="Cs_reported" xml:space="preserve"><value>Thanks. We got your report and you won't see this comment again.</value></data>
   <data name="Follow_Title" xml:space="preserve"><value>Who to follow</value></data>
   <data name="Follow_Lft" xml:space="preserve"><value>Looking for a team</value></data>
   <data name="Follow_SignIn" xml:space="preserve"><value>Sign in to follow.</value></data>

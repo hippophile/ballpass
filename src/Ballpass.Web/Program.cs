@@ -60,12 +60,16 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("CoachOnly", policy => policy.RequireRole("Coach")));
 builder.Services.AddCascadingAuthenticationState();
 
-// Greek by default, English on request (cookie). Resources/SharedResource{,.en}.resx
+// Default culture from config (Localization:DefaultCulture, "en" shipped), Greek or English on request (cookie). Resources/*{,.en}.resx
+// Cookie is the only provider: no Accept-Language / query string, so a first visit always gets the configured default (predictable demo).
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-builder.Services.Configure<RequestLocalizationOptions>(options =>
+builder.Services.AddOptions<RequestLocalizationOptions>().Configure<IConfiguration>((options, config) =>
 {
     CultureInfo[] cultures = [new("el"), new("en")];
-    options.DefaultRequestCulture = new RequestCulture("el");
+    var defaultCulture = config["Localization:DefaultCulture"];
+    if (!cultures.Any(c => c.Name == defaultCulture))
+        throw new InvalidOperationException($"Localization:DefaultCulture must be one of: {string.Join(", ", cultures.Select(c => c.Name))} (got '{defaultCulture}').");
+    options.DefaultRequestCulture = new RequestCulture(defaultCulture!);
     options.SupportedCultures = cultures;
     options.SupportedUICultures = cultures;
     options.RequestCultureProviders = [new CookieRequestCultureProvider()];

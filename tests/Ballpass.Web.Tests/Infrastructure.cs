@@ -25,11 +25,13 @@ public static class TestDb
     }
 }
 
-/// <summary>App wired to DB ballpass_test, seeded once with the seed-42 demo data.</summary>
+/// <summary>App wired to DB ballpass_test, seeded once with the seed-42 demo data.
+/// Pinned to Greek: the suite was written against the Greek default (English is the shipped default, see EnglishDefaultTests).</summary>
 public class BallpassAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    protected override void ConfigureWebHost(IWebHostBuilder builder) =>
-        builder.UseSetting("ConnectionStrings:Ballpass", TestDb.ConnectionString("ballpass_test"));
+    protected override void ConfigureWebHost(IWebHostBuilder builder) => builder
+        .UseSetting("ConnectionStrings:Ballpass", TestDb.ConnectionString("ballpass_test"))
+        .UseSetting("Localization:DefaultCulture", "el");
 
     public async Task InitializeAsync()
     {

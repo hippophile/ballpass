@@ -6,14 +6,14 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="Nav_Sent" xml:space="preserve"><value>Sent</value></data>
   <data name="Nav_SentUnread" xml:space="preserve"><value>new replies</value></data>
-  <data name="Sent_Title" xml:space="preserve"><value>Sent interests</value></data>
-  <data name="Sent_Intro" xml:space="preserve"><value>Every interest you sent and where it stands: sent, seen, replied.</value></data>
-  <data name="Sent_Empty" xml:space="preserve"><value>You have not sent any interest yet.</value></data>
+  <data name="Sent_Title" xml:space="preserve"><value>Sent</value></data>
+  <data name="Sent_Intro" xml:space="preserve"><value>Every interest you've sent and where it stands: sent, seen, replied.</value></data>
+  <data name="Sent_Empty" xml:space="preserve"><value>You haven't sent any interest yet.</value></data>
   <data name="Sent_Aria" xml:space="preserve"><value>Progress: sent, seen, replied</value></data>
   <data name="Step_Sent" xml:space="preserve"><value>Sent</value></data>
   <data name="Step_Seen" xml:space="preserve"><value>Seen</value></data>
   <data name="Step_Replied" xml:space="preserve"><value>Replied</value></data>
-  <data name="Step_Pending" xml:space="preserve"><value>waiting</value></data>
+  <data name="Step_Pending" xml:space="preserve"><value>pending</value></data>
   <data name="Reply_Accepted" xml:space="preserve"><value>Accepted</value></data>
   <data name="Reply_Declined" xml:space="preserve"><value>Declined</value></data>
   <data name="Inbox_New" xml:space="preserve"><value>New</value></data>
@@ -22,20 +22,20 @@
   <data name="Inbox_ReplyAria" xml:space="preserve"><value>Reply to this interest</value></data>
   <data name="Inbox_YouAccepted" xml:space="preserve"><value>You accepted this interest.</value></data>
   <data name="Inbox_YouDeclined" xml:space="preserve"><value>You declined this interest.</value></data>
-  <data name="Inbox_Contact" xml:space="preserve"><value>contact through the club</value></data>
-  <data name="Actions_List" xml:space="preserve"><value>List</value></data>
+  <data name="Inbox_Contact" xml:space="preserve"><value>contact via the club</value></data>
+  <data name="Actions_List" xml:space="preserve"><value>Shortlist</value></data>
   <data name="Actions_NoteToggle" xml:space="preserve"><value>Add a note (optional)</value></data>
   <data name="Switch_ToAthlete" xml:space="preserve"><value>See it as the athlete</value></data>
-  <data name="Switch_ToCoach" xml:space="preserve"><value>Back to the coach</value></data>
+  <data name="Switch_ToCoach" xml:space="preserve"><value>Back to coach view</value></data>
   <data name="Reset_Title" xml:space="preserve"><value>Reset data</value></data>
-  <data name="Reset_Intro" xml:space="preserve"><value>The platform will be restored to its starting state.</value></data>
+  <data name="Reset_Intro" xml:space="preserve"><value>This restores Ballpass to its starting state.</value></data>
   <data name="Reset_Effect1" xml:space="preserve"><value>All data is restored: athletes, coaches, clubs, interests, shortlists and posts.</value></data>
   <data name="Reset_Effect2" xml:space="preserve"><value>Anything you added or changed (interests, replies, posts) is lost.</value></data>
-  <data name="Reset_Effect3" xml:space="preserve"><value>You will be signed out and returned to the home page.</value></data>
+  <data name="Reset_Effect3" xml:space="preserve"><value>You'll be signed out and taken to the home page.</value></data>
   <data name="Reset_Confirm" xml:space="preserve"><value>Reset now</value></data>
   <data name="Reset_Cancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="Reset_Link" xml:space="preserve"><value>Reset data</value></data>
-  <data name="Toast_Reset" xml:space="preserve"><value>Data restored. Start again from the top.</value></data>
+  <data name="Toast_Reset" xml:space="preserve"><value>Data reset. Start fresh.</value></data>
   <data name="Switch_ToAthleteMale" xml:space="preserve"><value>See it as the athlete</value></data>
-  <data name="Switch_ToCoachFemale" xml:space="preserve"><value>Back to the coach</value></data>
+  <data name="Switch_ToCoachFemale" xml:space="preserve"><value>Back to coach view</value></data>
 </root>

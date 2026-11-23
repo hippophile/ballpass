@@ -250,7 +250,11 @@
     private string AthleteInitials => Initials(AthleteName);
     private string CoachInitials => Initials(CoachName);
 
-    private string AthleteMeta => cast.Athlete is { } a ? $"{S[$"Position_{a.Position}"]} · {a.HeightCm} {S["Profile_Cm"]} · {a.City}" : "";
+    private string AthleteMeta => cast.Athlete is { } a ? $"{S[$"Position_{a.Position}"]} · {a.HeightCm} {S["Profile_Cm"]} · {CityName(a.City)}" : "";
+
+    // Same rule as the profile: Latin city name in English when the seed list knows it.
+    private static string CityName(string city) =>
+        IsGreek ? city : Ballpass.Web.Demo.GreekNames.Cities.FirstOrDefault(c => c.Name == city)?.NameLatin ?? city;
 
     private static string Initials(string name) =>
         string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);

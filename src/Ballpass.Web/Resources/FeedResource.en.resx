@@ -13,35 +13,35 @@
   <data name="More" xml:space="preserve"><value>Show more</value></data>
   <data name="BackToNewest" xml:space="preserve"><value>Back to newest</value></data>
   <data name="Empty_ForYou" xml:space="preserve"><value>No posts yet.</value></data>
-  <data name="Empty_Following" xml:space="preserve"><value>Follow 3 athletes or shortlist athletes to fill your feed.</value></data>
-  <data name="Empty_FollowingCta" xml:space="preserve"><value>See the For you feed</value></data>
+  <data name="Empty_Following" xml:space="preserve"><value>Follow 3 athletes or add some to your shortlist to fill your feed.</value></data>
+  <data name="Empty_FollowingCta" xml:space="preserve"><value>Go to For you</value></data>
   <data name="Following_SignIn" xml:space="preserve"><value>Sign in to see who you follow.</value></data>
-  <data name="Following_SignInCta" xml:space="preserve"><value>Choose a persona</value></data>
-  <data name="Unavailable" xml:space="preserve"><value>The feed is not available right now. Please try again shortly.</value></data>
-  <data name="Status_posted" xml:space="preserve"><value>Your post is published.</value></data>
-  <data name="Status_lft-off" xml:space="preserve"><value>"Looking for a team" is switched off.</value></data>
+  <data name="Following_SignInCta" xml:space="preserve"><value>Choose a profile</value></data>
+  <data name="Unavailable" xml:space="preserve"><value>The feed isn't available right now. Try again in a moment.</value></data>
+  <data name="Status_posted" xml:space="preserve"><value>Your post is live.</value></data>
+  <data name="Status_lft-off" xml:space="preserve"><value>“Looking for a team” is now off.</value></data>
   <data name="Status_rate" xml:space="preserve"><value>One post per minute. Wait a moment and try again.</value></data>
   <data name="Status_too-long" xml:space="preserve"><value>The text is too long.</value></data>
-  <data name="Status_invalid" xml:space="preserve"><value>Fill in the required fields (and a date that is not in the past).</value></data>
-  <data name="Status_reported" xml:space="preserve"><value>Thank you. The post was reported and is hidden from you.</value></data>
-  <data name="Status_hidden" xml:space="preserve"><value>The post is hidden.</value></data>
-  <data name="Status_blocked" xml:space="preserve"><value>User blocked. You will not see each other in the feed.</value></data>
-  <data name="Status_following" xml:space="preserve"><value>You now follow.</value></data>
-  <data name="Status_unfollowed" xml:space="preserve"><value>You no longer follow.</value></data>
-  <data name="Status_follow-refused" xml:space="preserve"><value>Following was not possible.</value></data>
+  <data name="Status_invalid" xml:space="preserve"><value>Fill in the required fields (dates can't be in the past).</value></data>
+  <data name="Status_reported" xml:space="preserve"><value>Thanks. We got your report and hid the post for you.</value></data>
+  <data name="Status_hidden" xml:space="preserve"><value>Post hidden.</value></data>
+  <data name="Status_blocked" xml:space="preserve"><value>Blocked. You won't see each other in the feed.</value></data>
+  <data name="Status_following" xml:space="preserve"><value>You're now following.</value></data>
+  <data name="Status_unfollowed" xml:space="preserve"><value>Unfollowed.</value></data>
+  <data name="Status_follow-refused" xml:space="preserve"><value>Couldn't follow.</value></data>
   <data name="Compose_Title" xml:space="preserve"><value>New post</value></data>
   <data name="Compose_Aria" xml:space="preserve"><value>Compose a post</value></data>
   <data name="Compose_TextLabel" xml:space="preserve"><value>What's new?</value></data>
   <data name="Compose_TextHint" xml:space="preserve"><value>Up to 280 characters. Links are removed.</value></data>
   <data name="Compose_Submit" xml:space="preserve"><value>Post</value></data>
   <data name="Compose_Lft" xml:space="preserve"><value>Looking for a team</value></data>
-  <data name="Compose_LftOn" xml:space="preserve"><value>On: looking for a team</value></data>
+  <data name="Compose_LftOn" xml:space="preserve"><value>On: Looking for a team</value></data>
   <data name="Compose_LftOff" xml:space="preserve"><value>Off</value></data>
   <data name="Compose_LftSubmit" xml:space="preserve"><value>Save</value></data>
   <data name="Compose_Note" xml:space="preserve"><value>Note (up to 140 characters)</value></data>
   <data name="Compose_Highlight" xml:space="preserve"><value>Highlight</value></data>
   <data name="Compose_HighlightTitle" xml:space="preserve"><value>Highlight title</value></data>
-  <data name="Compose_HighlightHint" xml:space="preserve"><value>A graphic is generated. No photos or video are uploaded.</value></data>
+  <data name="Compose_HighlightHint" xml:space="preserve"><value>We generate a graphic. No photo or video upload.</value></data>
   <data name="Compose_Tryout" xml:space="preserve"><value>Tryout call</value></data>
   <data name="Compose_TryoutHint" xml:space="preserve"><value>For your club.</value></data>
   <data name="Field_Position" xml:space="preserve"><value>Position</value></data>
@@ -77,8 +77,8 @@
   <data name="Follow" xml:space="preserve"><value>Follow</value></data>
   <data name="Unfollow" xml:space="preserve"><value>Following</value></data>
   <data name="Unfollow_Aria" xml:space="preserve"><value>Stop following</value></data>
-  <data name="Interest" xml:space="preserve"><value>Express interest</value></data>
-  <data name="Interest_Sent" xml:space="preserve"><value>✓ Interest already sent</value></data>
+  <data name="Interest" xml:space="preserve"><value>Send interest</value></data>
+  <data name="Interest_Sent" xml:space="preserve"><value>✓ Interest sent</value></data>
   <data name="ProfileLink" xml:space="preserve"><value>Profile →</value></data>
   <data name="Menu_Label" xml:space="preserve"><value>More actions</value></data>
   <data name="Menu_Report" xml:space="preserve"><value>Report</value></data>
@@ -91,7 +91,7 @@
   <data name="Reason_fake" xml:space="preserve"><value>Fake or misleading</value></data>
   <data name="Reason_minor" xml:space="preserve"><value>Involves a minor</value></data>
   <data name="Reason_other" xml:space="preserve"><value>Other</value></data>
-  <data name="Block_Hint" xml:space="preserve"><value>You will not see each other in the feed.</value></data>
-  <data name="Preview_Title" xml:space="preserve"><value>What's happening now</value></data>
-  <data name="Preview_More" xml:space="preserve"><value>See the whole feed →</value></data>
+  <data name="Block_Hint" xml:space="preserve"><value>You won't see each other in the feed.</value></data>
+  <data name="Preview_Title" xml:space="preserve"><value>Happening now</value></data>
+  <data name="Preview_More" xml:space="preserve"><value>See the full feed →</value></data>
 </root>
