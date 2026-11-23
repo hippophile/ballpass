@@ -1,0 +1,359 @@
+@page "/messages"
+@page "/messages/{Id:int}"
+@attribute [Authorize]
+@using System.Globalization
+@using Ballpass.Web.Components.Media
+@using Ballpass.Web.Components.Shared
+@using Ballpass.Web.Data
+@using Ballpass.Web.Demo
+@using Ballpass.Web.Features.Media
+@using Ballpass.Web.Features.Messages
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.Extensions.Options
+@inject BallpassDbContext Db
+@inject TimeProvider Time
+@inject NavigationManager Navigation
+@inject IOptions<MessagesOptions> Options
+@inject IStringLocalizer<MessagesResource> T
+@inject IStringLocalizer<SharedResource> S
+
+<PageTitle>@T["Title"]</PageTitle>
+
+@* Two panes (list + thread) like a DM inbox; under 760 px the list and the thread are separate screens (data-view). The connection
+   is the permission: only the accepted interest's coach and athlete see a conversation. Orange = coach, teal = athlete. *@
+@if (denied)
+{
+    <h1>@T["Title"]</h1>
+    <p class="bp-msg-denied">@T["Denied"]</p>
+}
+else if (rows.Count == 0)
+{
+    <div class="bp-msg-empty" data-msg-empty>
+        <h1>@T["Title"]</h1>
+        <StockPhoto Image="viewer.Role == MessageSender.Coach ? StockMedia.SentEmpty : StockMedia.DoorAthlete" Class="bp-msg-empty-photo">
+            <p class="bp-msg-empty-text">@T[viewer.Role == MessageSender.Coach ? "Empty_Coach" : "Empty_Athlete"]</p>
+            @if (viewer.Role == MessageSender.Coach)
+            {
+                <a class="bp-btn-primary" href="/match">@T["Empty_CoachCta"]</a>
+            }
+            else
+            {
+                <a class="bp-btn-athlete" href="/me/inbox">@T["Empty_AthleteCta"]</a>
+            }
+        </StockPhoto>
+        <p class="bp-msg-rule">@T["Rule"]</p>
+    </div>
+}
+else
+{
+    <div class="bp-msg" data-view="@(Id is null ? "list" : "thread")" data-role="@RoleKey">
+        <aside class="bp-msg-list" aria-labelledby="bp-msg-title">
+            <header class="bp-msg-list-head">
+                <h1 id="bp-msg-title">@T["Title"]</h1>
+                <p class="bp-msg-list-sub">@(unreadConversations switch { 0 => T["List_AllRead"], 1 => T["List_Unread_One"], _ => T["List_Unread", unreadConversations] })</p>
+            </header>
+            <ul class="bp-msg-items" aria-label="@T["List_Aria"]">
+                @foreach (var row in rows)
+                {
+                    var active = row.Id == thread?.Id;
+                    var itemClass = "bp-msg-item" + (active ? " is-active" : "") + (row.Unread > 0 ? " is-unread" : "");
+                    <li>
+                        <a class="@itemClass" href="/messages/@row.Id#bottom"
+                           data-conversation-id="@row.Id" data-unread="@row.Unread" aria-current="@(active && Id is not null ? "true" : null)">
+                            <JerseyAvatar Id="row.OtherId" Initials="@Initials(row.Name)" Club="@row.Club" Coach="row.OtherIsCoach" Size="44" />
+                            <span class="bp-msg-item-body">
+                                <span class="bp-msg-item-top">
+                                    <span class="bp-msg-item-name">@row.Name</span>
+                                    <time class="bp-msg-item-time" datetime="@Iso(row.At)">@RelativeTimeText.Format(S, row.At, now)</time>
+                                </span>
+                                <span class="bp-msg-item-club">@(row.Club ?? S["Profile_NoClub"].Value)</span>
+                                <span class="bp-msg-item-last">
+                                    @if (row.LastBody is null)
+                                    {
+                                        <em>@T["NoMessagesShort"]</em>
+                                    }
+                                    else
+                                    {
+                                        @if (row.LastSender == viewer.Role) { <span class="bp-msg-item-you">@T["You"]</span> }
+                                        @Snippet(row.LastBody)
+                                    }
+                                </span>
+                            </span>
+                            @if (row.Unread > 0)
+                            {
+                                <span class="bp-msg-badge" aria-label="@(row.Unread == 1 ? T["Unread_Aria_One"] : T["Unread_Aria", row.Unread])">@row.Unread</span>
+                            }
+                        </a>
+                    </li>
+                }
+            </ul>
+            <p class="bp-msg-rule">@T["Rule"]</p>
+        </aside>
+
+        @if (thread is not null)
+        {
+            var other = OtherName(thread);
+            var mineClass = viewer.Role == MessageSender.Coach ? "bp-btn-primary" : "bp-btn-athlete";
+            <section class="bp-msg-thread" data-conversation-id="@thread.Id" aria-label="@T["Thread_Aria", other]">
+                <header class="bp-msg-head">
+                    <a class="bp-msg-back" href="/messages"><span aria-hidden="true">‹</span> @T["Back"]</a>
+                    <div class="bp-msg-who">
+                        @if (viewer.Role == MessageSender.Coach)
+                        {
+                            var a = thread.Athlete!;
+                            <JerseyAvatar Id="a.Id" Initials="@Initials(other)" Club="@a.CurrentClub?.Name" Size="44" />
+                            <div class="bp-msg-who-text">
+                                <a class="bp-msg-name" href="/p/@a.Slug">@other</a>
+                                <span class="bp-msg-meta">@S[$"Position_{a.Position}"] · @(a.CurrentClub?.Name ?? S["Profile_NoClub"].Value)</span>
+                            </div>
+                        }
+                        else
+                        {
+                            var c = thread.Coach!;
+                            <JerseyAvatar Id="c.Id" Initials="@Initials(other)" Club="@c.Club?.Name" Coach="true" Size="44" />
+                            <div class="bp-msg-who-text">
+                                <span class="bp-msg-name">@other</span>
+                                <span class="bp-msg-meta">@S[GreekNames.IsFemaleFirstName(c.FirstName) ? "Role_Coach_F" : "Role_Coach"] · @c.Club?.Name@if (c.Club is { } club) {<text> · @S[$"League_{club.League}"]</text>}</span>
+                            </div>
+                        }
+                    </div>
+                    <span class="bp-chip-athlete bp-msg-since">@T["Since", Local(thread.Interest?.RepliedAt ?? thread.CreatedAt).ToString("d MMM", CultureInfo.CurrentCulture)]</span>
+                    @if (viewer.Role == MessageSender.Athlete && (thread.BlockedAt is null || !reported))
+                    {
+                        <details class="bp-msg-more">
+                            <summary class="bp-btn-ghost" aria-label="@T["More"]"><span aria-hidden="true">⋯</span></summary>
+                            <div class="bp-msg-more-panel">
+                                @if (!reported)
+                                {
+                                    <form method="post" action="/messages/@thread.Id/report" class="bp-msg-report">
+                                        <AntiforgeryToken />
+                                        <p class="bp-label">@T["Report_Title"]</p>
+                                        <label for="bp-msg-reason">@T["Report_Reason"]</label>
+                                        <select id="bp-msg-reason" name="reason">
+                                            @foreach (var reason in MessagesSetup.ReportReasons)
+                                            {
+                                                <option value="@reason">@T[$"Reason_{reason}"]</option>
+                                            }
+                                        </select>
+                                        @if (thread.BlockedAt is null)
+                                        {
+                                            <label class="bp-msg-check"><input type="checkbox" name="block" value="true" />@T["Report_AlsoBlock"]</label>
+                                        }
+                                        <button type="submit" class="bp-btn-outline">@T["Report_Submit"]</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <p class="bp-msg-hint">@T["Report_Done"]</p>
+                                }
+                                @if (thread.BlockedAt is null)
+                                {
+                                    <form method="post" action="/messages/@thread.Id/block" class="bp-msg-block">
+                                        <AntiforgeryToken />
+                                        <p class="bp-label">@T["Block_Title"]</p>
+                                        <p class="bp-msg-hint">@T["Block_Hint"]</p>
+                                        <button type="submit" class="bp-btn-ghost bp-msg-danger">@T["Block_Submit"]</button>
+                                    </form>
+                                }
+                            </div>
+                        </details>
+                    }
+                </header>
+
+                @if (Status is "reported" or "blocked")
+                {
+                    <p class="bp-msg-notice" role="status">@T[$"Status_{Status}"]</p>
+                }
+
+                <div class="bp-msg-scroll">
+                    <ol class="bp-msg-stream" aria-label="@T["Stream_Aria"]">
+                        @if (messages.Count == 0)
+                        {
+                            <li class="bp-msg-first">@T["NoMessages"]</li>
+                        }
+                        @{
+                            DateTime? day = null;
+                            Message? prev = null;
+                        }
+                        @foreach (var m in messages)
+                        {
+                            var d = Local(m.SentAt).Date;
+                            if (d != day)
+                            {
+                                day = d;
+                                prev = null;
+                                <li class="bp-msg-day" role="separator"><span>@DayLabel(m.SentAt)</span></li>
+                            }
+                            var mine = m.SenderKind == viewer.Role;
+                            var cont = prev is not null && prev.SenderKind == m.SenderKind && m.SentAt - prev.SentAt < TimeSpan.FromMinutes(10);
+                            var last = ReferenceEquals(m, messages[^1]);
+                            var bubbleClass = "bp-msg-bubble " + (mine ? "bp-msg-mine" : "bp-msg-theirs") + (cont ? " bp-msg-cont" : "");
+                            <li class="@bubbleClass" data-message-id="@m.Id">
+                                <div class="bp-msg-box">
+                                    <span class="visually-hidden">@(mine ? T["Mine_Aria"].Value : other):</span>
+                                    <p class="bp-msg-text">@m.Body</p>
+                                    <time class="bp-msg-time" datetime="@Iso(m.SentAt)">@Clock(m.SentAt)</time>
+                                </div>
+                                @if (mine && last)
+                                {
+                                    <p class="bp-msg-receipt" data-receipt="@(m.ReadAt is null ? "sent" : "read")">@T[m.ReadAt is null ? "Sent" : "Read"]</p>
+                                }
+                            </li>
+                            prev = m;
+                        }
+                    </ol>
+                </div>
+
+                @if (thread.BlockedAt is not null)
+                {
+                    <p class="bp-msg-closed" data-closed role="status">@T[viewer.Role == MessageSender.Athlete ? "Closed_Athlete" : "Closed_Coach"]</p>
+                }
+                else
+                {
+                    <form method="post" action="/messages/@thread.Id/send" class="bp-msg-composer" id="composer">
+                        <AntiforgeryToken />
+                        @if (Status is "empty" or "too-long")
+                        {
+                            <p class="bp-msg-error" role="alert" data-error="@Status">@T[$"Error_{Status}"]</p>
+                        }
+                        <label for="bp-msg-body" class="visually-hidden">@T["Composer_Label"]</label>
+                        <textarea id="bp-msg-body" name="body" maxlength="@Message.MaxBody" rows="2" required placeholder="@T["Composer_Placeholder"]" aria-describedby="bp-msg-limit"></textarea>
+                        <span id="bp-msg-limit" class="visually-hidden">@T["Composer_Hint"]</span>
+                        <button type="submit" class="@mineClass">@T["Send"]</button>
+                    </form>
+                }
+                <div id="bottom" class="bp-msg-bottom" aria-hidden="true"></div>
+            </section>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public int? Id { get; set; }
+    [SupplyParameterFromQuery(Name = "status")] public string? Status { get; set; }
+    [CascadingParameter] private Task<AuthenticationState> AuthState { get; set; } = default!;
+    [CascadingParameter] private HttpContext? Http { get; set; }
+
+    private sealed record Row(int Id, int OtherId, string Name, string? Club, bool OtherIsCoach, string? LastBody, MessageSender? LastSender, DateTimeOffset At, int Unread);
+
+    private Viewer viewer;
+    private bool denied;
+    private List<Row> rows = [];
+    private int unreadConversations;
+    private Conversation? thread;
+    private List<Message> messages = [];
+    private bool reported;
+    private DateTimeOffset now;
+    private TimeZoneInfo zone = TimeZoneInfo.Utc;
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    private string RoleKey => viewer.Role == MessageSender.Coach ? "coach" : "athlete";
+
+    protected override async Task OnInitializedAsync()
+    {
+        now = Time.GetUtcNow();
+        zone = Options.Value.Zone;
+        if (Viewer.From((await AuthState).User) is not { } v)
+        {
+            Deny();
+            return;
+        }
+        viewer = v;
+
+        if (Id is int id)
+        {
+            thread = await LoadThread(id);
+            if (thread is null)
+            {
+                Navigation.NotFound();
+                return;
+            }
+            if (!viewer.Owns(thread))
+            {
+                Deny();
+                return;
+            }
+            // Opening the thread reads the other side's messages (own messages keep their state).
+            await Db.Set<Message>().Where(m => m.ConversationId == id && m.SenderKind != viewer.Role && m.ReadAt == null)
+                .ExecuteUpdateAsync(s => s.SetProperty(m => m.ReadAt, now));
+        }
+
+        rows = await LoadRows();
+        unreadConversations = rows.Count(r => r.Unread > 0);
+        // /messages previews the newest conversation (not marked read: opening it is the click).
+        if (thread is null && rows.Count > 0) thread = await LoadThread(rows[0].Id);
+        if (thread is null) return;
+
+        messages = await Db.Set<Message>().AsNoTracking().Where(m => m.ConversationId == thread.Id)
+            .OrderBy(m => m.SentAt).ThenBy(m => m.Id).ToListAsync();
+        if (viewer.Role == MessageSender.Athlete)
+            reported = await Db.Set<ConversationReport>().AnyAsync(r => r.ConversationId == thread.Id);
+    }
+
+    private void Deny()
+    {
+        denied = true;
+        if (Http is not null) Http.Response.StatusCode = StatusCodes.Status403Forbidden;
+    }
+
+    private Task<Conversation?> LoadThread(int id) => Db.Set<Conversation>().AsNoTracking()
+        .Include(c => c.Coach).ThenInclude(c => c!.Club)
+        .Include(c => c.Athlete).ThenInclude(a => a!.CurrentClub)
+        .Include(c => c.Interest)
+        .FirstOrDefaultAsync(c => c.Id == id);
+
+    private async Task<List<Row>> LoadRows()
+    {
+        var role = viewer.Role;
+        var greek = IsGreek;
+        var mine = role == MessageSender.Coach
+            ? Db.Set<Conversation>().Where(c => c.CoachId == viewer.Id)
+            : Db.Set<Conversation>().Where(c => c.AthleteId == viewer.Id);
+        var raw = await mine.AsNoTracking().Select(c => new
+        {
+            c.Id,
+            c.CreatedAt,
+            c.CoachId,
+            CoachName = greek ? c.Coach!.FirstName + " " + c.Coach.LastName : c.Coach!.FirstNameLatin + " " + c.Coach.LastNameLatin,
+            CoachClub = c.Coach.Club!.Name,
+            c.AthleteId,
+            AthleteName = greek ? c.Athlete!.FirstName + " " + c.Athlete.LastName : c.Athlete!.FirstNameLatin + " " + c.Athlete.LastNameLatin,
+            AthleteClub = c.Athlete.CurrentClub!.Name,
+            Last = c.Messages.OrderByDescending(m => m.SentAt).ThenByDescending(m => m.Id)
+                .Select(m => new { m.Body, m.SenderKind, m.SentAt }).FirstOrDefault(),
+            Unread = c.Messages.Count(m => m.SenderKind != role && m.ReadAt == null),
+        }).ToListAsync();
+
+        return raw.Select(c => role == MessageSender.Coach
+                ? new Row(c.Id, c.AthleteId, c.AthleteName, c.AthleteClub, false, c.Last?.Body, c.Last?.SenderKind, c.Last?.SentAt ?? c.CreatedAt, c.Unread)
+                : new Row(c.Id, c.CoachId, c.CoachName, c.CoachClub, true, c.Last?.Body, c.Last?.SenderKind, c.Last?.SentAt ?? c.CreatedAt, c.Unread))
+            .OrderByDescending(r => r.At).ThenByDescending(r => r.Id).ToList();
+    }
+
+    private string OtherName(Conversation c) => viewer.Role == MessageSender.Coach
+        ? IsGreek ? $"{c.Athlete!.FirstName} {c.Athlete.LastName}" : $"{c.Athlete!.FirstNameLatin} {c.Athlete.LastNameLatin}"
+        : IsGreek ? $"{c.Coach!.FirstName} {c.Coach.LastName}" : $"{c.Coach!.FirstNameLatin} {c.Coach.LastNameLatin}";
+
+    private static string Initials(string name) =>
+        string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);
+
+    private static string Snippet(string body) => body.Length <= 90 ? body : body[..90].TrimEnd() + "…";
+
+    private static string Iso(DateTimeOffset at) => at.UtcDateTime.ToString("o", CultureInfo.InvariantCulture);
+
+    private DateTimeOffset Local(DateTimeOffset at) => TimeZoneInfo.ConvertTime(at, zone);
+
+    private string Clock(DateTimeOffset at) => Local(at).ToString("HH:mm", CultureInfo.InvariantCulture);
+
+    /// <summary>"Σήμερα", "Χθες", otherwise the weekday and date ("Δευτέρα 17 Νοεμβρίου"; the year only when it differs).</summary>
+    private string DayLabel(DateTimeOffset at)
+    {
+        var day = Local(at).Date;
+        var today = Local(now).Date;
+        if (day == today) return T["Today"];
+        if (day == today.AddDays(-1)) return T["Yesterday"];
+        var text = day.ToString(day.Year == today.Year ? "dddd d MMMM" : "dddd d MMMM yyyy", CultureInfo.CurrentCulture);
+        return char.ToUpper(text[0], CultureInfo.CurrentCulture) + text[1..];
+    }
+}

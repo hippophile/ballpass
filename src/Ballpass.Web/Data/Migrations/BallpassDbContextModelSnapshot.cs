@@ -319,6 +319,74 @@ namespace Ballpass.Web.Data.Migrations
                     b.ToTable("CommentReport");
                 });
 
+            modelBuilder.Entity("Ballpass.Web.Data.Conversation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AthleteId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("BlockedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CoachId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("InterestId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsDemo")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AthleteId");
+
+                    b.HasIndex("CoachId");
+
+                    b.HasIndex("InterestId")
+                        .IsUnique();
+
+                    b.ToTable("Conversation");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.ConversationReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConversationId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDemo")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId")
+                        .IsUnique();
+
+                    b.ToTable("ConversationReport");
+                });
+
             modelBuilder.Entity("Ballpass.Web.Data.Follow", b =>
                 {
                     b.Property<int>("Id")
@@ -493,6 +561,43 @@ namespace Ballpass.Web.Data.Migrations
                     b.HasIndex("PostId", "Position");
 
                     b.ToTable("MediaItem");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<int>("ConversationId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsDemo")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("ReadAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SenderKind")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<DateTimeOffset>("SentAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId", "SentAt");
+
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("Ballpass.Web.Data.Post", b =>
@@ -870,6 +975,44 @@ namespace Ballpass.Web.Data.Migrations
                     b.Navigation("Comment");
                 });
 
+            modelBuilder.Entity("Ballpass.Web.Data.Conversation", b =>
+                {
+                    b.HasOne("Ballpass.Web.Data.Athlete", "Athlete")
+                        .WithMany()
+                        .HasForeignKey("AthleteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ballpass.Web.Data.Coach", "Coach")
+                        .WithMany()
+                        .HasForeignKey("CoachId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ballpass.Web.Data.Interest", "Interest")
+                        .WithMany()
+                        .HasForeignKey("InterestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Athlete");
+
+                    b.Navigation("Coach");
+
+                    b.Navigation("Interest");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.ConversationReport", b =>
+                {
+                    b.HasOne("Ballpass.Web.Data.Conversation", "Conversation")
+                        .WithMany()
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
+                });
+
             modelBuilder.Entity("Ballpass.Web.Data.Interest", b =>
                 {
                     b.HasOne("Ballpass.Web.Data.Athlete", "Athlete")
@@ -915,6 +1058,17 @@ namespace Ballpass.Web.Data.Migrations
                     b.Navigation("Athlete");
 
                     b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.Message", b =>
+                {
+                    b.HasOne("Ballpass.Web.Data.Conversation", "Conversation")
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
                 });
 
             modelBuilder.Entity("Ballpass.Web.Data.PostHide", b =>
@@ -983,6 +1137,11 @@ namespace Ballpass.Web.Data.Migrations
                     b.Navigation("Seasons");
 
                     b.Navigation("Stats");
+                });
+
+            modelBuilder.Entity("Ballpass.Web.Data.Conversation", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

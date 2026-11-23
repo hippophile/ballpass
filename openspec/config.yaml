@@ -7,14 +7,19 @@ context: |
   MVP items (every scenario must trace to one): M0 skeleton, M1 athlete profile, M2 coach search,
   M3 express interest, M4 shortlist, M5 demo login, M6 Greek/English.
   IN SCOPE since 2026-11-21 (founder decision: "LinkedIn for athletes", "one very good MVP, not multiple"): feed with
-  structured + free-text posts, one reaction type, safeguards (adults only, report button, no DMs; comments since 2026-11-22, see below),
+  structured + free-text posts, one reaction type, safeguards (adults only, report button; comments since 2026-11-22, messages after acceptance since 2026-11-23, see below),
   follows, ONE polished dark theme (no theme variants), shareable player cards, stats charts, fit scores.
-  Since 2026-11-22 ("alive feed"): self-hosted stock photos/videos WITHOUT recognisable faces (logged in docs/ASSETS.md),
+  Since 2026-11-22 ("alive feed"): self-hosted stock photos/videos (logged in docs/ASSETS.md; faces: see below),
   comments with safeguards (adults only, rate limit, delete/hide/report, no replies-to-replies), public kudos counts,
   stories bar, jersey avatars, who-to-follow, trending tags.
-  OUT OF SCOPE (reject in review): chat/DMs, payments, user uploads of photos/video files, recognisable faces in any media, Trust Score with negative
+  Since 2026-11-22 (founder): stock photos with recognisable faces are allowed (never as an avatar or next to a named fictional
+  athlete) and visible demo labels/banner are removed: one quiet footer disclosure remains.
+  Since 2026-11-23 (founder, reverses "no DMs"): messages ONLY between a coach and an athlete AFTER the athlete accepted that coach's
+  interest (the connection IS the permission); the athlete can report and block (block = conversation closed). No group chats,
+  no attachments, no messages to anyone without an accepted interest.
+  OUT OF SCOPE (reject in review): payments, user uploads of photos/video files, Trust Score with negative
   points, computer vision on real video, ESKA/EOK/Mismatch endorsement claims, anything involving minors.
-  Demo data is fictional only: every seeded row is flagged demo, every page shows the demo banner,
+  Demo data is fictional only: every seeded row is flagged demo, no visible demo labels (one footer disclosure),
   no real people, no minors (under 18) in search results.
 
 rules:

@@ -62,7 +62,8 @@
                                     <span class="bp-interest-club">@coach.Club?.Name</span>
                                 </div>
                                 <p class="bp-loop-contact"><span class="bp-loop-contact-label">@T["Inbox_Contact"]</span></p>
-                                <a class="bp-btn-athlete" href="mailto:@email">@F["Inbox_Email"]</a>
+                                <MessageButton InterestId="i.Id" Class="bp-btn-athlete" Long="true" />
+                                <a class="bp-btn-ghost" href="mailto:@email">@F["Inbox_Email"]</a>
                             }
                             else
                             {

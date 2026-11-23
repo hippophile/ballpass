@@ -19,10 +19,12 @@
                     <MatchNavLink />
                     <a href="/shortlist" class="bp-navlink" aria-current="@Current("/shortlist")">@L["Nav_Shortlist"]</a>
                     <LoopNavLink />
+                    <MessagesNavLink />
                 }
                 else if (context.User.IsInRole("Athlete"))
                 {
                     <a href="/me/inbox" class="bp-navlink" aria-current="@Current("/me/inbox")">@L["Nav_Inbox"] (@inboxCount)</a>
+                    <MessagesNavLink />
                     <a href="/p/@context.User.FindFirst("slug")?.Value" class="bp-navlink" aria-current="@Current($"/p/{context.User.FindFirst("slug")?.Value}")">@L["Nav_Profile"]</a>
                 }
             </Authorized>

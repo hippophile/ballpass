@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Nav_Messages" xml:space="preserve"><value>Μηνύματα</value></data>
+  <data name="Title" xml:space="preserve"><value>Μηνύματα</value></data>
+  <data name="Rule" xml:space="preserve"><value>Μηνύματα ανταλλάσσονται μόνο μετά από αποδοχή ενδιαφέροντος.</value></data>
+  <data name="List_Aria" xml:space="preserve"><value>Συνομιλίες</value></data>
+  <data name="List_Unread" xml:space="preserve"><value>{0} συνομιλίες με νέα μηνύματα</value></data>
+  <data name="List_Unread_One" xml:space="preserve"><value>1 συνομιλία με νέα μηνύματα</value></data>
+  <data name="List_AllRead" xml:space="preserve"><value>Όλα διαβασμένα</value></data>
+  <data name="You" xml:space="preserve"><value>Εσείς: </value></data>
+  <data name="NoMessages" xml:space="preserve"><value>Η σύνδεση έγινε. Γράψτε το πρώτο μήνυμα.</value></data>
+  <data name="NoMessagesShort" xml:space="preserve"><value>Νέα σύνδεση</value></data>
+  <data name="Back" xml:space="preserve"><value>Μηνύματα</value></data>
+  <data name="Since" xml:space="preserve"><value>Σύνδεση από {0}</value></data>
+  <data name="Today" xml:space="preserve"><value>Σήμερα</value></data>
+  <data name="Yesterday" xml:space="preserve"><value>Χθες</value></data>
+  <data name="Read" xml:space="preserve"><value>Διαβάστηκε</value></data>
+  <data name="Sent" xml:space="preserve"><value>Εστάλη</value></data>
+  <data name="Composer_Label" xml:space="preserve"><value>Μήνυμα</value></data>
+  <data name="Composer_Placeholder" xml:space="preserve"><value>Γράψτε ένα μήνυμα…</value></data>
+  <data name="Composer_Hint" xml:space="preserve"><value>Έως 1000 χαρακτήρες</value></data>
+  <data name="Send" xml:space="preserve"><value>Αποστολή</value></data>
+  <data name="Error_empty" xml:space="preserve"><value>Γράψτε ένα μήνυμα πριν την αποστολή.</value></data>
+  <data name="Error_too-long" xml:space="preserve"><value>Το μήνυμα ξεπερνά τους 1000 χαρακτήρες.</value></data>
+  <data name="Closed_Coach" xml:space="preserve"><value>Η συνομιλία έχει κλείσει. Δεν μπορείτε να στείλετε μήνυμα.</value></data>
+  <data name="Closed_Athlete" xml:space="preserve"><value>Αποκλείσατε αυτή τη συνομιλία. Κανείς δεν μπορεί να στείλει μήνυμα.</value></data>
+  <data name="Status_reported" xml:space="preserve"><value>Η αναφορά καταχωρίστηκε. Ευχαριστούμε.</value></data>
+  <data name="Status_blocked" xml:space="preserve"><value>Η συνομιλία αποκλείστηκε.</value></data>
+  <data name="More" xml:space="preserve"><value>Επιλογές συνομιλίας</value></data>
+  <data name="Report_Title" xml:space="preserve"><value>Αναφορά συνομιλίας</value></data>
+  <data name="Report_Reason" xml:space="preserve"><value>Λόγος</value></data>
+  <data name="Reason_harassment" xml:space="preserve"><value>Παρενόχληση</value></data>
+  <data name="Reason_inappropriate" xml:space="preserve"><value>Ακατάλληλο περιεχόμενο</value></data>
+  <data name="Reason_spam" xml:space="preserve"><value>Ανεπιθύμητα μηνύματα</value></data>
+  <data name="Reason_other" xml:space="preserve"><value>Άλλο</value></data>
+  <data name="Report_AlsoBlock" xml:space="preserve"><value>Και αποκλεισμός της συνομιλίας</value></data>
+  <data name="Report_Submit" xml:space="preserve"><value>Αναφορά</value></data>
+  <data name="Report_Done" xml:space="preserve"><value>Έχετε αναφέρει αυτή τη συνομιλία.</value></data>
+  <data name="Block_Title" xml:space="preserve"><value>Αποκλεισμός</value></data>
+  <data name="Block_Hint" xml:space="preserve"><value>Κανείς δεν θα μπορεί να στείλει μήνυμα σε αυτή τη συνομιλία.</value></data>
+  <data name="Block_Submit" xml:space="preserve"><value>Αποκλεισμός συνομιλίας</value></data>
+  <data name="Empty_Coach" xml:space="preserve"><value>Δεν έχετε ακόμα συνομιλίες. Όταν μια αθλήτρια ή ένας αθλητής αποδεχτεί το ενδιαφέρον σας, η συνομιλία ανοίγει εδώ.</value></data>
+  <data name="Empty_CoachCta" xml:space="preserve"><value>Βρείτε παίκτες</value></data>
+  <data name="Empty_Athlete" xml:space="preserve"><value>Δεν έχετε ακόμα συνομιλίες. Όταν αποδεχτείτε το ενδιαφέρον ενός προπονητή, μπορείτε να μιλήσετε εδώ.</value></data>
+  <data name="Empty_AthleteCta" xml:space="preserve"><value>Δείτε τα εισερχόμενα</value></data>
+  <data name="Button_Long" xml:space="preserve"><value>Στείλτε μήνυμα</value></data>
+  <data name="Button_Short" xml:space="preserve"><value>Μήνυμα</value></data>
+  <data name="Denied" xml:space="preserve"><value>Δεν έχετε πρόσβαση σε αυτή τη συνομιλία.</value></data>
+  <data name="Thread_Aria" xml:space="preserve"><value>Συνομιλία με {0}</value></data>
+  <data name="Stream_Aria" xml:space="preserve"><value>Μηνύματα</value></data>
+  <data name="Unread_Aria" xml:space="preserve"><value>{0} νέα μηνύματα</value></data>
+  <data name="Unread_Aria_One" xml:space="preserve"><value>1 νέο μήνυμα</value></data>
+  <data name="Mine_Aria" xml:space="preserve"><value>Εσείς</value></data>
+</root>

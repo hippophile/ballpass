@@ -22,3 +22,9 @@ Build order: Phase A Look (sequential) → Phase B Feed / Find / Evidence / Shar
 | Comments | IN (reverses "No comments"). Flat, adults only, 280 chars, rate-limited, author deletes, post author hides, report → 3 reports hide, no replies-to-replies, no DMs. |
 | Kudos count | PUBLIC (reverses "author only") + likers line. |
 | Liveliness | Stories bar (highlight reels), jersey avatars (illustrated, no faces), who-to-follow, trending #tags, "new posts" pill. All seeded activity labelled. |
+
+## Update 2026-11-23 — messages (founder: "put fake messages etc and convos so i can see it better")
+
+| Area | Decision (reverses earlier cuts where noted) |
+|---|---|
+| Messages | IN (reverses "no DMs"). Only between a coach and an athlete AFTER the athlete accepted that coach's interest: the connection IS the permission. Accepting creates the conversation (the coach's note becomes the first message). The athlete can report and block (block = conversation closed). No group chats, no attachments, no messages to strangers. Seeded conversations are fictional Greek basketball talk; no labels in the UI (one footer disclosure, flow-release O1). |

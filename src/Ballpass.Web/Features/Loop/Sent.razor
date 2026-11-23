@@ -68,6 +68,7 @@ else
                 @if (i.Reply == InterestReply.Accepted)
                 {
                     <p class="bp-loop-sent-contact">@F["Sent_Connected"]</p>
+                    <MessageButton InterestId="i.Id" />
                 }
             </article>
         }

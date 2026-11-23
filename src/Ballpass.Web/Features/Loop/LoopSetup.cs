@@ -66,6 +66,7 @@ public static class LoopSetup
                 interest.RepliedAt = now;
                 interest.SeenAt ??= now;
                 await db.SaveChangesAsync();
+                if (reply == InterestReply.Accepted) await Features.Messages.MessagesService.StartAsync(db, interest, now);
             }
             return Results.Redirect("/me/inbox");
         }).DisableAntiforgery();
