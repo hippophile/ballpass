@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Title" xml:space="preserve"><value>Γιατί Ballpass</value></data>
+  <data name="Nav_Why" xml:space="preserve"><value>Γιατί Ballpass</value></data>
+  <data name="Hook_Eyebrow" xml:space="preserve"><value>Γιατί Ballpass</value></data>
+  <data name="Hook_Line1" xml:space="preserve"><value>Μια αθλήτρια με 15 πόντους ανά αγώνα,</value></data>
+  <data name="Hook_Line2" xml:space="preserve"><value>και κανείς δεν το ξέρει.</value></data>
+  <data name="Hook_Sub" xml:space="preserve"><value>Το ταλέντο υπάρχει. Οι σύλλογοι ψάχνουν. Απλώς δεν βρίσκονται.</value></data>
+  <data name="Hook_Scroll" xml:space="preserve"><value>Δείτε γιατί ↓</value></data>
+  <data name="Today_Label" xml:space="preserve"><value>Σήμερα</value></data>
+  <data name="Today_Title" xml:space="preserve"><value>Η σύνδεση γίνεται στα τυφλά.</value></data>
+  <data name="Today_AthleteLabel" xml:space="preserve"><value>Η αθλήτρια</value></data>
+  <data name="Today_AthleteQuote" xml:space="preserve"><value>«Δεν ξέρω ποιος ψάχνει.»</value></data>
+  <data name="Today_CoachLabel" xml:space="preserve"><value>Προπονήτρια ή προπονητής</value></data>
+  <data name="Today_CoachQuote" xml:space="preserve"><value>«Δεν ξέρω ποια υπάρχει.»</value></data>
+  <data name="Today_Between" xml:space="preserve"><value>Ανάμεσά τους, σκόρπια μηνύματα</value></data>
+  <data name="Frag_ForwardTag" xml:space="preserve"><value>Προωθημένο</value></data>
+  <data name="Frag_ForwardText" xml:space="preserve"><value>Έχει κανείς καμιά γκαρντ για του χρόνου;</value></data>
+  <data name="Frag_CallTag" xml:space="preserve"><value>Εισερχόμενη κλήση</value></data>
+  <data name="Frag_CallWho" xml:space="preserve"><value>Φίλος προπονητής</value></data>
+  <data name="Frag_CallText" xml:space="preserve"><value>«Ξέρεις καμιά γκαρντ;»</value></data>
+  <data name="Frag_PdfFile" xml:space="preserve"><value>βαθμολογία_γυναικών.pdf</value></data>
+  <data name="Frag_PdfText" xml:space="preserve"><value>Τα στατιστικά, θαμμένα σε PDF.</value></data>
+  <data name="Frag_VideoTag" xml:space="preserve"><value>Σύνδεσμος βίντεο</value></data>
+  <data name="Frag_VideoText" xml:space="preserve"><value>Ένα βίντεο, χαμένο σε μια συνομιλία.</value></data>
+  <data name="Frag_GroupName" xml:space="preserve"><value>Μπάσκετ Γυναικών · Ομάδα</value></data>
+  <data name="Frag_GroupText" xml:space="preserve"><value>Ψάχνω ομάδα στη Θεσσαλονίκη, παίζω φόργουορντ.</value></data>
+  <data name="Frag_GroupNoReply" xml:space="preserve"><value>Καμία απάντηση</value></data>
+  <data name="Cost_Label" xml:space="preserve"><value>Το κόστος</value></data>
+  <data name="Cost_Title" xml:space="preserve"><value>Τι χάνεται όταν κανείς δεν βλέπει.</value></data>
+  <data name="Cost_Source" xml:space="preserve"><value>Πηγή:</value></data>
+  <data name="Cost1_Title" xml:space="preserve"><value>Αλλάζει πόλη. Χάνεται από το μπάσκετ.</value></data>
+  <data name="Cost1_Figure" xml:space="preserve"><value>27,5%</value></data>
+  <data name="Cost1_Text" xml:space="preserve"><value>των πρωτοετών έμεινε να σπουδάσει στον νομό του σχολείου του. Οι άλλοι αλλάζουν πόλη, και η ομάδα μένει πίσω.</value></data>
+  <data name="Cost1_Source" xml:space="preserve"><value>ΚΑΝΕΠ-ΓΣΕΕ, στοιχεία 2011, μέσω alfavita.gr</value></data>
+  <data name="Cost2_Title" xml:space="preserve"><value>Γνωριμίες, όχι στοιχεία.</value></data>
+  <data name="Cost2_Figure" xml:space="preserve"><value>30</value></data>
+  <data name="Cost2_Text" xml:space="preserve"><value>ενεργά, αδειοδοτημένα μέλη έχει ο Σύνδεσμος Ελλήνων Αντιπροσώπων Καλαθοσφαιριστών. Στις μικρότερες κατηγορίες, μετρά το «ποιος ξέρει ποιον».</value></data>
+  <data name="Cost2_Source" xml:space="preserve"><value>Eurohoops, λίστα Ιουνίου 2025</value></data>
+  <data name="Cost3_Title" xml:space="preserve"><value>Το γυναικείο μπάσκετ, το λιγότερο ορατό.</value></data>
+  <data name="Cost3_Figure" xml:space="preserve"><value>4%</value></data>
+  <data name="Cost3_Text1" xml:space="preserve"><value>της αθλητικής κάλυψης παγκοσμίως αφορά γυναίκες, ενώ είναι το</value></data>
+  <data name="Cost3_Figure2" xml:space="preserve"><value>40%</value></data>
+  <data name="Cost3_Text2" xml:space="preserve"><value>όσων αθλούνται.</value></data>
+  <data name="Cost3_Source" xml:space="preserve"><value>UNESCO, Gender Equality in Sports Media</value></data>
+  <data name="How_Label" xml:space="preserve"><value>Με το Ballpass</value></data>
+  <data name="How_Title" xml:space="preserve"><value>Τρεις κινήσεις. Μία σύνδεση.</value></data>
+  <data name="Step1_Title" xml:space="preserve"><value>Η αθλήτρια σηκώνει το χέρι</value></data>
+  <data name="Step1_Text" xml:space="preserve"><value>Δηλώνει «Ψάχνει ομάδα». Το προφίλ της δείχνει στατιστικά με πηγή.</value></data>
+  <data name="Step2_Title" xml:space="preserve"><value>Ο σύλλογος στέλνει ενδιαφέρον</value></data>
+  <data name="Step2_Text" xml:space="preserve"><value>Η προπονήτρια ή ο προπονητής τη βρίσκει με βάση την ανάγκη και της γράφει.</value></data>
+  <data name="Step3_Title" xml:space="preserve"><value>Εκείνη αποδέχεται</value></data>
+  <data name="Step3_Text" xml:space="preserve"><value>Η αθλήτρια αποφασίζει. Χωρίς μεσάζοντες.</value></data>
+  <data name="Step4_Title" xml:space="preserve"><value>Συνδέθηκαν</value></data>
+  <data name="Step4_Text" xml:space="preserve"><value>Ανταλλάσσουν στοιχεία και μιλούν απευθείας.</value></data>
+  <data name="Pv_Looking" xml:space="preserve"><value>Ψάχνω ομάδα</value></data>
+  <data name="Pv_Interest" xml:space="preserve"><value>Ενδιαφέρον</value></data>
+  <data name="Pv_Note" xml:space="preserve"><value>Σας είδαμε στο Ταίριασμα. Θα θέλαμε να μιλήσουμε.</value></data>
+  <data name="Pv_Send" xml:space="preserve"><value>Στείλτε ενδιαφέρον</value></data>
+  <data name="Pv_New" xml:space="preserve"><value>Νέο ενδιαφέρον</value></data>
+  <data name="Pv_Accept" xml:space="preserve"><value>Αποδοχή</value></data>
+  <data name="Pv_Decline" xml:space="preserve"><value>Όχι τώρα</value></data>
+  <data name="Pv_Connected" xml:space="preserve"><value>Συνδεθήκατε ✓</value></data>
+  <data name="Pv_Email" xml:space="preserve"><value>Στείλτε email</value></data>
+  <data name="Proof_Label" xml:space="preserve"><value>Τώρα στο Ballpass</value></data>
+  <data name="Proof_Looking" xml:space="preserve"><value>ψάχνουν ομάδα</value></data>
+  <data name="Proof_Interests" xml:space="preserve"><value>εκδηλώσεις ενδιαφέροντος</value></data>
+  <data name="Proof_Connections" xml:space="preserve"><value>συνδέσεις</value></data>
+  <data name="Doors_Title" xml:space="preserve"><value>Δείτε το από την πλευρά σας.</value></data>
+  <data name="Door_CoachLabel" xml:space="preserve"><value>Για προπονητές</value></data>
+  <data name="Door_CoachTitle" xml:space="preserve"><value>Δοκιμάστε ως προπονήτρια ή προπονητής</value></data>
+  <data name="Door_CoachText" xml:space="preserve"><value>Πείτε τι χρειάζεστε. Δείτε ποιες ταιριάζουν και γιατί.</value></data>
+  <data name="Door_CoachCta" xml:space="preserve"><value>Βρείτε παίκτρια →</value></data>
+  <data name="Door_AthleteLabel" xml:space="preserve"><value>Για αθλήτριες</value></data>
+  <data name="Door_AthleteTitle" xml:space="preserve"><value>Δοκιμάστε ως αθλήτρια</value></data>
+  <data name="Door_AthleteText" xml:space="preserve"><value>Δείτε ποιοι σύλλογοι σας αναζητούν. Εσείς αποφασίζετε.</value></data>
+  <data name="Door_AthleteCta" xml:space="preserve"><value>Δείτε ποιος σας θέλει →</value></data>
+  <data name="Band_Label" xml:space="preserve"><value>Το πρόβλημα</value></data>
+  <data name="Band_Title" xml:space="preserve"><value>Το ταλέντο υπάρχει. Η σύνδεση λείπει.</value></data>
+  <data name="Band_Today" xml:space="preserve"><value>Σήμερα</value></data>
+  <data name="Band_With" xml:space="preserve"><value>Με το Ballpass</value></data>
+  <data name="Band_T1" xml:space="preserve"><value>Η αθλήτρια δεν ξέρει ποιος ψάχνει.</value></data>
+  <data name="Band_T2" xml:space="preserve"><value>Ο προπονητής ρωτάει με τηλέφωνα και μηνύματα.</value></data>
+  <data name="Band_T3" xml:space="preserve"><value>Τα στατιστικά χάνονται σε PDF και συνομιλίες.</value></data>
+  <data name="Band_W1" xml:space="preserve"><value>Δηλώνει «Ψάχνω ομάδα» με ένα κλικ.</value></data>
+  <data name="Band_W2" xml:space="preserve"><value>Ο σύλλογος τη βρίσκει και στέλνει ενδιαφέρον.</value></data>
+  <data name="Band_W3" xml:space="preserve"><value>Ένα προφίλ, με πηγή για κάθε αριθμό.</value></data>
+  <data name="Band_Link" xml:space="preserve"><value>Δείτε την ιστορία →</value></data>
+</root>

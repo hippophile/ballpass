@@ -28,6 +28,7 @@
             </Authorized>
             <NotAuthorized>
                 <FeedNavLink />
+                <Ballpass.Web.Components.Why.WhyLink />
                 <a href="/demo" class="bp-navlink" aria-current="@Current("/demo")">@L["Nav_DemoLogin"]</a>
             </NotAuthorized>
         </AuthorizeView>
@@ -65,7 +66,7 @@
     </article>
 </main>
 
-<footer class="bp-footer"><p>@L["Footer_Disclosure"]</p></footer>
+<footer class="bp-footer"><p>@L["Footer_Disclosure"] · <Ballpass.Web.Components.Why.WhyLink Footer="true" /></p></footer>
 
 @code {
     private static string Lang => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;

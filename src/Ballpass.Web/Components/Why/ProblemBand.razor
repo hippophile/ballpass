@@ -1,0 +1,27 @@
+@inject IStringLocalizer<WhyResource> W
+
+@* Home "Το πρόβλημα" band (openspec why-page): today ✕ vs with Ballpass ✓, three rows each, link to the /why story.
+   Rows mirror each other: athlete / coach / evidence. ✓ marks follow the colour rule (teal athlete, orange coach). *@
+<section class="bp-whyband" data-why-band aria-labelledby="bp-whyband-title">
+    <div class="bp-whyband-head">
+        <span class="bp-label">@W["Band_Label"]</span>
+        <h2 id="bp-whyband-title">@W["Band_Title"]</h2>
+        <a class="bp-whyband-link" href="/why">@W["Band_Link"]</a>
+    </div>
+    <div class="bp-whyband-col bp-whyband-today">
+        <h3>@W["Band_Today"]</h3>
+        <ul>
+            <li data-why-row="today"><span class="bp-whyband-mark" aria-hidden="true">✕</span>@W["Band_T1"]</li>
+            <li data-why-row="today"><span class="bp-whyband-mark" aria-hidden="true">✕</span>@W["Band_T2"]</li>
+            <li data-why-row="today"><span class="bp-whyband-mark" aria-hidden="true">✕</span>@W["Band_T3"]</li>
+        </ul>
+    </div>
+    <div class="bp-whyband-col bp-whyband-with">
+        <h3>@W["Band_With"]</h3>
+        <ul>
+            <li data-why-row="with" class="bp-whyband-athlete"><span class="bp-whyband-mark" aria-hidden="true">✓</span>@W["Band_W1"]</li>
+            <li data-why-row="with" class="bp-whyband-coach"><span class="bp-whyband-mark" aria-hidden="true">✓</span>@W["Band_W2"]</li>
+            <li data-why-row="with" class="bp-whyband-athlete"><span class="bp-whyband-mark" aria-hidden="true">✓</span>@W["Band_W3"]</li>
+        </ul>
+    </div>
+</section>

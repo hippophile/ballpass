@@ -1,0 +1,257 @@
+@page "/why"
+@using System.Globalization
+@using Ballpass.Web.Components.Flow
+@using Ballpass.Web.Components.Shared
+@using Ballpass.Web.Data
+@using Ballpass.Web.Features.Flow
+@using Ballpass.Web.Features.Loop
+@using Ballpass.Web.Features.Media
+@using Ballpass.Web.Features.Why
+@using Microsoft.Extensions.Options
+@inject BallpassDbContext Db
+@inject IOptions<DemoOptions> Demo
+@inject IStringLocalizer<SharedResource> S
+@inject IStringLocalizer<FlowResource> T
+@inject IStringLocalizer<WhyResource> W
+
+<PageTitle>@W["Title"]</PageTitle>
+
+@* The problem story (openspec why-page): hook → today's chaos → cost (sourced figures only) → the connection in 4 moves →
+   live counts → two doors. Teal = the athlete's move, orange = the coach's move. Static SSR; no demo captions (O1). *@
+<div class="bp-why">
+
+    @* 1 — hook *@
+    <section class="bp-why-hook" data-why="hook" aria-labelledby="bp-why-h1">
+        <StockPhoto Image="StockMedia.CoverPool[0]" Priority="true" Left="true" Class="bp-why-hook-photo">
+            <div class="bp-why-inner bp-why-hook-text">
+                <span class="bp-why-eyebrow">@W["Hook_Eyebrow"]</span>
+                <h1 id="bp-why-h1" class="bp-hero-title">@W["Hook_Line1"]<br /><span class="bp-why-hook-quiet">@W["Hook_Line2"]</span></h1>
+                <p class="bp-why-hook-sub">@W["Hook_Sub"]</p>
+                <a class="bp-why-scroll" href="/why#today">@W["Hook_Scroll"]</a>
+            </div>
+        </StockPhoto>
+    </section>
+
+    @* 2 — today *@
+    <section class="bp-why-section bp-why-today" id="today" data-why="today" aria-labelledby="bp-why-today-title">
+        <div class="bp-why-inner">
+            <header class="bp-why-head">
+                <span class="bp-label">@W["Today_Label"]</span>
+                <h2 id="bp-why-today-title">@W["Today_Title"]</h2>
+            </header>
+            <div class="bp-why-chaos">
+                <figure class="bp-why-side bp-why-side-athlete" data-side="athlete">
+                    <JerseyAvatar Id="7" Initials="?" Size="56" />
+                    <figcaption>
+                        <span class="bp-why-side-label">@W["Today_AthleteLabel"]</span>
+                        <blockquote>@W["Today_AthleteQuote"]</blockquote>
+                    </figcaption>
+                </figure>
+
+                <div class="bp-why-board" role="group" aria-label="@W["Today_Between"]">
+                    <svg class="bp-why-tangle" viewBox="0 0 640 460" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                        <path class="bp-why-tangle-athlete" d="M0 230 C 80 200, 110 330, 200 300 S 260 140, 180 120 S 230 60, 294 66" />
+                        <path class="bp-why-tangle-coach" d="M640 230 C 560 260, 530 360, 450 330 S 380 170, 460 130 S 400 50, 346 66" />
+                        <path class="bp-why-tangle-gap" d="M310 56 L 330 76 M330 56 L 310 76" />
+                    </svg>
+
+                    <div class="bp-why-frag bp-why-frag-forward" data-fragment="forward">
+                        <span class="bp-why-frag-tag"><span aria-hidden="true">↪ </span>@W["Frag_ForwardTag"]</span>
+                        <p class="bp-why-bubble">@W["Frag_ForwardText"]<span class="bp-why-ticks" aria-hidden="true">✓✓</span></p>
+                    </div>
+
+                    <div class="bp-why-frag bp-why-frag-call" data-fragment="call">
+                        <span class="bp-why-frag-tag">@W["Frag_CallTag"]</span>
+                        <div class="bp-why-call-who">
+                            <span class="bp-why-call-dot" aria-hidden="true"></span>
+                            <strong>@W["Frag_CallWho"]</strong>
+                        </div>
+                        <p>@W["Frag_CallText"]</p>
+                        <span class="bp-why-call-keys" aria-hidden="true"><i class="bp-why-call-no"></i><i class="bp-why-call-yes"></i></span>
+                    </div>
+
+                    <div class="bp-why-frag bp-why-frag-pdf" data-fragment="pdf">
+                        <div class="bp-why-pdf-head">
+                            <span class="bp-why-pdf-icon" aria-hidden="true">PDF</span>
+                            <span class="bp-why-pdf-name">@W["Frag_PdfFile"]</span>
+                        </div>
+                        <span class="bp-why-pdf-rows" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                        <p>@W["Frag_PdfText"]</p>
+                    </div>
+
+                    <div class="bp-why-frag bp-why-frag-video" data-fragment="video">
+                        <span class="bp-why-video-thumb" aria-hidden="true">
+                            <img src="@StockMedia.HighlightThumb2.Poster.Url" width="@StockMedia.HighlightThumb2.Poster.Width" height="@StockMedia.HighlightThumb2.Poster.Height" alt="" loading="lazy" decoding="async" />
+                            <span class="bp-why-play"></span>
+                        </span>
+                        <span class="bp-why-frag-tag">@W["Frag_VideoTag"]</span>
+                        <p>@W["Frag_VideoText"]</p>
+                    </div>
+
+                    <div class="bp-why-frag bp-why-frag-group" data-fragment="group">
+                        <span class="bp-why-frag-tag">@W["Frag_GroupName"]</span>
+                        <p>@W["Frag_GroupText"]</p>
+                        <span class="bp-why-frag-meta">@W["Frag_GroupNoReply"]</span>
+                    </div>
+                </div>
+
+                <figure class="bp-why-side bp-why-side-coach" data-side="coach">
+                    <JerseyAvatar Id="4" Initials="?" Coach="true" Size="56" />
+                    <figcaption>
+                        <span class="bp-why-side-label">@W["Today_CoachLabel"]</span>
+                        <blockquote>@W["Today_CoachQuote"]</blockquote>
+                    </figcaption>
+                </figure>
+            </div>
+        </div>
+    </section>
+
+    @* 3 — cost: a figure is shown only with its source link (docs/research/problem.md) *@
+    <section class="bp-why-section bp-why-cost" data-why="cost" aria-labelledby="bp-why-cost-title">
+        <div class="bp-why-inner">
+            <header class="bp-why-head">
+                <span class="bp-label">@W["Cost_Label"]</span>
+                <h2 id="bp-why-cost-title">@W["Cost_Title"]</h2>
+            </header>
+            <ol class="bp-why-costs">
+                <li>
+                    <h3>@W["Cost1_Title"]</h3>
+                    <p class="bp-why-fact"><strong class="bp-why-figure" data-source="@WhySources.StudentsMove">@W["Cost1_Figure"]</strong> @W["Cost1_Text"]</p>
+                    <p class="bp-why-src">@W["Cost_Source"] <a href="@WhySources.StudentsMove" rel="noopener" target="_blank">@W["Cost1_Source"]</a></p>
+                </li>
+                <li>
+                    <h3>@W["Cost2_Title"]</h3>
+                    <p class="bp-why-fact"><strong class="bp-why-figure" data-source="@WhySources.Agents">@W["Cost2_Figure"]</strong> @W["Cost2_Text"]</p>
+                    <p class="bp-why-src">@W["Cost_Source"] <a href="@WhySources.Agents" rel="noopener" target="_blank">@W["Cost2_Source"]</a></p>
+                </li>
+                <li>
+                    <h3>@W["Cost3_Title"]</h3>
+                    <p class="bp-why-fact"><strong class="bp-why-figure" data-source="@WhySources.WomenCoverage">@W["Cost3_Figure"]</strong> @W["Cost3_Text1"] <strong class="bp-why-inline-figure" data-source="@WhySources.WomenCoverage">@W["Cost3_Figure2"]</strong> @W["Cost3_Text2"]</p>
+                    <p class="bp-why-src">@W["Cost_Source"] <a href="@WhySources.WomenCoverage" rel="noopener" target="_blank">@W["Cost3_Source"]</a></p>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    @* 4 — with Ballpass: the stepper with a preview of the real screens, filled from the featured personas *@
+    <section class="bp-why-section bp-why-how" data-why="how" aria-labelledby="bp-why-how-title">
+        <div class="bp-why-inner">
+            <header class="bp-why-head">
+                <span class="bp-label">@W["How_Label"]</span>
+                <h2 id="bp-why-how-title">@W["How_Title"]</h2>
+            </header>
+            <ol class="bp-stepper bp-why-steps">
+                <li class="bp-step-athlete bp-step-done" data-step="athlete">
+                    <strong>@W["Step1_Title"]</strong>
+                    <span>@W["Step1_Text"]</span>
+                    <div class="bp-why-preview bp-why-pv-athlete" aria-hidden="true" inert>
+                        <div class="bp-why-pv-person">
+                            <JerseyAvatar Id="@(cast.Athlete?.Id ?? 0)" Initials="@AthleteInitials" Club="@cast.Athlete?.CurrentClub?.Name" Size="40" />
+                            <span><b>@AthleteName</b><small>@AthleteMeta</small></span>
+                        </div>
+                        <div class="bp-why-pv-toggle"><span>@W["Pv_Looking"]</span><i class="bp-why-switch"></i></div>
+                        <div class="bp-why-pv-row">
+                            <span class="bp-chip-athlete">@T["Chip_Looking"]</span>
+                            <SourceBadge Source="StatSource.CoachConfirmed" />
+                        </div>
+                    </div>
+                </li>
+                <li class="bp-step-coach bp-step-done" data-step="coach">
+                    <strong>@W["Step2_Title"]</strong>
+                    <span>@W["Step2_Text"]</span>
+                    <div class="bp-why-preview bp-why-pv-coach" aria-hidden="true" inert>
+                        <div class="bp-why-pv-person">
+                            <JerseyAvatar Id="@(cast.Coach?.Id ?? 0)" Initials="@CoachInitials" Club="@cast.Coach?.Club?.Name" Coach="true" Size="40" />
+                            <span><b>@CoachName</b><small>@cast.Coach?.Club?.Name</small></span>
+                        </div>
+                        <p class="bp-why-pv-note">@W["Pv_Note"]</p>
+                        <span class="bp-why-pv-btn bp-why-pv-btn-coach">@W["Pv_Send"]</span>
+                    </div>
+                </li>
+                <li class="bp-step-athlete bp-step-done" data-step="athlete">
+                    <strong>@W["Step3_Title"]</strong>
+                    <span>@W["Step3_Text"]</span>
+                    <div class="bp-why-preview bp-why-pv-inbox" aria-hidden="true" inert>
+                        <span class="bp-why-pv-kicker">@W["Pv_New"]</span>
+                        <div class="bp-why-pv-person">
+                            <JerseyAvatar Id="@(cast.Coach?.Id ?? 0)" Initials="@CoachInitials" Club="@cast.Coach?.Club?.Name" Coach="true" Size="32" />
+                            <span><b>@cast.Coach?.Club?.Name</b><small>@CoachName</small></span>
+                        </div>
+                        <div class="bp-why-pv-actions">
+                            <span class="bp-why-pv-btn bp-why-pv-btn-athlete">@W["Pv_Accept"]</span>
+                            <span class="bp-why-pv-btn bp-why-pv-btn-ghost">@W["Pv_Decline"]</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="bp-step-connected bp-step-done" data-step="connected">
+                    <strong>@W["Step4_Title"]</strong>
+                    <span>@W["Step4_Text"]</span>
+                    <div class="bp-why-preview bp-why-pv-connected" aria-hidden="true" inert>
+                        <div class="bp-why-pv-pair">
+                            <JerseyAvatar Id="@(cast.Athlete?.Id ?? 0)" Initials="@AthleteInitials" Club="@cast.Athlete?.CurrentClub?.Name" Size="44" />
+                            <i class="bp-why-pv-link"></i>
+                            <JerseyAvatar Id="@(cast.Coach?.Id ?? 0)" Initials="@CoachInitials" Club="@cast.Coach?.Club?.Name" Coach="true" Size="44" />
+                        </div>
+                        <span class="bp-why-pv-done">@W["Pv_Connected"]</span>
+                        <span class="bp-why-pv-btn bp-why-pv-btn-outline">@W["Pv_Email"]</span>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    @* 5 — proof: live database counts (same queries as Home) *@
+    <section class="bp-why-section bp-why-proof" data-why="proof" aria-labelledby="bp-why-proof-title">
+        <div class="bp-why-inner">
+            <div class="bp-why-proof-row">
+                <h2 id="bp-why-proof-title" class="bp-why-proof-title"><span class="bp-why-live" aria-hidden="true"></span>@W["Proof_Label"]</h2>
+                <div class="bp-why-count bp-why-count-athlete"><span class="bp-why-count-num" data-count="looking">@counts.Looking</span><span>@W["Proof_Looking"]</span></div>
+                <div class="bp-why-count bp-why-count-coach"><span class="bp-why-count-num" data-count="interests">@counts.Interests</span><span>@W["Proof_Interests"]</span></div>
+                <div class="bp-why-count bp-why-count-both"><span class="bp-why-count-num" data-count="connections">@counts.Connections</span><span>@W["Proof_Connections"]</span></div>
+            </div>
+        </div>
+    </section>
+
+    @* 6 — doors *@
+    <section class="bp-why-section bp-why-doors" data-why="doors" aria-labelledby="bp-why-doors-title">
+        <div class="bp-why-inner">
+            <h2 id="bp-why-doors-title" class="bp-why-doors-title">@W["Doors_Title"]</h2>
+            <div class="bp-why-door-grid">
+                <PersonaDoor Image="StockMedia.DoorCoach" PersonaType="coach" PersonaId="CoachId" ReturnUrl="@FeaturedPersonas.CoachReturnUrl"
+                             Label="@W["Door_CoachLabel"]" Title="@W["Door_CoachTitle"]" Text="@W["Door_CoachText"]" Cta="@W["Door_CoachCta"]"
+                             data-why-door="coach" />
+                <PersonaDoor Image="StockMedia.DoorAthlete" PersonaType="athlete" PersonaId="AthleteId" ReturnUrl="@FeaturedPersonas.AthleteReturnUrl"
+                             Label="@W["Door_AthleteLabel"]" Title="@W["Door_AthleteTitle"]" Text="@W["Door_AthleteText"]" Cta="@W["Door_AthleteCta"]"
+                             data-why-door="athlete" />
+            </div>
+        </div>
+    </section>
+</div>
+
+@code {
+    private FeaturedPersonas featured = new(null, null);
+    private StoryCast cast = new(null, null);
+    private LiveCounts counts = new(0, 0, 0);
+
+    private int? CoachId => Demo.Value.Enabled ? featured.Coach?.Id : null;
+    private int? AthleteId => Demo.Value.Enabled ? featured.Athlete?.Id : null;
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+
+    protected override async Task OnInitializedAsync()
+    {
+        featured = await FeaturedPersonas.LoadAsync(Db, Demo.Value.Featured);
+        cast = await StoryCast.LoadAsync(Db, featured);
+        counts = await LiveCounts.LoadAsync(Db);
+    }
+
+    private string AthleteName => cast.Athlete is { } a ? (IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}") : "";
+    private string CoachName => cast.Coach is { } c ? (IsGreek ? $"{c.FirstName} {c.LastName}" : $"{c.FirstNameLatin} {c.LastNameLatin}") : "";
+    private string AthleteInitials => Initials(AthleteName);
+    private string CoachInitials => Initials(CoachName);
+
+    private string AthleteMeta => cast.Athlete is { } a ? $"{S[$"Position_{a.Position}"]} · {a.HeightCm} {S["Profile_Cm"]} · {a.City}" : "";
+
+    private static string Initials(string name) =>
+        string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => w[0])).ToUpper(CultureInfo.CurrentCulture);
+}

@@ -1,0 +1,11 @@
+@inject NavigationManager Navigation
+@inject IStringLocalizer<WhyResource> W
+
+@* "Γιατί Ballpass" link: signed-out top nav (bp-navlink) and the footer (Footer="true"). Never in the signed-in role navs. *@
+<a href="/why" class="@(Footer ? "bp-why-footlink" : "bp-navlink")" aria-current="@Current">@W["Nav_Why"]</a>
+
+@code {
+    [Parameter] public bool Footer { get; set; }
+
+    private string? Current => "/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0] == "/why" ? "page" : null;
+}

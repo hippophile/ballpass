@@ -1,0 +1,1127 @@
+/* /why problem story + home problem band + the why link (openspec why-page). Tokens only (bp-tokens.css).
+   Teal = the athlete's move, orange = the coach's move. Motion only under prefers-reduced-motion: no-preference. */
+
+/* The story is full-bleed like home: drop the shell padding (beats MainLayout's scoped .content rule by one element). */
+article.content:has(> .bp-why) {
+    max-width: none;
+    padding: 0;
+}
+
+.bp-why-inner {
+    max-width: var(--bp-w-page);
+    margin-inline: auto;
+    padding-inline: 32px;
+}
+
+.bp-why-section {
+    padding-block: 64px;
+}
+
+.bp-why-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-2);
+    margin-bottom: 32px;
+}
+
+    .bp-why-head h2 {
+        margin: 0;
+        font-size: clamp(1.75rem, 2vw + 1rem, 2.5rem);
+        line-height: 1.1;
+        text-wrap: balance;
+    }
+
+/* ---- 1 hook ---- */
+.bp-why-hook .bp-why-hook-photo {
+    height: min(640px, 82vh);
+    min-height: 460px;
+}
+
+    .bp-why-hook .bp-why-hook-photo > img {
+        object-position: center 40%;
+    }
+
+    .bp-why-hook .bp-why-hook-photo > .bp-photo-body {
+        padding: 0 0 64px;
+    }
+
+.bp-why-hook-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--bp-sp-4);
+}
+
+    .bp-why-hook-text h1 {
+        margin: 0;
+        max-width: 15em;
+        font-size: clamp(2.25rem, 3.6vw + 1rem, 4.25rem);
+        font-weight: 800;
+        line-height: 1.02;
+        text-wrap: balance;
+    }
+
+.bp-why-hook-quiet {
+    color: var(--bp-muted);
+}
+
+.bp-why-eyebrow {
+    font-size: var(--bp-fs-xs);
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--bp-text);
+    padding: .3em .8em;
+    border: 1px solid var(--bp-border-ui);
+    border-radius: var(--bp-r-pill);
+    background: color-mix(in srgb, var(--bp-bg) 55%, transparent);
+}
+
+.bp-why-hook-sub {
+    margin: 0;
+    max-width: 36rem;
+    font-size: 1.125rem;
+    line-height: 1.45;
+    color: var(--bp-text);
+}
+
+.bp-why-scroll {
+    color: var(--bp-text);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 1px solid var(--bp-border-ui);
+    padding-bottom: 2px;
+}
+
+    .bp-why-scroll:hover {
+        color: var(--bp-athlete-hi);
+        border-color: var(--bp-athlete-hi);
+    }
+
+/* ---- 2 today: athlete | scattered fragments | coach ---- */
+.bp-why-today {
+    background: radial-gradient(800px 360px at 50% 55%, color-mix(in srgb, var(--bp-text) 3.5%, transparent), transparent 70%);
+}
+
+.bp-why-chaos {
+    display: grid;
+    grid-template-columns: minmax(200px, 250px) 1fr minmax(200px, 250px);
+    align-items: center;
+    gap: 24px;
+}
+
+.bp-why-side {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-3);
+    padding: var(--bp-sp-5);
+    border-radius: var(--bp-r-md);
+    background: var(--bp-s1);
+    border: 1px solid var(--bp-border);
+}
+
+.bp-why-side-athlete {
+    background: linear-gradient(160deg, color-mix(in srgb, var(--bp-athlete) 14%, var(--bp-s1)) 0%, var(--bp-s1) 70%);
+    border-color: color-mix(in srgb, var(--bp-athlete) 40%, var(--bp-border));
+}
+
+.bp-why-side-coach {
+    background: linear-gradient(200deg, color-mix(in srgb, var(--bp-accent) 14%, var(--bp-s1)) 0%, var(--bp-s1) 70%);
+    border-color: color-mix(in srgb, var(--bp-accent) 40%, var(--bp-border));
+    text-align: right;
+    align-items: flex-end;
+}
+
+.bp-why-side-label {
+    font-size: var(--bp-fs-xs);
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.bp-why-side-athlete .bp-why-side-label {
+    color: var(--bp-athlete);
+}
+
+.bp-why-side-coach .bp-why-side-label {
+    color: var(--bp-accent-hi);
+}
+
+.bp-why-side blockquote {
+    margin: var(--bp-sp-2) 0 0;
+    font-family: var(--bp-font-display);
+    font-size: 1.625rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--bp-text);
+}
+
+/* The board: fragments thrown on a table, two dashed threads that never meet. */
+.bp-why-board {
+    position: relative;
+    height: 460px;
+    border-radius: var(--bp-r-md);
+    background:
+        radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--bp-text) 7%, transparent) 1px, transparent 0) 0 0 / 22px 22px,
+        var(--bp-bg);
+    border: 1px solid var(--bp-border);
+    overflow: hidden;
+}
+
+.bp-why-tangle {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke-width: 2;
+    stroke-dasharray: 6 7;
+    stroke-linecap: round;
+}
+
+.bp-why-tangle-athlete {
+    stroke: var(--bp-athlete);
+    opacity: .7;
+}
+
+.bp-why-tangle-coach {
+    stroke: var(--bp-accent);
+    opacity: .7;
+}
+
+.bp-why-tangle-gap {
+    stroke: var(--bp-danger);
+    stroke-dasharray: none;
+    stroke-width: 3;
+}
+
+.bp-why-frag {
+    position: absolute;
+    width: 228px;
+    padding: var(--bp-sp-3) var(--bp-sp-4);
+    border-radius: var(--bp-r-md);
+    background: var(--bp-s2);
+    border: 1px solid var(--bp-border);
+    box-shadow: var(--bp-shadow);
+    font-size: var(--bp-fs-sm);
+    line-height: 1.35;
+    color: var(--bp-text);
+    rotate: var(--bp-why-tilt, 0deg);
+}
+
+    .bp-why-frag p {
+        margin: 0;
+    }
+
+.bp-why-frag-tag {
+    display: block;
+    margin-bottom: 6px;
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-muted);
+}
+
+.bp-why-frag-meta {
+    display: block;
+    margin-top: 6px;
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-faint);
+}
+
+.bp-why-frag-forward {
+    top: 22px;
+    left: 4%;
+    --bp-why-tilt: -4deg;
+}
+
+.bp-why-bubble {
+    padding: 8px 10px;
+    border-radius: 10px 10px 10px 2px;
+    background: var(--bp-s3);
+}
+
+.bp-why-ticks {
+    margin-inline-start: 6px;
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-src-coach);
+    letter-spacing: -.2em;
+}
+
+.bp-why-frag-call {
+    top: 30px;
+    right: 5%;
+    width: 210px;
+    --bp-why-tilt: 3.5deg;
+    background: var(--bp-s3);
+}
+
+.bp-why-call-who {
+    display: flex;
+    align-items: center;
+    gap: var(--bp-sp-2);
+    margin-bottom: 4px;
+}
+
+.bp-why-call-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bp-s1);
+    border: 1px solid var(--bp-border-ui);
+}
+
+.bp-why-call-keys {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--bp-sp-3);
+    padding-inline: var(--bp-sp-5);
+}
+
+    .bp-why-call-keys i {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+    }
+
+.bp-why-call-no {
+    background: var(--bp-danger);
+}
+
+.bp-why-call-yes {
+    background: var(--bp-success);
+}
+
+/* The league PDF: a sheet of paper, dark ink on light. */
+.bp-why-frag-pdf {
+    top: 150px;
+    left: 34%;
+    width: 220px;
+    --bp-why-tilt: -1.5deg;
+    background: var(--bp-text);
+    color: var(--bp-bg);
+    border-color: var(--bp-text);
+    z-index: 1;
+}
+
+.bp-why-pdf-head {
+    display: flex;
+    align-items: center;
+    gap: var(--bp-sp-2);
+    margin-bottom: var(--bp-sp-2);
+}
+
+.bp-why-pdf-icon {
+    flex: none;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: var(--bp-danger);
+    color: var(--bp-bg);
+    font-size: .625rem;
+    font-weight: 800;
+}
+
+.bp-why-pdf-name {
+    font-size: var(--bp-fs-xs);
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bp-why-pdf-rows {
+    display: grid;
+    gap: 5px;
+    margin-bottom: var(--bp-sp-2);
+}
+
+    .bp-why-pdf-rows i {
+        height: 6px;
+        border-radius: 2px;
+        background: repeating-linear-gradient(90deg, var(--bp-muted) 0 18%, transparent 18% 22%);
+        opacity: .55;
+    }
+
+        .bp-why-pdf-rows i:first-child {
+            opacity: .9;
+        }
+
+.bp-why-frag-pdf p {
+    font-weight: 700;
+}
+
+.bp-why-frag-video {
+    bottom: 26px;
+    left: 6%;
+    width: 210px;
+    --bp-why-tilt: 2.5deg;
+    padding: 0 0 var(--bp-sp-3);
+    overflow: hidden;
+}
+
+    .bp-why-frag-video .bp-why-frag-tag, .bp-why-frag-video p {
+        padding-inline: var(--bp-sp-4);
+    }
+
+.bp-why-video-thumb {
+    position: relative;
+    display: block;
+    height: 84px;
+    margin-bottom: var(--bp-sp-2);
+    background: var(--bp-bg);
+}
+
+    .bp-why-video-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: .75;
+    }
+
+.bp-why-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 36px;
+    height: 26px;
+    translate: -50% -50%;
+    border-radius: 7px;
+    background: var(--bp-danger);
+}
+
+    .bp-why-play::after {
+        content: "";
+        position: absolute;
+        left: 14px;
+        top: 7px;
+        border-left: 10px solid var(--bp-bg);
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+    }
+
+.bp-why-frag-group {
+    bottom: 34px;
+    right: 4%;
+    width: 236px;
+    --bp-why-tilt: -3deg;
+    background: var(--bp-s1);
+}
+
+/* ---- 3 cost ---- */
+.bp-why-cost {
+    background: var(--bp-s1);
+    border-block: 1px solid var(--bp-border);
+}
+
+.bp-why-costs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+}
+
+    .bp-why-costs li {
+        display: flex;
+        flex-direction: column;
+        gap: var(--bp-sp-3);
+        padding-top: var(--bp-sp-5);
+        border-top: 1px solid var(--bp-border-ui);
+    }
+
+    .bp-why-costs h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        line-height: 1.25;
+    }
+
+.bp-why-fact {
+    margin: 0;
+    color: var(--bp-muted);
+    font-size: var(--bp-fs-md);
+    line-height: 1.45;
+}
+
+.bp-why-figure {
+    display: block;
+    margin-bottom: var(--bp-sp-1);
+    font-family: var(--bp-font-display);
+    font-size: clamp(3.5rem, 4vw + 1rem, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--bp-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.bp-why-inline-figure {
+    color: var(--bp-text);
+}
+
+.bp-why-src {
+    margin: auto 0 0;
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-faint);
+}
+
+    .bp-why-src a {
+        color: var(--bp-muted);
+    }
+
+        .bp-why-src a:hover {
+            color: var(--bp-text);
+        }
+
+/* ---- 4 with Ballpass: horizontal stepper, a preview under each step ---- */
+.bp-why-steps {
+    gap: 20px;
+    align-items: stretch;
+}
+
+    .bp-why-steps > li > .bp-why-preview {
+        flex: 1 1 auto;
+    }
+
+    .bp-why-steps > li {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding-top: 32px;
+        font-size: var(--bp-fs-md);
+        color: var(--bp-text);
+    }
+
+        .bp-why-steps > li::before {
+            width: 20px;
+            height: 20px;
+        }
+
+        .bp-why-steps > li:not(:last-child)::after {
+            top: 9px;
+            left: 24px;
+            right: -16px;
+        }
+
+        .bp-why-steps > li.bp-step-coach.bp-step-done:not(:last-child)::after {
+            background: linear-gradient(90deg, var(--bp-accent), var(--bp-athlete));
+        }
+
+        .bp-why-steps > li.bp-step-athlete.bp-step-done:not(:last-child)::after {
+            background: linear-gradient(90deg, var(--bp-athlete), var(--bp-accent));
+        }
+
+        .bp-why-steps > li.bp-step-connected::before {
+            background: conic-gradient(var(--bp-athlete) 0 50%, var(--bp-accent) 50% 100%);
+        }
+
+        .bp-why-steps > li > strong {
+            font-size: 1.125rem;
+            line-height: 1.25;
+        }
+
+        .bp-why-steps > li > span {
+            color: var(--bp-muted);
+            font-size: var(--bp-fs-sm);
+            line-height: 1.4;
+            min-height: 2.8em;
+        }
+
+.bp-why-preview {
+    margin-top: var(--bp-sp-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-3);
+    padding: var(--bp-sp-4);
+    min-height: 176px;
+    border-radius: var(--bp-r-md);
+    background: var(--bp-grad-card);
+    border: 1px solid var(--bp-border);
+    box-shadow: var(--bp-shadow);
+    font-size: var(--bp-fs-sm);
+    user-select: none;
+}
+
+.bp-why-pv-athlete, .bp-why-pv-inbox {
+    border-color: color-mix(in srgb, var(--bp-athlete) 35%, var(--bp-border));
+}
+
+.bp-why-pv-coach {
+    border-color: color-mix(in srgb, var(--bp-accent) 35%, var(--bp-border));
+}
+
+.bp-why-pv-connected {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: radial-gradient(240px 120px at 50% 30%, color-mix(in srgb, var(--bp-athlete) 14%, transparent), transparent 70%), radial-gradient(240px 120px at 50% 80%, color-mix(in srgb, var(--bp-accent) 12%, transparent), transparent 70%), var(--bp-grad-card);
+}
+
+.bp-why-pv-person {
+    display: flex;
+    align-items: center;
+    gap: var(--bp-sp-3);
+    min-width: 0;
+}
+
+    .bp-why-pv-person > span {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .bp-why-pv-person b {
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .bp-why-pv-person small {
+        color: var(--bp-muted);
+        font-size: var(--bp-fs-xs);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+.bp-why-pv-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: var(--bp-r-sm);
+    background: var(--bp-bg);
+    border: 1px solid var(--bp-border);
+    font-weight: 600;
+}
+
+.bp-why-switch {
+    position: relative;
+    width: 34px;
+    height: 20px;
+    border-radius: var(--bp-r-pill);
+    background: var(--bp-athlete);
+}
+
+    .bp-why-switch::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--bp-athlete-contrast);
+    }
+
+.bp-why-pv-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bp-sp-2);
+    align-items: center;
+}
+
+.bp-why-pv-note {
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 10px 10px 10px 2px;
+    background: var(--bp-s3);
+    color: var(--bp-text);
+    line-height: 1.35;
+}
+
+.bp-why-pv-kicker {
+    font-size: var(--bp-fs-xs);
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--bp-athlete);
+}
+
+.bp-why-pv-actions {
+    display: flex;
+    gap: var(--bp-sp-2);
+    margin-top: auto;
+}
+
+/* Mock buttons: they look like the app's, but they are spans inside an inert preview. Dark ink on the gradients. */
+.bp-why-pv-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 var(--bp-sp-4);
+    border-radius: var(--bp-r-sm);
+    font-weight: 700;
+    font-size: var(--bp-fs-sm);
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+.bp-why-pv-actions .bp-why-pv-btn {
+    margin-top: 0;
+}
+
+.bp-why-pv-btn-coach {
+    background: var(--bp-grad-cta);
+    color: var(--bp-accent-contrast);
+}
+
+.bp-why-pv-btn-athlete {
+    background: var(--bp-grad-athlete);
+    color: var(--bp-athlete-contrast);
+}
+
+.bp-why-pv-btn-ghost {
+    color: var(--bp-muted);
+    border: 1px solid var(--bp-border);
+}
+
+.bp-why-pv-btn-outline {
+    align-self: center;
+    margin-top: 0;
+    color: var(--bp-text);
+    border: 1px solid var(--bp-border-ui);
+}
+
+.bp-why-pv-pair {
+    display: flex;
+    align-items: center;
+    gap: var(--bp-sp-2);
+}
+
+.bp-why-pv-link {
+    width: 48px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--bp-athlete), var(--bp-accent));
+}
+
+.bp-why-pv-done {
+    font-weight: 800;
+    font-size: var(--bp-fs-md);
+    color: var(--bp-success);
+}
+
+/* ---- 5 proof: one live strip ---- */
+.bp-why-proof {
+    padding-block: 0;
+}
+
+.bp-why-proof-row {
+    display: grid;
+    grid-template-columns: auto repeat(3, 1fr);
+    align-items: center;
+    gap: 0;
+    padding: 28px 24px;
+    border-radius: var(--bp-r-md);
+    background: var(--bp-grad-hero), var(--bp-s1);
+    border: 1px solid var(--bp-border);
+}
+
+.bp-why-proof-title {
+    display: flex;
+    align-items: center;
+    gap: var(--bp-sp-2);
+    margin: 0;
+    padding-inline-end: var(--bp-sp-6);
+    font-size: var(--bp-fs-lg);
+}
+
+.bp-why-live {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bp-success);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--bp-success) 18%, transparent);
+}
+
+.bp-why-count {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: var(--bp-sp-3);
+    padding: var(--bp-sp-2) var(--bp-sp-4);
+    border-inline-start: 1px solid var(--bp-border);
+    color: var(--bp-muted);
+}
+
+.bp-why-count-num {
+    font-family: var(--bp-font-display);
+    font-size: var(--bp-fs-stat);
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.bp-why-count-athlete .bp-why-count-num {
+    color: var(--bp-athlete);
+}
+
+.bp-why-count-coach .bp-why-count-num {
+    color: var(--bp-accent-hi);
+}
+
+.bp-why-count-both .bp-why-count-num {
+    color: var(--bp-text);
+}
+
+/* ---- 6 doors ---- */
+.bp-why-doors-title {
+    margin: 0 0 24px;
+    font-size: clamp(1.75rem, 2vw + 1rem, 2.5rem);
+    line-height: 1.1;
+}
+
+.bp-why-door-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+    .bp-why-door-grid .bp-door {
+        height: 320px;
+        border-radius: var(--bp-r-md);
+        border: 1px solid var(--bp-border);
+        box-shadow: var(--bp-shadow);
+        transition: box-shadow 150ms ease-out;
+    }
+
+    .bp-why-door-grid .bp-door-coach:hover, .bp-why-door-grid .bp-door-coach:focus-within {
+        box-shadow: var(--bp-shadow), var(--bp-glow-accent);
+    }
+
+    .bp-why-door-grid .bp-door-athlete:hover, .bp-why-door-grid .bp-door-athlete:focus-within {
+        box-shadow: var(--bp-shadow), var(--bp-glow-athlete);
+    }
+
+/* ---- home band: today ✕ vs with Ballpass ✓ ---- */
+.bp-whyband {
+    display: grid;
+    grid-template-columns: 4fr 4fr 4fr;
+    gap: 0;
+    border-radius: var(--bp-r-md);
+    border: 1px solid var(--bp-border);
+    background: var(--bp-s1);
+    overflow: hidden;
+}
+
+.bp-whyband-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--bp-sp-2);
+    padding: var(--bp-sp-5);
+}
+
+    .bp-whyband-head h2 {
+        margin: 0;
+        font-size: 1.625rem;
+        line-height: 1.15;
+        text-wrap: balance;
+    }
+
+.bp-whyband-link {
+    margin-top: auto;
+    padding-top: var(--bp-sp-3);
+    font-weight: 700;
+    color: var(--bp-text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--bp-border-ui);
+}
+
+    .bp-whyband-link:hover {
+        color: var(--bp-accent-hi);
+        border-color: var(--bp-accent-hi);
+    }
+
+.bp-whyband-col {
+    padding: var(--bp-sp-5);
+    border-inline-start: 1px solid var(--bp-border);
+}
+
+    .bp-whyband-col h3 {
+        margin: 0 0 var(--bp-sp-3);
+        font-size: var(--bp-fs-xs);
+        font-family: var(--bp-font-text);
+        font-weight: 700;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: var(--bp-muted);
+    }
+
+    .bp-whyband-col ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--bp-sp-3);
+    }
+
+    .bp-whyband-col li {
+        display: flex;
+        gap: var(--bp-sp-3);
+        align-items: baseline;
+        line-height: 1.4;
+    }
+
+.bp-whyband-today li {
+    color: var(--bp-muted);
+}
+
+.bp-whyband-with {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--bp-athlete) 7%, transparent), transparent 55%), linear-gradient(315deg, color-mix(in srgb, var(--bp-accent) 7%, transparent), transparent 55%);
+}
+
+    .bp-whyband-with h3 {
+        color: var(--bp-text);
+    }
+
+.bp-whyband-mark {
+    flex: none;
+    width: 1.25em;
+    font-weight: 800;
+    text-align: center;
+}
+
+.bp-whyband-today .bp-whyband-mark {
+    color: var(--bp-danger);
+}
+
+.bp-whyband-athlete .bp-whyband-mark {
+    color: var(--bp-athlete);
+}
+
+.bp-whyband-coach .bp-whyband-mark {
+    color: var(--bp-accent-hi);
+}
+
+/* ---- footer link ---- */
+.bp-why-footlink {
+    color: var(--bp-muted);
+}
+
+    .bp-why-footlink:hover {
+        color: var(--bp-text);
+    }
+
+/* ---- motion: fragments settle in (only when motion is welcome) ---- */
+@media (prefers-reduced-motion: no-preference) {
+    .bp-why-frag {
+        animation: bp-why-drop 520ms cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+        .bp-why-frag:nth-of-type(2) { animation-delay: 60ms; }
+        .bp-why-frag:nth-of-type(3) { animation-delay: 120ms; }
+        .bp-why-frag:nth-of-type(4) { animation-delay: 180ms; }
+        .bp-why-frag:nth-of-type(5) { animation-delay: 240ms; }
+
+    .bp-why-live {
+        animation: bp-why-pulse 2.4s ease-in-out infinite;
+    }
+}
+
+@keyframes bp-why-drop {
+    from {
+        opacity: 0;
+        translate: 0 -12px;
+    }
+}
+
+@keyframes bp-why-pulse {
+    50% {
+        box-shadow: 0 0 0 8px transparent;
+    }
+}
+
+/* ---- tablets: board under the two sides ---- */
+@media (max-width: 1100px) {
+    .bp-why-chaos {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .bp-why-board {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    .bp-why-steps {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        row-gap: 32px;
+    }
+
+        .bp-why-steps > li:nth-child(2n)::after {
+            display: none;
+        }
+}
+
+/* ---- phones ---- */
+@media (max-width: 767px) {
+    .bp-why-inner {
+        padding-inline: 16px;
+    }
+
+    .bp-why-section {
+        padding-block: 40px;
+    }
+
+    .bp-why-head {
+        margin-bottom: 20px;
+    }
+
+    .bp-why-hook .bp-why-hook-photo {
+        height: 560px;
+        min-height: 0;
+    }
+
+        .bp-why-hook .bp-why-hook-photo > .bp-photo-body {
+            padding-bottom: 36px;
+        }
+
+    .bp-why-hook-sub {
+        font-size: var(--bp-fs-md);
+    }
+
+    .bp-why-chaos {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .bp-why-side-coach {
+        grid-row: 3;
+    }
+
+    .bp-why-side blockquote {
+        font-size: 1.375rem;
+    }
+
+    /* The board becomes a loose pile: fragments in flow, alternating tilt and overlap. */
+    .bp-why-board {
+        grid-row: 2;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        padding: 20px 12px;
+        gap: 0;
+    }
+
+    .bp-why-tangle {
+        display: none;
+    }
+
+    .bp-why-frag {
+        position: relative;
+        inset: auto;
+        width: 82%;
+        margin-top: -6px;
+    }
+
+        .bp-why-frag:nth-of-type(odd) {
+            align-self: flex-start;
+        }
+
+        .bp-why-frag:nth-of-type(even) {
+            align-self: flex-end;
+        }
+
+    .bp-why-costs {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .bp-why-steps {
+        grid-template-columns: 1fr;
+        row-gap: 28px;
+    }
+
+        /* Vertical thread on phones: dot on the left, connector down to the next step. */
+        .bp-why-steps > li {
+            padding: 0 0 0 34px;
+        }
+
+            .bp-why-steps > li::before {
+                top: 2px;
+            }
+
+            .bp-why-steps > li:not(:last-child)::after {
+                display: block;
+                top: 28px;
+                bottom: -24px;
+                left: 9px;
+                right: auto;
+                width: 2px;
+                height: auto;
+            }
+
+            .bp-why-steps > li.bp-step-coach.bp-step-done:not(:last-child)::after {
+                background: linear-gradient(180deg, var(--bp-accent), var(--bp-athlete));
+            }
+
+            .bp-why-steps > li.bp-step-athlete.bp-step-done:not(:last-child)::after {
+                background: linear-gradient(180deg, var(--bp-athlete), var(--bp-accent));
+            }
+
+        .bp-why-steps > li > span {
+            min-height: 0;
+        }
+
+    .bp-why-preview {
+        min-height: 0;
+    }
+
+    .bp-why-proof-row {
+        grid-template-columns: repeat(3, 1fr);
+        padding: 16px 0;
+    }
+
+    .bp-why-proof-title {
+        grid-column: 1 / -1;
+        padding: 0 16px 12px;
+        font-size: var(--bp-fs-md);
+    }
+
+    .bp-why-count {
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        text-align: center;
+        font-size: var(--bp-fs-xs);
+    }
+
+        .bp-why-count:nth-child(2) {
+            border-inline-start: 0;
+        }
+
+    .bp-why-count-num {
+        font-size: 2rem;
+    }
+
+    .bp-why-door-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+        .bp-why-door-grid .bp-door {
+            height: 260px;
+        }
+
+    .bp-whyband {
+        grid-template-columns: 1fr;
+    }
+
+    .bp-whyband-head, .bp-whyband-col {
+        padding: var(--bp-sp-4);
+    }
+
+    .bp-whyband-col {
+        border-inline-start: 0;
+        border-top: 1px solid var(--bp-border);
+    }
+
+    .bp-whyband-link {
+        margin-top: var(--bp-sp-2);
+        padding-top: 0;
+    }
+}
