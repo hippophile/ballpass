@@ -23,13 +23,13 @@ The system SHALL generate the demo data set from a fixed seed so that every gene
 
 ### Requirement: Demo data is clearly fictional and adult-only
 
-The system MUST flag every generated club, coach and athlete as demo data, MUST suffix every club name with "(demo)", and MUST NOT generate any athlete younger than 18 on 2026-01-01.
+The system MUST flag every generated club, coach and athlete as demo data (`IsDemo`), MUST NOT add a "(demo)" suffix or any other demo tag to visible names (SPEC §8 O1), and MUST NOT generate any athlete younger than 18 on 2026-01-01.
 
 #### Scenario: Flags and labels
 
 - **WHEN** the generator runs
 - **THEN** every club, coach and athlete has IsDemo = true
-- **AND** every club name ends with " (demo)"
+- **AND** no club name contains "(demo)"
 - **AND** no athlete has a video URL
 
 #### Scenario: Adults only
@@ -98,3 +98,15 @@ Kudos, Follow, Block and Report SHALL carry `IsDemo` (true for seeded and for us
 #### Scenario: Clock
 - **WHEN** the seeder runs with a fixed `TimeProvider`
 - **THEN** no seeded timestamp is later than that time
+
+### Requirement: Plausible per-minute stat lines
+
+Generated stat lines SHALL be plausible for the minutes played: per 40 minutes, points ≤ 32, rebounds ≤ 20, assists ≤ 12, steals ≤ 5 and blocks ≤ 4 (our estimate, not a league rule). A line over any cap SHALL be scaled down by one factor for all five counting stats, applied after all random draws so seed 42 stays deterministic and lines within the caps are unchanged.
+
+#### Scenario: Caps
+- **WHEN** the generator runs with seed 42
+- **THEN** no stat line exceeds any per-40 cap
+
+#### Scenario: Unchanged lines
+- **WHEN** a line is within every cap (for example 30+ minutes)
+- **THEN** its per-game numbers are the same as before the cap was introduced

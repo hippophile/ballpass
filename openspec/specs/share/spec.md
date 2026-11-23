@@ -7,12 +7,13 @@ TBD - created by archiving change wow-share. Update Purpose after archive.
 
 ### Requirement: Open Graph share card
 
-The system SHALL serve `GET /p/{slug}/og.png` anonymously as a 1200x630 PNG under 300 KB for every demo athlete, with solid top and bottom watermark bands (at least 5% of the height each) reading "DEMO · ΦΑΝΤΑΣΤΙΚΟ ΠΡΟΣΩΠΟ · FICTIONAL ATHLETE" and a subtle tiled diagonal "DEMO".
+The system SHALL serve `GET /p/{slug}/og.png` anonymously as a 1200x630 PNG under 300 KB for every demo athlete, with solid top and bottom bands (at least 5% of the height each) reading "ΦΑΝΤΑΣΤΙΚΟ ΠΡΟΣΩΠΟ · FICTIONAL PERSON". The card SHALL NOT contain the word "DEMO" (no tiled watermark, no "(demo)" after the club name), because it travels without the site footer (SPEC §8 O1).
 
 #### Scenario: PNG is exact and watermarked
 - **WHEN** a client with no cookie requests `/p/{slug}/og.png`
 - **THEN** the response is `image/png`, exactly 1200x630 and under 300 KB
-- **AND** the top and bottom bands are the band colour and the renderer was given the watermark text
+- **AND** the top and bottom bands are the band colour and the renderer was given "ΦΑΝΤΑΣΤΙΚΟ ΠΡΟΣΩΠΟ · FICTIONAL PERSON"
+- **AND** the card model's club line is the club name without "(demo)"
 
 #### Scenario: Cache and conditional request
 - **WHEN** the same card is requested twice
@@ -58,11 +59,11 @@ The share card's "Ψάχνει ομάδα" text SHALL follow the athlete's curre
 
 ### Requirement: Wrapped note names the cohort
 
-The wrapped cohort note SHALL mention the position group and the minutes floor.
+The wrapped cohort note SHALL mention the position group and the minutes floor, without "demo"/"επίδειξης"/"φανταστικά" wording.
 
 #### Scenario: Note
 - **WHEN** a forward's Season Wrapped shows the cohort slide
-- **THEN** the note reads "...στην ίδια θέση (φόργουορντ), με τουλάχιστον 15 λεπτά ανά αγώνα..."
+- **THEN** the note reads "...στην ίδια θέση (φόργουορντ), με τουλάχιστον 15 λεπτά ανά αγώνα" and contains no "επίδειξης"
 
 ### Requirement: Full story boundary
 

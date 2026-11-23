@@ -7,7 +7,7 @@ TBD - created by archiving change wow-evidence. Update Purpose after archive.
 
 ### Requirement: Percentile bars against a labelled demo cohort
 
-The system SHALL show, on an athlete profile with stats, percentile bars for points, rebounds, assists, steals (per 40 minutes) and FG% against a demo cohort of the same gender and position group, using each peer's latest season. Percentile SHALL be mid-rank, rounded and clamped to 1-99. Every heading of percentile content SHALL contain "δείγμα επίδειξης" and the cohort label SHALL read "δείγμα επίδειξης: N σέντερ (φανταστικά)" (position group name per athlete).
+The system SHALL show, on an athlete profile with stats, percentile bars for points, rebounds, assists, steals (per 40 minutes) and FG% against a comparison group of the same gender and position group, using each peer's latest season. Percentile SHALL be mid-rank, rounded and clamped to 1-99. The cohort label SHALL read "ομάδα σύγκρισης: N σέντερ" (position group name per athlete); no heading or label SHALL say "δείγμα επίδειξης", "demo" or "φανταστικά" (SPEC §8 O1).
 
 #### Scenario: Bar geometry
 
@@ -24,6 +24,11 @@ The system SHALL show, on an athlete profile with stats, percentile bars for poi
 
 - **WHEN** the profile is requested with `?confirmed=1`
 - **THEN** only peers whose latest stat line is coach-confirmed are in the cohort and the cohort size changes
+
+#### Scenario: Label wording
+
+- **WHEN** a center's profile is requested in Greek
+- **THEN** the cohort label matches "ομάδα σύγκρισης: N σέντερ" and no percentile heading contains "δείγμα" or "επίδειξης"
 
 ### Requirement: Season progression with trend
 
@@ -83,3 +88,15 @@ All numbers in SVG attributes SHALL use the invariant culture. `--bp-chart-a..e`
 #### Scenario: Parity with the profile
 - **WHEN** the batch and the profile are computed for every female athlete and metric
 - **THEN** the values are equal, and an athlete without a profile percentile is absent from the batch
+
+### Requirement: Dense evidence on the profile
+
+Percentile rows SHALL sit in a 2-column grid of one-line rows (one column under 640 px). When no metric has a percentile and all share one reason, the reason SHALL be said once above the rows. The season line (trend) SHALL only render with 2 or more seasons.
+
+#### Scenario: Single season
+- **WHEN** an athlete has one stat season
+- **THEN** the evidence panel has no `.bp-ev-line`, no `.bp-ev-trend` and no season-line heading
+
+#### Scenario: Grid
+- **WHEN** a profile with stats is shown
+- **THEN** the five rows are inside `.bp-ev-rows`, styled `grid-template-columns: repeat(2, minmax(0, 1fr))`

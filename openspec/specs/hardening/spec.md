@@ -58,14 +58,14 @@ The system SHALL sign out a user whose persona no longer exists after a demo res
 
 ### Requirement: Correct pages for errors from form posts
 
-The system SHALL render the access-denied page with the demo banner when a non-coach posts a coach action.
+The system SHALL render the access-denied page inside the normal layout (with the footer disclosure) when a non-coach posts a coach action.
 
 #### Scenario: Athlete posts to shortlist
 
 - **GIVEN** a signed-in athlete with a valid token
 - **WHEN** they post to `/p/{slug}/shortlist`
 - **THEN** the response status is 403
-- **AND** the page shows the demo banner and the coaches-only message
+- **AND** the page shows the footer disclosure and the coaches-only message
 
 ### Requirement: Duplicate submissions do not fail
 
