@@ -151,7 +151,6 @@
 .bp-interest-club { font-weight: 700; }
 .bp-loop-contact { margin: 0; display: flex; flex-direction: column; gap: 2px; }
 .bp-loop-contact-label { color: var(--bp-muted); font-size: 0.8125rem; }
-.bp-loop-contact-addr { font-size: 1.125rem; font-weight: 600; overflow-wrap: anywhere; }
 
 @media (max-width: 767px) {
     .bp-loop-list { grid-template-columns: 1fr; }

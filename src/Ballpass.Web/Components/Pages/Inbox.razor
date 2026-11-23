@@ -44,7 +44,7 @@
                                 <span class="bp-interest-coach">@name</span>
                             </div>
                             <div class="bp-interest-meta">@L[GreekNames.IsFemaleFirstName(coach.FirstName) ? "Role_Coach_F" : "Role_Coach"] · @coach.Club?.Name@if (coach.Club is { } club) {<text> · @L[$"League_{club.League}"]</text>} · <time datetime="@i.CreatedAt.UtcDateTime.ToString("o", CultureInfo.InvariantCulture)">@i.CreatedAt.ToString("d", CultureInfo.CurrentCulture)</time></div>
-                            <blockquote class="bp-interest-note">@(string.IsNullOrWhiteSpace(i.Note) ? L["Inbox_NoNote"].Value : i.Note)</blockquote>
+                            @if (!string.IsNullOrWhiteSpace(i.Note)) { <blockquote class="bp-interest-note">@i.Note</blockquote> }
                             @if (i.Reply == InterestReply.None)
                             {
                                 <form method="post" action="/me/inbox/@i.Id/reply" data-action="reply" class="bp-loop-reply" aria-label="@T["Inbox_ReplyAria"]">
@@ -61,7 +61,7 @@
                                     <span class="bp-interest-connector"></span>
                                     <span class="bp-interest-club">@coach.Club?.Name</span>
                                 </div>
-                                <p class="bp-loop-contact"><span class="bp-loop-contact-label">@T["Inbox_Contact"]</span> <span class="bp-loop-contact-addr">@email</span></p>
+                                <p class="bp-loop-contact"><span class="bp-loop-contact-label">@T["Inbox_Contact"]</span></p>
                                 <a class="bp-btn-athlete" href="mailto:@email">@F["Inbox_Email"]</a>
                             }
                             else

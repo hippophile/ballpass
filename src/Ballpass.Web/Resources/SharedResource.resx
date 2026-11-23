@@ -103,7 +103,6 @@
   <data name="Shortlist_Empty" xml:space="preserve"><value>Δεν έχετε προσθέσει αθλητές στη λίστα σας ακόμη.</value></data>
   <data name="Inbox_Title" xml:space="preserve"><value>Εισερχόμενα</value></data>
   <data name="Inbox_Empty" xml:space="preserve"><value>Δεν έχετε λάβει ενδιαφέρον ακόμη.</value></data>
-  <data name="Inbox_NoNote" xml:space="preserve"><value>Χωρίς σημείωση</value></data>
   <data name="Nav_Menu" xml:space="preserve"><value>Μενού</value></data>
   <data name="Home_Value" xml:space="preserve"><value>Η πλατφόρμα που φέρνει αθλήτριες και αθλητές σε επαφή με προπονητές — με στοιχεία και διαφάνεια για την πηγή τους, όχι γνωριμίες.</value></data>
   <data name="Home_Sub" xml:space="preserve"><value>Ξεκινάμε από το γυναικείο μπάσκετ στην Ελλάδα.</value></data>

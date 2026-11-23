@@ -27,7 +27,8 @@ public class LoopTests(BallpassAppFactory app)
         public List<int> Ids { get; } = [];
 
         public (int InterestId, int CoachId, int AthleteId, string Slug) Add(int coachId, int athleteSkip,
-            DateTimeOffset createdAt, DateTimeOffset? seenAt = null, InterestReply reply = InterestReply.None, DateTimeOffset? repliedAt = null)
+            DateTimeOffset createdAt, DateTimeOffset? seenAt = null, InterestReply reply = InterestReply.None, DateTimeOffset? repliedAt = null,
+            string? note = "Δοκιμή")
         {
             using var scope = app.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<BallpassDbContext>();
@@ -38,7 +39,7 @@ public class LoopTests(BallpassAppFactory app)
             var interest = new Interest
             {
                 CoachId = coachId, AthleteId = athlete.Id, CreatedAt = createdAt, SeenAt = seenAt, Reply = reply,
-                RepliedAt = repliedAt, Note = "Δοκιμή", IsDemo = true,
+                RepliedAt = repliedAt, Note = note, IsDemo = true,
             };
             db.Interests.Add(interest);
             db.SaveChanges();
@@ -343,6 +344,7 @@ public class LoopTests(BallpassAppFactory app)
         Assert.Matches("<button[^>]*name=\"reply\"[^>]*value=\"decline\"[^>]*class=\"bp-btn-ghost\"", pending);
         var female = GreekNames.IsFemaleFirstName(h.Db(db => db.Coaches.Single(c => c.Id == a.CoachId).FirstName));
         Assert.Contains($"src=\"{Ballpass.Web.Features.Flow.FlowMedia.CoachScene(a.CoachId, female).Url}\"", pending);
+        Assert.Contains("<blockquote class=\"bp-interest-note\">Δοκιμή</blockquote>", pending);
 
         var response = await h.PostAsync(client, $"/me/inbox/{a.InterestId}/reply", new() { ["reply"] = "accept" }, tokenPage: "/me/inbox");
 
@@ -361,8 +363,22 @@ public class LoopTests(BallpassAppFactory app)
         Assert.Contains("Συνδεθήκατε", li);
         var addr = Regex.Match(li, "contact@[a-z0-9-]+\\.invalid").Value;
         Assert.Matches($"<a[^>]*class=\"bp-btn-athlete\"[^>]*href=\"mailto:{Regex.Escape(addr)}\"", li);
+        Assert.DoesNotContain(".invalid", Regex.Replace(li, "<[^>]+>", " "));   // the reserved address lives only in the mailto, never as visible text
         foreach (Match m in Regex.Matches(html, "[\\w.+-]+@[\\w.-]+"))
             Assert.EndsWith(".invalid", m.Value);
+    }
+
+    [Fact]
+    public async Task Interest_without_a_note_renders_no_empty_note_box()
+    {
+        using var fx = new Fx(app);
+        var a = fx.Add(h.CoachId(12), 0, Past, note: null);
+        var client = await h.LoginAsync("athlete", a.AthleteId);
+        var inbox = await Html(client, "/me/inbox");
+        var li = Regex.Match(inbox, $"<li[^>]*class=\"interest\"[^>]*data-interest-id=\"{a.InterestId}\".*?</li>", RegexOptions.Singleline).Value;
+        Assert.NotEmpty(li);
+        Assert.DoesNotContain("bp-interest-note", li);
+        Assert.DoesNotContain("Χωρίς σημείωση", li);
     }
 
     [Fact]
