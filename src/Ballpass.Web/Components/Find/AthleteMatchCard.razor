@@ -1,0 +1,222 @@
+@namespace Ballpass.Web.Components
+@using System.Globalization
+@using Ballpass.Web.Components.Shared
+@using Ballpass.Web.Data
+@using Ballpass.Web.Features.Find.Fit
+@using Ballpass.Web.Features.Media
+@using Microsoft.Extensions.Options
+@inject IOptions<FitOptions> FitConfig
+@inject IStringLocalizer<FindResource> F
+@inject IStringLocalizer<SharedResource> S
+
+@* One athlete card for /match (top + rest), /search and /shortlist (flow-release §4.5/§4.6). Orange = the coach's move: only the
+   top card's "Δείτε το προφίλ" (or the shortlist's first open card) is .bp-btn-primary; every other action is outline/ghost.
+   No ring without a score (never "–"). Teal "Ψάχνει ομάδα" chip = .bp-chip-athlete everywhere. *@
+@if (Variant == "top")
+{
+    <section class="bp-match-top">
+        <article class="bp-find-match" data-slug="@Athlete.Slug" data-fit="@Fit?.FitPercent" data-top="true" data-variant="top">
+            <div class="bp-match-top-photo">
+                <StockPhoto Image="StockMedia.MatchTop" Priority="true" Class="bp-match-top-img" />
+                @Ring("bp-find-fit bp-find-fit-lg")
+            </div>
+            <div class="bp-match-top-body">
+                <p class="bp-label bp-match-top-label">@F["Match_TopLabel"]</p>
+                <h2 class="bp-match-top-name"><a href="/p/@Athlete.Slug">@FullName</a></h2>
+                <p class="bp-find-meta">@Meta</p>
+                @Chips()
+                @Reasons(full: true)
+                <div class="bp-match-top-act">
+                    <a class="bp-btn-primary" href="/p/@Athlete.Slug">@F["Match_ViewProfile"]</a>
+                </div>
+            </div>
+        </article>
+    </section>
+}
+else
+{
+    <article class="bp-find-match" data-slug="@Athlete.Slug" data-fit="@Fit?.FitPercent" data-variant="@Variant">
+        @if (Fit?.FitPercent is not null)
+        {
+            @Ring("bp-find-fit")
+        }
+        <div class="bp-find-body">
+            <div class="bp-find-head">
+                <JerseyAvatar Id="Athlete.Id" Initials="@Initials" Club="@Athlete.CurrentClub?.Name" Size="@(Variant == "shortlist" ? 56 : 40)" Class="bp-result-jersey" />
+                <div class="bp-find-id">
+                    <a class="bp-find-name" href="/p/@Athlete.Slug">@FullName</a>
+                    <div class="bp-find-meta">@Meta</div>
+                </div>
+            </div>
+            @if (Variant == "shortlist")
+            {
+                <ul class="bp-find-stats" aria-label="@Season">
+                    @StatChip(Latest?.Points, "Card_Ppg")
+                    @StatChip(Latest?.Rebounds, "Card_Rpg")
+                    @StatChip(Latest?.Assists, "Card_Apg")
+                </ul>
+            }
+            @Reasons(full: false)
+            <div class="bp-find-foot">
+                @Chips()
+                @if (Variant is "match" or "shortlist")
+                {
+                    <div class="bp-find-act">
+                        @if (Sent)
+                        {
+                            <span class="bp-find-sent">@F["Card_Sent"]</span>
+                        }
+                        else
+                        {
+                            <form method="post" action="/p/@Athlete.Slug/interest" class="bp-find-interest" data-action="interest">
+                                <AntiforgeryToken />
+                                <button type="submit" class="@(Primary ? "bp-btn-primary" : "bp-btn-outline")">@S["Interest_Submit"]</button>
+                            </form>
+                        }
+                        @if (Variant == "shortlist")
+                        {
+                            <form method="post" action="/p/@Athlete.Slug/shortlist" class="bp-find-remove">
+                                <AntiforgeryToken />
+                                <button type="submit" class="bp-btn-ghost" aria-label="@F["Card_RemoveAria", FullName]">@F["Card_Remove"]</button>
+                            </form>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </article>
+}
+
+@code {
+    [Parameter, EditorRequired] public Athlete Athlete { get; set; } = default!;
+    /// <summary>"top", "match", "search" or "shortlist".</summary>
+    [Parameter] public string Variant { get; set; } = "match";
+    [Parameter] public FitResult? Fit { get; set; }
+    [Parameter] public FitNeed? Need { get; set; }
+    [Parameter] public int Age { get; set; }
+    [Parameter] public bool Sent { get; set; }
+    /// <summary>Shortlist only: this card carries the page's one orange CTA.</summary>
+    [Parameter] public bool Primary { get; set; }
+
+    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+    private string FullName => IsGreek ? $"{Athlete.FirstName} {Athlete.LastName}" : $"{Athlete.FirstNameLatin} {Athlete.LastNameLatin}";
+    private string Initials => IsGreek ? $"{Athlete.FirstName[0]}{Athlete.LastName[0]}" : $"{Athlete.FirstNameLatin[0]}{Athlete.LastNameLatin[0]}";
+    private string Meta => $"{S[$"Position_{Athlete.Position}"]} · {Athlete.HeightCm} {S["Profile_Cm"]} · {Age} {S["Profile_Years"]} · {Athlete.CurrentClub?.Name ?? RegionName(Athlete.Region)}";
+    private StatLine? Latest => Athlete.Stats.OrderByDescending(s => s.Season, StringComparer.Ordinal).FirstOrDefault();
+    private string Season => Latest is { } l ? $"{l.Season} · {S[$"League_{l.League}"]}" : F["Proof_NoStats"].Value;
+
+    private RenderFragment Ring(string css) => __builder =>
+    {
+        if (Fit?.FitPercent is not { } pct) return;
+        <div class="@css" style="--fit:@pct" role="img" aria-label="@F["Fit_Aria", pct]">
+            <span class="bp-find-fit-num">@pct<small>%</small></span>
+        </div>
+    };
+
+    private RenderFragment Chips() => __builder =>
+    {
+        if (!Athlete.LookingForTeam && Fit?.Partial != true) return;
+        <span class="bp-find-chips">
+            @if (Athlete.LookingForTeam)
+            {
+                <span class="bp-chip-athlete">@F["Result_Looking"]</span>
+            }
+            @if (Fit?.Partial == true)
+            {
+                <span class="bp-find-partial" title="@F["Partial_Missing", MissingText(Fit)]">@F["Partial_Tag"]<span class="visually-hidden">: @F["Partial_Missing", MissingText(Fit)]</span></span>
+            }
+        </span>
+    };
+
+    // Top card: the full sentence. Other cards: a short chip; the full sentence stays for screen readers and as the tooltip.
+    private RenderFragment Reasons(bool full) => __builder =>
+    {
+        if (Fit is null || Fit.Reasons.Count == 0 || Need is null) return;
+        <ul class="bp-find-reasons@(full ? " bp-find-reasons-full" : "")" aria-label="@F["Reasons_Heading"]">
+            @foreach (var reason in Fit.Reasons)
+            {
+                var text = ReasonText(reason, Fit.Candidate);
+                <li class="bp-find-reason" data-criterion="@reason.Criterion" data-state="@reason.State.ToString().ToLowerInvariant()" data-source="@reason.Source" title="@(full ? null : text)">
+                    <span class="bp-find-mark" aria-hidden="true">@Mark(reason.State)</span>
+                    @if (full)
+                    {
+                        <span class="bp-find-reason-text">@text</span>
+                        <span class="visually-hidden">(@F[$"Mark_{reason.State}"])</span>
+                    }
+                    else
+                    {
+                        <span class="bp-find-reason-text" aria-hidden="true">@ShortText(reason, Fit.Candidate)</span>
+                        <span class="visually-hidden">@text (@F[$"Mark_{reason.State}"])</span>
+                    }
+                    @if (reason.Criterion == FitCriterion.Stat)
+                    {
+                        <SourceBadge Source="reason.Source" />
+                    }
+                </li>
+            }
+        </ul>
+    };
+
+    private RenderFragment StatChip(decimal? value, string unitKey) => __builder =>
+    {
+        if (value is { } v)
+        {
+            <li class="bp-find-stat"><b>@v.ToString("0.0", CultureInfo.CurrentCulture)</b> @F[unitKey]</li>
+        }
+        else
+        {
+            <li class="bp-find-stat bp-find-stat-none"><b>@F["Card_NoStat"]</b> @F[unitKey]</li>
+        }
+    };
+
+    private static string Mark(ReasonState s) => s switch { ReasonState.Met => "✓", ReasonState.Partial => "≈", _ => "✕" };
+
+    private string RegionName(string r)
+    {
+        var s = S[$"Region_{r}"];
+        return s.ResourceNotFound ? r : s.Value;
+    }
+
+    private static string Target(int? min, int? max) => (min, max) switch
+    {
+        ({ } lo, { } hi) => $"{lo}–{hi}",
+        ({ } lo, null) => $"≥{lo}",
+        (null, { } hi) => $"≤{hi}",
+        _ => "",
+    };
+
+    private string ReasonText(FitReason r, FitCandidate c) => r.Criterion switch
+    {
+        FitCriterion.Height => F["Reason_Height", (int)r.Actual, Target(Need!.MinHeight, Need.MaxHeight)].Value,
+        FitCriterion.Age => F["Reason_Age", (int)r.Actual, Target(Need!.MinAge, Need.MaxAge)].Value,
+        FitCriterion.Region => r.State == ReasonState.Met
+            ? F["Reason_Region_Met", RegionName(c.Region)].Value
+            : F["Reason_Region", RegionName(c.Region), RegionName(Need!.Region!)].Value,
+        FitCriterion.League => r.State == ReasonState.Met
+            ? F["Reason_League_Met", S[$"League_{r.ActualKey}"].Value].Value
+            : F["Reason_League", S[$"League_{r.ActualKey}"].Value, S[$"League_{Need!.League}"].Value].Value,
+        _ => r.TopPercent is { } top and <= 50
+            ? F["Reason_Stat_Top", r.Actual.ToString("0.0"), F[$"Unit_{Need!.Priority}"].Value, top, F[$"Cohort_{r.CohortGroup}"].Value].Value
+            : F["Reason_Stat_Plain", r.Actual.ToString("0.0"), F[$"Unit_{Need!.Priority}"].Value, F[$"Cohort_{r.CohortGroup}"].Value].Value,
+    };
+
+    private string ShortText(FitReason r, FitCandidate c) => r.Criterion switch
+    {
+        FitCriterion.Height => F["Short_Height", (int)r.Actual].Value,
+        FitCriterion.Age => F["Short_Age", (int)r.Actual].Value,
+        FitCriterion.Region => RegionName(c.Region),
+        FitCriterion.League => S[$"League_{r.ActualKey}"].Value,
+        _ => r.TopPercent is { } top and <= 50
+            ? F["Short_Stat_Top", top, F[$"Unit_{Need!.Priority}"].Value].Value
+            : F["Short_Stat_Plain", r.Actual.ToString("0.0"), F[$"Unit_{Need!.Priority}"].Value].Value,
+    };
+
+    private string MissingText(FitResult r) => string.Join(", ", r.Missing.Select(m => m switch
+    {
+        FitCriterion.Stat => F["Missing_Stat", FitConfig.Value.MinGames].Value,
+        FitCriterion.League => F["Missing_League"].Value,
+        FitCriterion.Height => F["Missing_Height"].Value,
+        FitCriterion.Age => F["Missing_Age"].Value,
+        _ => F["Missing_Region"].Value,
+    }));
+}

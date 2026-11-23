@@ -24,6 +24,12 @@
                 <a href="/p/@Athlete.Slug" aria-current="@(confirmedOnly ? null : "true")">@E["Toggle_All"]</a>
                 <a href="/p/@Athlete.Slug?confirmed=1" aria-current="@(confirmedOnly ? "true" : null)">@E["Toggle_Confirmed"]</a>
             </p>
+            @if (sharedNoData is not null)
+            {
+                @* Same reason for every metric: say it once instead of five times (flow-release §4.4, denser profile). *@
+                <p class="bp-ev-pct bp-ev-nodata bp-ev-nodata-all">@NoDataText(sharedNoData)</p>
+            }
+            <div class="bp-ev-rows">
             @foreach (var m in evidence.Metrics)
             {
                 <div class="bp-ev-row" data-metric="@m.Metric" data-pct="@(m.Percentile?.ToString(CultureInfo.InvariantCulture))">
@@ -38,6 +44,10 @@
                             <line class="bp-ev-tick" x1="100" y1="0" x2="100" y2="10" />
                         </svg>
                     }
+                    else if (sharedNoData is not null)
+                    {
+                        <span class="visually-hidden">@NoDataText(m)</span>
+                    }
                     else
                     {
                         <span class="bp-ev-pct bp-ev-nodata">@NoDataText(m)</span>
@@ -47,6 +57,7 @@
                     }
                 </div>
             }
+            </div>
             <div class="bp-ev-sr-box"><table class="bp-ev-sr">
                 <caption>@E["Pct_Heading"]: @CohortLabel</caption>
                 <thead><tr><th scope="col">@E["Col_Metric"]</th><th scope="col">@E["Col_Value"]</th><th scope="col">@E["Col_Pct"]</th><th scope="col">@E["Col_N"]</th></tr></thead>
@@ -66,6 +77,10 @@
             <p class="bp-ev-note">@E["Thresholds_Note", EvOptions.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture), EvOptions.Value.MinPeers]</p>
         </section>
 
+        @* Season line only with 2+ seasons (flow-release §4.4): one point says nothing and costs ~160 px. Beside it: the badges. *@
+        <div class="bp-ev-pair">
+        @if (slots.Count >= 2)
+        {
         <section class="bp-ev-block" aria-labelledby="bp-ev-line-h">
             <h3 id="bp-ev-line-h">@E["Line_Heading"]</h3>
             <p class="bp-ev-trendline">
@@ -120,6 +135,7 @@
             </table></div>
             <p class="bp-ev-note">@E["Trend_Rule"]</p>
         </section>
+        }
 
         @if (badges.Count > 0)
         {
@@ -136,6 +152,7 @@
                 </ul>
             </section>
         }
+        </div>
     </div>
 }
 
@@ -149,6 +166,8 @@
     private ProgressionLayout? layout;
     private IReadOnlyList<Badge> badges = [];
     private bool confirmedOnly;
+    /// <summary>Set when no metric has a percentile and all share one reason (and n): one note replaces five.</summary>
+    private MetricPercentile? sharedNoData;
 
     protected override async Task OnInitializedAsync()
     {
@@ -158,6 +177,9 @@
         var query = QueryHelpers.ParseQuery(new Uri(Navigation.Uri).Query);
         confirmedOnly = query.TryGetValue("confirmed", out var c) && c == "1";
         evidence = await Cohorts.EvaluateAsync(Athlete, confirmedOnly);
+        if (evidence is not null && evidence.Metrics.Count > 0 && evidence.Metrics.All(m => m.Percentile is null)
+            && evidence.Metrics.Select(m => (m.Reason, m.N)).Distinct().Count() == 1)
+            sharedNoData = evidence.Metrics[0];
 
         trend = Stats.Trend(Athlete.Stats);
         slots = Stats.Progression(Athlete.Stats);

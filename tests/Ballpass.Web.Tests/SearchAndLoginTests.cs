@@ -147,7 +147,7 @@ public class SearchAndLoginTests(BallpassAppFactory app)
         var html = await Html(client, "/search?" + query);
 
         var total = int.Parse(Regex.Match(html, "data-total=\"(\\d+)\"").Groups[1].Value);
-        var slugs = Regex.Matches(html, "<article[^>]*class=\"result\"[^>]*data-slug=\"([^\"]+)\"")
+        var slugs = Regex.Matches(html, "<article[^>]*class=\"(?:result|bp-find-match)\"[^>]*data-slug=\"([^\"]+)\"")
             .Select(m => m.Groups[1].Value).ToList();
         return (total, slugs);
     }

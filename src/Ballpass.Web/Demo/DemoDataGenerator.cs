@@ -293,22 +293,36 @@ public static class DemoDataGenerator
         var steals = Clamp(Spread(r, p.Stl * scale, 0.5), 0, 3.5);
         var blocks = Clamp(Spread(r, p.Blk * scale, 0.6), 0, 3.5);
 
+        // Plausible for the minutes played: one factor scales the whole line down until every counting stat is within its per-40 cap
+        // (pts 32, reb 20, ast 12, stl 5, blk 4). Applied after all rolls, so the random sequence (seed 42) is unchanged.
+        var m = (double)D(minutes);
+        double Cap(double per40) => per40 * m / 40;
+        var k = new[] { Cap(PerFortyCap.Pts) / points, Cap(PerFortyCap.Reb) / rebounds, Cap(PerFortyCap.Ast) / assists,
+            steals > 0 ? Cap(PerFortyCap.Stl) / steals : 1, blocks > 0 ? Cap(PerFortyCap.Blk) / blocks : 1, 1.0 }.Min();
+        decimal Fit(double v, double per40) => Math.Min(D(v * k), Math.Floor((decimal)Cap(per40) * 10) / 10);
+
         return new StatLine
         {
             Season = season,
             League = league,
             Games = r.Int(10, 30),
             Minutes = D(minutes),
-            Points = D(points),
-            Rebounds = D(rebounds),
-            Assists = D(assists),
-            Steals = D(steals),
-            Blocks = D(blocks),
+            Points = Fit(points, PerFortyCap.Pts),
+            Rebounds = Fit(rebounds, PerFortyCap.Reb),
+            Assists = Fit(assists, PerFortyCap.Ast),
+            Steals = Fit(steals, PerFortyCap.Stl),
+            Blocks = Fit(blocks, PerFortyCap.Blk),
             FgPct = D(Clamp(Between(r, 34, 56), 0, 99.9)),
             ThreePct = D(Clamp(Spread(r, p.Three, 0.25), 5, 45)),
             FtPct = D(Clamp(Between(r, 52, 90), 0, 99.9)),
             Source = SourceFor(r.Double()),
         };
+    }
+
+    /// <summary>Per-40-minute ceilings for generated lines (our plausibility estimate, not a league rule).</summary>
+    private static class PerFortyCap
+    {
+        public const double Pts = 32, Reb = 20, Ast = 12, Stl = 5, Blk = 4;
     }
 
     private static StatSource SourceFor(double roll) =>

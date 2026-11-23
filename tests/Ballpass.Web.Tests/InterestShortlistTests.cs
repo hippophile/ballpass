@@ -67,7 +67,8 @@ public class InterestShortlistTests(BallpassAppFactory app)
 
         var profile = await Html(coach, $"/p/{slug}");
         Assert.DoesNotContain("data-action=\"interest\"", profile); // confirmation replaces form
-        Assert.Contains("Έχετε ήδη εκδηλώσει ενδιαφέρον", profile);
+        Assert.Contains("data-rail=\"sent\"", profile);                 // flow-release §4.4: the rail swaps to the sent card
+        Assert.Contains("✓ Στάλθηκε", profile);
     }
 
     [Fact]
@@ -121,6 +122,101 @@ public class InterestShortlistTests(BallpassAppFactory app)
 
         Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
         Assert.StartsWith("/demo", response.Headers.Location!.OriginalString);
+    }
+
+    // ---------- flow-release WP-B: sent rail (SPEC §4.4) and shortlist grid (SPEC §4.6) ----------
+
+    private static int Primaries(string html) => Regex.Matches(html, "class=\"[^\"]*\\bbp-btn-primary\\b[^\"]*\"").Count;
+
+    [Fact]
+    public async Task Interest_sent_rail_offers_the_switch_to_the_athlete()
+    {
+        var h = new FeedHarness(app);
+        var (coach, slug, firstName) = h.Db(db =>
+        {
+            var c = db.Coaches.Where(x => x.IsDemo && x.Role == Ballpass.Web.Data.CoachRole.Head && x.Club!.Gender == Ballpass.Web.Data.Gender.Female)
+                .OrderBy(x => x.Id).Skip(4).Select(x => x.Id).First();
+            var a = db.Athletes.Where(x => x.IsDemo && x.Gender == Ballpass.Web.Data.Gender.Female && !db.Interests.Any(i => i.CoachId == c && i.AthleteId == x.Id))
+                .OrderByDescending(x => x.Id).Select(x => new { x.Slug, x.FirstName }).First();
+            return (c, a.Slug, a.FirstName);
+        });
+        var client = await h.LoginAsync("coach", coach);
+        await PostAction(client, slug, "interest", new());
+
+        var html = await Html(client, $"/p/{slug}?status=interest-sent");
+
+        var rail = Regex.Match(html, "<aside[^>]*class=\"bp-action-rail\".*?</aside>", RegexOptions.Singleline).Value;
+        Assert.Contains("data-rail=\"sent\"", rail);
+        Assert.Contains("✓ Στάλθηκε", rail);
+        Assert.Matches("<ol[^>]*class=\"bp-stepper[^\"]*\"", rail);
+        var form = Regex.Match(rail, "<form[^>]*action=\"/demo/switch\\?to=athlete\"[^>]*>(.*?)</form>", RegexOptions.Singleline);
+        Assert.True(form.Success, "switch form missing");
+        Assert.Matches("method=\"post\"", form.Value);
+        Assert.Contains("__RequestVerificationToken", form.Value);
+        Assert.Contains($"Δείτε τι βλέπει η {firstName}", form.Value);
+        Assert.Contains("href=\"/me/sent\"", rail);
+        Assert.DoesNotContain("data-action=\"interest\"", html);
+        Assert.Equal(0, Primaries(html));
+        Assert.DoesNotContain("class=\"bp-status\"", html);                // the rail replaces the status line
+    }
+
+    [Fact]
+    public async Task Shortlist_is_a_card_grid_with_one_primary_a_ghost_remove_and_a_compare_panel()
+    {
+        var h = new FeedHarness(app);
+        var coach = h.Db(db => db.Coaches.Where(c => c.IsDemo && c.Role == Ballpass.Web.Data.CoachRole.Head && db.ShortlistEntries.Count(s => s.CoachId == c.Id) >= 3)
+            .OrderBy(c => c.Id).Skip(6).Select(c => c.Id).First());
+        var client = await h.LoginAsync("coach", coach);
+
+        var html = await Html(client, "/shortlist");
+
+        var cards = Regex.Matches(html, "<article[^>]*class=\"bp-find-match\"[^>]*data-variant=\"shortlist\".*?</article>", RegexOptions.Singleline).Select(m => m.Value).ToList();
+        Assert.True(cards.Count >= 3, $"{cards.Count} shortlist cards");
+        Assert.Equal(1, Primaries(html));
+        var firstOpen = cards.FindIndex(c => c.Contains("data-action=\"interest\""));
+        if (firstOpen >= 0) Assert.Contains("class=\"bp-btn-primary\"", cards[firstOpen]);
+        Assert.All(cards, c => Assert.Matches("<button[^>]*class=\"bp-btn-ghost[^\"]*\"[^>]*>Αφαίρεση<", c));
+        Assert.All(cards, c => Assert.Equal(3, Regex.Matches(c, "class=\"bp-find-stat\"").Count + Regex.Matches(c, "class=\"bp-find-stat bp-find-stat-none\"").Count));
+        Assert.Matches("<aside[^>]*class=\"bp-shortlist-compare\"", html);
+        Assert.Contains("class=\"bp-shortlist\"", html);
+    }
+
+    [Fact]
+    public async Task Shortlist_card_shows_a_sent_pill_after_an_interest()
+    {
+        var h = new FeedHarness(app);
+        var (coach, slug) = h.Db(db =>
+        {
+            var e = db.ShortlistEntries.Where(s => s.Coach!.IsDemo && s.Coach.Role == Ballpass.Web.Data.CoachRole.Head
+                    && !db.Interests.Any(i => i.CoachId == s.CoachId && i.AthleteId == s.AthleteId))
+                .OrderBy(s => s.CoachId).Skip(30).Select(s => new { s.CoachId, s.Athlete!.Slug }).First();
+            return (e.CoachId, e.Slug);
+        });
+        var client = await h.LoginAsync("coach", coach);
+        await PostAction(client, slug, "interest", new());
+
+        var html = await Html(client, "/shortlist");
+
+        var card = Regex.Match(html, $"<article[^>]*data-slug=\"{slug}\".*?</article>", RegexOptions.Singleline).Value;
+        Assert.Contains("class=\"bp-find-sent\"", card);
+        Assert.Contains("✓ Στάλθηκε", card);
+        Assert.DoesNotContain("data-action=\"interest\"", card);
+    }
+
+    [Fact]
+    public async Task Empty_shortlist_shows_a_photo_band_and_a_cta_to_match()
+    {
+        var h = new FeedHarness(app);
+        var coach = h.Db(db => db.Coaches.Where(c => c.IsDemo && !db.ShortlistEntries.Any(s => s.CoachId == c.Id)).OrderBy(c => c.Id).Select(c => c.Id).First());
+        var client = await h.LoginAsync("coach", coach);
+
+        var html = await Html(client, "/shortlist");
+
+        var band = Regex.Match(html, "<section[^>]*class=\"bp-shortlist-empty\".*?</section>", RegexOptions.Singleline).Value;
+        Assert.Contains($"src=\"{Ballpass.Web.Features.Media.StockMedia.ShortlistEmpty.Url}\"", band);
+        Assert.Contains("Η λίστα σας είναι άδεια", band);
+        Assert.Matches("<a[^>]*class=\"bp-btn-primary\"[^>]*href=\"/match\"|<a[^>]*href=\"/match\"[^>]*class=\"bp-btn-primary\"", band);
+        Assert.Equal(1, Primaries(html));
     }
 
     // ---------- helpers ----------

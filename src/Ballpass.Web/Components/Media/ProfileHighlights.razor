@@ -1,21 +1,32 @@
 @using Ballpass.Web.Data
+@using Ballpass.Web.Features.Loop
 @using Ballpass.Web.Features.Media
+@using Microsoft.Extensions.Options
 @inject IServiceScopeFactory ScopeFactory
+@inject IOptions<DemoOptions> Demo
 @inject ILogger<ProfileHighlights> Logger
 @inject IStringLocalizer<MediaResource> M
+@inject IStringLocalizer<FindResource> F
 
-@* Highlight reel on the profile (id="highlights"). Without a reel the host's own section (ChildContent: heading + "no video yet") stays. *@
+@* Highlight reel on the profile (id="highlights"): one main tile and up to two thumbs beside it (flow-release §4.4). Only items
+   that exist are rendered, never a placeholder tile. Without a reel the host's own section (ChildContent: heading + "no video yet") stays.
+   The featured athlete (Demo:Featured:AthleteSlug) gets the three no-face stock clips (SPEC §8 O9, rule M2). *@
 @if (items.Count > 0)
 {
     <section class="bp-card bp-panel bp-highlights" id="highlights" aria-labelledby="bp-highlights-title">
-        <h2 id="bp-highlights-title">@M["Highlights_Title"]</h2>
-        <div class="bp-highlights-grid" data-media-count="@items.Count">
+        <div class="bp-highlights-head">
+            <h2 id="bp-highlights-title">@M["Highlights_Title"]</h2>
+            @if (!featured)
+            {
+                <a class="bp-highlights-more" href="/stories/@Slug">@M["Highlights_Story"]</a>
+            }
+        </div>
+        <div class="bp-highlights-grid bp-highlights-mosaic" data-media-count="@items.Count">
             @for (var i = 0; i < items.Count; i++)
             {
                 <MediaTile Item="items[i]" Key="@($"r{AthleteId}-{i}")" />
             }
         </div>
-        <p class="bp-highlights-more"><a href="/stories/@Slug">@M["Highlights_Story"]</a></p>
     </section>
 }
 else
@@ -28,18 +39,45 @@ else
     [Parameter, EditorRequired] public string Slug { get; set; } = "";
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
+    private const int MaxTiles = 3;
     private IReadOnlyList<MediaItem> items = [];
+    private bool featured;
 
     protected override async Task OnInitializedAsync()
     {
+        featured = Demo.Value.Featured.AthleteSlug is { Length: > 0 } f && f == Slug;
+        if (featured)
+        {
+            items =
+            [
+                Clip(StockMedia.HighlightMain, "Hl_Alt_Main", 0),
+                Clip(StockMedia.HighlightThumb1, "Hl_Alt_Dribble", 1),
+                Clip(StockMedia.HighlightThumb2, "Hl_Alt_Net", 2),
+            ];
+            return;
+        }
         try
         {
             using var scope = ScopeFactory.CreateScope();
-            items = await scope.ServiceProvider.GetRequiredService<IMediaService>().ReelAsync(AthleteId);
+            items = (await scope.ServiceProvider.GetRequiredService<IMediaService>().ReelAsync(AthleteId)).Take(MaxTiles).ToList();
         }
         catch (Exception e)
         {
             Logger.LogError(e, "Reel of athlete {AthleteId} failed to load", AthleteId);
         }
+    }
+
+    // Not stored: a view of a stock clip with the same shape as a reel row, so MediaTile renders it (poster always set).
+    private MediaItem Clip(StockClip clip, string altKey, int position)
+    {
+        var alt = F[altKey];
+        return new MediaItem
+        {
+            Kind = MediaKind.Video,
+            File = StockMedia.Folder + clip.File,
+            Poster = StockMedia.Folder + clip.Poster.File,
+            Width = clip.Poster.Width, Height = clip.Poster.Height,
+            AltEl = alt.Value, AltEn = alt.Value, IsGraphic = false, Position = position, AthleteId = AthleteId, IsDemo = true,
+        };
     }
 }

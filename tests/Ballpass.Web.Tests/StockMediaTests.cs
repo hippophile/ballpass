@@ -199,7 +199,7 @@ public class StockMediaTests(BallpassAppFactory app)
 
         Assert.Equal("Ευτυχία", featured.CoachFirstName);
         Assert.Equal("Σωτηρίου", featured.CoachLastName);
-        Assert.Equal("danai-bakali", featured.AthleteSlug);
+        Assert.Equal("dimitra-kalogeraki", featured.AthleteSlug);   // WP-B lead review (O7 swap: strong percentiles)
         var data = DemoDataGenerator.Generate(42);
         Assert.Single(data.Coaches, c => c.FirstName == featured.CoachFirstName && c.LastName == featured.CoachLastName);
         Assert.Single(data.Athletes, a => a.Slug == featured.AthleteSlug);

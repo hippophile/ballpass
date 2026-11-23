@@ -3,13 +3,20 @@
 @using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Data
 @using Ballpass.Web.Demo
+@using Ballpass.Web.Features.Evidence
+@using Ballpass.Web.Features.Loop
+@using Ballpass.Web.Features.Media
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.Extensions.Options
 @inject BallpassDbContext Db
 @inject NavigationManager Navigation
 @inject TimeProvider Time
+@inject ICohortService Cohorts
+@inject IOptions<DemoOptions> Demo
 @inject IStringLocalizer<SharedResource> L
 @inject IStringLocalizer<LoopResource> Loop
 @inject IStringLocalizer<EvidenceResource> Evid
+@inject IStringLocalizer<FindResource> F
 
 @if (athlete is not null)
 {
@@ -22,158 +29,194 @@
         <ShareMeta Athlete="athlete" />
     </HeadContent>
 
-    <section class="bp-card bp-panel profile-header">
-        <JerseyAvatar Id="athlete.Id" Initials="@Initials" Club="@athlete.CurrentClub?.Name" Size="88" Class="bp-profile-jersey" />
-        <div class="identity">
-            <h1>@FullName</h1>
-            <div class="badges">
+    @* flow-release §4.4: cover + identity, then main column (proof row, highlights, evidence + table, history/bio) and the action
+       rail (sticky; a bottom bar under 640 px). One .bp-btn-primary for a coach: "Εκδήλωση ενδιαφέροντος". *@
+    <div class="bp-profile@(coachId is not null ? " bp-profile-coach" : "")">
+    <header class="bp-cover">
+        <StockPhoto Image="StockMedia.Cover(Slug)" Priority="true" Left="true" Class="bp-cover-photo" />
+        <div class="bp-cover-id">
+            <JerseyAvatar Id="athlete.Id" Initials="@Initials" Club="@athlete.CurrentClub?.Name" Size="120" Class="bp-profile-jersey bp-cover-jersey" />
+            <div class="bp-cover-text">
+                <h1>@FullName</h1>
                 @if (athlete.LookingForTeam)
                 {
-                    <span class="bp-badge bp-badge-looking">@L["Badge_LookingForTeam"]</span>
+                    <p class="bp-cover-chips"><span class="bp-chip-athlete">@L["Badge_LookingForTeam"]</span></p>
                 }
+                <p class="bp-cover-meta">@PositionLong (@athlete.Position) · @athlete.HeightCm @L["Profile_Cm"] · @Age @L["Profile_Years"] · @CityName, @RegionName · <strong>@(athlete.CurrentClub?.Name ?? L["Profile_NoClub"].Value)</strong></p>
             </div>
-            <p class="meta">@PositionLong (@athlete.Position) · @athlete.HeightCm @L["Profile_Cm"] · @Age @L["Profile_Years"] · @CityName</p>
-            <p class="meta"><span class="meta-label">@L["Profile_Region"]:</span> @RegionName</p>
-            <p class="club"><span class="meta-label">@L["Profile_CurrentClub"]:</span>
-                <strong>@(athlete.CurrentClub?.Name ?? L["Profile_NoClub"].Value)</strong></p>
-            @if (coachId is null)
-            {
-                <FollowButton Slug="@Slug" />
-            }
         </div>
-    </section>
+    </header>
 
     @if (!string.IsNullOrEmpty(StatusMessage))
     {
         <p class="bp-status" role="status">@StatusMessage</p>
     }
 
-    @if (isOwnProfile)
-    {
-        <p class="bp-received"><a href="/me/inbox">@L["Profile_InterestReceived"]: @receivedCount</a></p>
-    }
-
-    @if (coachId is not null)
-    {
-        <section class="bp-card bp-panel bp-actions-panel" aria-label="@L["Interest_Heading"]">
-            <div class="bp-loop-actionbar">
-                @if (interestSent)
+    <div class="bp-profile-body">
+        <div class="bp-profile-main">
+            <section class="bp-proof" aria-label="@L["Profile_Stats"]">
+                @if (stats.Count == 0)
                 {
-                    <p class="bp-interest-sent">✓ @L["Interest_AlreadySent"]</p>
+                    <p class="bp-proof-empty">@L["Profile_NoStats"]</p>
                 }
                 else
                 {
-                    <form method="post" action="/p/@Slug/interest" data-action="interest" class="bp-loop-interest">
-                        <AntiforgeryToken />
-                        <button type="submit" class="bp-btn">@L["Interest_Submit"]</button>
-                        <details class="bp-loop-note">
-                            <summary>@Loop["Actions_NoteToggle"]</summary>
-                            <label for="interest-note">@L["Interest_NoteLabel"]</label>
-                            <textarea id="interest-note" name="note" maxlength="280" rows="3"></textarea>
-                        </details>
-                    </form>
-                }
-                <form method="post" action="/p/@Slug/shortlist" data-action="shortlist" class="bp-loop-inline">
-                    <AntiforgeryToken />
-                    <button type="submit" class="bp-btn bp-btn-secondary" aria-pressed="@(shortlisted ? "true" : "false")" aria-label="@L[shortlisted ? "Shortlist_Remove" : "Shortlist_Add"]">@Loop["Actions_List"]</button>
-                </form>
-                <FollowButton Slug="@Slug" />
-                <a class="bp-btn bp-btn-secondary" href="/compare?a=@Slug">@Evid["Compare_Link"]</a>
-            </div>
-        </section>
-    }
-
-    <section class="bp-card bp-panel">
-        <h2>@L["Profile_Stats"]</h2>
-        @if (stats.Count == 0)
-        {
-            <p>@L["Profile_NoStats"]</p>
-        }
-        else
-        {
-            <div class="key-stats">
-                <div class="key-stat"><span class="bp-stat-num">@Num(stats[0].Points)</span><span class="bp-stat-label">@L["Stat_Points"]</span></div>
-                <div class="key-stat"><span class="bp-stat-num">@Num(stats[0].Rebounds)</span><span class="bp-stat-label">@L["Stat_Rebounds"]</span></div>
-                <div class="key-stat"><span class="bp-stat-num">@Num(stats[0].Assists)</span><span class="bp-stat-label">@L["Stat_Assists"]</span></div>
-            </div>
-            <p class="key-season">@stats[0].Season · @L[$"League_{stats[0].League}"]</p>
-            <EvidencePanel Athlete="athlete" />
-            <div class="table-scroll">
-                <table class="stats">
-                    <thead>
-                        <tr>
-                            <th scope="col">@L["Stat_Season"]</th>
-                            <th scope="col">@L["Stat_League"]</th>
-                            <th scope="col">@L["Stat_Games"]</th>
-                            <th scope="col">@L["Stat_Minutes"]</th>
-                            <th scope="col">@L["Stat_Points"]</th>
-                            <th scope="col">@L["Stat_Rebounds"]</th>
-                            <th scope="col">@L["Stat_Assists"]</th>
-                            <th scope="col">@L["Stat_Steals"]</th>
-                            <th scope="col">@L["Stat_Blocks"]</th>
-                            <th scope="col">@L["Stat_FgPct"]</th>
-                            <th scope="col">@L["Stat_ThreePct"]</th>
-                            <th scope="col">@L["Stat_FtPct"]</th>
-                            <th scope="col">@L["Stat_Source"]</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var s in stats)
+                    <div class="bp-proof-stat"><span class="bp-proof-num">@Num(stats[0].Points)</span><span class="bp-proof-label">@F["Card_Ppg"]</span></div>
+                    <div class="bp-proof-stat"><span class="bp-proof-num">@Num(stats[0].Rebounds)</span><span class="bp-proof-label">@F["Card_Rpg"]</span></div>
+                    <div class="bp-proof-stat"><span class="bp-proof-num">@Num(stats[0].Assists)</span><span class="bp-proof-label">@F["Card_Apg"]</span></div>
+                    <div class="bp-proof-side">
+                        <p class="bp-proof-season">@F["Proof_Season", stats[0].Season, L[$"League_{stats[0].League}"].Value] <span class="bp-proof-src @SourceClass(stats[0].Source)">@L[$"Source_{stats[0].Source}"]</span></p>
+                        @if (bestPercentiles.Count > 0)
                         {
-                            <tr data-season="@s.Season">
-                                <th scope="row">@s.Season</th>
-                                <td>@L[$"League_{s.League}"]</td>
-                                <td>@s.Games</td>
-                                <td>@Num(s.Minutes)</td>
-                                <td>@Num(s.Points)</td>
-                                <td>@Num(s.Rebounds)</td>
-                                <td>@Num(s.Assists)</td>
-                                <td>@Num(s.Steals)</td>
-                                <td>@Num(s.Blocks)</td>
-                                <td>@Num(s.FgPct)</td>
-                                <td>@Num(s.ThreePct)</td>
-                                <td>@Num(s.FtPct)</td>
-                                <td><SourceBadge Source="s.Source" /></td>
-                            </tr>
+                            <p class="bp-proof-pills">
+                                @foreach (var m in bestPercentiles)
+                                {
+                                    <span class="bp-proof-pill" data-pct="@m.Percentile">@F["Proof_Pct", Evid[$"Metric_{m.Metric}"].Value, m.Percentile!.Value]</span>
+                                }
+                            </p>
                         }
-                    </tbody>
-                </table>
-            </div>
-        }
-    </section>
+                    </div>
+                }
+            </section>
 
-    <section class="bp-card bp-panel">
-        <h2>@L["Profile_ClubHistory"]</h2>
-        <ul class="history">
-            @foreach (var s in history)
+            <ProfileHighlights AthleteId="athlete.Id" Slug="@Slug">
+            <section class="bp-card bp-panel bp-novideo">
+                <h2>@L["Profile_Video"]</h2>
+                <p class="video-empty">@L["Profile_NoVideo"]</p>
+            </section>
+            </ProfileHighlights>
+
+            @if (stats.Count > 0)
             {
-                <li><span class="history-season">@s.Season</span> <span>@s.Club?.Name</span></li>
+                <section class="bp-card bp-panel bp-profile-stats">
+                    <h2>@L["Profile_Stats"]</h2>
+                    <EvidencePanel Athlete="athlete" />
+                    <div class="table-scroll">
+                        <table class="stats">
+                            <thead>
+                                <tr>
+                                    <th scope="col">@L["Stat_Season"]</th>
+                                    <th scope="col">@L["Stat_League"]</th>
+                                    <th scope="col">@L["Stat_Games"]</th>
+                                    <th scope="col">@L["Stat_Minutes"]</th>
+                                    <th scope="col">@L["Stat_Points"]</th>
+                                    <th scope="col">@L["Stat_Rebounds"]</th>
+                                    <th scope="col">@L["Stat_Assists"]</th>
+                                    <th scope="col">@L["Stat_Steals"]</th>
+                                    <th scope="col">@L["Stat_Blocks"]</th>
+                                    <th scope="col">@L["Stat_FgPct"]</th>
+                                    <th scope="col">@L["Stat_ThreePct"]</th>
+                                    <th scope="col">@L["Stat_FtPct"]</th>
+                                    <th scope="col">@L["Stat_Source"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var s in stats)
+                                {
+                                    <tr data-season="@s.Season">
+                                        <th scope="row">@s.Season</th>
+                                        <td>@L[$"League_{s.League}"]</td>
+                                        <td>@s.Games</td>
+                                        <td>@Num(s.Minutes)</td>
+                                        <td>@Num(s.Points)</td>
+                                        <td>@Num(s.Rebounds)</td>
+                                        <td>@Num(s.Assists)</td>
+                                        <td>@Num(s.Steals)</td>
+                                        <td>@Num(s.Blocks)</td>
+                                        <td>@Num(s.FgPct)</td>
+                                        <td>@Num(s.ThreePct)</td>
+                                        <td>@Num(s.FtPct)</td>
+                                        <td><SourceBadge Source="s.Source" /></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             }
-        </ul>
-    </section>
 
-    @if (!string.IsNullOrWhiteSpace(athlete.Bio))
-    {
-        <section class="bp-card bp-panel">
-            <h2>@L["Profile_Bio"]</h2>
-            <p>@athlete.Bio</p>
-        </section>
-    }
+            <section class="bp-card bp-panel bp-profile-about@(string.IsNullOrWhiteSpace(athlete.Bio) ? "" : " bp-profile-about-2")">
+                <div>
+                    <h2>@L["Profile_ClubHistory"]</h2>
+                    <ul class="history">
+                        @foreach (var s in history)
+                        {
+                            <li><span class="history-season">@s.Season</span> <span>@s.Club?.Name</span></li>
+                        }
+                    </ul>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(athlete.Bio))
+                {
+                    <div>
+                        <h2>@L["Profile_Bio"]</h2>
+                        <p class="bp-profile-bio">@athlete.Bio</p>
+                    </div>
+                }
+            </section>
+        </div>
 
-    <ProfileHighlights AthleteId="athlete.Id" Slug="@Slug">
-    <section class="bp-card bp-panel">
-        <h2>@L["Profile_Video"]</h2>
-        <p class="video-empty">@L["Profile_NoVideo"]</p>
-    </section>
-    </ProfileHighlights>
-
-    <section class="bp-card bp-panel">
-        <h2>@L["Profile_Share"]</h2>
-        <p class="meta">@L["Profile_ShareHint"]</p>
-        <input class="share" type="text" readonly value="@ShareUrl" aria-label="@L["Profile_Share"]" />
-    </section>
-
-    <SharePanel Athlete="athlete" />
+        <aside class="bp-action-rail" id="bp-actions" aria-label="@L["Interest_Heading"]">
+            @if (coachId is not null)
+            {
+                @if (interest is not null)
+                {
+                    <div class="bp-rail-sent" data-rail="sent">
+                        <p class="bp-rail-sent-title">@F["Rail_SentTitle", interest.CreatedAt.ToLocalTime().ToString("d MMM yyyy", CultureInfo.CurrentCulture)]</p>
+                        <ol class="bp-stepper bp-rail-steps">
+                            <li class="bp-step-coach bp-step-done">@F["Rail_StepSent"]</li>
+                            <li class="bp-step-coach@(interest.SeenAt is null ? "" : " bp-step-done")">@F["Rail_StepSeen"]</li>
+                            <li class="bp-step-athlete@(interest.Reply == InterestReply.None ? "" : " bp-step-done")">@F["Rail_StepReply"]</li>
+                        </ol>
+                        @if (showSwitch)
+                        {
+                            <form method="post" action="/demo/switch?to=athlete" data-demo-switch="athlete" class="bp-rail-switch-form">
+                                <AntiforgeryToken />
+                                <button type="submit" class="bp-rail-switch">@F[athlete.Gender == Gender.Male ? "Rail_SeeAs_M" : "Rail_SeeAs_F", FirstName]</button>
+                            </form>
+                        }
+                        <a class="bp-rail-all" href="/me/sent">@F["Rail_AllSent"]</a>
+                    </div>
+                }
+                <div class="bp-loop-actionbar">
+                    @if (interest is null)
+                    {
+                        <form method="post" action="/p/@Slug/interest" data-action="interest" class="bp-loop-interest bp-rail-interest">
+                            <AntiforgeryToken />
+                            <button type="submit" class="bp-btn-primary">@L["Interest_Submit"]</button>
+                            <details class="bp-loop-note">
+                                <summary>@Loop["Actions_NoteToggle"]</summary>
+                                <label for="interest-note">@L["Interest_NoteLabel"]</label>
+                                <textarea id="interest-note" name="note" maxlength="280" rows="3"></textarea>
+                            </details>
+                        </form>
+                    }
+                    @* Desktop: always open (::details-content); bottom bar under 640 px: the "⋯" sheet. *@
+                    <details class="bp-rail-more">
+                        <summary class="bp-btn-ghost" aria-label="@F["Rail_More"]"><span aria-hidden="true">⋯</span></summary>
+                        <div class="bp-rail-ghosts">
+                            <form method="post" action="/p/@Slug/shortlist" data-action="shortlist" class="bp-loop-inline">
+                                <AntiforgeryToken />
+                                <button type="submit" class="bp-btn bp-btn-secondary" aria-pressed="@(shortlisted ? "true" : "false")" aria-label="@L[shortlisted ? "Shortlist_Remove" : "Shortlist_Add"]">@Loop["Actions_List"]</button>
+                            </form>
+                            <FollowButton Slug="@Slug" />
+                            <a class="bp-btn bp-btn-secondary" href="/compare?a=@Slug">@Evid["Compare_Link"]</a>
+                        </div>
+                        @ShareDetails
+                    </details>
+                </div>
+            }
+            else
+            {
+                @if (isOwnProfile)
+                {
+                    <p class="bp-received"><a href="/me/inbox">@F["Rail_Received", receivedCount]</a></p>
+                }
+                <FollowButton Slug="@Slug" />
+                @ShareDetails
+            }
+        </aside>
+    </div>
+    </div>
 }
 
 @code {
@@ -181,17 +224,25 @@
     [SupplyParameterFromQuery(Name = "status")] public string? Status { get; set; }
     [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
 
+    private const int ProofMinPercentile = 50;
     private Athlete? athlete;
     private List<StatLine> stats = [];
     private List<AthleteSeason> history = [];
+    private List<MetricPercentile> bestPercentiles = [];
     private int? coachId;
-    private bool interestSent;
+    private Interest? interest;
+    private bool showSwitch;
     private bool shortlisted;
     private bool isOwnProfile;
     private int receivedCount;
 
-    private static readonly string[] StatusKeys = ["interest-sent", "interest-exists", "note-too-long", "shortlist-added", "shortlist-removed"];
-    private string? StatusMessage => Status is not null && StatusKeys.Contains(Status) ? L[$"Status_{Status}"].Value : null;
+    // interest-sent / interest-exists: the rail swaps to the sent card instead of a status line (flow-release §4.4).
+    private static readonly string[] StatusKeys = ["note-too-long", "shortlist-added", "shortlist-removed"];
+    private string? StatusMessage => Status is not null && StatusKeys.Contains(Status)
+        ? Status.StartsWith("shortlist-", StringComparison.Ordinal)
+            ? F[$"Status_{Status}_{(athlete!.Gender == Gender.Male ? "M" : "F")}"].Value
+            : L[$"Status_{Status}"].Value
+        : null;
 
     private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
 
@@ -212,6 +263,10 @@
 
         stats = athlete.Stats.OrderByDescending(s => s.Season, StringComparer.Ordinal).ToList();
         history = athlete.Seasons.OrderByDescending(s => s.Season, StringComparer.Ordinal).ToList();
+        // Proof row = strengths: the two best percentiles the Evidence panel shows (same cohort rule), only at >= 50 (lead decision);
+        // none when none qualify. The bars below still show every value.
+        if (stats.Count > 0 && await Cohorts.EvaluateAsync(athlete) is { } evidence)
+            bestPercentiles = evidence.Metrics.Where(m => m.Percentile >= ProofMinPercentile).OrderByDescending(m => m.Percentile).Take(2).ToList();
 
         var user = AuthState is null ? null : (await AuthState).User;
         if (user?.Identity?.IsAuthenticated == true && int.TryParse(user.FindFirst("entity_id")?.Value, out var entityId))
@@ -219,8 +274,15 @@
             if (user.IsInRole("Coach"))
             {
                 coachId = entityId;
-                interestSent = await Db.Interests.AnyAsync(i => i.CoachId == entityId && i.AthleteId == athlete.Id);
+                interest = await Db.Interests.AsNoTracking().FirstOrDefaultAsync(i => i.CoachId == entityId && i.AthleteId == athlete.Id);
                 shortlisted = await Db.ShortlistEntries.AnyAsync(s => s.CoachId == entityId && s.AthleteId == athlete.Id);
+                if (interest is not null && Demo.Value.Enabled)
+                {
+                    // /demo/switch?to=athlete signs in as the athlete of the coach's LATEST interest: offer it only when that is her.
+                    var latest = await Db.Interests.AsNoTracking().Where(i => i.CoachId == entityId && i.Athlete!.IsDemo)
+                        .OrderByDescending(i => i.CreatedAt).ThenByDescending(i => i.Id).Select(i => i.AthleteId).FirstOrDefaultAsync();
+                    showSwitch = latest == athlete.Id;
+                }
             }
             else if (user.IsInRole("Athlete") && entityId == athlete.Id)
             {
@@ -230,8 +292,22 @@
         }
     }
 
+    private RenderFragment ShareDetails => __builder =>
+    {
+        <details class="bp-rail-share">
+            <summary class="bp-btn-ghost">@F["Rail_Share"]</summary>
+            <div class="bp-rail-share-body">
+                <label class="bp-label" for="bp-share-url">@L["Profile_Share"]</label>
+                <input id="bp-share-url" class="share" type="text" readonly value="@ShareUrl" />
+                <SharePanel Athlete="athlete!" />
+            </div>
+        </details>
+    };
+
     private string FullName => athlete is null ? "" :
         IsGreek ? $"{athlete.FirstName} {athlete.LastName}" : $"{athlete.FirstNameLatin} {athlete.LastNameLatin}";
+
+    private string FirstName => IsGreek ? athlete!.FirstName : athlete!.FirstNameLatin;
 
     private string Initials => athlete is null ? "" :
         IsGreek ? $"{athlete.FirstName[0]}{athlete.LastName[0]}" : $"{athlete.FirstNameLatin[0]}{athlete.LastNameLatin[0]}";
@@ -258,4 +334,12 @@
         $"{athlete!.CurrentClub?.Name ?? L["Profile_OgLookingForTeam"].Value} · {L["Brand"]}";
 
     private static string Num(decimal v) => v.ToString("0.0", CultureInfo.CurrentCulture);
+
+    // Plain text, not a second SourceBadge: the table rows carry the badges (one per season).
+    private static string SourceClass(StatSource s) => s switch
+    {
+        StatSource.CoachConfirmed => "bp-src-coach",
+        StatSource.LeagueVerifiedMock => "bp-src-league",
+        _ => "bp-src-self",
+    };
 }

@@ -3,9 +3,12 @@ using System.Text.RegularExpressions;
 using Ballpass.Web.Data;
 using Ballpass.Web.Demo;
 using Ballpass.Web.Features.Find.Ai;
+using Ballpass.Web.Features.Loop;
+using Ballpass.Web.Features.Media;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Ballpass.Web.Tests;
 
@@ -120,7 +123,7 @@ public class FindPagesTests(BallpassAppFactory app)
         var html = await Html(client, "/match?position=PF&position=SF&minHeight=175&priority=rebounding");
 
         var articles = Articles(html);
-        Assert.InRange(articles.Count, 1, 20);
+        Assert.InRange(articles.Count, 1, 13);
 
         var fits = articles.Select(a => int.Parse(Regex.Match(a, "data-fit=\"(\\d+)\"").Groups[1].Value)).ToList();
         Assert.Equal(fits.OrderByDescending(x => x), fits);
@@ -132,6 +135,7 @@ public class FindPagesTests(BallpassAppFactory app)
             Assert.InRange(reasons.Count, 1, 3);                                      // stat reason is missing when the cohort rule yields no percentile
             Assert.All(reasons, r => Assert.Contains("data-source=", r.Value));      // every reason carries its source badge
             Assert.Contains($"href=\"/p/{slug}\"", a);
+            if (a.Contains("data-top=\"true\"")) continue;   // flow-release §4.5: the top match links to the profile (the page's one CTA)
             Assert.Matches($"<form[^>]*method=\"post\"[^>]*action=\"/p/{slug}/interest\"|<form[^>]*action=\"/p/{slug}/interest\"[^>]*method=\"post\"", a);
             Assert.Contains("__RequestVerificationToken", a);
         }
@@ -367,6 +371,145 @@ public class FindPagesTests(BallpassAppFactory app)
     private sealed class RefusingClient : IClaudeClient
     {
         public Task<ClaudeReply> CompleteAsync(string query, CancellationToken ct) => Task.FromResult(new ClaudeReply("refusal", null));
+    }
+
+    // ---------- flow-release WP-B: featured need, top match, cards ----------
+
+    private FeaturedOptions Featured => app.Services.GetRequiredService<IOptions<DemoOptions>>().Value.Featured;
+
+    private async Task<HttpClient> FeaturedCoachClient()
+    {
+        var f = Featured;
+        var id = new FeedHarness(app).Db(db => db.Coaches.Where(c => c.IsDemo && c.FirstName == f.CoachFirstName && c.LastName == f.CoachLastName)
+            .Select(c => c.Id).Single());
+        return await new FeedHarness(app).LoginAsync("coach", id);
+    }
+
+    private static int Primaries(string html) => Regex.Matches(html, "class=\"[^\"]*\\bbp-btn-primary\\b[^\"]*\"").Count;
+
+    // SPEC §2/§6 WP-B, O7: the configured need ranks the configured featured athlete first, with a real score (no "–").
+    [Fact]
+    public async Task Featured_need_ranks_the_featured_athlete_first()
+    {
+        var f = Featured;
+        Assert.Equal("dimitra-kalogeraki", f.AthleteSlug);   // lead review: percentile bars, best two >= 70
+        Assert.False(string.IsNullOrWhiteSpace(f.NeedQuery), "Demo:Featured:NeedQuery is empty");
+        var client = await FeaturedCoachClient();
+
+        foreach (var url in new[] { "/match?" + f.NeedQuery, "/match?need=featured" })
+        {
+            var html = await Html(client, url);
+            var articles = Articles(html);
+            Assert.NotEmpty(articles);
+            Assert.Contains($"data-slug=\"{f.AthleteSlug}\"", articles[0]);
+            Assert.Contains("data-top=\"true\"", articles[0]);
+            var first = int.Parse(Regex.Match(articles[0], "data-fit=\"(\\d+)\"").Groups[1].Value);
+            Assert.True(first >= 90, $"{url}: top fit {first}");
+            Assert.True(int.Parse(Regex.Match(articles[1], "data-fit=\"(\\d+)\"").Groups[1].Value) < first, $"{url}: tie at the top");
+            Assert.Contains("data-criterion=\"Stat\"", articles[0]);   // the need includes a stat priority: the trust story is a percentile
+            var nums = Regex.Matches(html, "<span class=\"bp-find-fit-num\">(.*?)</span>", RegexOptions.Singleline).Select(m => m.Groups[1].Value).ToList();
+            Assert.Equal(articles.Count, nums.Count);
+            Assert.All(nums, n => Assert.DoesNotContain("–", n));
+        }
+    }
+
+    // Lead review: no tie at the top for at least the next 3 calendar years (ages move with the clock; birth years do not).
+    [Theory]
+    [InlineData(2026)]
+    [InlineData(2027)]
+    [InlineData(2028)]
+    [InlineData(2029)]
+    public async Task Featured_need_ranks_the_featured_athlete_first_in_later_years(int year)
+    {
+        var f = Featured;
+        var host = app.WithWebHostBuilder(b => b.ConfigureTestServices(s => s.AddSingleton<TimeProvider>(new FixedTime(new DateTimeOffset(year, 6, 1, 12, 0, 0, TimeSpan.Zero)))));
+        var id = new FeedHarness(app).Db(db => db.Coaches.Where(c => c.IsDemo && c.FirstName == f.CoachFirstName && c.LastName == f.CoachLastName).Select(c => c.Id).Single());
+        var client = host.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        var token = FeedHarness.Token(await Html(client, "/demo"));
+        var login = await client.PostAsync("/demo/login", new FormUrlEncodedContent(new Dictionary<string, string>
+            { ["personaType"] = "coach", ["personaId"] = id.ToString(), ["returnUrl"] = "", ["__RequestVerificationToken"] = token }));
+        Assert.Equal(HttpStatusCode.Redirect, login.StatusCode);
+
+        var articles = Articles(await Html(client, "/match?need=featured"));
+
+        Assert.Contains($"data-slug=\"{f.AthleteSlug}\"", articles[0]);
+        int Fit(string a) => int.Parse(Regex.Match(a, "data-fit=\"(\\d+)\"").Groups[1].Value);
+        Assert.True(Fit(articles[0]) > Fit(articles[1]), $"{year}: tie or loss at the top ({Fit(articles[0])} vs {Fit(articles[1])})");
+    }
+
+    private sealed class FixedTime(DateTimeOffset now) : TimeProvider
+    {
+        public override DateTimeOffset GetUtcNow() => now;
+    }
+
+    [Fact]
+    public async Task Without_a_need_there_are_no_rings_and_a_prompt_card()
+    {
+        var html = await Html(await CoachClient(), "/match");
+
+        Assert.DoesNotContain("class=\"bp-find-fit", html);
+        Assert.DoesNotContain("<span class=\"bp-find-fit-num\">–", html);
+        Assert.Contains("data-match-prompt", html);
+        Assert.Contains("Πείτε μας τι χρειάζεστε", html);
+        Assert.Contains("href=\"/match?need=featured\"", html);   // one click to the configured need
+    }
+
+    [Fact]
+    public async Task Match_has_one_primary_cta_on_the_top_card_and_outline_interest_buttons()
+    {
+        var f = Featured;
+        var html = await Html(await FeaturedCoachClient(), "/match?" + f.NeedQuery);
+
+        Assert.Equal(1, Primaries(html));
+        var top = Regex.Match(html, "<section[^>]*class=\"bp-match-top\".*?</section>", RegexOptions.Singleline).Value;
+        Assert.NotEmpty(top);
+        Assert.Matches($"<a[^>]*class=\"bp-btn-primary\"[^>]*href=\"/p/{f.AthleteSlug}\"|<a[^>]*href=\"/p/{f.AthleteSlug}\"[^>]*class=\"bp-btn-primary\"", top);
+        Assert.Contains($"src=\"{StockMedia.MatchTop.Url}\"", top);
+        Assert.Contains("Κορυφαίο ταίριασμα", top);
+        Assert.Contains("class=\"bp-chip-athlete\"", top);                // teal LookingForTeam chip, unified (SPEC §3 rule 2)
+        Assert.Matches("class=\"bp-find-fit bp-find-fit-lg\"", top);
+        // Need summary chip bar in the header.
+        Assert.Matches("class=\"bp-match-need\"[^>]*>.*Σούτινγκ γκαρντ.*Κρήτη", html.Replace("\n", " "));
+        var rest = Articles(html).Skip(1).ToList();
+        Assert.InRange(rest.Count, 1, 12);
+        Assert.All(rest, a => Assert.DoesNotContain("data-top=", a));
+        Assert.Contains(rest, a => a.Contains("class=\"bp-btn-outline\""));
+        Assert.DoesNotContain("class=\"bp-looking\"", html);
+        Assert.DoesNotContain("class=\"bp-btn\"", html);                    // no flat orange buttons next to the one CTA
+    }
+
+    [Fact]
+    public async Task Match_shows_twelve_then_more_with_take()
+    {
+        var client = await CoachClient();
+
+        var first = Articles(await Html(client, "/match?position=PF&position=SF&minHeight=175"));
+        Assert.Equal(13, first.Count);                                     // top card + 12
+        var html = await Html(client, "/match?position=PF&position=SF&minHeight=175");
+        Assert.Matches("<a[^>]*href=\"/match\\?[^\"]*take=24[^\"]*\"", html);
+        Assert.Equal(25, Articles(await Html(client, "/match?position=PF&position=SF&minHeight=175&take=24")).Count);
+    }
+
+    [Fact]
+    public async Task Search_reuses_the_card_without_a_ring_in_a_two_column_grid()
+    {
+        var html = await Html(await CoachClient(), "/search?looking=true");
+
+        var cards = Regex.Matches(html, "<article[^>]*class=\"bp-find-match\"[^>]*data-variant=\"search\"", RegexOptions.Singleline);
+        Assert.NotEmpty(cards);
+        Assert.Contains("class=\"bp-find-grid\"", html);
+        Assert.DoesNotContain("class=\"bp-find-fit", html);
+        Assert.Contains("class=\"bp-chip-athlete\"", html);
+        Assert.DoesNotContain("class=\"bp-looking\"", html);
+    }
+
+    [Fact]
+    public async Task Ai_box_offers_three_example_chips_to_match()
+    {
+        var html = await Html(await CoachClient(), "/match");
+
+        var examples = Regex.Matches(html, "<a[^>]*class=\"bp-find-example\"[^>]*href=\"/find/ai\\?to=match&amp;q=|<a[^>]*class=\"bp-find-example\"[^>]*href=\"/find/ai\\?to=match&q=");
+        Assert.Equal(3, examples.Count);
     }
 
     // ---------- helpers ----------
