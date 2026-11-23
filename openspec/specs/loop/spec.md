@@ -75,7 +75,7 @@ The `/demo/login` endpoint and the persona switch SHALL build claims through the
 
 ### Requirement: Inbox cards put the athlete's decision first
 
-`/me/inbox` SHALL render each pending interest as a card with a coach scene photo (pool by coach id), the coach's name, role, club and league, the note, a teal "Αποδοχή" button (`bp-btn-athlete`) and a ghost "Όχι τώρα". An accepted interest SHALL show a teal "Συνδεθήκατε" banner, the club contact address and a teal "Στείλτε email" `mailto:` link, with no note that the contact is fictional.
+`/me/inbox` SHALL render each pending interest as a card with a coach scene photo (pool by coach id), the coach's name, role, club and league, the note, a teal "Αποδοχή" button (`bp-btn-athlete`) and a ghost "Όχι τώρα". An accepted interest SHALL show a teal "Συνδεθήκατε" banner, a teal "Στείλτε μήνυμα" button (`bp-btn-athlete`) that opens the conversation, and the club contact as a secondary ghost "Στείλτε email" `mailto:` link, with no note that the contact is fictional.
 
 #### Scenario: Pending
 - **WHEN** an athlete with a pending interest opens /me/inbox
@@ -83,4 +83,4 @@ The `/demo/login` endpoint and the persona switch SHALL build claims through the
 
 #### Scenario: Accepted
 - **WHEN** the athlete accepts
-- **THEN** the card shows "Συνδεθήκατε", the `.invalid` club address and a `mailto:` link to it
+- **THEN** the card shows "Συνδεθήκατε", a teal link to `/messages/with/{interestId}` and a ghost `mailto:` link to the `.invalid` club address
