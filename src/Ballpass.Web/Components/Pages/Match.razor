@@ -2,15 +2,18 @@
 @attribute [Authorize(Policy = "CoachOnly")]
 @using System.Globalization
 @using System.Security.Claims
-@using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Data
 @using Ballpass.Web.Features.Evidence
 @using Ballpass.Web.Features.Find
 @using Ballpass.Web.Features.Find.Ai
 @using Ballpass.Web.Features.Find.Fit
+@using Ballpass.Web.Features.Loop
+@using Microsoft.AspNetCore.WebUtilities
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.Extensions.Options
 @inject BallpassDbContext Db
+@inject NavigationManager Nav
+@inject IOptions<DemoOptions> Demo
 @inject TimeProvider Time
 @inject FitScorer Scorer
 @inject IOptions<FitOptions> FitConfig
@@ -21,12 +24,28 @@
 
 <PageTitle>@F["Match_Title"]</PageTitle>
 
-<h1>@F["Match_Title"]</h1>
-<p class="bp-find-intro">@F["Match_Intro"]</p>
+@* flow-release §4.5: glow, need chip bar, AI box, filters | results (top match + 2-column cards). One orange CTA: the top card's. *@
+<div class="bp-match">
+<header class="bp-match-head">
+    <h1>@F["Match_Title"]</h1>
+    @if (NeedChips.Count > 0)
+    {
+        <div class="bp-match-need" role="group" aria-label="@F["Match_NeedAria"]">
+            @foreach (var chip in NeedChips)
+            {
+                <span class="bp-match-need-chip">@chip</span>
+            }
+            <a class="bp-match-need-edit" href="#bp-need">@F["Match_NeedChange"]</a>
+        </div>
+    }
+</header>
 
 <AiSearchBox Target="match" />
 
 <div class="bp-find-layout">
+    @* Desktop: the details is always shown open by CSS (::details-content); below 900 px it is the "Φίλτρα (n)" sheet. *@
+    <details class="bp-find-filters" id="bp-need">
+        <summary class="bp-btn-outline">@F["Match_Filters", FilterCount]</summary>
     <form method="get" action="/match" class="bp-find-form">
         <h2>@F["Need_Heading"]</h2>
         <p class="bp-find-hint">@F["Need_HardHint"]</p>
@@ -92,55 +111,65 @@
             <label><input type="checkbox" name="confirmed" value="true" checked="@need.ConfirmedOnly"> @F["Need_Confirmed"]</label>
         </div>
         <div class="bp-actions">
-            <button type="submit" class="bp-btn">@F["Need_Submit"]</button>
+            <button type="submit" class="bp-btn-outline">@F["Need_Submit"]</button>
             <a href="/match" class="bp-clear">@F["Need_Clear"]</a>
         </div>
     </form>
+    </details>
 
     <section class="bp-find-results" aria-live="polite" aria-labelledby="bp-find-results-h">
         <h2 id="bp-find-results-h" class="visually-hidden">@F["Results_Heading"]</h2>
-        <p class="bp-find-count">
-            <strong data-total="@ranking.Results.Count">@F[ranking.Results.Count == 1 ? "Results_Count_One" : "Results_Count", ranking.Results.Count]</strong>
-            <span class="bp-find-hidden" data-hidden="@ranking.Hidden">@F[ranking.Hidden == 1 ? "Results_Hidden_One" : "Results_Hidden", ranking.Hidden]</span>
-        </p>
+        <div class="bp-find-resbar">
+            <p class="bp-find-count">
+                <strong data-total="@ranking.Results.Count">@F[ranking.Results.Count == 1 ? "Results_Count_One" : "Results_Count", ranking.Results.Count]</strong>
+                <span class="bp-find-hidden" data-hidden="@ranking.Hidden">@F[ranking.Hidden == 1 ? "Results_Hidden_One" : "Results_Hidden", ranking.Hidden]</span>
+            </p>
+            @if (trust is not null)
+            {
+                <div class="bp-find-trust" data-self="@trust.SelfReported" data-coach="@trust.CoachConfirmed" data-league="@trust.LeagueVerified"
+                     role="img" aria-label="@F["Trust_Aria", trust.SelfReported, trust.CoachConfirmed, trust.LeagueVerified]" title="@F["Trust_Heading"] · @F["Trust_Count", withStats]">
+                    <div class="bp-find-trust-bar" aria-hidden="true">
+                        <span class="bp-find-seg bp-find-seg-self" style="width:@(trust.SelfReported)%"></span>
+                        <span class="bp-find-seg bp-find-seg-coach" style="width:@(trust.CoachConfirmed)%"></span>
+                        <span class="bp-find-seg bp-find-seg-league" style="width:@(trust.LeagueVerified)%"></span>
+                    </div>
+                    <ul class="bp-find-trust-legend" aria-hidden="true">
+                        <li class="bp-src-self"><span class="bp-find-dot bp-find-seg-self"></span>@S["Source_SelfReported"] <b>@trust.SelfReported%</b></li>
+                        <li class="bp-src-coach"><span class="bp-find-dot bp-find-seg-coach"></span>@S["Source_CoachConfirmed"] <b>@trust.CoachConfirmed%</b></li>
+                        <li class="bp-src-league"><span class="bp-find-dot bp-find-seg-league"></span>@S["Source_LeagueVerifiedMock"] <b>@trust.LeagueVerified%</b></li>
+                    </ul>
+                </div>
+            }
+            <details class="bp-find-weights">
+                <summary>@F["Weights_Heading"]</summary>
+                <div class="bp-find-weights-body">
+                    <p>@F["Weights_Intro", FitConfig.Value.MinGames, EvidenceConfig.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture), EvidenceConfig.Value.MinPeers]</p>
+                    <ul>
+                        <li>@F["Weight_Height"]: @Pct(FitConfig.Value.Weights.Height)</li>
+                        <li>@F["Weight_Stat"]: @Pct(FitConfig.Value.Weights.Stat)</li>
+                        <li>@F["Weight_Region"]: @Pct(FitConfig.Value.Weights.Region)</li>
+                        <li>@F["Weight_Age"]: @Pct(FitConfig.Value.Weights.Age)</li>
+                        <li>@F["Weight_League"]: @Pct(FitConfig.Value.Weights.League)</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
         <p class="bp-find-disclaimer">@F["Results_Label"]</p>
-
-        @if (trust is not null)
-        {
-            <div class="bp-find-trust" data-self="@trust.SelfReported" data-coach="@trust.CoachConfirmed" data-league="@trust.LeagueVerified"
-                 role="img" aria-label="@F["Trust_Aria", trust.SelfReported, trust.CoachConfirmed, trust.LeagueVerified]">
-                <div class="bp-find-trust-head">
-                    <span>@F["Trust_Heading"]</span>
-                    <span class="bp-find-trust-n">@F["Trust_Count", withStats]</span>
-                </div>
-                <div class="bp-find-trust-bar" aria-hidden="true">
-                    <span class="bp-find-seg bp-find-seg-self" style="width:@(trust.SelfReported)%"></span>
-                    <span class="bp-find-seg bp-find-seg-coach" style="width:@(trust.CoachConfirmed)%"></span>
-                    <span class="bp-find-seg bp-find-seg-league" style="width:@(trust.LeagueVerified)%"></span>
-                </div>
-                <ul class="bp-find-trust-legend">
-                    <li class="bp-src-self"><span class="bp-find-dot bp-find-seg-self"></span>@S["Source_SelfReported"] <b>@trust.SelfReported%</b></li>
-                    <li class="bp-src-coach"><span class="bp-find-dot bp-find-seg-coach"></span>@S["Source_CoachConfirmed"] <b>@trust.CoachConfirmed%</b></li>
-                    <li class="bp-src-league"><span class="bp-find-dot bp-find-seg-league"></span>@S["Source_LeagueVerifiedMock"] <b>@trust.LeagueVerified%</b></li>
-                </ul>
-            </div>
-        }
-
-        <details class="bp-find-weights">
-            <summary>@F["Weights_Heading"]</summary>
-            <p>@F["Weights_Intro", FitConfig.Value.MinGames, EvidenceConfig.Value.MinMinutesPerGame.ToString("0.#", CultureInfo.CurrentCulture), EvidenceConfig.Value.MinPeers]</p>
-            <ul>
-                <li>@F["Weight_Height"]: @Pct(FitConfig.Value.Weights.Height)</li>
-                <li>@F["Weight_Stat"]: @Pct(FitConfig.Value.Weights.Stat)</li>
-                <li>@F["Weight_Region"]: @Pct(FitConfig.Value.Weights.Region)</li>
-                <li>@F["Weight_Age"]: @Pct(FitConfig.Value.Weights.Age)</li>
-                <li>@F["Weight_League"]: @Pct(FitConfig.Value.Weights.League)</li>
-            </ul>
-        </details>
 
         @if (!ranked && ranking.Results.Count > 0)
         {
-            <p class="bp-find-note">@F["Results_Unranked"]</p>
+            @* No scoring criterion: no rings at all (never "–"), one prompt card instead (SPEC §4.5). *@
+            <div class="bp-card bp-panel bp-match-prompt" data-match-prompt>
+                <p class="bp-match-prompt-title">@F["Match_PromptTitle"]</p>
+                <p class="bp-find-note">@(need.Positions.Count > 0 ? F["Results_Unranked"] : F["Match_PromptBody"])</p>
+                <div class="bp-match-prompt-act">
+                    @if (FeaturedChips.Count > 0)
+                    {
+                        <a class="bp-btn-primary" href="/match?need=featured">@F["Match_PromptTry", string.Join(" · ", FeaturedChips)]</a>
+                    }
+                    <a class="bp-btn-ghost" href="#bp-need">@F["Match_PromptFill"]</a>
+                </div>
+            </div>
         }
 
         @if (ranking.Results.Count == 0)
@@ -149,79 +178,31 @@
         }
         else
         {
-            <div class="bp-find-list">
+            @if (top is not null)
+            {
+                <AthleteMatchCard Athlete="athletes[top.Candidate.Slug]" Variant="top" Fit="top" Need="need" Age="top.Candidate.Age" Sent="sent.Contains(top.Candidate.Slug)" />
+            }
+            <div class="bp-find-grid">
                 @foreach (var r in shown)
                 {
-                    var a = athletes[r.Candidate.Slug];
-                    <article class="bp-find-match" data-slug="@a.Slug" data-fit="@r.FitPercent">
-                        <div class="bp-find-fit" style="--fit:@(r.FitPercent ?? 0)" role="img"
-                             aria-label="@(r.FitPercent is { } fp ? F["Fit_Aria", fp].Value : F["Fit_Unranked"].Value)">
-                            @if (r.FitPercent is { } pct)
-                            {
-                                <span class="bp-find-fit-num">@pct<small>%</small></span>
-                            }
-                            else
-                            {
-                                <span class="bp-find-fit-num">–</span>
-                            }
-                        </div>
-                        <div class="bp-find-body">
-                            <div class="bp-find-title">
-                                <a class="bp-find-name" href="/p/@a.Slug">@FullName(a)</a>
-                                @if (r.Partial)
-                                {
-                                    <span class="bp-find-partial" title="@F["Partial_Missing", MissingText(r)]">@F["Partial_Tag"]</span>
-                                }
-                                @if (a.LookingForTeam)
-                                {
-                                    <span class="bp-looking">@F["Result_Looking"]</span>
-                                }
-                            </div>
-                            <div class="bp-find-meta">@S[$"Position_{a.Position}"] · @a.HeightCm @S["Profile_Cm"] · @r.Candidate.Age @S["Profile_Years"] · @(a.CurrentClub?.Name ?? S["Profile_NoClub"].Value)</div>
-                            @if (r.Reasons.Count > 0)
-                            {
-                                <ul class="bp-find-reasons" aria-label="@F["Reasons_Heading"]">
-                                    @foreach (var reason in r.Reasons)
-                                    {
-                                        <li class="bp-find-reason" data-criterion="@reason.Criterion" data-state="@reason.State.ToString().ToLowerInvariant()">
-                                            <span class="bp-find-mark" aria-label="@F[$"Mark_{reason.State}"]" title="@F[$"Mark_{reason.State}"]">@Mark(reason.State)</span>
-                                            <span class="bp-find-reason-text">@ReasonText(reason, r.Candidate)</span>
-                                            <SourceBadge Source="reason.Source" />
-                                        </li>
-                                    }
-                                </ul>
-                            }
-                            @if (r.Partial)
-                            {
-                                <p class="bp-find-missing">@F["Partial_Missing", MissingText(r)]</p>
-                            }
-                        </div>
-                        <div class="bp-find-act">
-                            @if (sent.Contains(a.Slug))
-                            {
-                                <p class="bp-find-sent">✓ @S["Interest_AlreadySent"]</p>
-                            }
-                            else
-                            {
-                                <form method="post" action="/p/@a.Slug/interest" class="bp-find-interest">
-                                    <AntiforgeryToken />
-                                    <button type="submit" class="bp-btn">@S["Interest_Submit"]</button>
-                                </form>
-                            }
-                        </div>
-                    </article>
+                    <AthleteMatchCard Athlete="athletes[r.Candidate.Slug]" Variant="match" Fit="r" Need="need" Age="r.Candidate.Age" Sent="sent.Contains(r.Candidate.Slug)" />
                 }
             </div>
-            @if (ranking.Results.Count > shown.Count)
+            @if (remaining > 0)
             {
-                <p class="bp-find-note">@F["Results_Showing", shown.Count]</p>
+                <p class="bp-find-more">
+                    <span class="bp-find-note">@F["Results_Showing", shown.Count + (top is null ? 0 : 1)]</span>
+                    <a class="bp-btn-outline" href="@MoreHref">@F["Match_More"]</a>
+                </p>
             }
         }
     </section>
 </div>
+</div>
 
 @code {
-    private const int ShowTop = 20;
+    private const int ShowRest = 12;
+    private const int MaxRest = 48;
     private static readonly FitPriority[] PriorityOptions = [FitPriority.Rebounding, FitPriority.Scoring, FitPriority.Playmaking];
 
     [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
@@ -237,21 +218,30 @@
     [SupplyParameterFromQuery(Name = "league")] public string? League { get; set; }
     [SupplyParameterFromQuery(Name = "priority")] public string? Priority { get; set; }
     [SupplyParameterFromQuery(Name = "confirmed")] public string? ConfirmedRaw { get; set; }
+    /// <summary>"featured" = the need in Demo:Featured:NeedQuery (the 60-second demo path).</summary>
+    [SupplyParameterFromQuery(Name = "need")] public string? NeedRaw { get; set; }
+    /// <summary>How many cards after the top match ("Περισσότερα" asks for 12 more).</summary>
+    [SupplyParameterFromQuery(Name = "take")] public string? TakeRaw { get; set; }
 
     private int? MinHeight => LenientQuery.Int(MinHeightRaw, 0, 400);
     private int? MaxHeight => LenientQuery.Int(MaxHeightRaw, 0, 400);
     private int? MinAge => LenientQuery.Int(MinAgeRaw, 0, 150);
     private int? MaxAge => LenientQuery.Int(MaxAgeRaw, 0, 150);
     private bool Confirmed => LenientQuery.Flag(ConfirmedRaw);
+    private int Take => Math.Clamp(LenientQuery.Int(TakeRaw, 1, 1000) ?? ShowRest, ShowRest, MaxRest);
 
     private FitNeed need = new();
     private FitRanking ranking = new([], 0);
+    private FitResult? top;
     private List<FitResult> shown = [];
+    private int remaining;
     private Dictionary<string, Athlete> athletes = [];
     private HashSet<string> sent = [];
     private TrustShares? trust;
     private int withStats;
     private bool ranked;
+    private List<string> NeedChips = [];
+    private List<string> FeaturedChips = [];
 
     private bool IsMale => Gender == "Male";
     private string[] SelectedPositions => (Position ?? []).Where(p => SearchFilterValidator.Positions.Contains(p)).Distinct().ToArray();
@@ -259,20 +249,11 @@
     protected override async Task OnInitializedAsync()
     {
         var year = Time.GetUtcNow().Year;
+        var featuredQuery = Demo.Value.Featured.NeedQuery;
+        if (NeedRaw == "featured" && !string.IsNullOrWhiteSpace(featuredQuery)) ApplyQuery(featuredQuery);
         var gender = IsMale ? Data.Gender.Male : Data.Gender.Female;
 
-        var league = Enum.TryParse<Data.League>(League, out var l) && SearchFilterValidator.Leagues.Contains(League!) ? l : (Data.League?)null;
-        need = new FitNeed
-        {
-            Positions = SelectedPositions.Select(p => Enum.Parse<Data.Position>(p)).ToArray(),
-            MinHeight = MinHeight, MaxHeight = MaxHeight,
-            MinAge = MinAge is { } a1 ? Math.Max(18, a1) : null,
-            MaxAge = MaxAge is { } a2 ? Math.Max(18, a2) : null,
-            Region = SearchFilterValidator.Regions.Contains(Region ?? "") ? Region : null,
-            League = league,
-            Priority = Enum.TryParse<FitPriority>(Priority, ignoreCase: true, out var pr) && PriorityOptions.Contains(pr) ? pr : FitPriority.None,
-            ConfirmedOnly = Confirmed,
-        };
+        need = BuildNeed();
 
         // The whole same-gender demo cohort is loaded (a few hundred rows): percentiles are computed against it, hard filters hide inside the scorer.
         var rows = await Db.Athletes.AsNoTracking().Where(a => a.IsDemo && a.Gender == gender)
@@ -291,18 +272,90 @@
 
         ranking = Scorer.Rank(need, cohort);
         ranked = ranking.Results.Any(r => r.FitPercent is not null);
-        shown = ranking.Results.Take(ShowTop).ToList();
+        // The top match card only exists for a scored list; an unranked list has no "best" (and no rings).
+        top = ranked ? ranking.Results[0] : null;
+        var rest = ranking.Results.Skip(top is null ? 0 : 1).ToList();
+        shown = rest.Take(Take).ToList();
+        remaining = rest.Count - shown.Count;
 
         var sources = ranking.Results.Select(r => r.Candidate.Stat?.Source).ToList();
         trust = TrustBar.Compute(sources);
         withStats = sources.Count(s => s is not null);
 
+        NeedChips = Chips(need);
+        if (!string.IsNullOrWhiteSpace(featuredQuery))
+        {
+            var saved = (Gender, Position, MinHeightRaw, MaxHeightRaw, MinAgeRaw, MaxAgeRaw, Region, League, Priority, ConfirmedRaw);
+            ApplyQuery(featuredQuery);
+            FeaturedChips = Chips(BuildNeed());
+            (Gender, Position, MinHeightRaw, MaxHeightRaw, MinAgeRaw, MaxAgeRaw, Region, League, Priority, ConfirmedRaw) = saved;
+        }
+
         var user = AuthState is null ? null : (await AuthState).User;
         if (int.TryParse(user?.FindFirstValue("entity_id"), out var coachId))
         {
-            var slugs = shown.Select(r => r.Candidate.Slug).ToList();
+            var slugs = shown.Select(r => r.Candidate.Slug).Concat(top is null ? [] : [top.Candidate.Slug]).ToList();
             sent = (await Db.Interests.Where(i => i.CoachId == coachId && slugs.Contains(i.Athlete!.Slug))
                 .Select(i => i.Athlete!.Slug).ToListAsync()).ToHashSet();
+        }
+    }
+
+    private FitNeed BuildNeed()
+    {
+        var league = Enum.TryParse<Data.League>(League, out var l) && SearchFilterValidator.Leagues.Contains(League!) ? l : (Data.League?)null;
+        return new FitNeed
+        {
+            Positions = SelectedPositions.Select(p => Enum.Parse<Data.Position>(p)).ToArray(),
+            MinHeight = MinHeight, MaxHeight = MaxHeight,
+            MinAge = MinAge is { } a1 ? Math.Max(18, a1) : null,
+            MaxAge = MaxAge is { } a2 ? Math.Max(18, a2) : null,
+            Region = SearchFilterValidator.Regions.Contains(Region ?? "") ? Region : null,
+            League = league,
+            Priority = Enum.TryParse<FitPriority>(Priority, ignoreCase: true, out var pr) && PriorityOptions.Contains(pr) ? pr : FitPriority.None,
+            ConfirmedOnly = Confirmed,
+        };
+    }
+
+    /// <summary>Reads a Match query string (Demo:Featured:NeedQuery) into the same raw parameters the URL would set.</summary>
+    private void ApplyQuery(string query)
+    {
+        var q = QueryHelpers.ParseQuery(query.StartsWith('?') ? query : "?" + query);
+        string? One(string key) => q.TryGetValue(key, out var v) ? v.ToString() : null;
+        Gender = One("gender");
+        Position = q.TryGetValue("position", out var ps) ? ps.Where(p => p is not null).Select(p => p!).ToArray() : null;
+        MinHeightRaw = One("minHeight"); MaxHeightRaw = One("maxHeight");
+        MinAgeRaw = One("minAge"); MaxAgeRaw = One("maxAge");
+        Region = One("region"); League = One("league");
+        Priority = One("priority"); ConfirmedRaw = One("confirmed");
+    }
+
+    /// <summary>Need summary for the header chip bar: "Σούτινγκ γκαρντ · 174–177 εκ. · 22–28 ετών · Κρήτη".</summary>
+    private List<string> Chips(FitNeed n)
+    {
+        var chips = new List<string>();
+        if (n.Positions.Count > 0) chips.Add(string.Join(", ", n.Positions.Select(p => S[$"Position_{p}"].Value)));
+        if (n.WantsHeight) chips.Add($"{Target(n.MinHeight, n.MaxHeight)} {S["Profile_Cm"]}");
+        if (n is { MinAge: { } lo, MaxAge: { } hi }) chips.Add(F["Match_NeedAges", lo, hi]);
+        else if (n.MinAge is { } lo2) chips.Add(F["Match_NeedAgeMin", lo2]);
+        else if (n.MaxAge is { } hi2) chips.Add(F["Match_NeedAgeMax", hi2]);
+        if (n.Region is { } r) chips.Add(RegionName(r));
+        if (n.League is { } l) chips.Add(S[$"League_{l}"]);
+        if (n.Priority != FitPriority.None) chips.Add(F[$"Priority_{n.Priority}"]);
+        if (n.ConfirmedOnly) chips.Add(F["Match_NeedConfirmed"]);
+        return chips;
+    }
+
+    private int FilterCount => NeedChips.Count;
+
+    /// <summary>Same URL with 12 more cards (GET, no JavaScript).</summary>
+    private string MoreHref
+    {
+        get
+        {
+            var uri = new Uri(Nav.Uri);
+            var q = QueryHelpers.ParseQuery(uri.Query).Where(kv => kv.Key != "take")
+                .SelectMany(kv => kv.Value.Select(v => $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(v ?? "")}"));
+            return "/match?" + string.Join("&", q.Append($"take={Math.Min(Take + ShowRest, MaxRest)}"));
         }
     }
 
@@ -314,10 +367,7 @@
         _ => null,
     };
 
-    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
-    private string FullName(Athlete a) => IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
     private static string Pct(double w) => $"{Math.Round(w * 100):0}%";
-    private static string Mark(ReasonState s) => s switch { ReasonState.Met => "✓", ReasonState.Partial => "≈", _ => "✕" };
 
     private string RegionName(string r)
     {
@@ -332,28 +382,4 @@
         (null, { } hi) => $"≤{hi}",
         _ => "",
     };
-
-    private string ReasonText(FitReason r, FitCandidate c) => r.Criterion switch
-    {
-        FitCriterion.Height => F["Reason_Height", (int)r.Actual, Target(need.MinHeight, need.MaxHeight)].Value,
-        FitCriterion.Age => F["Reason_Age", (int)r.Actual, Target(need.MinAge, need.MaxAge)].Value,
-        FitCriterion.Region => r.State == ReasonState.Met
-            ? F["Reason_Region_Met", RegionName(c.Region)].Value
-            : F["Reason_Region", RegionName(c.Region), RegionName(need.Region!)].Value,
-        FitCriterion.League => r.State == ReasonState.Met
-            ? F["Reason_League_Met", S[$"League_{r.ActualKey}"].Value].Value
-            : F["Reason_League", S[$"League_{r.ActualKey}"].Value, S[$"League_{need.League}"].Value].Value,
-        _ => r.TopPercent is { } top and <= 50
-            ? F["Reason_Stat_Top", r.Actual.ToString("0.0"), F[$"Unit_{need.Priority}"].Value, top, F[$"Cohort_{r.CohortGroup}"].Value].Value
-            : F["Reason_Stat_Plain", r.Actual.ToString("0.0"), F[$"Unit_{need.Priority}"].Value, F[$"Cohort_{r.CohortGroup}"].Value].Value,
-    };
-
-    private string MissingText(FitResult r) => string.Join(", ", r.Missing.Select(m => m switch
-    {
-        FitCriterion.Stat => F["Missing_Stat", FitConfig.Value.MinGames].Value,
-        FitCriterion.League => F["Missing_League"].Value,
-        FitCriterion.Height => F["Missing_Height"].Value,
-        FitCriterion.Age => F["Missing_Age"].Value,
-        _ => F["Missing_Region"].Value,
-    }));
 }

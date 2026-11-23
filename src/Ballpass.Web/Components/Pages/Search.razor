@@ -1,6 +1,5 @@
 @page "/search"
 @attribute [Authorize(Policy = "CoachOnly")]
-@using System.Globalization
 @using Ballpass.Web.Data
 @using Ballpass.Web.Demo
 @using Ballpass.Web.Features.Find
@@ -83,23 +82,11 @@
 
     <section class="bp-results" aria-live="polite">
         <p class="bp-total"><strong data-total="@total">@total</strong> @L["Search_Results"]</p>
-        <div class="bp-result-list">
+        @* flow-release §4.5: the Match card without the ring, same 2-column grid. *@
+        <div class="bp-find-grid">
             @foreach (var a in results)
             {
-                <div class="bp-result-wrap">
-                    <article class="result" data-slug="@a.Slug">
-                        <JerseyAvatar Id="a.Id" Initials="@Initials(a)" Club="@a.CurrentClub?.Name" Size="46" Class="bp-result-jersey" />
-                        <div class="bp-result-body">
-                            <a class="bp-result-name" href="/p/@a.Slug">@FullName(a)</a>
-                            <div class="bp-result-meta">@L[$"Position_{a.Position}"] · @a.HeightCm @L["Profile_Cm"] · @Age(a) @L["Profile_Years"]</div>
-                            <div class="bp-result-meta">@(a.CurrentClub?.Name ?? L["Profile_NoClub"].Value)</div>
-                            @if (a.LookingForTeam)
-                            {
-                                <span class="bp-looking">@L["Badge_LookingForTeam"]</span>
-                            }
-                        </div>
-                    </article>
-                </div>
+                <AthleteMatchCard Athlete="a" Variant="search" Age="Age(a)" />
             }
         </div>
         @if (totalPages > 1)
@@ -157,7 +144,6 @@
     private int total;
     private int totalPages;
 
-    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
     private bool IsMale => Gender == "Male";
     private string[] SelectedPositions => (Position ?? []).Where(p => Positions.Contains(p)).Distinct().ToArray();
     private int CurrentPage => Math.Clamp(PageNumber ?? 1, 1, Math.Max(totalPages, 1));
@@ -192,8 +178,6 @@
             .Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToListAsync();
     }
 
-    private string FullName(Athlete a) => IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
-    private string Initials(Athlete a) => IsGreek ? $"{a.FirstName[0]}{a.LastName[0]}" : $"{a.FirstNameLatin[0]}{a.LastNameLatin[0]}";
     private int Age(Athlete a) => Time.GetUtcNow().Year - a.BirthYear;
 
     private string RegionName(string r)

@@ -554,13 +554,29 @@ public class EvidenceTests(BallpassAppFactory app)
     }
 
     [Fact]
-    public async Task Single_season_athlete_shows_na_trend()
+    public async Task Single_season_athlete_has_no_trend_chart()
     {
+        // flow-release §4.4 item 5: under 2 seasons the season line says nothing, so it is not rendered (saves ~160 px).
         var a = Data.Athletes.First(x => x.Stats.Count == 1);
 
         var (_, html) = await Get(app.Client(), $"/p/{a.Slug}");
 
-        Assert.Matches("class=\"bp-ev-trend\"[^>]*data-trend=\"NotAvailable\"[^>]*>[^<]*n/a", Section(html));
+        Assert.Contains("data-evidence", html);
+        Assert.DoesNotContain("class=\"bp-ev-line\"", html);
+        Assert.DoesNotContain("class=\"bp-ev-trend\"", html);
+        Assert.DoesNotContain("id=\"bp-ev-line-h\"", html);
+    }
+
+    [Fact]
+    public async Task Percentile_bars_sit_in_a_two_column_grid()
+    {
+        var a = Female(Position.PG);
+
+        var (_, html) = await Get(app.Client(), $"/p/{a.Slug}");
+
+        Assert.Matches("<div class=\"bp-ev-rows\">(\\s*<div class=\"bp-ev-row\"[^>]*>.*?</div>){5}", Section(html).Replace("\n", " "));
+        var css = await app.Client().GetStringAsync("/css/bp-evidence.css");
+        Assert.Matches("\\.bp-ev-rows\\s*\\{[^}]*grid-template-columns:\\s*repeat\\(2,\\s*minmax\\(0,\\s*1fr\\)\\)", css);
     }
 
     [Fact]

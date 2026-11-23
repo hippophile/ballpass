@@ -21,6 +21,8 @@ public sealed record StockClip(string File, StockImage Poster)
 public static class StockMedia
 {
     public const string Root = "/media/stock/";
+    /// <summary>The same folder relative to /media/ (MediaItem.File / Poster are relative to /media/).</summary>
+    public const string Folder = "stock/";
 
     private static StockImage Wide(string file) => new(file, 1600, 1067);
     private static StockImage Tall(string file) => new(file, 854, 1280);

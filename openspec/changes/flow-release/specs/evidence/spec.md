@@ -24,3 +24,17 @@ The system SHALL show, on an athlete profile with stats, percentile bars for poi
 
 - **WHEN** a center's profile is requested in Greek
 - **THEN** the cohort label matches "ομάδα σύγκρισης: N σέντερ" and no percentile heading contains "δείγμα" or "επίδειξης"
+
+## ADDED Requirements
+
+### Requirement: Dense evidence on the profile
+
+Percentile rows SHALL sit in a 2-column grid of one-line rows (one column under 640 px). When no metric has a percentile and all share one reason, the reason SHALL be said once above the rows. The season line (trend) SHALL only render with 2 or more seasons.
+
+#### Scenario: Single season
+- **WHEN** an athlete has one stat season
+- **THEN** the evidence panel has no `.bp-ev-line`, no `.bp-ev-trend` and no season-line heading
+
+#### Scenario: Grid
+- **WHEN** a profile with stats is shown
+- **THEN** the five rows are inside `.bp-ev-rows`, styled `grid-template-columns: repeat(2, minmax(0, 1fr))`

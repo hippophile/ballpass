@@ -102,6 +102,42 @@ public class DemoDataGeneratorTests
         Assert.Contains(StatSource.LeagueVerifiedMock, sources);
     }
 
+    // Lead review (flow-release WP-B): 15.5 ppg in 8.2 min read as 75.6 pts/40 on an investor-visible profile.
+    // Per-game numbers must be plausible for the minutes played: per-40 caps pts 32, reb 20, ast 12, stl 5, blk 4.
+    [Theory]
+    [InlineData("Points", 32)]
+    [InlineData("Rebounds", 20)]
+    [InlineData("Assists", 12)]
+    [InlineData("Steals", 5)]
+    [InlineData("Blocks", 4)]
+    public void No_stat_line_exceeds_the_per_40_cap(string stat, double cap)
+    {
+        var over = Data.Athletes.SelectMany(a => a.Stats.Select(s => (a.Slug, s)))
+            .Select(x => (x.Slug, x.s.Season, Per40: (double)Value(x.s, stat) / (double)x.s.Minutes * 40))
+            .Where(x => x.Per40 > cap + 1e-9)
+            .ToList();
+
+        Assert.True(over.Count == 0, $"{over.Count} lines over {cap} {stat}/40, e.g. {string.Join("; ", over.Take(3).Select(o => $"{o.Slug} {o.Season} {o.Per40:0.0}"))}");
+    }
+
+    [Fact]
+    public void Lines_inside_the_caps_keep_their_per_game_numbers()
+    {
+        // Scaling only touches lines over a cap; at 30+ minutes nothing in the generator's ranges can exceed them.
+        var full = Data.Athletes.SelectMany(a => a.Stats).Where(s => s.Minutes >= 30).ToList();
+        Assert.NotEmpty(full);
+        Assert.Contains(full, s => s.Points >= 15);
+    }
+
+    private static decimal Value(StatLine s, string stat) => stat switch
+    {
+        "Points" => s.Points,
+        "Rebounds" => s.Rebounds,
+        "Assists" => s.Assists,
+        "Steals" => s.Steals,
+        _ => s.Blocks,
+    };
+
     private static string Fingerprint(Athlete a) =>
         $"{a.Slug}|{a.FirstName}|{a.LastName}|{a.HeightCm}|{a.Position}|{a.BirthYear}|" +
         string.Join(",", a.Stats.Select(s => $"{s.Season}:{s.Points}:{s.Rebounds}:{s.Assists}"));

@@ -1,76 +1,191 @@
-.profile-header {
-    display: flex;
-    flex-direction: row;
-    gap: 1.25rem;
-    align-items: center;
-    margin-bottom: var(--bp-sp-4);
-    border-top: 1px solid var(--bp-accent);
+/* Profile (flow-release §4.4): cover + identity, main column | 340 px action rail; one column + bottom bar under 640 px.
+   Tokens only. Text on the cover sits in its bottom 35 % under --bp-scrim + --bp-scrim-left (scrim rules 1-2). */
+
+/* ---- cover ---- */
+.bp-cover {
+    position: relative;
+    margin-bottom: 60px;
 }
 
-.avatar {
-    flex: none;
-    width: 5.5rem;
-    height: 5.5rem;
-    border-radius: 50%;
-    background: var(--bp-s2);
-    border: 2px solid var(--bp-accent);
-    color: var(--bp-text);
-    font-family: var(--bp-font-display);
-    font-size: 2rem;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    .bp-cover ::deep .bp-cover-photo {
+        height: 280px;
+        border-radius: var(--bp-r-md);
+        border: 1px solid var(--bp-border);
+    }
 
-.identity {
+.bp-cover-id {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: -48px;
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
     min-width: 0;
 }
 
-    .identity h1 {
+    .bp-cover-id ::deep .bp-cover-jersey {
+        flex: none;
+        width: 120px;
+        height: 120px;
+        box-sizing: border-box;
+        padding: 16px;
+        border-radius: 50%;
+        background: var(--bp-s1);
+        border: 3px solid var(--bp-bg);
+        box-shadow: var(--bp-shadow);
+    }
+
+.bp-cover-text {
+    min-width: 0;
+    padding-bottom: 64px;
+}
+
+    .bp-cover-text h1 {
+        margin: 0 0 var(--bp-sp-2);
         font-size: var(--bp-fs-xl);
-        font-weight: 800;
-        margin: 0 0 0.35rem;
+        line-height: 1.15;
         overflow-wrap: anywhere;
+        text-shadow: 0 1px 2px rgb(0 0 0 / .5);
     }
 
-    .identity p {
-        margin: 0.25rem 0 0;
+.bp-cover-chips {
+    margin: 0 0 var(--bp-sp-2);
+}
+
+.bp-cover-meta {
+    margin: 0;
+    color: var(--bp-text);
+    font-size: var(--bp-fs-md);
+}
+
+    .bp-cover-meta strong {
+        font-weight: 600;
     }
 
-.meta {
-    color: var(--bp-muted);
+/* ---- body ---- */
+.bp-profile-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: var(--bp-sp-5);
+    align-items: start;
 }
 
-.meta-label {
-    color: var(--bp-muted);
-}
-
-.badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-}
-
-.key-stats {
-    margin-bottom: var(--bp-sp-2);
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--bp-sp-3) var(--bp-sp-6);
-}
-
-.key-stat {
+.bp-profile-main {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: var(--bp-sp-5);
+    min-width: 0;
 }
 
-.key-season {
-    margin: var(--bp-sp-3) 0 0;
+    .bp-profile-main > ::deep .bp-panel, .bp-profile-main > .bp-panel {
+        margin: 0;
+    }
+
+/* Proof row: three numbers in accent-hi (rule 1: big stat numbers) + season, source and the two best percentiles. */
+.bp-proof {
+    display: grid;
+    grid-template-columns: repeat(3, auto) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--bp-sp-6);
+    min-height: 96px;
+    box-sizing: border-box;
+    padding: var(--bp-sp-4) var(--bp-sp-5);
+    background: var(--bp-s1);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+}
+
+.bp-proof-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.bp-proof-num {
+    font-family: var(--bp-font-display);
+    font-weight: 800;
+    font-size: 48px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--bp-accent-hi);
+}
+
+.bp-proof-label {
     font-size: var(--bp-fs-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
     color: var(--bp-muted);
 }
 
+.bp-proof-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--bp-sp-2);
+    min-width: 0;
+    text-align: end;
+}
+
+.bp-proof-season {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--bp-sp-2);
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--bp-muted);
+}
+
+.bp-proof-src {
+    font-weight: 600;
+}
+
+.bp-proof-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--bp-sp-2);
+    margin: 0;
+}
+
+.bp-proof-pill {
+    padding: 0.2em 0.7em;
+    border-radius: var(--bp-r-pill);
+    background: var(--bp-s2);
+    border: 1px solid var(--bp-border);
+    font-size: var(--bp-fs-xs);
+    font-weight: 600;
+    color: var(--bp-text);
+    white-space: nowrap;
+}
+
+.bp-proof-empty {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--bp-muted);
+}
+
+/* History + bio: one card, two columns. */
+.bp-profile-about-2 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--bp-sp-5);
+}
+
+.bp-profile-bio {
+    margin: 0;
+}
+
+.video-empty {
+    color: var(--bp-muted);
+    font-style: italic;
+    margin: 0;
+}
+
+/* ---- stats table ---- */
 .table-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -133,22 +248,445 @@
     color: var(--bp-muted);
 }
 
-.video-empty {
-    color: var(--bp-muted);
-    font-style: italic;
+/* ---- action rail (sticky); for a coach on s2 with the orange glow ---- */
+.bp-action-rail {
+    position: sticky;
+    top: var(--bp-sp-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-3);
+    padding: var(--bp-sp-5);
+    background: var(--bp-s1);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+    box-shadow: var(--bp-shadow);
+    min-width: 0;
+}
+
+.bp-profile-coach .bp-action-rail {
+    background: var(--bp-s2);
+    box-shadow: var(--bp-shadow), var(--bp-glow-accent);
+}
+
+.bp-action-rail ::deep .bp-loop-actionbar {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: var(--bp-sp-3);
+}
+
+.bp-rail-interest {
+    align-items: stretch !important;
+}
+
+    .bp-rail-interest ::deep .bp-btn-primary, .bp-rail-interest > .bp-btn-primary {
+        width: 100%;
+        min-height: 48px;
+    }
+
+.bp-action-rail ::deep .bp-loop-note textarea {
+    width: 100%;
+}
+
+/* Ghost row: Λίστα · Ακολουθήστε · Σύγκριση (secondary buttons dressed as ghosts; never orange). */
+.bp-rail-ghosts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--bp-sp-1);
+    padding-top: var(--bp-sp-3);
+    border-top: 1px solid var(--bp-border);
+}
+
+    .bp-rail-ghosts ::deep form {
+        margin: 0;
+        display: inline-flex;
+    }
+
+    .bp-rail-ghosts ::deep .bp-btn, .bp-action-rail ::deep .bp-feed-profile-follow .bp-btn {
+        min-height: 36px;
+        padding: 0.3rem 0.5rem;
+        background: transparent;
+        border-color: transparent;
+        color: var(--bp-muted);
+        font-size: var(--bp-fs-sm);
+        font-weight: 600;
+    }
+
+        .bp-rail-ghosts ::deep .bp-btn:hover, .bp-rail-ghosts ::deep .bp-btn[aria-pressed="true"] {
+            background: var(--bp-s3);
+            color: var(--bp-text);
+        }
+
+.bp-rail-more > summary, .bp-rail-share > summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+    .bp-rail-more > summary::-webkit-details-marker, .bp-rail-share > summary::-webkit-details-marker {
+        display: none;
+    }
+
+/* Desktop: the "⋯" details is always open (its summary only exists for the phone bottom bar). Browsers without
+   ::details-content show the "⋯" toggle instead: still usable. */
+@media (min-width: 641px) {
+    @supports selector(::details-content) {
+        .bp-rail-more > summary {
+            display: none;
+        }
+
+        .bp-rail-more::details-content {
+            content-visibility: visible;
+            display: block;
+        }
+    }
+}
+
+.bp-rail-share {
+    margin-top: var(--bp-sp-2);
+}
+
+    .bp-rail-share > summary {
+        width: 100%;
+        justify-content: flex-start;
+        box-sizing: border-box;
+        font-size: var(--bp-fs-sm);
+    }
+
+        .bp-rail-share > summary::after {
+            content: "▾";
+            margin-inline-start: auto;
+            font-size: var(--bp-fs-xs);
+        }
+
+    .bp-rail-share[open] > summary::after {
+        content: "▴";
+    }
+
+.bp-rail-share-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-2);
+    padding-top: var(--bp-sp-2);
+}
+
+    .bp-rail-share-body .share {
+        width: 100%;
+        box-sizing: border-box;
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: var(--bp-fs-xs);
+    }
+
+    .bp-rail-share-body ::deep .bp-share-panel {
+        margin: 0;
+        padding: 0;
+        background: none;
+        border: 0;
+        box-shadow: none;
+    }
+
+        .bp-rail-share-body ::deep .bp-share-panel h2 {
+            display: none;
+        }
+
+/* Sent state: teal-bordered card, mini stepper, teal-outline switch (the athlete's move is teal). */
+.bp-rail-sent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-3);
+    padding: var(--bp-sp-4);
+    border: 1px solid var(--bp-athlete);
+    border-radius: var(--bp-r-md);
+    background: var(--bp-s1);
+}
+
+.bp-rail-sent-title {
+    margin: 0;
+    font-weight: 700;
+    color: var(--bp-athlete);
+}
+
+.bp-rail-steps {
     margin: 0;
 }
 
-.share {
-    width: 100%;
-    box-sizing: border-box;
-    font-family: ui-monospace, Menlo, Consolas, monospace;
-    font-size: var(--bp-fs-sm);
+.bp-rail-switch-form {
+    margin: 0;
 }
 
-@media (max-width: 480px) {
-    .profile-header {
+.bp-rail-switch {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.5rem 1rem;
+    border-radius: var(--bp-r-sm);
+    border: 1px solid var(--bp-athlete);
+    background: transparent;
+    color: var(--bp-athlete);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: box-shadow 150ms ease-out, background-color 150ms ease-out;
+}
+
+    .bp-rail-switch:hover, .bp-rail-switch:focus-visible {
+        background: color-mix(in srgb, var(--bp-athlete) 14%, transparent);
+        box-shadow: var(--bp-glow-athlete);
+    }
+
+.bp-rail-all {
+    font-size: var(--bp-fs-sm);
+    color: var(--bp-text);
+}
+
+/* ---- medium: rail under the main column ---- */
+@media (max-width: 1000px) {
+    .bp-profile-body {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bp-action-rail {
+        position: static;
+    }
+}
+
+/* ---- phones (SPEC §4.4 390): cover 180, avatar 88 overlapping by 32, one column, coach rail = sticky bottom bar 64 px ---- */
+@media (max-width: 640px) {
+    .bp-cover {
+        margin-bottom: var(--bp-sp-4);
+    }
+
+        .bp-cover ::deep .bp-cover-photo {
+            height: 180px;
+        }
+
+    .bp-cover-id {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        margin-top: -32px;
+        padding-inline: var(--bp-sp-3);
         flex-direction: column;
         align-items: flex-start;
+        gap: var(--bp-sp-2);
     }
+
+        .bp-cover-id ::deep .bp-cover-jersey {
+            width: 88px;
+            height: 88px;
+            padding: 12px;
+        }
+
+    .bp-cover-text {
+        padding-bottom: 0;
+    }
+
+        .bp-cover-text h1 {
+            font-size: 1.75rem;
+            text-shadow: none;
+        }
+
+    .bp-cover-meta {
+        color: var(--bp-muted);
+        font-size: 0.875rem;
+    }
+
+    .bp-proof {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--bp-sp-3);
+        padding: var(--bp-sp-4);
+    }
+
+    .bp-proof-num {
+        font-size: 36px;
+    }
+
+    .bp-proof-side {
+        grid-column: 1 / -1;
+        align-items: flex-start;
+        text-align: start;
+    }
+
+    .bp-proof-season, .bp-proof-pills {
+        justify-content: flex-start;
+    }
+
+    .bp-profile-about-2 {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* Coach: the rail becomes a bottom bar holding the one primary; note = ✎, the rest behind "⋯". */
+    .bp-profile-coach {
+        padding-bottom: 88px;
+    }
+
+        .bp-profile-coach .bp-action-rail {
+            position: fixed;
+            top: auto;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 60;
+            min-height: 64px;
+            box-sizing: border-box;
+            padding: var(--bp-sp-2) var(--bp-sp-4) calc(var(--bp-sp-2) + env(safe-area-inset-bottom));
+            gap: var(--bp-sp-2);
+            border-radius: 0;
+            border-width: 1px 0 0;
+            box-shadow: 0 -8px 24px rgb(0 0 0 / .5);
+        }
+
+        .bp-profile-coach .bp-action-rail ::deep .bp-loop-actionbar {
+            flex-direction: row;
+            align-items: center;
+            gap: var(--bp-sp-2);
+        }
+
+    .bp-rail-interest {
+        flex: 1 1 auto;
+        flex-direction: row !important;
+        align-items: center !important;
+        min-width: 0;
+    }
+
+        .bp-rail-interest ::deep .bp-btn-primary, .bp-rail-interest > .bp-btn-primary {
+            flex: 1 1 auto;
+            width: auto;
+        }
+
+    .bp-action-rail ::deep .bp-loop-note > summary {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        font-size: 0;
+        list-style: none;
+        border-radius: var(--bp-r-sm);
+        border: 1px solid var(--bp-border-ui);
+    }
+
+        .bp-action-rail ::deep .bp-loop-note > summary::before {
+            content: "✎";
+            font-size: 1.1rem;
+            color: var(--bp-text);
+        }
+
+        .bp-action-rail ::deep .bp-loop-note > summary::-webkit-details-marker {
+            display: none;
+        }
+
+    .bp-action-rail ::deep .bp-loop-note::details-content, .bp-rail-more::details-content {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 100%;
+        max-height: 70vh;
+        overflow: auto;
+        box-sizing: border-box;
+        padding: var(--bp-sp-4);
+        background: var(--bp-s2);
+        border-top: 1px solid var(--bp-border);
+        box-shadow: 0 -8px 24px rgb(0 0 0 / .5);
+    }
+
+    .bp-rail-more > summary {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        min-height: 44px;
+        padding: 0;
+        border: 1px solid var(--bp-border-ui);
+        font-size: 1.25rem;
+        color: var(--bp-text);
+    }
+
+    .bp-rail-ghosts {
+        border-top: 0;
+        padding-top: 0;
+    }
+
+    /* Sent state in the bar: the title and the switch; stepper and link live on /me/sent. */
+    .bp-profile-coach .bp-action-rail:has(.bp-rail-sent) {
+        flex-direction: row;
+        align-items: flex-end;
+    }
+
+    .bp-rail-sent {
+        flex: 1 1 auto;
+        min-width: 0;
+        gap: var(--bp-sp-1);
+        padding: 0;
+        border: 0;
+        background: none;
+    }
+
+    .bp-rail-sent-title {
+        font-size: 0.8125rem;
+    }
+
+    .bp-rail-steps, .bp-rail-all {
+        display: none !important;
+    }
+
+    .bp-rail-switch {
+        min-height: 44px;
+    }
+
+    .bp-profile-coach .bp-action-rail:has(.bp-rail-sent) ::deep .bp-loop-actionbar {
+        flex: none;
+    }
+}
+
+/* Highlights mosaic: one main tile (2 rows) + up to two thumbs stacked beside it; tiles fill their cell (no letterbox). */
+.bp-profile-main ::deep .bp-highlights-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--bp-sp-3);
+}
+
+    .bp-profile-main ::deep .bp-highlights-head .bp-highlights-more {
+        margin: 0;
+        font-size: var(--bp-fs-sm);
+    }
+
+.bp-profile-main ::deep .bp-highlights-mosaic {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-auto-rows: auto;
+    align-items: stretch;
+}
+
+    .bp-profile-main ::deep .bp-highlights-mosaic[data-media-count="1"] {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .bp-profile-main ::deep .bp-highlights-mosaic[data-media-count="2"] {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .bp-profile-main ::deep .bp-highlights-mosaic[data-media-count="3"] > :first-child {
+        grid-row: span 2;
+    }
+
+    .bp-profile-main ::deep .bp-highlights-mosaic .bp-media-tile,
+    .bp-profile-main ::deep .bp-highlights-mosaic .bp-media-open {
+        height: 100%;
+    }
+
+    .bp-profile-main ::deep .bp-highlights-mosaic .bp-media-img,
+    .bp-profile-main ::deep .bp-highlights-mosaic .bp-media-video {
+        height: 100%;
+        object-fit: cover;
+        background: var(--bp-s2);
+    }
+
+@media (max-width: 640px) {
+    .bp-profile-main ::deep .bp-highlights-mosaic {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+        .bp-profile-main ::deep .bp-highlights-mosaic[data-media-count="3"] > :first-child {
+            grid-row: auto;
+            grid-column: 1 / -1;
+        }
 }

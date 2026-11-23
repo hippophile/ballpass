@@ -34,7 +34,7 @@
   <data name="Unsupported_stats" xml:space="preserve"><value>Statistics (see “Priority” in Match)</value></data>
   <data name="Unsupported_minors" xml:space="preserve"><value>Adults only: age set to 18+</value></data>
   <data name="Unsupported_other" xml:space="preserve"><value>Other criterion</value></data>
-  <data name="Match_Title" xml:space="preserve"><value>Player match</value></data>
+  <data name="Match_Title" xml:space="preserve"><value>Match</value></data>
   <data name="Match_Intro" xml:space="preserve"><value>Say what you need and see players ranked by fit, with a reason for each criterion.</value></data>
   <data name="Need_Heading" xml:space="preserve"><value>What are you looking for?</value></data>
   <data name="Need_HardHint" xml:space="preserve"><value>Position and “confirmed only” hide players. The other criteria score them.</value></data>
@@ -102,4 +102,58 @@
   <data name="Mark_Partial" xml:space="preserve"><value>close</value></data>
   <data name="Mark_Missed" xml:space="preserve"><value>does not match</value></data>
   <data name="Result_Looking" xml:space="preserve"><value>Looking for team</value></data>
+  <data name="Match_TopLabel" xml:space="preserve"><value>Top match</value></data>
+  <data name="Match_ViewProfile" xml:space="preserve"><value>View profile →</value></data>
+  <data name="Match_NeedAria" xml:space="preserve"><value>What you are looking for</value></data>
+  <data name="Match_NeedChange" xml:space="preserve"><value>Change</value></data>
+  <data name="Match_NeedAges" xml:space="preserve"><value>{0}–{1} yrs</value></data>
+  <data name="Match_NeedAgeMin" xml:space="preserve"><value>{0}+ yrs</value></data>
+  <data name="Match_NeedAgeMax" xml:space="preserve"><value>up to {0} yrs</value></data>
+  <data name="Match_NeedConfirmed" xml:space="preserve"><value>Confirmed only</value></data>
+  <data name="Match_PromptTitle" xml:space="preserve"><value>Tell us what you need → position, height, region</value></data>
+  <data name="Match_PromptBody" xml:space="preserve"><value>Add one criterion and every card shows a fit score with its reasons.</value></data>
+  <data name="Match_PromptFill" xml:space="preserve"><value>Fill in the filters</value></data>
+  <data name="Match_PromptTry" xml:space="preserve"><value>Try: {0} →</value></data>
+  <data name="Match_More" xml:space="preserve"><value>More</value></data>
+  <data name="Match_Filters" xml:space="preserve"><value>Filters ({0})</value></data>
+  <data name="Ai_Examples" xml:space="preserve"><value>Examples</value></data>
+  <data name="Ai_Example1" xml:space="preserve"><value>Guard in Crete, 22-28 years</value></data>
+  <data name="Ai_Example2" xml:space="preserve"><value>Center over 185 cm in Attica</value></data>
+  <data name="Ai_Example3" xml:space="preserve"><value>Forward in Thessaloniki, up to 26 years</value></data>
+  <data name="Card_Sent" xml:space="preserve"><value>✓ Sent</value></data>
+  <data name="Card_Remove" xml:space="preserve"><value>Remove</value></data>
+  <data name="Card_RemoveAria" xml:space="preserve"><value>Remove from the list: {0}</value></data>
+  <data name="Card_Ppg" xml:space="preserve"><value>pts/g</value></data>
+  <data name="Card_Rpg" xml:space="preserve"><value>reb/g</value></data>
+  <data name="Card_Apg" xml:space="preserve"><value>ast/g</value></data>
+  <data name="Card_NoStat" xml:space="preserve"><value>—</value></data>
+  <data name="Short_Height" xml:space="preserve"><value>{0} cm</value></data>
+  <data name="Short_Age" xml:space="preserve"><value>{0} yrs</value></data>
+  <data name="Short_Stat_Top" xml:space="preserve"><value>top {0}% {1}/40'</value></data>
+  <data name="Short_Stat_Plain" xml:space="preserve"><value>{0} {1}/40'</value></data>
+  <data name="Proof_Season" xml:space="preserve"><value>Season {0} · {1}</value></data>
+  <data name="Proof_Pct" xml:space="preserve"><value>{0}: percentile {1}</value></data>
+  <data name="Proof_NoStats" xml:space="preserve"><value>No stats yet</value></data>
+  <data name="Profile_About" xml:space="preserve"><value>Career and bio</value></data>
+  <data name="Rail_More" xml:space="preserve"><value>More actions</value></data>
+  <data name="Rail_Share" xml:space="preserve"><value>Share</value></data>
+  <data name="Rail_SentTitle" xml:space="preserve"><value>✓ Sent · {0}</value></data>
+  <data name="Rail_StepSent" xml:space="preserve"><value>Sent</value></data>
+  <data name="Rail_StepSeen" xml:space="preserve"><value>Seen</value></data>
+  <data name="Rail_StepReply" xml:space="preserve"><value>Reply</value></data>
+  <data name="Rail_SeeAs_F" xml:space="preserve"><value>See what {0} sees →</value></data>
+  <data name="Rail_SeeAs_M" xml:space="preserve"><value>See what {0} sees →</value></data>
+  <data name="Rail_AllSent" xml:space="preserve"><value>All sent interests</value></data>
+  <data name="Rail_Received" xml:space="preserve"><value>Interest received: {0}</value></data>
+  <data name="Status_shortlist-added_F" xml:space="preserve"><value>Added to your list.</value></data>
+  <data name="Status_shortlist-added_M" xml:space="preserve"><value>Added to your list.</value></data>
+  <data name="Status_shortlist-removed_F" xml:space="preserve"><value>Removed from your list.</value></data>
+  <data name="Status_shortlist-removed_M" xml:space="preserve"><value>Removed from your list.</value></data>
+  <data name="Hl_Alt_Main" xml:space="preserve"><value>Free throw in an indoor gym, wide shot</value></data>
+  <data name="Hl_Alt_Dribble" xml:space="preserve"><value>Dribble, close on the ball</value></data>
+  <data name="Hl_Alt_Net" xml:space="preserve"><value>The ball drops through the net</value></data>
+  <data name="Shortlist_EmptyTitle" xml:space="preserve"><value>Your list is empty</value></data>
+  <data name="Shortlist_EmptyBody" xml:space="preserve"><value>Add profiles from Match and compare them here.</value></data>
+  <data name="Shortlist_EmptyCta" xml:space="preserve"><value>Find athletes →</value></data>
+  <data name="Shortlist_Count" xml:space="preserve"><value>{0} on the list</value></data>
 </root>

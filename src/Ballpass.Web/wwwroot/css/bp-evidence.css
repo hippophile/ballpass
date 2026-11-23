@@ -413,3 +413,108 @@
 .bp-ev-launcher {
     margin-top: var(--bp-sp-5);
 }
+
+/* ---- flow-release §4.4: denser profile evidence. Bars in a 2-column grid of one-line rows; season line and badges side by side. ---- */
+.bp-ev {
+    gap: var(--bp-sp-4);
+    margin-block: 0 var(--bp-sp-4);
+}
+
+.bp-ev-block {
+    min-width: 0;
+}
+
+.bp-ev-rows {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--bp-sp-2) var(--bp-sp-6);
+}
+
+    .bp-ev-rows .bp-ev-row {
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        align-items: center;
+        column-gap: var(--bp-sp-2);
+        row-gap: 4px;
+        min-height: 36px;
+        margin-bottom: 0;
+    }
+
+    .bp-ev-rows .bp-ev-num {
+        font-size: var(--bp-fs-lg);
+    }
+
+    .bp-ev-rows .bp-ev-pct {
+        grid-column: auto;
+        grid-row: 1;
+        grid-column-start: 2;
+        min-width: 7.5em;
+        text-align: end;
+    }
+
+    .bp-ev-rows .bp-ev-num {
+        grid-column-start: 3;
+        grid-row: 1;
+    }
+
+    .bp-ev-rows .bp-ev-nodata {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        text-align: start;
+        min-width: 0;
+    }
+
+    .bp-ev-rows .bp-ev-bar {
+        height: 6px;
+    }
+
+.bp-ev-toggle {
+    margin-bottom: var(--bp-sp-3);
+}
+
+.bp-ev-pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: var(--bp-sp-4) var(--bp-sp-6);
+}
+
+    .bp-ev-pair:empty {
+        display: none;
+    }
+
+    .bp-ev-pair .bp-ev-line {
+        max-width: 100%;
+    }
+
+@media (max-width: 640px) {
+    .bp-ev-rows {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.bp-ev-nodata-all {
+    display: block;
+    margin: 0 0 var(--bp-sp-2);
+}
+
+.bp-ev-pair .bp-ev-line {
+    max-width: 340px;
+}
+
+/* Profile density: the first block needs no rule above it (the card heading is there); cohort and toggle share a line. */
+.bp-ev > .bp-ev-block:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.bp-ev-cohort {
+    display: inline-block;
+    margin-inline-end: var(--bp-sp-4);
+}
+
+.bp-ev-toggle {
+    display: inline-flex;
+}
+
+.bp-ev-pair .bp-ev-line {
+    max-width: 280px;
+}

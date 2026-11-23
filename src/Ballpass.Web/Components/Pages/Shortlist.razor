@@ -1,56 +1,52 @@
 @page "/shortlist"
 @attribute [Authorize(Policy = "CoachOnly")]
-@using System.Globalization
-@using System.Security.Claims
 @using Ballpass.Web.Data
+@using Ballpass.Web.Features.Media
 @using Microsoft.EntityFrameworkCore
 @inject BallpassDbContext Db
 @inject TimeProvider Time
 @inject IStringLocalizer<SharedResource> L
+@inject IStringLocalizer<FindResource> F
 
 <PageTitle>@L["Shortlist_Title"]</PageTitle>
 
-<h1>@L["Shortlist_Title"]</h1>
-
+@* flow-release §4.6: card grid | sticky compare panel. One orange CTA: the first card whose interest is not sent yet. *@
 @if (athletes.Count == 0)
 {
-    <p class="bp-empty">@L["Shortlist_Empty"]</p>
+    <h1 class="visually-hidden">@L["Shortlist_Title"]</h1>
+    <section class="bp-shortlist-empty">
+        <StockPhoto Image="StockMedia.ShortlistEmpty" Priority="true" Class="bp-shortlist-band">
+            <h2>@F["Shortlist_EmptyTitle"]</h2>
+            <p>@F["Shortlist_EmptyBody"]</p>
+            <a class="bp-btn-primary" href="/match">@F["Shortlist_EmptyCta"]</a>
+        </StockPhoto>
+    </section>
 }
 else
 {
-    <div class="bp-result-list">
-        @foreach (var a in athletes)
-        {
-            <div class="bp-result-wrap">
-                <article class="result" data-slug="@a.Slug">
-                    <JerseyAvatar Id="a.Id" Initials="@Initials(a)" Club="@a.CurrentClub?.Name" Size="46" Class="bp-result-jersey" />
-                    <div class="bp-result-body">
-                        <a class="bp-result-name" href="/p/@a.Slug">@FullName(a)</a>
-                        <div class="bp-result-meta">@L[$"Position_{a.Position}"] · @a.HeightCm @L["Profile_Cm"] · @Age(a) @L["Profile_Years"]</div>
-                        <div class="bp-result-meta">@(a.CurrentClub?.Name ?? L["Profile_NoClub"].Value)</div>
-                        @if (a.LookingForTeam)
-                        {
-                            <span class="bp-looking">@L["Badge_LookingForTeam"]</span>
-                        }
-                    </div>
-                    <form method="post" action="/p/@a.Slug/shortlist" class="bp-result-actions">
-                        <AntiforgeryToken />
-                        <button type="submit" class="bp-btn">@L["Shortlist_Remove"]</button>
-                    </form>
-                </article>
-            </div>
-        }
+    <header class="bp-shortlist-head">
+        <h1>@L["Shortlist_Title"]</h1>
+        <p>@F["Shortlist_Count", athletes.Count]</p>
+    </header>
+    <div class="bp-shortlist">
+        <div class="bp-shortlist-grid">
+            @foreach (var a in athletes)
+            {
+                <AthleteMatchCard Athlete="a" Variant="shortlist" Age="Age(a)" Sent="sent.Contains(a.Id)" Primary="a.Id == primaryId" />
+            }
+        </div>
+        <aside class="bp-shortlist-compare">
+            <CompareLauncher />
+        </aside>
     </div>
 }
-
-<CompareLauncher />
 
 @code {
     [CascadingParameter] private Task<AuthenticationState> AuthState { get; set; } = default!;
 
     private List<Athlete> athletes = [];
-
-    private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
+    private HashSet<int> sent = [];
+    private int? primaryId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,12 +58,15 @@ else
             .OrderByDescending(s => s.CreatedAt).ThenByDescending(s => s.Id)
             .Select(s => s.Athlete!)
             .ToListAsync();
+        var ids = athletes.Select(a => a.Id).ToList();
         var clubIds = athletes.Where(a => a.CurrentClubId != null).Select(a => a.CurrentClubId!.Value).Distinct().ToList();
         var clubs = await Db.Clubs.AsNoTracking().Where(c => clubIds.Contains(c.Id)).ToDictionaryAsync(c => c.Id);
         foreach (var a in athletes.Where(a => a.CurrentClubId != null)) a.CurrentClub = clubs[a.CurrentClubId!.Value];
+        var lines = await Db.StatLines.AsNoTracking().Where(s => ids.Contains(s.AthleteId)).ToListAsync();
+        foreach (var a in athletes) a.Stats = lines.Where(s => s.AthleteId == a.Id).ToList();
+        sent = (await Db.Interests.Where(i => i.CoachId == coachId && ids.Contains(i.AthleteId)).Select(i => i.AthleteId).ToListAsync()).ToHashSet();
+        primaryId = athletes.FirstOrDefault(a => !sent.Contains(a.Id))?.Id;
     }
 
-    private string FullName(Athlete a) => IsGreek ? $"{a.FirstName} {a.LastName}" : $"{a.FirstNameLatin} {a.LastNameLatin}";
-    private string Initials(Athlete a) => IsGreek ? $"{a.FirstName[0]}{a.LastName[0]}" : $"{a.FirstNameLatin[0]}{a.LastNameLatin[0]}";
     private int Age(Athlete a) => Time.GetUtcNow().Year - a.BirthYear;
 }

@@ -20,14 +20,75 @@
 - [x] A8. Screenshots 1512 + 390 of `/`, `/demo`, `/feed`, `/match`, `/p/danai-bakali`, read; content left = logo left (±1 px);
       scrollWidth ≤ 390; rendered visible text has no demo words except footer and `/demo` intro.
 
-## WP-B Coach path (placeholder, separate worktree after WP-A)
+## WP-B Coach path (worktree from 2494aea)
 
-- [ ] B1. Red tests: featured NeedQuery ranks `danai-bakali` first; no "–" ring with a need; one `.bp-btn-primary` on /match, /p, /shortlist;
-      0 empty media tiles on the profile; no trend chart under 2 seasons; share card inside closed `<details>`; interest-sent switch form.
-- [ ] B2. `/match` header chip bar, top match card, `AthleteMatchCard`, prompt card without a need; `/search` reuses the card.
-- [ ] B3. Profile cover, proof row, highlights, action rail (+ sent state), 390 bottom bar.
-- [ ] B4. Shortlist grid + compare panel + empty state.
-- [ ] B5. Green + screenshots (lead reads).
+- [x] B1. Red tests (record below): FindPagesTests (featured need ranks the featured athlete first at 100 with no tie, `?need=featured`,
+      no "–" ring and the prompt card without a need, one `.bp-btn-primary` on the top card, 12 + "Περισσότερα" `take=24`, /search reuses
+      the card, 3 AI example chips), ProfileTests (cover + teal chip + proof row, 3 featured highlight clips, every media tile has a picture,
+      coach rail with one primary and the share card inside a closed `<details>`, anonymous 0 primaries), EvidenceTests (no season line
+      under 2 seasons, bars in a 2-column grid), InterestShortlistTests (sent rail + switch form, shortlist grid with one primary, sent pill,
+      empty band), StockMediaTests featured slug line (O7).
+- [x] B2. `/match`: glow, need chip bar, AI box with 3 examples, filters sticky / "Φίλτρα (n)" details, compact results bar, top match card,
+      `AthleteMatchCard` (top / match / search / shortlist), prompt card, `?need=featured`, `?take`. `/search` uses the card grid.
+- [x] B3. Profile: cover + identity, proof row, highlights mosaic (featured: 3 stock clips, O9), stats card (dense evidence), history + bio card,
+      sticky action rail (sent state with switch), 390 bottom bar (primary, ✎ note, "⋯" sheet).
+- [x] B4. Shortlist: card grid + sticky compare panel + empty photo band.
+- [x] B5. Green + screenshots.
+
+Config (first pass, replaced by B7): `AthleteSlug = stavroula-ioannidou`, `NeedQuery = position=SG&minHeight=174&maxHeight=177&minAge=22&maxAge=28&region=Crete`.
+
+### Red run (B1) — 2026-11-22
+`BALLPASS_TESTDB_SUFFIX=_flowb dotnet test --filter "<FindPages|Profile|Evidence|InterestShortlist|StockMedia|Share|FitScorer|AuditFind|Loop|Media>Tests"`
+(no stubs needed; assertion failures only):
+```
+Failed!  - Failed:    19, Passed:   253, Skipped:     0, Total:   272
+  StockMediaTests.Featured_development_values_name_seeded_personas   Expected: "stavroula-ioannidou"  Actual: "danai-bakali"
+  FindPagesTests.Featured_need_ranks_the_featured_athlete_first      Expected: "stavroula-ioannidou"  Actual: "danai-bakali"
+  FindPagesTests.Without_a_need_there_are_no_rings_and_a_prompt_card  DoesNotContain() Failure: Sub-string found
+  FindPagesTests.Match_has_one_primary_cta_on_the_top_card_...        Expected: 1  Actual: 0
+  FindPagesTests.Match_shows_twelve_then_more_with_take               Expected: 13  Actual: 20
+  FindPagesTests.Search_reuses_the_card_..., Ai_box_offers_three_example_chips_to_match (Expected: 3 Actual: 0)
+  ProfileTests: cover/proof row, featured highlights, coach rail (Expected: 1 Actual: 0), anonymous share details
+  EvidenceTests.Single_season_athlete_has_no_trend_chart              DoesNotContain() Failure: Sub-string found
+  EvidenceTests.Percentile_bars_sit_in_a_two_column_grid              Pattern not found
+  InterestShortlistTests: sent rail, shortlist grid, sent pill, empty band, Interest_sent_twice (data-rail="sent" missing)
+```
+
+### Green run (B5) — 2026-11-22
+`dotnet build`: 0 warnings, 0 errors. Full suite once: `BALLPASS_TESTDB_SUFFIX=_flowb dotnet test --blame-hang-timeout 5m`
+```
+Passed!  - Failed:     0, Passed:   585, Skipped:     0, Total:   585, Duration: 34 s
+```
+Visual, app on :5302 against `ballpass_flowb_dev`, signed in as the O7 coach (Αικατερίνη Φωτοπούλου): `/match?need=featured`, `/match`,
+`/p/stavroula-ioannidou` (+ `?status=interest-sent`), `/shortlist`, `/search?looking=true` at 1512 and 390, full page. Measured:
+profile height at 1512 = 1979 px (≤ 2000); scrollWidth = 390 on every 390 route; `.bp-btn-primary` count = 1 on /match, /p, /shortlist
+(0 on the sent state, where the primary is the teal-outline switch); 390 profile bottom bar fixed at 779–844 px (in view).
+
+### Lead review follow-ups (B6–B7)
+
+- [x] B6. Data realism: `DemoDataGenerator.NewStatLine` scales a line down (one factor for pts/reb/ast/stl/blk) until it is within the per-40
+      caps pts 32, reb 20, ast 12, stl 5, blk 4; applied after all draws, so seed 42 is deterministic and in-cap lines are unchanged.
+      Test first: `DemoDataGeneratorTests.No_stat_line_exceeds_the_per_40_cap` (+ in-cap lines keep their numbers).
+- [x] B7. Featured athlete swapped to `ioanna-papageorgiou` (SG, 178, Crete, 23, 2024-25: 31.5 min, coach-confirmed, unchanged by B6).
+      `NeedQuery = position=SG&minHeight=178&maxHeight=182&minAge=21&maxAge=26&region=Crete` → she is #1 at 100 %, next 95 %
+      (stavroula-ioannidou, 177 cm). Highlights follow the config slug (O9). ProfileTests now also lock 2 percentile pills + drawn bars.
+
+Red (B6): `dotnet test --filter DemoDataGeneratorTests`
+```
+Failed!  - Failed:     5, Passed:     9, Total:    14
+  Points/40 > 32: 103 lines (e.g. panagiota-chatzidaki 2024-25 44.0)   Rebounds/40 > 20: 65   Assists/40 > 12: 45
+  Steals/40 > 5: 60   Blocks/40 > 4: 28
+```
+Red (B7, config still on the old slug): `Failed: 3, Passed: 48` — StockMediaTests / FindPagesTests expected "ioanna-papageorgiou",
+actual "stavroula-ioannidou"; ProfileTests featured highlights missing.
+
+Tests whose pinned numbers changed because the data legitimately changed: only `ProfileTests.Profile_has_a_cover_identity_proof_row...`
+(pinned "15,5" ppg of the old featured line, 8.2 min, which B6 scales down); it now reads the expected value from the generated data.
+No other test pinned a capped line.
+
+Green: `BALLPASS_TESTDB_SUFFIX=_flowb dotnet test --blame-hang-timeout 5m` → `Passed: 591, Failed: 0`; build 0 warnings.
+Visual (dev DB reset after B6): `/match?need=featured` top card = ioanna-papageorgiou 100 %; `/p/ioanna-papageorgiou` height 1721 px at 1512,
+scrollWidth 390 at 390; proof pills "Ριμπάουντ / 40΄: 40ο εκατοστημόριο", "Ευστοχία σουτ (FG%): 29ο εκατοστημόριο"; 5 percentile bars drawn.
 
 ## WP-C Front door, athlete path, feed
 

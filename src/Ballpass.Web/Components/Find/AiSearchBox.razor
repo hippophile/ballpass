@@ -14,9 +14,16 @@
         <input type="hidden" name="to" value="@Target">
         <label class="visually-hidden" for="bp-find-nlq">@F["Ai_Heading"]</label>
         <input id="bp-find-nlq" type="text" name="q" maxlength="200" value="@Echo" placeholder="@F["Ai_Placeholder"]" autocomplete="off">
-        <button type="submit" class="bp-btn">@F["Ai_Submit"]</button>
+        <button type="submit" class="bp-btn-outline">@F["Ai_Submit"]</button>
     </form>
     <p class="bp-find-hint">@F["Ai_Hint"]</p>
+    @* Three ready-made asks (flow-release §4.5): plain GET links through the same /find/ai redirect. *@
+    <ul class="bp-find-examples" aria-label="@F["Ai_Examples"]">
+        @foreach (var key in ExampleKeys)
+        {
+            <li><a class="bp-find-example" href="/find/ai?to=@Target&q=@Uri.EscapeDataString(F[key].Value)">@F[key]</a></li>
+        }
+    </ul>
 
     @* Nothing to report for an empty query with no filters (orchestrator walkthrough). *@
     @if (parsed is not null && (!string.IsNullOrWhiteSpace(Echo) || chips.Count > 0))
@@ -44,7 +51,8 @@
 @code {
     private static readonly string[] Positions = ["PG", "SG", "SF", "PF", "C"];
     private static readonly string[] Leagues = ["A1", "A2", "B", "Regional"];
-    private static readonly string[] FilterKeys = ["gender", "position", "minHeight", "maxHeight", "minAge", "maxAge", "region", "league", "looking", "q"];
+    private static readonly string[] ExampleKeys = ["Ai_Example1", "Ai_Example2", "Ai_Example3"];
+    private static readonly string[] FilterKeys =["gender", "position", "minHeight", "maxHeight", "minAge", "maxAge", "region", "league", "looking", "q"];
 
     private sealed record Chip(string Key, string Text, string RemoveHref, bool Unsupported);
 
