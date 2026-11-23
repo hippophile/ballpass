@@ -126,6 +126,8 @@ public record FeedItem(
     bool IsOwn,
     bool KudoedByMe,
     bool Following,
-    bool InterestSent);
+    bool InterestSent,
+    /// <summary>English club name (shown in English; <see cref="ClubName"/> also keys the jersey colour).</summary>
+    string? ClubNameEn = null);
 
 public record FeedPageResult(IReadOnlyList<FeedItem> Items, string? NextCursor);

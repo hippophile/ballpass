@@ -1,4 +1,5 @@
 @using System.Globalization
+@using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Data
 @using Microsoft.EntityFrameworkCore
 @inject IServiceScopeFactory ScopeFactory
@@ -14,7 +15,7 @@
             <JerseyAvatar Id="entityId" Initials="@Initials" Club="@clubName" Coach="isCoach" Size="64" Class="bp-feed-me-avatar" />
             <div class="bp-feed-me-who">
                 <span class="bp-feed-me-name">@Name</span>
-                <span class="bp-feed-me-role">@L[(isCoach ? "Role_Coach" : "Role_Athlete") + (user.FindFirst("gender")?.Value == "F" ? "_F" : "")]@(clubName is null ? "" : " · " + clubName)</span>
+                <span class="bp-feed-me-role">@L[(isCoach ? "Role_Coach" : "Role_Athlete") + (user.FindFirst("gender")?.Value == "F" ? "_F" : "")]@(clubName is null ? "" : " · " + clubLabel)</span>
             </div>
         </div>
         <nav class="bp-feed-rail-links">
@@ -48,6 +49,8 @@
     private int entityId;
     private bool isCoach;
     private string? clubName;
+    /// <summary>Club name in the UI language (<see cref="clubName"/> keys the jersey colour).</summary>
+    private string? clubLabel;
     private int inboxCount;
 
     private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
@@ -69,12 +72,14 @@
         if (isCoach)
         {
             if (int.TryParse(user.FindFirst("club_id")?.Value, out var clubId))
-                clubName = await db.Clubs.Where(c => c.Id == clubId).Select(c => c.Name).FirstOrDefaultAsync();
+                (clubName, clubLabel) = await db.Clubs.Where(c => c.Id == clubId).Select(c => new { c.Name, c.NameEn }).FirstOrDefaultAsync() is { } club
+                    ? (club.Name, DisplayText.Club(club.Name, club.NameEn)) : (null, null);
         }
         else
         {
             inboxCount = await db.Interests.CountAsync(i => i.AthleteId == entityId);
-            clubName = await db.Athletes.Where(a => a.Id == entityId).Select(a => a.CurrentClub!.Name).FirstOrDefaultAsync();
+            (clubName, clubLabel) = await db.Athletes.Where(a => a.Id == entityId && a.CurrentClub != null).Select(a => new { a.CurrentClub!.Name, a.CurrentClub.NameEn }).FirstOrDefaultAsync() is { } club
+                ? (club.Name, DisplayText.Club(club.Name, club.NameEn)) : (null, null);
         }
     }
 }

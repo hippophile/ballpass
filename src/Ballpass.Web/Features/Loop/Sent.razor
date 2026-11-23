@@ -44,7 +44,7 @@ else
             <article class="bp-loop-sent" data-interest-id="@i.Id" data-state="@State(i)">
                 <header class="bp-loop-sent-head">
                     <a class="bp-loop-chip" href="/p/@a.Slug"><JerseyAvatar Id="a.Id" Initials="@Initials(name)" Club="@a.CurrentClub?.Name" Size="32" />@name</a>
-                    <span class="bp-loop-sent-meta">@a.Position · @(a.CurrentClub?.Name ?? S["Profile_NoClub"].Value)</span>
+                    <span class="bp-loop-sent-meta">@a.Position · @(DisplayText.Club(a.CurrentClub) ?? S["Profile_NoClub"].Value)</span>
                 </header>
                 <ol class="bp-stepper bp-loop-stepper" aria-label="@T["Sent_Aria"]">
                     <li class="bp-step-coach bp-step-done" data-step="sent" data-state="done">

@@ -32,6 +32,19 @@ public static class DemoDataGenerator
         "Μας άρεσε το προφίλ σας. Πείτε μας πότε είστε διαθέσιμη/ος.",
     ];
 
+    // English of InterestNotes, same order.
+    private static readonly string[] InterestNotesEn =
+    [
+        "We'd love to see you at one of our practices.",
+        "Your profile caught our eye. Get in touch whenever you can.",
+        "We're looking for players with your skill set for next season.",
+        "We'd be glad to meet and hear about your plans.",
+        "We've been following your games and would like to meet.",
+        "We have an open roster spot. Come and talk to us.",
+        "You're welcome to join us for a tryout practice.",
+        "We liked your profile. Let us know when you're available.",
+    ];
+
     private static readonly string[] Seasons = ["2023-24", "2024-25", "2025-26"];
 
     // Invented nicknames: deliberately not real club names.
@@ -42,6 +55,15 @@ public static class DemoDataGenerator
         "Θύελλα", "Ζέφυροι", "Μαχητές", "Κορυφαίοι",
     ];
 
+    // English club nicknames (same word list, translated): the English club name is "{city exonym} {nickname}", e.g. "Patras Bees".
+    private static readonly Dictionary<string, string> ClubNicknamesEn = new()
+    {
+        ["Αστραπές"] = "Lightning", ["Φοίνικες"] = "Phoenixes", ["Γλάροι"] = "Gulls", ["Μέλισσες"] = "Bees", ["Κομήτες"] = "Comets",
+        ["Τιτάνες"] = "Titans", ["Δελφίνια"] = "Dolphins", ["Σείριοι"] = "Stars", ["Αετοί"] = "Eagles", ["Πυρσοί"] = "Torches",
+        ["Κύματα"] = "Waves", ["Νεφέλες"] = "Clouds", ["Βορέηδες"] = "Northwinds", ["Ηχώ"] = "Echo", ["Ορμητικοί"] = "Chargers",
+        ["Αλκυόνες"] = "Halcyons", ["Θύελλα"] = "Storm", ["Ζέφυροι"] = "Zephyrs", ["Μαχητές"] = "Fighters", ["Κορυφαίοι"] = "Aces",
+    };
+
     private static readonly string[] Bios =
     [
         "{0} με έμφαση στην άμυνα και την ομαδική προσπάθεια. Ψάχνει συνεχή βελτίωση και ρόλο στην ομάδα.",
@@ -51,6 +73,16 @@ public static class DemoDataGenerator
         "{0} με εμπειρία σε πολλές αγωνιστικές περιόδους. Έτοιμη να προσφέρει από τον πάγκο ή στη βασική πεντάδα.",
     ];
 
+    // English of Bios, same order ({0} = position, {1} = city exonym).
+    private static readonly string[] BiosEn =
+    [
+        "{0} with a defense-first, team-first mindset. Always working to get better and earn a real role.",
+        "{0} from {1}. Puts in the work every day on skills and conditioning.",
+        "{0} with a high basketball IQ. Loves to push the pace and share the ball.",
+        "{0} who plays with energy and heart. Goal: move up a league.",
+        "{0} with several seasons under the belt. Ready to contribute off the bench or in the starting five.",
+    ];
+
     private static readonly Dictionary<Position, string> PositionBio = new()
     {
         [Position.PG] = "Πλέι μέικερ",
@@ -58,6 +90,15 @@ public static class DemoDataGenerator
         [Position.SF] = "Σμολ φόργουορντ",
         [Position.PF] = "Πάουερ φόργουορντ",
         [Position.C] = "Σέντερ",
+    };
+
+    private static readonly Dictionary<Position, string> PositionBioEn = new()
+    {
+        [Position.PG] = "Point guard",
+        [Position.SG] = "Shooting guard",
+        [Position.SF] = "Small forward",
+        [Position.PF] = "Power forward",
+        [Position.C] = "Center",
     };
 
     private static readonly Position[] PositionOrder = [Position.PG, Position.SG, Position.SF, Position.PF, Position.C];
@@ -149,6 +190,7 @@ public static class DemoDataGenerator
                 Coach = coach,
                 Athlete = athlete,
                 Note = noteRoll < InterestNotes.Length ? InterestNotes[noteRoll] : null,
+                NoteEn = noteRoll < InterestNotes.Length ? InterestNotesEn[noteRoll] : null,
                 CreatedAt = baseTime.AddMinutes(r.Int(0, 20 * 24 * 60)),
                 IsDemo = true,
             });
@@ -173,6 +215,7 @@ public static class DemoDataGenerator
                     clubs.Add(new Club
                     {
                         Name = $"{nicknames[n]} {city.Genitive}",
+                        NameEn = $"{city.NameLatin} {ClubNicknamesEn[nicknames[n]]}",
                         City = city.Name,
                         Region = city.Region,
                         Gender = gender,
@@ -240,6 +283,7 @@ public static class DemoDataGenerator
             city = Pick(r, GreekNames.Cities);
 
         var slug = UniqueSlug($"{first.Latin}-{(female ? last.FemaleLatin : last.MaleLatin)}".ToLowerInvariant(), slugs);
+        int bio; // drawn in place below (the same single draw as Pick(r, Bios)), so the random sequence is unchanged
 
         var athlete = new Athlete
         {
@@ -256,10 +300,11 @@ public static class DemoDataGenerator
             Region = city.Region,
             CurrentClub = currentClub,
             LookingForTeam = !hasClub || r.Double() < 0.15,
-            Bio = string.Format(Pick(r, Bios), PositionBio[position], city.Name),
+            Bio = string.Format(Bios[bio = r.Int(0, Bios.Length - 1)], PositionBio[position], city.Name),
             VideoUrl = null,
             IsDemo = true,
         };
+        athlete.BioEn = string.Format(BiosEn[bio], PositionBioEn[position], city.NameLatin);
 
         AddSeasons(r, athlete, sameGender, currentClub);
         return athlete;

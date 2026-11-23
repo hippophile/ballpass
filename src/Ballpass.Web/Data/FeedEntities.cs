@@ -22,6 +22,11 @@ public class Post
 
     /// <summary>Free text, or the short note of a looking-for-team post.</summary>
     public string? Text { get; set; }
+    /// <summary>English forms of the seeded texts (null for posts typed at runtime); shown in English when present.</summary>
+    public string? TextEn { get; set; }
+    public string? TitleEn { get; set; }
+    public string? PlaceEn { get; set; }
+    public string? PositionsEn { get; set; }
 
     // Looking-for-team
     public Position? Position { get; set; }
@@ -116,6 +121,10 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
         e.Property(x => x.Source).HasConversion<string>().HasMaxLength(24);
         e.Property(x => x.AuthorKey).HasMaxLength(32);
         e.Property(x => x.Text).HasMaxLength(280);
+        e.Property(x => x.TextEn).HasMaxLength(280);
+        e.Property(x => x.TitleEn).HasMaxLength(80);
+        e.Property(x => x.PlaceEn).HasMaxLength(120);
+        e.Property(x => x.PositionsEn).HasMaxLength(40);
         e.Property(x => x.Region).HasMaxLength(80);
         e.Property(x => x.Place).HasMaxLength(120);
         e.Property(x => x.Positions).HasMaxLength(40);

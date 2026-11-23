@@ -42,7 +42,7 @@
                 {
                     <p class="bp-cover-chips"><span class="bp-chip-athlete">@L["Badge_LookingForTeam"]</span></p>
                 }
-                <p class="bp-cover-meta">@PositionLong (@athlete.Position) · @athlete.HeightCm @L["Profile_Cm"] · @Age @L["Profile_Years"] · @CityName, @RegionName · <strong>@(athlete.CurrentClub?.Name ?? L["Profile_NoClub"].Value)</strong></p>
+                <p class="bp-cover-meta">@PositionLong (@athlete.Position) · @athlete.HeightCm @L["Profile_Cm"] · @Age @L["Profile_Years"] · @CityName, @RegionName · <strong>@(DisplayText.Club(athlete.CurrentClub) ?? L["Profile_NoClub"].Value)</strong></p>
             </div>
         </div>
     </header>
@@ -71,7 +71,7 @@
                             <p class="bp-proof-pills">
                                 @foreach (var m in bestPercentiles)
                                 {
-                                    <span class="bp-proof-pill" data-pct="@m.Percentile">@F["Proof_Pct", Evid[$"Metric_{m.Metric}"].Value, m.Percentile!.Value]</span>
+                                    <span class="bp-proof-pill" data-pct="@m.Percentile">@F["Proof_Pct", Evid[$"Metric_{m.Metric}"].Value, Ordinal.Format(m.Percentile!.Value)]</span>
                                 }
                             </p>
                         }
@@ -141,7 +141,7 @@
                     <ul class="history">
                         @foreach (var s in history)
                         {
-                            <li><span class="history-season">@s.Season</span> <span>@s.Club?.Name</span></li>
+                            <li><span class="history-season">@s.Season</span> <span>@DisplayText.Club(s.Club)</span></li>
                         }
                     </ul>
                 </div>
@@ -149,7 +149,7 @@
                 {
                     <div>
                         <h2>@L["Profile_Bio"]</h2>
-                        <p class="bp-profile-bio">@athlete.Bio</p>
+                        <p class="bp-profile-bio">@DisplayText.Pick(athlete.Bio, athlete.BioEn)</p>
                     </div>
                 }
             </section>
@@ -161,7 +161,7 @@
                 @if (interest is not null)
                 {
                     <div class="bp-rail-sent" data-rail="sent">
-                        <p class="bp-rail-sent-title">@F["Rail_SentTitle", interest.CreatedAt.ToLocalTime().ToString("d MMM yyyy", CultureInfo.CurrentCulture)]</p>
+                        <p class="bp-rail-sent-title">@F["Rail_SentTitle", DisplayDate.Date(interest.CreatedAt.ToLocalTime().DateTime)]</p>
                         <ol class="bp-stepper bp-rail-steps">
                             <li class="bp-step-coach bp-step-done">@F["Rail_StepSent"]</li>
                             <li class="bp-step-coach@(interest.SeenAt is null ? "" : " bp-step-done")">@F["Rail_StepSeen"]</li>

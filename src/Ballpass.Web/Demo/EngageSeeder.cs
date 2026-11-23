@@ -7,9 +7,13 @@ using Microsoft.EntityFrameworkCore;
 namespace Ballpass.Web.Demo;
 
 /// <param name="TextEdits">Posts whose text gets hashtags appended (the tags below are exactly what parsing that text yields).</param>
-public record EngageSeedSet(IReadOnlyList<Comment> Comments, IReadOnlyList<Kudos> ExtraKudos, IReadOnlyList<PostTag> Tags, IReadOnlyList<(Post Post, string Text)> TextEdits);
+public record EngageSeedSet(IReadOnlyList<Comment> Comments, IReadOnlyList<Kudos> ExtraKudos, IReadOnlyList<PostTag> Tags, IReadOnlyList<(Post Post, string Text)> TextEdits)
+{
+    /// <summary>The same edits on the English text (English tags, same keys), in the same order.</summary>
+    public IReadOnlyList<(Post Post, string Text)> TextEditsEn { get; init; } = [];
+}
 
-// Pure function of (demo data set, the feed seed's posts and kudos, reference time): one seeded Randomizer, no clock. Fictional Greek text, no insults,
+// Pure function of (demo data set, the feed seed's posts and kudos, reference time): one seeded Randomizer, no clock. Fictional text (Greek + English), no insults,
 // no links; comment authors are adult athletes and coaches of the demo data set. Every row is IsDemo.
 public static class EngageSeeder
 {
@@ -66,6 +70,67 @@ public static class EngageSeeder
     ];
 
     private static readonly string[] BadgeTalk = ["Συγχαρητήρια για το σήμα!", "Αναγνώριση που τη δικαιούσαι.", "Πολύ καλή δουλειά, συνέχισε."];
+
+    // English of every comment above (Comment.TextEn). Looked up by the Greek text, so the random sequence is unchanged.
+    private static readonly Dictionary<string, string> CommentEn = new()
+    {
+        ["Μπράβο! Συνέχισε έτσι."] = "Nice! Keep it up.",
+        ["Πολύ καλή δουλειά, φαίνεται η προσπάθεια."] = "Great work, the effort really shows.",
+        ["Συγχαρητήρια για την πρόοδο!"] = "Congrats on the progress!",
+        ["Τέλεια! Καλή συνέχεια στην περίοδο."] = "Awesome! Have a great rest of the season.",
+        ["Εύγε, αξίζει η δουλειά που κάνεις."] = "Well done, all that work is paying off.",
+        ["Μου αρέσει η νοοτροπία σου. Καλή συνέχεια!"] = "Love your mindset. Keep going!",
+        ["Πολύ ωραία, πάμε δυνατά!"] = "Love it, let's go!",
+        ["Καλή επιτυχία στην επόμενη αγωνιστική."] = "Good luck in the next game.",
+        ["Φαίνεται η σκληρή δουλειά στο γήπεδο."] = "The hard work shows on the court.",
+        ["Ωραίο! Να είσαι πάντα καλά και υγιής."] = "Nice one! Stay healthy out there.",
+
+        ["Πολύ καλοί αριθμοί για την περίοδο!"] = "Really solid numbers this season!",
+        ["Ωραία ισορροπία ανάμεσα σε πόντους και ασίστ."] = "Nice balance between scoring and assists.",
+        ["Συγχαρητήρια για τη σταθερότητα στο παιχνίδι."] = "Congrats on being so consistent.",
+        ["Τα ποσοστά στο σουτ είναι εντυπωσιακά."] = "Those shooting percentages are impressive.",
+        ["Αξιόλογη χρονιά μέχρι τώρα. Προχωράς σωστά."] = "Strong year so far. You're on the right track.",
+        ["Θα ήθελα να δω πώς θα εξελιχθούν τα ριμπάουντ."] = "Curious to see how the rebounding develops.",
+
+        ["Μέχρι πότε γίνονται οι δηλώσεις συμμετοχής;"] = "When's the deadline to sign up?",
+        ["Χρειάζεται να φέρουμε κάτι ιδιαίτερο στη δοκιμαστική;"] = "Do we need to bring anything special to the tryout?",
+        ["Ισχύει και για παίκτες με λίγη εμπειρία;"] = "Is it open to players with less experience too?",
+        ["Θα υπάρχει δοκιμαστική και για άλλες θέσεις;"] = "Will there be tryouts for other positions too?",
+        ["Ευχαριστούμε για την πρόσκληση, θα δηλώσω συμμετοχή."] = "Thanks for the invite, I'll sign up.",
+        ["Πόση ώρα διαρκεί η προπόνηση;"] = "How long does the session last?",
+        ["Υπάρχει διαθέσιμο πρόγραμμα για απογευματινές ώρες;"] = "Is there an evening slot available?",
+
+        ["Η δήλωση γίνεται μέχρι την προθεσμία της ανάρτησης. Καλώς να ορίσετε!"] = "Sign up by the deadline in the post. Everyone's welcome!",
+        ["Αρκεί αθλητικός εξοπλισμός και καλή διάθεση."] = "Just bring your gear and a good attitude.",
+        ["Όλοι είναι ευπρόσδεκτοι να δοκιμαστούν."] = "Everyone is welcome to try out.",
+        ["Η προπόνηση διαρκεί περίπου ενάμισι με δύο ώρες."] = "The session runs about an hour and a half to two hours.",
+        ["Καλή επιτυχία σε όσους θα έρθουν, τα λέμε στο γήπεδο!"] = "Good luck to everyone coming, see you on the court!",
+
+        ["Καλή επιτυχία στην αναζήτηση, θα βρεις ομάδα σύντομα!"] = "Good luck with the search, you'll find a team soon!",
+        ["Αξίζει να κάνεις δοκιμαστική σε ομάδες της περιοχής σου."] = "Worth trying out for a few teams in your area.",
+        ["Πολύ καλό προφίλ. Καλή συνέχεια!"] = "Great profile. Best of luck!",
+        ["Μην αγχώνεσαι, η σωστή ομάδα θα έρθει."] = "Don't stress, the right team will come along.",
+        ["Δες τις ανακοινώσεις για δοκιμαστικές, ίσως σε ενδιαφέρουν."] = "Check out the tryout posts, a few might be a fit.",
+        ["Ευχαριστούμε για την ανάρτηση, θα το έχουμε υπόψη."] = "Thanks for posting, we'll keep you in mind.",
+
+        ["Τέλεια εκτέλεση!"] = "Perfect execution!",
+        ["Ωραία ανάγνωση του παιχνιδιού."] = "Great read of the play.",
+        ["Αυτή η κίνηση θέλει πολλή προπόνηση!"] = "That move takes a lot of reps!",
+        ["Καθαρή δουλειά, μπράβο."] = "Clean work, well done.",
+
+        ["Συμβουλή: δούλεψε καθημερινά τα βασικά, ντρίμπλα και πάσα και με τα δύο χέρια."] = "Tip: work on the basics every day, dribbling and passing with both hands.",
+        ["Η συνέπεια στην προπόνηση είναι το μυστικό."] = "Consistency in practice is the secret.",
+        ["Πρόσεξε και τον ύπνο και τη διατροφή, μετράνε περισσότερο απ' όσο νομίζεις."] = "Watch your sleep and nutrition too, they matter more than you think.",
+        ["Καλή κίνηση. Πρόσεξε τη θέση των ποδιών στο σουτ."] = "Good move. Watch your footwork on the shot.",
+        ["Δεκαπέντε λεπτά βολές μετά από κάθε προπόνηση κάνουν τη διαφορά."] = "Fifteen minutes of free throws after every practice makes all the difference.",
+        ["Συνέχισε να δουλεύεις στις αποφάσεις με την μπάλα στα χέρια."] = "Keep working on your decisions with the ball in your hands.",
+        ["Το ομαδικό πνεύμα είναι το Α και το Ω. Συμφωνώ απόλυτα."] = "Team spirit is everything. Couldn't agree more.",
+        ["Η άμυνα όντως κερδίζει παιχνίδια."] = "Defense really does win games.",
+
+        ["Συγχαρητήρια για το σήμα!"] = "Congrats on the badge!",
+        ["Αναγνώριση που τη δικαιούσαι."] = "Recognition well deserved.",
+        ["Πολύ καλή δουλειά, συνέχισε."] = "Great work, keep going.",
+    };
 
     // ---- hashtags ----
 
@@ -138,7 +203,7 @@ public static class EngageSeeder
                 var at = post.CreatedAt + TimeSpan.FromMinutes(minutes) + TimeSpan.FromSeconds(r.Int(0, 59));
                 if (at > latest) at = latest - TimeSpan.FromSeconds(r.Int(0, 600));
                 if (at < post.CreatedAt) at = post.CreatedAt.AddMinutes(1);
-                comments.Add(new Comment { Post = post, AuthorKey = actor, Text = text, CreatedAt = FeedKeys.Truncate(at), IsDemo = true });
+                comments.Add(new Comment { Post = post, AuthorKey = actor, Text = text, TextEn = CommentEn[text], CreatedAt = FeedKeys.Truncate(at), IsDemo = true });
             }
         }
         // Rounding above can leave a few short: top up on random posts until exactly CommentTarget.
@@ -151,7 +216,7 @@ public static class EngageSeeder
             if (actor is null || text is null) continue;
             var at = post.CreatedAt + TimeSpan.FromMinutes(r.Int(8, 36 * 60));
             if (at > latest) at = latest - TimeSpan.FromSeconds(r.Int(0, 600));
-            comments.Add(new Comment { Post = post, AuthorKey = actor, Text = text, CreatedAt = FeedKeys.Truncate(at), IsDemo = true });
+            comments.Add(new Comment { Post = post, AuthorKey = actor, Text = text, TextEn = CommentEn[text], CreatedAt = FeedKeys.Truncate(at), IsDemo = true });
         }
 
         // ---- kudos: ~250 in total; 4 viral posts (20-30), 8 mid, 14 low, the rest nearly silent ----
@@ -198,6 +263,7 @@ public static class EngageSeeder
 
         var tags = new List<PostTag>();
         var edits = new List<(Post, string)>();
+        var editsEn = new List<(Post, string)>();
         foreach (var post in chosen)
         {
             var pool = TagPools[post.Type];
@@ -213,13 +279,16 @@ public static class EngageSeeder
             {
                 var edited = $"{text} {hashtags}";
                 edits.Add((post, edited));
+                // English text: the same tags under their English labels (they parse to the same keys, see HashtagCatalog).
+                var hashtagsEn = string.Join(" ", picked.Select(t => "#" + HashtagCatalog.English(PostTagParser.Fold(t)!)));
+                editsEn.Add((post, $"{post.TextEn ?? text} {hashtagsEn}"));
                 parsed = PostTagParser.Parse(edited);
             }
             else parsed = PostTagParser.Parse(hashtags); // tryout, stat, badge, highlight: the tags live in the index only (their cards show them as chips)
             tags.AddRange(parsed.Select(t => new PostTag { Post = post, Tag = t.Tag, Label = t.Label }));
         }
 
-        return new EngageSeedSet(comments.OrderBy(c => c.CreatedAt).ToList(), extra, tags, edits);
+        return new EngageSeedSet(comments.OrderBy(c => c.CreatedAt).ToList(), extra, tags, edits) { TextEditsEn = editsEn };
     }
 
     /// <summary>Adds the engage seed on top of the feed seed. Runs inside the caller's transaction, after <see cref="FeedSeeder.ReplaceAsync"/>.
@@ -230,6 +299,7 @@ public static class EngageSeeder
         var kudos = await db.Set<Kudos>().ToListAsync(ct);
         var seed = Generate(data, posts, kudos, reference);
         foreach (var (post, text) in seed.TextEdits) post.Text = text;
+        foreach (var (post, text) in seed.TextEditsEn) post.TextEn = text;
         db.Set<Comment>().AddRange(seed.Comments);
         db.Set<Kudos>().AddRange(seed.ExtraKudos);
         db.Set<PostTag>().AddRange(seed.Tags);

@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 namespace Ballpass.Web.Tests;
 
 // Spec: openspec/changes/add-skeleton/specs/platform/spec.md (MVP item M0)
-public class SkeletonTests(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
+// Isolated test DB (BallpassAppFactory), never the developer's own "ballpass" database.
+public class SkeletonTests(BallpassAppFactory factory) : IClassFixture<BallpassAppFactory>
 {
     [Fact]
     public async Task Health_returns_200_Healthy_when_database_reachable()
@@ -37,7 +38,7 @@ public class SkeletonTests(WebApplicationFactory<Program> factory) : IClassFixtu
     public async Task Every_page_shows_one_footer_disclosure_and_no_banner(string path)
     {
         // Spec: openspec/changes/flow-release/specs/platform/spec.md (the banner is replaced by one quiet footer line, SPEC §8 O1)
-        var client = factory.CreateClient();
+        var client = factory.WithWebHostBuilder(b => b.UseSetting("Localization:DefaultCulture", "en")).CreateClient();
 
         var response = await client.GetAsync(path);
         var html = await response.Content.ReadAsStringAsync();
@@ -46,7 +47,7 @@ public class SkeletonTests(WebApplicationFactory<Program> factory) : IClassFixtu
         Assert.DoesNotContain("demo-banner", html);
         var footer = Regex.Match(html, "<footer[^>]*class=\"bp-footer\"[^>]*>(.*?)</footer>", RegexOptions.Singleline);
         Assert.True(footer.Success, $"footer disclosure missing on {path}");
-        Assert.Contains("Fictional people and data", footer.Groups[1].Value);   // unpinned host: shipped default culture (en)
+        Assert.Contains("Fictional people and data", footer.Groups[1].Value);   // shipped default culture (en)
     }
 
     [Fact]

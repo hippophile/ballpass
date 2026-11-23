@@ -101,7 +101,7 @@ else
     private static bool IsGreek => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "el";
     private string FullName => IsGreek ? $"{Athlete.FirstName} {Athlete.LastName}" : $"{Athlete.FirstNameLatin} {Athlete.LastNameLatin}";
     private string Initials => IsGreek ? $"{Athlete.FirstName[0]}{Athlete.LastName[0]}" : $"{Athlete.FirstNameLatin[0]}{Athlete.LastNameLatin[0]}";
-    private string Meta => $"{S[$"Position_{Athlete.Position}"]} · {Athlete.HeightCm} {S["Profile_Cm"]} · {Age} {S["Profile_Years"]} · {Athlete.CurrentClub?.Name ?? RegionName(Athlete.Region)}";
+    private string Meta => $"{S[$"Position_{Athlete.Position}"]} · {Athlete.HeightCm} {S["Profile_Cm"]} · {Age} {S["Profile_Years"]} · {DisplayText.Club(Athlete.CurrentClub) ?? RegionName(Athlete.Region)}";
     private StatLine? Latest => Athlete.Stats.OrderByDescending(s => s.Season, StringComparer.Ordinal).FirstOrDefault();
     private string Season => Latest is { } l ? $"{l.Season} · {S[$"League_{l.League}"]}" : F["Proof_NoStats"].Value;
 

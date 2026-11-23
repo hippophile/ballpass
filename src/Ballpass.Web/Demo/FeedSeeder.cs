@@ -8,7 +8,7 @@ namespace Ballpass.Web.Demo;
 public record FeedSeedSet(IReadOnlyList<Post> Posts, IReadOnlyList<Kudos> Kudos, IReadOnlyList<Follow> Follows);
 
 // Pure function of (demo data set, reference time): one seeded Randomizer, no clock. Re-running with a new reference time shifts every
-// timestamp to "now". Fictional Greek text only; every row is IsDemo. Plan section 4: 40 posts, 25 authors (18 athletes, 5 coaches, 2 clubs).
+// timestamp to "now". Fictional text in Greek and English (the *En columns); every row is IsDemo. Plan section 4: 40 posts, 25 authors (18 athletes, 5 coaches, 2 clubs).
 public static class FeedSeeder
 {
     private static readonly string[] LookingNotes =
@@ -23,6 +23,19 @@ public static class FeedSeeder
         "Διαθεσιμότητα για αγώνες και προπονήσεις από τον επόμενο μήνα.",
     ];
 
+    // English of each list below, same order.
+    private static readonly string[] LookingNotesEn =
+    [
+        "Looking for a team for next season. Available for a tryout anytime.",
+        "Ready to step up to a tougher league. Working on my shot every day.",
+        "Moving cities and looking for a team with good vibes and a strong work ethic.",
+        "I bring energy on defense and in transition. Open to offers.",
+        "Back from a break, in full shape and looking for a spot on a roster.",
+        "Looking for a team with evening practices so I can keep up with my studies.",
+        "Looking for a team that trusts young players and moves the ball.",
+        "Available for games and practices starting next month.",
+    ];
+
     private static readonly string[] FreeTexts =
     [
         "Σκληρή προπόνηση σήμερα! Η δουλειά στο σουτ φέρνει αποτέλεσμα.",
@@ -35,10 +48,28 @@ public static class FeedSeeder
         "Ευχαριστούμε τον κόσμο που ήρθε στο χθεσινό παιχνίδι. Η στήριξη μετράει.",
     ];
 
+    private static readonly string[] FreeTextsEn =
+    [
+        "Tough practice today! All the shooting work is paying off.",
+        "Thanks to the team for an amazing season. We keep pushing.",
+        "7 a.m. practice: coffee, ball and good vibes.",
+        "Team spirit beats talent every time. Good luck this weekend, everyone!",
+        "Quick reminder: defense wins games. Back to the basics.",
+        "First open tryout of the season is done. Thanks to everyone who came out!",
+        "New week, new goals. Let's get to work.",
+        "Thanks to everyone who came out to last night's game. Your support means a lot.",
+    ];
+
     private static readonly string[] HighlightTitles =
     [
         "Τρίποντο στο φινάλε", "Κλέψιμο και καλάθι στην ανάπτυξη", "Ασίστ χωρίς να κοιτάξω",
         "Ριμπάουντ και γρήγορη μπάλα", "Καλάθι με φάουλ από τη γωνία", "Άμυνα στο ένας-εναντίον-ενός",
+    ];
+
+    private static readonly string[] HighlightTitlesEn =
+    [
+        "Three at the buzzer", "Steal and score on the break", "No-look assist",
+        "Rebound and quick outlet", "And-one from the corner", "Lockdown one-on-one defense",
     ];
 
     private static readonly string[] HighlightTags = ["Σουτ", "Άμυνα", "Πάσα", "Ριμπάουντ", "Ταχύτητα", "Τρίποντο"];
@@ -47,6 +78,7 @@ public static class FeedSeeder
     private static readonly string[] BadgeKeys = ["StatsCoachConfirmed", "ProfileComplete", "ThreeSeasons", "FirstSeasonLogged"];
 
     private static readonly string[] TryoutPositions = ["PG, SG", "SF, PF", "PF, C", "Όλες οι θέσεις"];
+    private static readonly string[] TryoutPositionsEn = ["PG, SG", "SF, PF", "PF, C", "All positions"];
 
     public static FeedSeedSet Generate(DemoDataSet data, DateTimeOffset reference)
     {
@@ -88,6 +120,7 @@ public static class FeedSeeder
             p.Region = a.Region;
             p.AvailableFrom = today.AddDays(r.Int(0, 60));
             p.Text = LookingNotes[i % LookingNotes.Length];
+            p.TextEn = LookingNotesEn[i % LookingNotesEn.Length];
             posts.Add(p);
         }
 
@@ -97,7 +130,10 @@ public static class FeedSeeder
             p.EventDate = today.AddDays(r.Int(4, 24));
             p.Deadline = p.EventDate.Value.AddDays(-r.Int(2, 4));
             p.Place = $"Γήπεδο ομάδας, {club.City}";
-            p.Positions = Pick(TryoutPositions);
+            p.PlaceEn = $"Home court, {GreekNames.Cities.First(c => c.Name == club.City).NameLatin}";
+            var k = r.Int(0, TryoutPositions.Length - 1); // the same single draw as Pick(TryoutPositions)
+            p.Positions = TryoutPositions[k];
+            p.PositionsEn = TryoutPositionsEn[k];
             posts.Add(p);
         }
         foreach (var c in coachAuthors.Take(4)) Tryout(ByCoach(c, PostType.TryoutCall), c.Club!);
@@ -125,6 +161,7 @@ public static class FeedSeeder
         {
             var p = ByAthlete(Pick(athleteAuthors), PostType.Highlight);
             p.Title = HighlightTitles[i];
+            p.TitleEn = HighlightTitlesEn[i];
             p.Tag = HighlightTags[i];
             posts.Add(p);
         }
@@ -142,6 +179,7 @@ public static class FeedSeeder
         for (var i = 0; i < freeAuthors.Count; i++)
         {
             freeAuthors[i].Text = FreeTexts[i];
+            freeAuthors[i].TextEn = FreeTextsEn[i];
             posts.Add(freeAuthors[i]);
         }
 

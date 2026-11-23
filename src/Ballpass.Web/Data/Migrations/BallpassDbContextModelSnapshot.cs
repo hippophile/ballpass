@@ -33,6 +33,9 @@ namespace Ballpass.Web.Data.Migrations
                     b.Property<string>("Bio")
                         .HasColumnType("text");
 
+                    b.Property<string>("BioEn")
+                        .HasColumnType("text");
+
                     b.Property<int>("BirthYear")
                         .HasColumnType("integer");
 
@@ -185,6 +188,9 @@ namespace Ballpass.Web.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("NameEn")
+                        .HasColumnType("text");
+
                     b.Property<string>("Region")
                         .IsRequired()
                         .HasColumnType("text");
@@ -270,6 +276,10 @@ namespace Ballpass.Web.Data.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
+                        .HasMaxLength(280)
+                        .HasColumnType("character varying(280)");
+
+                    b.Property<string>("TextEn")
                         .HasMaxLength(280)
                         .HasColumnType("character varying(280)");
 
@@ -445,6 +455,10 @@ namespace Ballpass.Web.Data.Migrations
                         .HasMaxLength(280)
                         .HasColumnType("character varying(280)");
 
+                    b.Property<string>("NoteEn")
+                        .HasMaxLength(280)
+                        .HasColumnType("character varying(280)");
+
                     b.Property<DateTimeOffset?>("RepliedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -576,6 +590,10 @@ namespace Ballpass.Web.Data.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
 
+                    b.Property<string>("BodyEn")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
                     b.Property<int>("ConversationId")
                         .HasColumnType("integer");
 
@@ -660,6 +678,10 @@ namespace Ballpass.Web.Data.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("character varying(120)");
 
+                    b.Property<string>("PlaceEn")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
                     b.Property<decimal?>("Points")
                         .HasPrecision(5, 1)
                         .HasColumnType("numeric(5,1)");
@@ -669,6 +691,10 @@ namespace Ballpass.Web.Data.Migrations
                         .HasColumnType("character varying(4)");
 
                     b.Property<string>("Positions")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<string>("PositionsEn")
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");
 
@@ -702,7 +728,15 @@ namespace Ballpass.Web.Data.Migrations
                         .HasMaxLength(280)
                         .HasColumnType("character varying(280)");
 
+                    b.Property<string>("TextEn")
+                        .HasMaxLength(280)
+                        .HasColumnType("character varying(280)");
+
                     b.Property<string>("Title")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<string>("TitleEn")
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)");
 

@@ -11,6 +11,8 @@ public class Comment
     public Post? Post { get; set; }
     public required string AuthorKey { get; set; }
     public required string Text { get; set; }
+    /// <summary>English text, filled only by the seeder; shown in English when present.</summary>
+    public string? TextEn { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     /// <summary>Hidden for everyone: by the post author, or by enough distinct reports.</summary>
     public bool IsHidden { get; set; }
@@ -46,6 +48,7 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
     {
         e.Property(x => x.AuthorKey).HasMaxLength(32);
         e.Property(x => x.Text).HasMaxLength(280);
+        e.Property(x => x.TextEn).HasMaxLength(280);
         e.Property(x => x.HiddenReason).HasMaxLength(16);
         e.HasIndex(x => new { x.PostId, x.CreatedAt });
         e.HasIndex(x => new { x.AuthorKey, x.CreatedAt });

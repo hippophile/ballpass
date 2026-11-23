@@ -14,6 +14,8 @@ public class Club
 {
     public int Id { get; set; }
     public required string Name { get; set; }
+    /// <summary>English form (city exonym + translated nickname, "Larissa Halcyons"), seeded; shown in English.</summary>
+    public string? NameEn { get; set; }
     public required string City { get; set; }
     public required string Region { get; set; }
     public Gender Gender { get; set; }
@@ -53,6 +55,8 @@ public class Athlete
     public Club? CurrentClub { get; set; }
     public bool LookingForTeam { get; set; }
     public string? Bio { get; set; }
+    /// <summary>English bio, filled only by the seeder; shown in English when present.</summary>
+    public string? BioEn { get; set; }
     public string? VideoUrl { get; set; }
     public bool IsDemo { get; set; }
     public List<AthleteSeason> Seasons { get; set; } = [];
@@ -95,6 +99,8 @@ public class Interest
     public int AthleteId { get; set; }
     public Athlete? Athlete { get; set; }
     public string? Note { get; set; }
+    /// <summary>English note, filled only by the seeders; shown in English when present.</summary>
+    public string? NoteEn { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     /// <summary>Set once, when the athlete opens the inbox.</summary>
     public DateTimeOffset? SeenAt { get; set; }

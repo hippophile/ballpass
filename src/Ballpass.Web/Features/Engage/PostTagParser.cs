@@ -16,7 +16,8 @@ public static class PostTagParser
     private static readonly Regex Hash = new(@"(?<![\p{L}\p{N}_#&/@])#([A-Za-z0-9_Ͱ-Ͽἀ-῿]+)",
         RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(200));
 
-    /// <summary>Tags of the texts in order of appearance, deduplicated on the folded key. <c>Label</c> is the lower-cased text as typed.</summary>
+    /// <summary>Tags of the texts in order of appearance, deduplicated on the key (folded; an English alias of a catalog tag maps to its key,
+    /// see <see cref="HashtagCatalog"/>). <c>Label</c> is the lower-cased text as typed.</summary>
     public static IReadOnlyList<(string Tag, string Label)> Parse(params string?[] texts)
     {
         var found = new List<(string Tag, string Label)>();
@@ -27,7 +28,7 @@ public static class PostTagParser
             {
                 var word = m.Groups[1].Value;
                 if (word.Length < 2 || word.Length > MaxLength || !word.Any(char.IsLetter)) continue;
-                var key = Fold(word)!;
+                var key = HashtagCatalog.Key(word)!;
                 if (found.Any(f => f.Tag == key)) continue;
                 found.Add((key, word.ToLowerInvariant()));
                 if (found.Count == MaxTags) return found;

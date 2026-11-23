@@ -1,6 +1,7 @@
 @page "/me/inbox"
 @attribute [Authorize(Roles = "Athlete")]
 @using System.Globalization
+@using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Data
 @using Ballpass.Web.Demo
 @using Ballpass.Web.Features.Flow
@@ -43,8 +44,8 @@
                                 @if (newIds.Contains(i.Id)) { <span class="bp-loop-new">@T["Inbox_New"]</span> }
                                 <span class="bp-interest-coach">@name</span>
                             </div>
-                            <div class="bp-interest-meta">@L[GreekNames.IsFemaleFirstName(coach.FirstName) ? "Role_Coach_F" : "Role_Coach"] · @coach.Club?.Name@if (coach.Club is { } club) {<text> · @L[$"League_{club.League}"]</text>} · <time datetime="@i.CreatedAt.UtcDateTime.ToString("o", CultureInfo.InvariantCulture)">@i.CreatedAt.ToString("d", CultureInfo.CurrentCulture)</time></div>
-                            @if (!string.IsNullOrWhiteSpace(i.Note)) { <blockquote class="bp-interest-note">@i.Note</blockquote> }
+                            <div class="bp-interest-meta">@L[GreekNames.IsFemaleFirstName(coach.FirstName) ? "Role_Coach_F" : "Role_Coach"] · @DisplayText.Club(coach.Club)@if (coach.Club is { } club) {<text> · @L[$"League_{club.League}"]</text>} · <time datetime="@i.CreatedAt.UtcDateTime.ToString("o", CultureInfo.InvariantCulture)">@DisplayDate.Date(i.CreatedAt.DateTime, greekFormat: "d")</time></div>
+                            @if (!string.IsNullOrWhiteSpace(i.Note)) { <blockquote class="bp-interest-note">@DisplayText.Pick(i.Note, i.NoteEn)</blockquote> }
                             @if (i.Reply == InterestReply.None)
                             {
                                 <form method="post" action="/me/inbox/@i.Id/reply" data-action="reply" class="bp-loop-reply" aria-label="@T["Inbox_ReplyAria"]">
@@ -59,7 +60,7 @@
                                 <div class="bp-interest-link" aria-hidden="true">
                                     <JerseyAvatar Id="athleteId" Initials="@initials" Club="@athleteClub" Size="40" />
                                     <span class="bp-interest-connector"></span>
-                                    <span class="bp-interest-club">@coach.Club?.Name</span>
+                                    <span class="bp-interest-club">@DisplayText.Club(coach.Club)</span>
                                 </div>
                                 <p class="bp-loop-contact"><span class="bp-loop-contact-label">@T["Inbox_Contact"]</span></p>
                                 <MessageButton InterestId="i.Id" Class="bp-btn-athlete" Long="true" />

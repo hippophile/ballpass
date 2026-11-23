@@ -61,7 +61,7 @@ public class EngageService(BallpassDbContext db, TimeProvider time, IOptions<Fee
             result[id] = new PostEngagement(id, list.Count, counts.GetValueOrDefault(id), key is not null && list.Any(k => k.ActorKey == key),
                 likerKeys[id].Where(people.ContainsKey).Select(Person).ToList(), others,
                 comments.GetValueOrDefault(id, []).Select(c => new CommentView(c.Id, c.AuthorKey, Person(c.AuthorKey), c.Text, c.CreatedAt,
-                    key is not null && c.AuthorKey == key, iAmPostAuthor && c.AuthorKey != key)).ToList(),
+                    key is not null && c.AuthorKey == key, iAmPostAuthor && c.AuthorKey != key, c.TextEn)).ToList(),
                 id == expandedPostId,
                 tags[id].Select(t => new TagView(t.Tag, t.Label)).ToList());
         }

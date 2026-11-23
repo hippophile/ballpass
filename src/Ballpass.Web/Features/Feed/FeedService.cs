@@ -16,7 +16,7 @@ public class FeedService(BallpassDbContext db, TimeProvider time, IOptions<FeedO
     public async Task<FeedPageResult> GetFeedAsync(FeedViewer viewer, FeedTab tab, string? before, string? tag = null, CancellationToken ct = default)
     {
         var q = await VisiblePostsAsync(viewer, ct);
-        if (PostTagParser.Fold(tag) is { } tagKey) q = q.Where(p => db.Set<PostTag>().Any(t => t.PostId == p.Id && t.Tag == tagKey));
+        if (HashtagCatalog.Key(tag) is { } tagKey) q = q.Where(p => db.Set<PostTag>().Any(t => t.PostId == p.Id && t.Tag == tagKey));
         if (viewer.Key is { } key && tab == FeedTab.Following)
         {
             var followed = await db.Set<Follow>().Where(f => f.FollowerKey == key).Select(f => f.TargetKey).ToListAsync(ct);
@@ -100,22 +100,22 @@ public class FeedService(BallpassDbContext db, TimeProvider time, IOptions<FeedO
         foreach (var p in posts)
         {
             string nameEl, nameLatin, roleKey;
-            string? slug = null, clubName = null;
+            string? slug = null, clubName = null, clubNameEn = null;
             int? interestAthlete = null;
             switch (p.AuthorKind)
             {
                 case AuthorKind.Athlete when athletes.TryGetValue(p.AuthorId, out var a):
                     (nameEl, nameLatin) = ($"{a.FirstName} {a.LastName}", $"{a.FirstNameLatin} {a.LastNameLatin}");
                     roleKey = a.Gender == Gender.Female ? "Role_Athlete_F" : "Role_Athlete";
-                    (slug, clubName, interestAthlete) = (a.Slug, a.CurrentClub?.Name, a.Id);
+                    (slug, clubName, clubNameEn, interestAthlete) = (a.Slug, a.CurrentClub?.Name, a.CurrentClub?.NameEn, a.Id);
                     break;
                 case AuthorKind.Coach when coaches.TryGetValue(p.AuthorId, out var c):
                     (nameEl, nameLatin) = ($"{c.FirstName} {c.LastName}", $"{c.FirstNameLatin} {c.LastNameLatin}");
                     roleKey = GreekNames.IsFemaleFirstName(c.FirstName) ? "Role_Coach_F" : "Role_Coach";
-                    clubName = c.Club?.Name;
+                    (clubName, clubNameEn) = (c.Club?.Name, c.Club?.NameEn);
                     break;
                 case AuthorKind.Club when clubs.TryGetValue(p.AuthorId, out var club):
-                    (nameEl, nameLatin, roleKey) = (club.Name, club.Name, "Role_Club");
+                    (nameEl, nameLatin, roleKey) = (club.Name, club.NameEn ?? club.Name, "Role_Club");
                     break;
                 default:
                     continue; // author row is gone (demo reset): skip rather than fail the page
@@ -123,7 +123,7 @@ public class FeedService(BallpassDbContext db, TimeProvider time, IOptions<FeedO
             var isOwn = viewer.Key is not null && p.AuthorKey == viewer.Key;
             items.Add(new FeedItem(p, nameEl, nameLatin, roleKey, slug, clubName, isOwn,
                 kudoed.Contains(p.Id),
-                following.Contains(p.AuthorKey), interestAthlete is { } id && interested.Contains(id)));
+                following.Contains(p.AuthorKey), interestAthlete is { } id && interested.Contains(id), clubNameEn));
         }
         return items;
     }

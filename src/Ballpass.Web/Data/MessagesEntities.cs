@@ -34,6 +34,8 @@ public class Message
     public Conversation? Conversation { get; set; }
     public MessageSender SenderKind { get; set; }
     public required string Body { get; set; }
+    /// <summary>English body, filled only by the seeder (and copied from <see cref="Interest.NoteEn"/>); shown in English when present.</summary>
+    public string? BodyEn { get; set; }
     public DateTimeOffset SentAt { get; set; }
     /// <summary>Set when the other participant opens the thread; drives "Διαβάστηκε" and the unread counts.</summary>
     public DateTimeOffset? ReadAt { get; set; }
@@ -71,6 +73,7 @@ public class MessageConfiguration : IEntityTypeConfiguration<Message>
     {
         e.Property(x => x.SenderKind).HasConversion<string>().HasMaxLength(16);
         e.Property(x => x.Body).HasMaxLength(Message.MaxBody);
+        e.Property(x => x.BodyEn).HasMaxLength(Message.MaxBody);
         e.HasIndex(x => new { x.ConversationId, x.SentAt });
     }
 }

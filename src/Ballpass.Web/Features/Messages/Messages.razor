@@ -66,7 +66,7 @@ else
                                     <span class="bp-msg-item-name">@row.Name</span>
                                     <time class="bp-msg-item-time" datetime="@Iso(row.At)">@RelativeTimeText.Format(S, row.At, now)</time>
                                 </span>
-                                <span class="bp-msg-item-club">@(row.Club ?? S["Profile_NoClub"].Value)</span>
+                                <span class="bp-msg-item-club">@(DisplayText.Club(row.Club, row.ClubEn) ?? S["Profile_NoClub"].Value)</span>
                                 <span class="bp-msg-item-last">
                                     @if (row.LastBody is null)
                                     {
@@ -75,7 +75,7 @@ else
                                     else
                                     {
                                         @if (row.LastSender == viewer.Role) { <span class="bp-msg-item-you">@T["You"]</span> }
-                                        @Snippet(row.LastBody)
+                                        @Snippet(DisplayText.Pick(row.LastBody, row.LastBodyEn))
                                     }
                                 </span>
                             </span>
@@ -104,7 +104,7 @@ else
                             <JerseyAvatar Id="a.Id" Initials="@Initials(other)" Club="@a.CurrentClub?.Name" Size="44" />
                             <div class="bp-msg-who-text">
                                 <a class="bp-msg-name" href="/p/@a.Slug">@other</a>
-                                <span class="bp-msg-meta">@S[$"Position_{a.Position}"] · @(a.CurrentClub?.Name ?? S["Profile_NoClub"].Value)</span>
+                                <span class="bp-msg-meta">@S[$"Position_{a.Position}"] · @(DisplayText.Club(a.CurrentClub) ?? S["Profile_NoClub"].Value)</span>
                             </div>
                         }
                         else
@@ -113,11 +113,11 @@ else
                             <JerseyAvatar Id="c.Id" Initials="@Initials(other)" Club="@c.Club?.Name" Coach="true" Size="44" />
                             <div class="bp-msg-who-text">
                                 <span class="bp-msg-name">@other</span>
-                                <span class="bp-msg-meta">@S[GreekNames.IsFemaleFirstName(c.FirstName) ? "Role_Coach_F" : "Role_Coach"] · @c.Club?.Name@if (c.Club is { } club) {<text> · @S[$"League_{club.League}"]</text>}</span>
+                                <span class="bp-msg-meta">@S[GreekNames.IsFemaleFirstName(c.FirstName) ? "Role_Coach_F" : "Role_Coach"] · @DisplayText.Club(c.Club)@if (c.Club is { } club) {<text> · @S[$"League_{club.League}"]</text>}</span>
                             </div>
                         }
                     </div>
-                    <span class="bp-chip-athlete bp-msg-since">@T["Since", Local(thread.Interest?.RepliedAt ?? thread.CreatedAt).ToString("d MMM", CultureInfo.CurrentCulture)]</span>
+                    <span class="bp-chip-athlete bp-msg-since">@T["Since", DisplayDate.MonthDay(Local(thread.Interest?.RepliedAt ?? thread.CreatedAt).DateTime)]</span>
                     @if (viewer.Role == MessageSender.Athlete && (thread.BlockedAt is null || !reported))
                     {
                         <details class="bp-msg-more">
@@ -191,7 +191,7 @@ else
                             <li class="@bubbleClass" data-message-id="@m.Id">
                                 <div class="bp-msg-box">
                                     <span class="visually-hidden">@(mine ? T["Mine_Aria"].Value : other):</span>
-                                    <p class="bp-msg-text">@m.Body</p>
+                                    <p class="bp-msg-text">@DisplayText.Pick(m.Body, m.BodyEn)</p>
                                     <time class="bp-msg-time" datetime="@Iso(m.SentAt)">@Clock(m.SentAt)</time>
                                 </div>
                                 @if (mine && last)
@@ -234,7 +234,9 @@ else
     [CascadingParameter] private Task<AuthenticationState> AuthState { get; set; } = default!;
     [CascadingParameter] private HttpContext? Http { get; set; }
 
-    private sealed record Row(int Id, int OtherId, string Name, string? Club, bool OtherIsCoach, string? LastBody, MessageSender? LastSender, DateTimeOffset At, int Unread);
+    /// <param name="Club">Greek club name (also keys the jersey colour); <paramref name="ClubEn"/> is shown in English.</param>
+    private sealed record Row(int Id, int OtherId, string Name, string? Club, string? ClubEn, bool OtherIsCoach, string? LastBody, string? LastBodyEn,
+        MessageSender? LastSender, DateTimeOffset At, int Unread);
 
     private Viewer viewer;
     private bool denied;
@@ -317,17 +319,19 @@ else
             c.CoachId,
             CoachName = greek ? c.Coach!.FirstName + " " + c.Coach.LastName : c.Coach!.FirstNameLatin + " " + c.Coach.LastNameLatin,
             CoachClub = c.Coach.Club!.Name,
+            CoachClubEn = c.Coach.Club!.NameEn,
             c.AthleteId,
             AthleteName = greek ? c.Athlete!.FirstName + " " + c.Athlete.LastName : c.Athlete!.FirstNameLatin + " " + c.Athlete.LastNameLatin,
             AthleteClub = c.Athlete.CurrentClub!.Name,
+            AthleteClubEn = c.Athlete.CurrentClub!.NameEn,
             Last = c.Messages.OrderByDescending(m => m.SentAt).ThenByDescending(m => m.Id)
-                .Select(m => new { m.Body, m.SenderKind, m.SentAt }).FirstOrDefault(),
+                .Select(m => new { m.Body, m.BodyEn, m.SenderKind, m.SentAt }).FirstOrDefault(),
             Unread = c.Messages.Count(m => m.SenderKind != role && m.ReadAt == null),
         }).ToListAsync();
 
         return raw.Select(c => role == MessageSender.Coach
-                ? new Row(c.Id, c.AthleteId, c.AthleteName, c.AthleteClub, false, c.Last?.Body, c.Last?.SenderKind, c.Last?.SentAt ?? c.CreatedAt, c.Unread)
-                : new Row(c.Id, c.CoachId, c.CoachName, c.CoachClub, true, c.Last?.Body, c.Last?.SenderKind, c.Last?.SentAt ?? c.CreatedAt, c.Unread))
+                ? new Row(c.Id, c.AthleteId, c.AthleteName, c.AthleteClub, c.AthleteClubEn, false, c.Last?.Body, c.Last?.BodyEn, c.Last?.SenderKind, c.Last?.SentAt ?? c.CreatedAt, c.Unread)
+                : new Row(c.Id, c.CoachId, c.CoachName, c.CoachClub, c.CoachClubEn, true, c.Last?.Body, c.Last?.BodyEn, c.Last?.SenderKind, c.Last?.SentAt ?? c.CreatedAt, c.Unread))
             .OrderByDescending(r => r.At).ThenByDescending(r => r.Id).ToList();
     }
 
@@ -346,14 +350,13 @@ else
 
     private string Clock(DateTimeOffset at) => Local(at).ToString("HH:mm", CultureInfo.InvariantCulture);
 
-    /// <summary>"Σήμερα", "Χθες", otherwise the weekday and date ("Δευτέρα 17 Νοεμβρίου"; the year only when it differs).</summary>
+    /// <summary>"Σήμερα", "Χθες", otherwise the weekday and date ("Δευτέρα 17 Νοεμβρίου" / "Monday, Nov 17"; the year only when it differs).</summary>
     private string DayLabel(DateTimeOffset at)
     {
         var day = Local(at).Date;
         var today = Local(now).Date;
         if (day == today) return T["Today"];
         if (day == today.AddDays(-1)) return T["Yesterday"];
-        var text = day.ToString(day.Year == today.Year ? "dddd d MMMM" : "dddd d MMMM yyyy", CultureInfo.CurrentCulture);
-        return char.ToUpper(text[0], CultureInfo.CurrentCulture) + text[1..];
+        return DisplayDate.Day(day, today.Year);
     }
 }

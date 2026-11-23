@@ -4,7 +4,7 @@ public record SurnamePair(string Male, string Female, string MaleLatin, string F
 
 public record FirstName(string Greek, string Latin);
 
-// Genitive = form used in club names ("Μέλισσες Πάτρας").
+// Genitive = form used in club names ("Μέλισσες Πάτρας"). NameLatin = the English exonym ("Athens", "Piraeus"), shown in English.
 public record GreekCity(string Name, string NameLatin, string Region, string Genitive);
 
 // Common Greek names for fictional demo data. Latin forms are ELOT-style, lowercase-safe (no accents).
@@ -92,19 +92,19 @@ public static class GreekNames
 
     public static IReadOnlyList<GreekCity> Cities { get; } =
     [
-        new("Αθήνα", "Athina", "Attica", "Αθηνών"),
-        new("Πειραιάς", "Peiraias", "Attica", "Πειραιά"),
+        new("Αθήνα", "Athens", "Attica", "Αθηνών"),
+        new("Πειραιάς", "Piraeus", "Attica", "Πειραιά"),
         new("Περιστέρι", "Peristeri", "Attica", "Περιστερίου"),
         new("Θεσσαλονίκη", "Thessaloniki", "Central Macedonia", "Θεσσαλονίκης"),
         new("Σέρρες", "Serres", "Central Macedonia", "Σερρών"),
-        new("Πάτρα", "Patra", "Western Greece", "Πάτρας"),
+        new("Πάτρα", "Patras", "Western Greece", "Πάτρας"),
         new("Αγρίνιο", "Agrinio", "Western Greece", "Αγρινίου"),
-        new("Ηράκλειο", "Irakleio", "Crete", "Ηρακλείου"),
+        new("Ηράκλειο", "Heraklion", "Crete", "Ηρακλείου"),
         new("Χανιά", "Chania", "Crete", "Χανίων"),
-        new("Λάρισα", "Larisa", "Thessaly", "Λάρισας"),
+        new("Λάρισα", "Larissa", "Thessaly", "Λάρισας"),
         new("Βόλος", "Volos", "Thessaly", "Βόλου"),
         new("Ιωάννινα", "Ioannina", "Epirus", "Ιωαννίνων"),
         new("Κομοτηνή", "Komotini", "East Macedonia and Thrace", "Κομοτηνής"),
-        new("Ρόδος", "Rodos", "South Aegean", "Ρόδου"),
+        new("Ρόδος", "Rhodes", "South Aegean", "Ρόδου"),
     ];
 }

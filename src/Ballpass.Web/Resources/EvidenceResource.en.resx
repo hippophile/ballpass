@@ -15,7 +15,7 @@
   <data name="Metric_Assists" xml:space="preserve"><value>Assists / 40'</value></data>
   <data name="Metric_Steals" xml:space="preserve"><value>Steals / 40'</value></data>
   <data name="Metric_FgPct" xml:space="preserve"><value>Field goal % (FG%)</value></data>
-  <data name="Pct_Value" xml:space="preserve"><value>Percentile {0}</value></data>
+  <data name="Pct_Value" xml:space="preserve"><value>{0} percentile</value></data>
   <data name="Insufficient" xml:space="preserve"><value>Not enough data (n={0})</value></data>
   <data name="Insufficient_Peers" xml:space="preserve"><value>fewer than {0} peers</value></data>
   <data name="Insufficient_Minutes" xml:space="preserve"><value>under {0} minutes per game</value></data>
@@ -50,7 +50,7 @@
   <data name="Badge_multi-season" xml:space="preserve"><value>Experienced: stats across {0} seasons</value></data>
   <data name="Badge_regular" xml:space="preserve"><value>Regular: {0} games in the latest season (rule: 25+)</value></data>
   <data name="Badge_rising" xml:space="preserve"><value>Rising: +{0}% points per game (rule: +10% or more)</value></data>
-  <data name="Badge_top-quartile" xml:space="preserve"><value>Top quartile: percentile {0} in points/40'</value></data>
+  <data name="Badge_top-quartile" xml:space="preserve"><value>Top quartile: {0} percentile in points/40'</value></data>
   <data name="Badge_Source" xml:space="preserve"><value>source: {0}</value></data>
   <data name="Compare_Link" xml:space="preserve"><value>Compare with…</value></data>
   <data name="Compare_Title" xml:space="preserve"><value>Compare players</value></data>

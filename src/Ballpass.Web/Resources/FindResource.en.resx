@@ -132,7 +132,7 @@
   <data name="Short_Stat_Top" xml:space="preserve"><value>top {0}% {1}/40'</value></data>
   <data name="Short_Stat_Plain" xml:space="preserve"><value>{0} {1}/40'</value></data>
   <data name="Proof_Season" xml:space="preserve"><value>Season {0} · {1}</value></data>
-  <data name="Proof_Pct" xml:space="preserve"><value>{0}: percentile {1}</value></data>
+  <data name="Proof_Pct" xml:space="preserve"><value>{0}: {1} percentile</value></data>
   <data name="Proof_NoStats" xml:space="preserve"><value>No stats yet</value></data>
   <data name="Profile_About" xml:space="preserve"><value>Career and bio</value></data>
   <data name="Rail_More" xml:space="preserve"><value>More actions</value></data>

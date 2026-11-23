@@ -36,7 +36,7 @@ public partial class RuleParser : INlQueryParser
         ("Central Macedonia", Rx(@"κεντρικ\w*\s+μακεδονι\w*|central\s+macedonia|θεσσαλονικ\w*|thessaloniki|salonica|σερρ\w*|serres")),
         ("Western Greece", Rx(@"δυτικ\w*\s+ελλαδ\w*|western\s+greece|πατρα\w*|patras|patra|αγρινι\w*|agrinio")),
         ("Crete", Rx(@"κρητ\w*|crete|ηρακλει\w*|heraklion|irakleio|χανι\w*|chania")),
-        ("Thessaly", Rx(@"θεσσαλι\w*|thessaly|λαρισ\w*|larisa|βολο\w*|volos")),
+        ("Thessaly", Rx(@"θεσσαλι\w*|thessaly|λαρισ\w*|larissa|larisa|βολο\w*|volos")),
         ("Epirus", Rx(@"ηπειρ\w*|epirus|ιωαννιν\w*|ioannina")),
         ("South Aegean", Rx(@"νοτι\w*\s+αιγαι\w*|south\s+aegean|ροδο\w*|rhodes|rodos")),
         ("Attica", Rx(@"αττικ\w*|attica|αθην\w*|athens|athina|πειραι\w*|piraeus|peiraias|περιστερι\w*|peristeri")),

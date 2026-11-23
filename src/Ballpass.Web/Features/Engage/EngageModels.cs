@@ -25,7 +25,7 @@ public enum CommentOutcome { Posted, Forbidden, Minor, RateLimited, Invalid, Too
 
 public record PersonView(string Key, string NameEl, string NameLatin, string? Slug);
 
-public record CommentView(int Id, string AuthorKey, PersonView Author, string Text, DateTimeOffset CreatedAt, bool IsOwn, bool CanHide);
+public record CommentView(int Id, string AuthorKey, PersonView Author, string Text, DateTimeOffset CreatedAt, bool IsOwn, bool CanHide, string? TextEn = null);
 
 public record TagView(string Tag, string Label);
 

@@ -1,6 +1,7 @@
 @page "/demo"
 @using System.Globalization
 @using Ballpass.Web.Components.Flow
+@using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Data
 @using Ballpass.Web.Demo
 @using Ballpass.Web.Features.Flow
@@ -29,7 +30,7 @@
                 var name = CoachName(fc);
                 <PersonaDoor Image="FlowMedia.FeaturedCoach(IsFemale(fc))" PersonaType="coach" PersonaId="fc.Id" ReturnUrl="@(ReturnUrl ?? FeaturedPersonas.CoachReturnUrl)" Priority="true"
                              Class="bp-persona-hero-card" Title="@T[IsFemale(fc) ? "Demo_AsCoachF" : "Demo_AsCoach"]"
-                             Text="@($"{name} · {fc.Club?.Name} · {L[$"League_{fc.Club?.League}"]}")" Cta="@T["Door_CoachCta"]"
+                             Text="@($"{name} · {DisplayText.Club(fc.Club)} · {L[$"League_{fc.Club?.League}"]}")" Cta="@T["Door_CoachCta"]"
                              data-persona="coach" data-featured="" data-name="@name" />
             }
             @if (featured.Athlete is { } fa)
@@ -37,7 +38,7 @@
                 var name = AthleteName(fa);
                 <PersonaDoor Image="StockMedia.PersonaAthlete" PersonaType="athlete" PersonaId="fa.Id" ReturnUrl="@(ReturnUrl ?? FeaturedPersonas.AthleteReturnUrl)" Priority="true"
                              Class="bp-persona-hero-card" Title="@T[fa.Gender == Gender.Female ? "Demo_AsAthleteF" : "Demo_AsAthlete"]"
-                             Text="@($"{name} · {fa.Position} · {fa.CurrentClub?.Name ?? L["Profile_NoClub"].Value}")" Cta="@T["Door_AthleteCta"]"
+                             Text="@($"{name} · {fa.Position} · {DisplayText.Club(fa.CurrentClub) ?? L["Profile_NoClub"].Value}")" Cta="@T["Door_AthleteCta"]"
                              data-persona="athlete" data-featured="" data-name="@name" data-slug="@fa.Slug" />
             }
         </section>
@@ -153,7 +154,7 @@
                 <JerseyAvatar Id="c.Id" Initials="@Initials(name)" Club="@c.Club?.Name" Coach="true" Size="40" />
                 <span class="bp-persona-text">
                     <span class="bp-persona-name">@name</span>
-                    <span class="bp-persona-info">@L[IsFemale(c) ? "Role_Coach_F" : "Role_Coach"] · @c.Club?.Name · @L[$"League_{c.Club!.League}"]</span>
+                    <span class="bp-persona-info">@L[IsFemale(c) ? "Role_Coach_F" : "Role_Coach"] · @DisplayText.Club(c.Club) · @L[$"League_{c.Club!.League}"]</span>
                 </span>
                 <span class="bp-persona-chevron" aria-hidden="true">›</span>
             </button>
@@ -172,7 +173,7 @@
                 <JerseyAvatar Id="a.Id" Initials="@Initials(name)" Club="@a.CurrentClub?.Name" Size="40" />
                 <span class="bp-persona-text">
                     <span class="bp-persona-name">@name @if (a.LookingForTeam) { <span class="bp-chip-athlete">@T["Chip_Looking"]</span> }</span>
-                    <span class="bp-persona-info">@L[$"Position_{a.Position}"] · @(a.CurrentClub?.Name ?? L["Profile_NoClub"].Value)</span>
+                    <span class="bp-persona-info">@L[$"Position_{a.Position}"] · @(DisplayText.Club(a.CurrentClub) ?? L["Profile_NoClub"].Value)</span>
                 </span>
                 <span class="bp-persona-chevron" aria-hidden="true">›</span>
             </button>

@@ -72,7 +72,7 @@ public class MessagesService(IServiceScopeFactory scopes)
         if (!string.IsNullOrWhiteSpace(interest.Note))
             conversation.Messages.Add(new Message
             {
-                SenderKind = MessageSender.Coach, Body = interest.Note, SentAt = interest.CreatedAt, ReadAt = interest.SeenAt ?? now, IsDemo = true,
+                SenderKind = MessageSender.Coach, Body = interest.Note, BodyEn = interest.NoteEn, SentAt = interest.CreatedAt, ReadAt = interest.SeenAt ?? now, IsDemo = true,
             });
         db.Add(conversation);
         try { await db.SaveChangesAsync(); }

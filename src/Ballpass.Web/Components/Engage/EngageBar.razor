@@ -19,7 +19,8 @@
             <ul class="bp-engage-tags" aria-label="@E["Tags_Aria"]">
                 @foreach (var t in e.Tags)
                 {
-                    <li><a data-tag="@t.Tag" href="/feed?tag=@Uri.EscapeDataString(t.Label)">#@t.Label</a></li>
+                    var label = HashtagCatalog.Label(t.Tag, t.Label);
+                    <li><a data-tag="@t.Tag" href="/feed?tag=@Uri.EscapeDataString(label)">#@label</a></li>
                 }
             </ul>
         }

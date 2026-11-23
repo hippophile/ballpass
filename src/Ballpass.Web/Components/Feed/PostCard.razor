@@ -13,7 +13,7 @@
 <article id="post-@p.Id" class="bp-feed-post@(ReadOnly ? " bp-feed-post-compact" : "")" data-post-id="@p.Id" data-post-type="@p.Type" data-author-key="@p.AuthorKey">
     <header class="bp-feed-head">
         <div class="bp-feed-author">
-            <JerseyAvatar Id="p.AuthorId" Initials="@Initials" Club="@(p.AuthorKind == AuthorKind.Club ? DisplayName : Item.ClubName)" Coach="@(p.AuthorKind == AuthorKind.Coach)" Size="48" Class="bp-feed-avatar" />
+            <JerseyAvatar Id="p.AuthorId" Initials="@Initials" Club="@(p.AuthorKind == AuthorKind.Club ? Item.NameEl : Item.ClubName)" Coach="@(p.AuthorKind == AuthorKind.Coach)" Size="48" Class="bp-feed-avatar" />
             <div class="bp-feed-who">
                 <span class="bp-feed-name">
                     @if (Item.Slug is not null)
@@ -25,7 +25,7 @@
                         @DisplayName
                     }
                 </span>
-                <span class="bp-feed-role">@RoleText@if (Item.ClubName is not null && p.AuthorKind != AuthorKind.Club) {<text> · @Item.ClubName</text>}</span>
+                <span class="bp-feed-role">@RoleText@if (Item.ClubName is not null && p.AuthorKind != AuthorKind.Club) {<text> · @DisplayText.Club(Item.ClubName, Item.ClubNameEn)</text>}</span>
             </div>
         </div>
         <div class="bp-feed-meta">
@@ -82,14 +82,14 @@
                 </dl>
                 @if (!string.IsNullOrEmpty(p.Text))
                 {
-                    <p class="bp-feed-text" data-field="note">@p.Text</p>
+                    <p class="bp-feed-text" data-field="note">@DisplayText.Pick(p.Text, p.TextEn)</p>
                 }
                 break;
             case PostType.TryoutCall:
                 <dl class="bp-feed-fields">
                     <div data-field="date"><dt>@F["Field_Date"]</dt><dd>@(p.EventDate is { } ev ? Date(ev) : "—")</dd></div>
-                    <div data-field="place"><dt>@F["Field_Place"]</dt><dd>@p.Place</dd></div>
-                    <div data-field="positions"><dt>@F["Field_Positions"]</dt><dd>@p.Positions</dd></div>
+                    <div data-field="place"><dt>@F["Field_Place"]</dt><dd>@DisplayText.PickOrNull(p.Place, p.PlaceEn)</dd></div>
+                    <div data-field="positions"><dt>@F["Field_Positions"]</dt><dd>@DisplayText.PickOrNull(p.Positions, p.PositionsEn)</dd></div>
                     <div data-field="deadline"><dt>@F["Field_Deadline"]</dt><dd>@(p.Deadline is { } dl ? Date(dl) : "—")</dd></div>
                 </dl>
                 break;
@@ -111,7 +111,7 @@
                 break;
             case PostType.Highlight:
                 @if (!HideMedia) { <PostMedia PostId="p.Id" Pool="true" Eager="Eager" /> }
-                <p class="bp-feed-text" data-field="title">@p.Title</p>
+                <p class="bp-feed-text" data-field="title">@DisplayText.PickOrNull(p.Title, p.TitleEn)</p>
                 break;
             case PostType.Badge:
                 <p class="bp-feed-badge" data-field="badge">
@@ -121,7 +121,7 @@
                 <p class="bp-feed-hint">@F["Badge_Note"]</p>
                 break;
             default:
-                <p class="bp-feed-text" data-field="text">@p.Text</p>
+                <p class="bp-feed-text" data-field="text">@DisplayText.PickOrNull(p.Text, p.TextEn)</p>
                 break;
         }
         @if (!HideMedia && p.Type is PostType.FreeText or PostType.TryoutCall or PostType.LookingForTeam)
@@ -203,7 +203,7 @@
 
     private string RelativeTime => RelativeTimeText.Format(L, Item.Post.CreatedAt, Time.GetUtcNow());
 
-    private static string Date(DateOnly d) => d.ToString("d MMM yyyy", CultureInfo.CurrentCulture);
+    private static string Date(DateOnly d) => DisplayDate.Date(d);
 
     private static string Num(decimal? v) => v is { } n ? n.ToString("0.0", CultureInfo.CurrentCulture) : "—";
 

@@ -1,5 +1,6 @@
 @namespace Ballpass.Web.Components
 @using System.Globalization
+@using Ballpass.Web.Components.Shared
 @using Ballpass.Web.Data
 @using Ballpass.Web.Features.Evidence
 @using Microsoft.AspNetCore.WebUtilities
@@ -37,7 +38,7 @@
                     <span class="bp-ev-num">@ValueText(m)</span>
                     @if (m.Percentile is { } pct)
                     {
-                        <span class="bp-ev-pct">@E["Pct_Value", pct]</span>
+                        <span class="bp-ev-pct">@E["Pct_Value", Ordinal.Format(pct)]</span>
                         <svg class="bp-ev-bar" viewBox="0 0 200 10" preserveAspectRatio="none" role="img" aria-label="@AriaText(m)" focusable="false">
                             <rect class="bp-ev-track" x="0" y="0" width="@ChartGeometry.Fmt(ChartGeometry.TrackWidth)" height="10" />
                             <rect class="bp-ev-fill" x="0" y="0" width="@ChartGeometry.Fmt(ChartGeometry.FillWidth(pct))" height="10" />
@@ -144,7 +145,7 @@
                 <ul class="bp-ev-badges">
                     @foreach (var b in badges)
                     {
-                        <li class="bp-ev-badge" data-rule="@b.Rule" data-source="@b.Source">@E[$"Badge_{b.Rule}", b.Args]@if (ShowSource(b))
+                        <li class="bp-ev-badge" data-rule="@b.Rule" data-source="@b.Source">@E[$"Badge_{b.Rule}", BadgeArgs(b)]@if (ShowSource(b))
                             {
                                 <span class="bp-ev-badge-src"> · @E["Badge_Source", L[$"Source_{b.Source}"].Value]</span>
                             }</li>
@@ -209,8 +210,11 @@
         _ => E["Insufficient_Peers", EvOptions.Value.MinPeers].Value,
     };
 
+    /// <summary>The top-quartile badge prints its percentile as an ordinal ("82nd percentile").</summary>
+    private static object[] BadgeArgs(Badge b) => b.Rule == "top-quartile" && b.Args is [int pct] ? [Ordinal.Format(pct)] : b.Args;
+
     private string AriaText(MetricPercentile m) => m.Percentile is { } pct
-        ? $"{E["Aria_Row", MetricLabel(m.Metric), ValueText(m), E["Pct_Value", pct]]}. {CohortLabel}"
+        ? $"{E["Aria_Row", MetricLabel(m.Metric), ValueText(m), E["Pct_Value", Ordinal.Format(pct)]]}. {CohortLabel}"
         : $"{E["Aria_RowNoData", MetricLabel(m.Metric), ValueText(m), NoDataText(m)]}";
 
     private string TrendText => trend!.Direction switch

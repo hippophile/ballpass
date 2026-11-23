@@ -162,7 +162,7 @@
                     <div class="bp-why-preview bp-why-pv-coach" aria-hidden="true" inert>
                         <div class="bp-why-pv-person">
                             <JerseyAvatar Id="@(cast.Coach?.Id ?? 0)" Initials="@CoachInitials" Club="@cast.Coach?.Club?.Name" Coach="true" Size="40" />
-                            <span><b>@CoachName</b><small>@cast.Coach?.Club?.Name</small></span>
+                            <span><b>@CoachName</b><small>@DisplayText.Club(cast.Coach?.Club)</small></span>
                         </div>
                         <p class="bp-why-pv-note">@W["Pv_Note"]</p>
                         <span class="bp-why-pv-btn bp-why-pv-btn-coach">@W["Pv_Send"]</span>
@@ -175,7 +175,7 @@
                         <span class="bp-why-pv-kicker">@W["Pv_New"]</span>
                         <div class="bp-why-pv-person">
                             <JerseyAvatar Id="@(cast.Coach?.Id ?? 0)" Initials="@CoachInitials" Club="@cast.Coach?.Club?.Name" Coach="true" Size="32" />
-                            <span><b>@cast.Coach?.Club?.Name</b><small>@CoachName</small></span>
+                            <span><b>@DisplayText.Club(cast.Coach?.Club)</b><small>@CoachName</small></span>
                         </div>
                         <div class="bp-why-pv-actions">
                             <span class="bp-why-pv-btn bp-why-pv-btn-athlete">@W["Pv_Accept"]</span>

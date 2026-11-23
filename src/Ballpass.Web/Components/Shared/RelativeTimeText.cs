@@ -1,4 +1,3 @@
-using System.Globalization;
 using Microsoft.Extensions.Localization;
 
 namespace Ballpass.Web.Components.Shared;
@@ -13,6 +12,6 @@ public static class RelativeTimeText
         if (age < TimeSpan.FromHours(1)) return loc["Time_Minutes", (int)age.TotalMinutes].Value;
         if (age < TimeSpan.FromDays(1)) return loc["Time_Hours", (int)age.TotalHours].Value;
         if (age < TimeSpan.FromDays(30)) return loc["Time_Days", (int)age.TotalDays].Value;
-        return at.ToString("d MMM yyyy", CultureInfo.CurrentCulture);
+        return DisplayDate.Date(at.DateTime);
     }
 }

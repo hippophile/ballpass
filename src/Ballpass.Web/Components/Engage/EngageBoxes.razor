@@ -52,8 +52,9 @@
         <ol class="bp-engage-trends">
             @foreach (var t in trends.Take(MaxTrends))
             {
+                var label = HashtagCatalog.Label(t.Tag, t.Label);
                 <li data-tag-key="@t.Tag" data-tag-count="@t.Count">
-                    <a href="/feed?tag=@Uri.EscapeDataString(t.Label)">#@t.Label</a>
+                    <a href="/feed?tag=@Uri.EscapeDataString(label)">#@label</a>
                     <span class="bp-engage-tcount">@(t.Count == 1 ? E["Trends_CountOne"].Value : E["Trends_CountMany", t.Count].Value)</span>
                 </li>
             }

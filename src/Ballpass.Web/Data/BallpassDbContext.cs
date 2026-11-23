@@ -59,6 +59,7 @@ public class BallpassDbContext(DbContextOptions<BallpassDbContext> options) : Db
         modelBuilder.Entity<Interest>(e =>
         {
             e.Property(x => x.Note).HasMaxLength(280);
+            e.Property(x => x.NoteEn).HasMaxLength(280);
             e.HasIndex(x => new { x.CoachId, x.AthleteId }).IsUnique();
             e.HasOne(x => x.Coach).WithMany().HasForeignKey(x => x.CoachId).OnDelete(DeleteBehavior.Cascade);
             e.HasOne(x => x.Athlete).WithMany().HasForeignKey(x => x.AthleteId).OnDelete(DeleteBehavior.Cascade);
