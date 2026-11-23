@@ -91,6 +91,7 @@ builder.Services.AddEngage();
 builder.Services.AddFind();
 builder.Services.AddLoop();
 builder.Services.AddMedia();
+builder.Services.AddMessages();
 builder.Services.AddHealthChecks().AddDbContextCheck<BallpassDbContext>();
 
 var app = builder.Build();
@@ -250,6 +251,7 @@ app.MapFeed();
 app.MapEngage();
 app.MapFind();
 app.MapLoop();
+app.MapMessages();
 app.MapRazorComponents<App>();
 
 app.Run();

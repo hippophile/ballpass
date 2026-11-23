@@ -1,11 +1,13 @@
 using Ballpass.Web.Data;
+using Ballpass.Web.Features.Loop;
 using Ballpass.Web.Features.Media;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Ballpass.Web.Demo;
 
 // Applies migrations, then replaces all demo rows with the generated set in one transaction.
-public class DemoDataSeeder(BallpassDbContext db, TimeProvider time)
+public class DemoDataSeeder(BallpassDbContext db, TimeProvider time, IOptions<DemoOptions>? demo = null)
 {
     public const int Seed = 42;
 
@@ -39,6 +41,7 @@ public class DemoDataSeeder(BallpassDbContext db, TimeProvider time)
         await FeedSeeder.ReplaceAsync(db, data, now, ct);
         await EngageSeeder.ReplaceAsync(db, data, now, ct);
         await MediaSeeder.ReplaceAsync(db, ct);
+        await MessagesSeeder.ReplaceAsync(db, data, now, demo?.Value.Featured, ct);
 
         await tx.CommitAsync(ct);
     }

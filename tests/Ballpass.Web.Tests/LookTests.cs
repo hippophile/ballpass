@@ -97,7 +97,7 @@ public class LookTests(BallpassAppFactory app)
     // ---------- shell ----------
 
     [Fact]
-    public async Task Coach_nav_has_three_primary_links_and_a_user_menu()
+    public async Task Coach_nav_has_four_primary_links_and_a_user_menu()
     {
         var client = app.Client();
         await SignIn(client, "coach");
@@ -107,7 +107,7 @@ public class LookTests(BallpassAppFactory app)
         var nav = Regex.Match(html, "<nav[^>]*class=\"bp-nav\"[^>]*>(.*?)</nav>", RegexOptions.Singleline);
         Assert.True(nav.Success, "primary nav missing");
         var links = Regex.Matches(nav.Groups[1].Value, "<a[^>]*href=\"([^\"]+)\"").Select(m => m.Groups[1].Value).ToList();
-        Assert.Equal(["/match", "/shortlist", "/me/sent"], links);
+        Assert.Equal(["/match", "/shortlist", "/me/sent", "/messages"], links);   // messages since 2026-11-23
         Assert.Matches("<a[^>]*href=\"/match\"[^>]*aria-current=\"page\"|<a[^>]*aria-current=\"page\"[^>]*href=\"/match\"", nav.Groups[1].Value);
         var menu = Regex.Match(html, "<details[^>]*class=\"bp-usermenu\"[^>]*>(.*?)</details>", RegexOptions.Singleline);
         Assert.True(menu.Success, "user menu missing");
@@ -121,7 +121,7 @@ public class LookTests(BallpassAppFactory app)
     }
 
     [Fact]
-    public async Task Athlete_nav_has_two_primary_links()
+    public async Task Athlete_nav_has_three_primary_links()
     {
         var client = app.Client();
         await SignIn(client, "athlete");
@@ -131,9 +131,10 @@ public class LookTests(BallpassAppFactory app)
         var nav = Regex.Match(html, "<nav[^>]*class=\"bp-nav\"[^>]*>(.*?)</nav>", RegexOptions.Singleline);
         Assert.True(nav.Success, "primary nav missing");
         var links = Regex.Matches(nav.Groups[1].Value, "<a[^>]*href=\"([^\"]+)\"").Select(m => m.Groups[1].Value).ToList();
-        Assert.Equal(2, links.Count);
+        Assert.Equal(3, links.Count);
         Assert.Equal("/me/inbox", links[0]);
-        Assert.Matches("^/p/[a-z0-9-]+$", links[1]);
+        Assert.Equal("/messages", links[1]);   // messages since 2026-11-23
+        Assert.Matches("^/p/[a-z0-9-]+$", links[2]);
         var menu = Regex.Match(html, "<details[^>]*class=\"bp-usermenu\"[^>]*>(.*?)</details>", RegexOptions.Singleline);
         Assert.True(menu.Success, "user menu missing");
         Assert.Contains("href=\"/feed\"", menu.Groups[1].Value);

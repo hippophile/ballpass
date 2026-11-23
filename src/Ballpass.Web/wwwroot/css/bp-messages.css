@@ -1,0 +1,593 @@
+/* Messages (messages package): a two-pane DM inbox. The viewer's own accent colours their bubbles, badges and the active row:
+   orange for a coach, teal for an athlete (data-role on .bp-msg). Tokens only. */
+
+.bp-msg {
+    --bp-msg-accent: var(--bp-accent);
+    --bp-msg-ink: var(--bp-accent-contrast);
+    --bp-msg-fill: var(--bp-grad-cta);
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    height: clamp(560px, calc(100dvh - 64px - 48px), 940px);
+    background: var(--bp-s1);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+    box-shadow: var(--bp-shadow);
+    overflow: hidden;
+}
+
+    .bp-msg[data-role="athlete"] {
+        --bp-msg-accent: var(--bp-athlete);
+        --bp-msg-ink: var(--bp-athlete-contrast);
+        --bp-msg-fill: var(--bp-grad-athlete);
+    }
+
+/* ---- list ---- */
+
+.bp-msg-list {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-right: 1px solid var(--bp-border);
+}
+
+.bp-msg-list-head {
+    padding: var(--bp-sp-4) var(--bp-sp-4) var(--bp-sp-3);
+    border-bottom: 1px solid var(--bp-border);
+}
+
+    .bp-msg-list-head h1 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+.bp-msg-list-sub {
+    margin: 2px 0 0;
+    font-size: 0.8125rem;
+    color: var(--bp-muted);
+}
+
+.bp-msg-items {
+    flex: 1;
+    min-height: 0;
+    margin: 0;
+    padding: var(--bp-sp-1) 0;
+    list-style: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.bp-msg-item {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--bp-sp-3);
+    padding: 10px var(--bp-sp-4) 10px 13px;
+    border-left: 3px solid transparent;
+    color: var(--bp-text);
+    text-decoration: none;
+    transition: background-color 150ms ease-out;
+}
+
+    .bp-msg-item:hover {
+        background: var(--bp-s2);
+        color: var(--bp-text);
+    }
+
+    .bp-msg-item.is-active {
+        background: var(--bp-s2);
+        border-left-color: var(--bp-msg-accent);
+    }
+
+.bp-msg-item-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.35;
+}
+
+.bp-msg-item-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--bp-sp-2);
+}
+
+.bp-msg-item-name, .bp-msg-item-club, .bp-msg-item-last {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.bp-msg-item-name {
+    font-weight: 600;
+}
+
+.bp-msg-item-time {
+    flex: none;
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-muted);
+}
+
+.bp-msg-item-club {
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-muted);
+}
+
+.bp-msg-item-last {
+    margin-top: 2px;
+    font-size: 0.8125rem;
+    color: var(--bp-muted);
+}
+
+    .bp-msg-item-last em {
+        color: var(--bp-msg-accent);
+        font-style: normal;
+        font-weight: 600;
+    }
+
+.bp-msg-item.is-unread .bp-msg-item-name, .bp-msg-item.is-unread .bp-msg-item-last {
+    color: var(--bp-text);
+    font-weight: 700;
+}
+
+.bp-msg-item.is-unread .bp-msg-item-time {
+    color: var(--bp-msg-accent);
+    font-weight: 700;
+}
+
+.bp-msg-badge {
+    display: grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: var(--bp-r-pill);
+    background: var(--bp-msg-accent);
+    color: var(--bp-msg-ink);
+    font-size: var(--bp-fs-xs);
+    font-weight: 800;
+}
+
+.bp-msg-rule {
+    margin: 0;
+    padding: 10px var(--bp-sp-4);
+    border-top: 1px solid var(--bp-border);
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-muted);
+}
+
+/* ---- thread ---- */
+
+.bp-msg-thread {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    background: var(--bp-bg);
+}
+
+.bp-msg-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--bp-sp-2) var(--bp-sp-3);
+    padding: var(--bp-sp-3) var(--bp-sp-4);
+    background: var(--bp-s1);
+    border-bottom: 1px solid var(--bp-border);
+}
+
+.bp-msg-back {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    color: var(--bp-text);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+    .bp-msg-back span {
+        font-size: 1.5rem;
+        line-height: 1;
+        color: var(--bp-msg-accent);
+    }
+
+.bp-msg-who {
+    display: flex;
+    flex: 1 1 220px;
+    align-items: center;
+    gap: var(--bp-sp-3);
+    min-width: 0;
+}
+
+.bp-msg-who-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.3;
+}
+
+.bp-msg-name {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--bp-text);
+    text-decoration: none;
+}
+
+a.bp-msg-name:hover {
+    color: var(--bp-msg-accent);
+    text-decoration: underline;
+}
+
+.bp-msg-meta {
+    overflow: hidden;
+    font-size: 0.8125rem;
+    color: var(--bp-muted);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.bp-msg-more {
+    position: relative;
+}
+
+    .bp-msg-more summary {
+        min-height: 40px;
+        list-style: none;
+        font-size: 1.25rem;
+        line-height: 1;
+    }
+
+        .bp-msg-more summary::-webkit-details-marker {
+            display: none;
+        }
+
+.bp-msg-more-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-4);
+    width: min(300px, calc(100vw - 32px));
+    padding: var(--bp-sp-4);
+    background: var(--bp-s2);
+    border: 1px solid var(--bp-border);
+    border-radius: var(--bp-r-md);
+    box-shadow: var(--bp-shadow);
+}
+
+.bp-msg-report, .bp-msg-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bp-sp-2);
+    margin: 0;
+}
+
+    .bp-msg-report .bp-label, .bp-msg-block .bp-label {
+        margin: 0;
+    }
+
+.bp-msg-check {
+    display: flex;
+    align-items: center;
+    font-size: var(--bp-fs-sm);
+}
+
+.bp-msg-hint {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--bp-muted);
+}
+
+.bp-btn-ghost.bp-msg-danger {
+    color: var(--bp-danger);
+    justify-content: flex-start;
+    padding-inline: 0;
+}
+
+    .bp-btn-ghost.bp-msg-danger:hover {
+        color: var(--bp-danger);
+        background: transparent;
+        text-decoration: underline;
+    }
+
+.bp-msg-notice {
+    margin: 0;
+    padding: var(--bp-sp-2) var(--bp-sp-4);
+    background: var(--bp-s2);
+    border-bottom: 1px solid var(--bp-border);
+    font-size: var(--bp-fs-sm);
+}
+
+/* The scroller starts at its end (column-reverse), so the newest message is in view without JavaScript. */
+.bp-msg-scroll {
+    display: flex;
+    flex: 1;
+    flex-direction: column-reverse;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.bp-msg-stream {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: var(--bp-sp-3) var(--bp-sp-5) var(--bp-sp-3);
+    list-style: none;
+}
+
+.bp-msg-first {
+    align-self: center;
+    margin: var(--bp-sp-6) 0;
+    color: var(--bp-muted);
+    font-size: var(--bp-fs-sm);
+}
+
+.bp-msg-day {
+    align-self: center;
+    margin: var(--bp-sp-4) 0 var(--bp-sp-1);
+    font-size: var(--bp-fs-xs);
+    font-weight: 700;
+    color: var(--bp-muted);
+}
+
+    .bp-msg-day span {
+        display: inline-block;
+        padding: 3px 12px;
+        background: var(--bp-s2);
+        border: 1px solid var(--bp-border);
+        border-radius: var(--bp-r-pill);
+    }
+
+.bp-msg-bubble {
+    display: flex;
+    flex-direction: column;
+    max-width: min(72%, 560px);
+    margin-top: 10px;
+}
+
+    .bp-msg-bubble.bp-msg-cont {
+        margin-top: 3px;
+    }
+
+.bp-msg-mine {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.bp-msg-theirs {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.bp-msg-box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 2px 10px;
+    padding: 8px 12px 6px;
+    background: var(--bp-s2);
+    border: 1px solid var(--bp-border);
+    border-radius: 16px;
+}
+
+.bp-msg-theirs .bp-msg-box {
+    border-bottom-left-radius: 4px;
+}
+
+/* Own bubbles: the role gradient with dark ink (white on orange is never allowed). */
+.bp-msg-mine .bp-msg-box {
+    background: var(--bp-msg-fill);
+    border-color: transparent;
+    color: var(--bp-msg-ink);
+    border-bottom-right-radius: 4px;
+}
+
+    .bp-msg-mine .bp-msg-box .bp-msg-time {
+        color: var(--bp-msg-ink);
+    }
+
+.bp-msg-cont.bp-msg-theirs .bp-msg-box {
+    border-top-left-radius: 6px;
+}
+
+.bp-msg-cont.bp-msg-mine .bp-msg-box {
+    border-top-right-radius: 6px;
+}
+
+.bp-msg-text {
+    margin: 0;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.bp-msg-time {
+    margin-left: auto;
+    font-size: 0.6875rem;
+    color: var(--bp-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.bp-msg-receipt {
+    margin: 3px 4px 0;
+    font-size: var(--bp-fs-xs);
+    color: var(--bp-muted);
+}
+
+    .bp-msg-receipt[data-receipt="read"] {
+        color: var(--bp-msg-accent);
+        font-weight: 600;
+    }
+
+.bp-msg-composer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--bp-sp-2) 10px;
+    margin: 0;
+    padding: var(--bp-sp-3) var(--bp-sp-4);
+    background: var(--bp-s1);
+    border-top: 1px solid var(--bp-border);
+}
+
+    .bp-msg-composer textarea {
+        flex: 1 1 240px;
+        min-width: 0;
+        min-height: 44px;
+        max-height: 200px;
+        padding: 10px 14px;
+        border-radius: var(--bp-r-md);
+        resize: vertical;
+    }
+
+.bp-msg-error {
+    flex-basis: 100%;
+    margin: 0;
+    color: var(--bp-danger);
+    font-size: var(--bp-fs-sm);
+}
+
+.bp-msg-closed {
+    margin: 0;
+    padding: 14px var(--bp-sp-4);
+    background: var(--bp-s1);
+    border-top: 1px solid var(--bp-border);
+    color: var(--bp-muted);
+    font-size: var(--bp-fs-sm);
+}
+
+/* #bottom: a fragment jump puts this line at the bottom edge of the viewport (newest message and composer in view). */
+.bp-msg-bottom {
+    height: 0;
+    scroll-margin-top: calc(100dvh - 8px);
+}
+
+.bp-msg-denied {
+    color: var(--bp-muted);
+}
+
+/* ---- empty ---- */
+
+.bp-msg-empty h1 {
+    margin-bottom: var(--bp-sp-4);
+}
+
+.bp-msg-empty-photo {
+    min-height: 340px;
+    aspect-ratio: 21 / 9;
+    border-radius: var(--bp-r-md);
+}
+
+.bp-msg-empty-text {
+    max-width: 46ch;
+    margin: 0 0 var(--bp-sp-3);
+    font-size: 1.0625rem;
+}
+
+.bp-msg-empty .bp-msg-rule {
+    padding-inline: 0;
+    border-top: 0;
+}
+
+/* ---- tablets: narrower list ---- */
+@media (max-width: 1100px) {
+    .bp-msg {
+        grid-template-columns: 300px minmax(0, 1fr);
+    }
+
+    .bp-msg-bubble {
+        max-width: 82%;
+    }
+}
+
+/* ---- phones: the list and the thread are separate screens; the page scrolls, the head and composer stick ---- */
+@media (max-width: 760px) {
+    .bp-msg {
+        display: block;
+        height: auto;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        overflow: visible;
+    }
+
+        .bp-msg[data-view="list"] .bp-msg-thread, .bp-msg[data-view="thread"] .bp-msg-list {
+            display: none;
+        }
+
+    .bp-msg-list {
+        border-right: 0;
+    }
+
+    .bp-msg-list-head {
+        padding: 0 0 var(--bp-sp-3);
+    }
+
+    .bp-msg-items {
+        overflow: visible;
+        margin-inline: -16px;
+    }
+
+    .bp-msg-item {
+        padding-inline: 13px 16px;
+    }
+
+    .bp-msg-rule {
+        padding-inline: 0;
+    }
+
+    .bp-msg-thread {
+        margin: -16px -16px 0;
+        min-height: calc(100dvh - 140px);
+    }
+
+    .bp-msg-head {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        padding: var(--bp-sp-2) var(--bp-sp-4) var(--bp-sp-3);
+    }
+
+    .bp-msg-back {
+        display: inline-flex;
+        flex-basis: 100%;
+    }
+
+    .bp-msg-who {
+        flex-basis: 0;
+    }
+
+    .bp-msg-scroll {
+        display: block;
+        overflow: visible;
+    }
+
+    .bp-msg-stream {
+        padding-inline: var(--bp-sp-3);
+    }
+
+    .bp-msg-bubble {
+        max-width: 86%;
+    }
+
+    .bp-msg-composer {
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
+        padding: 10px var(--bp-sp-3);
+    }
+
+        .bp-msg-composer textarea {
+            flex-basis: 200px;
+        }
+
+    .bp-msg-empty-photo {
+        aspect-ratio: auto;
+        min-height: 420px;
+    }
+}

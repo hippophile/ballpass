@@ -27,7 +27,12 @@ public class DemoDataSeederTests
         Assert.Equal(30, await db.Coaches.CountAsync());
         Assert.True(await db.Athletes.AllAsync(a => a.IsDemo));
         var generated = DemoDataGenerator.Generate(42);
-        Assert.Equal(generated.Interests.Count, await db.Interests.CountAsync());
+        // Generated interests + the accepted ones the messages seed adds; one conversation per accepted interest.
+        InterestLifecycleSeeder.Apply(generated.Interests, DateTimeOffset.UtcNow, DemoDataSeeder.Seed);
+        var extra = MessagesSeeder.Build(generated, DateTimeOffset.UtcNow, null, DemoDataSeeder.Seed).NewInterests.Count;
+        Assert.True(extra > 0);
+        Assert.Equal(generated.Interests.Count + extra, await db.Interests.CountAsync());
+        Assert.Equal(await db.Interests.CountAsync(i => i.Reply == InterestReply.Accepted), await db.Set<Conversation>().CountAsync());
         Assert.Equal(generated.Shortlist.Count, await db.ShortlistEntries.CountAsync());
     }
 }

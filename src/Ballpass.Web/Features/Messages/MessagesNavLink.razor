@@ -1,0 +1,27 @@
+@namespace Ballpass.Web.Components
+@using Ballpass.Web.Features.Messages
+@inject MessagesService Messages
+@inject IStringLocalizer<MessagesResource> T
+@inject NavigationManager Navigation
+
+@* Nav link to /messages for both roles, with the number of conversations that have unread messages. *@
+<a href="/messages" class="bp-navlink bp-msg-nav" data-unread="@(unread > 0 ? unread.ToString() : null)" aria-current="@(IsCurrent ? "page" : null)">@T["Nav_Messages"]@(unread > 0 ? $" ({unread})" : "")</a>
+
+@code {
+    private string Path => Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0];
+
+    private bool IsCurrent => Path == "messages" || Path.StartsWith("messages/", StringComparison.Ordinal);
+
+    [CascadingParameter] private Task<AuthenticationState>? AuthState { get; set; }
+
+    private int unread;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = AuthState is null ? null : (await AuthState).User;
+        if (Viewer.From(user) is not { } viewer) return;
+        // The page at /messages/{id} marks that conversation read while this renders: it no longer counts.
+        int? opening = Path.StartsWith("messages/", StringComparison.Ordinal) && int.TryParse(Path["messages/".Length..], out var id) ? id : null;
+        unread = await Messages.UnreadConversationsAsync(viewer, opening);
+    }
+}

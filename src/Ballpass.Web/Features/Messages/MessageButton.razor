@@ -1,0 +1,12 @@
+@namespace Ballpass.Web.Components
+@inject IStringLocalizer<MessagesResource> T
+
+@* Opens the conversation of an accepted interest (created on first use). Host pages pass the button class of their context. *@
+<a class="@Class" href="/messages/with/@InterestId" data-action="message">@T[Long ? "Button_Long" : "Button_Short"]</a>
+
+@code {
+    [Parameter, EditorRequired] public int InterestId { get; set; }
+    [Parameter] public string Class { get; set; } = "bp-btn-outline";
+    /// <summary>"Στείλτε μήνυμα" instead of "Μήνυμα".</summary>
+    [Parameter] public bool Long { get; set; }
+}

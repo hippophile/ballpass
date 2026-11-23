@@ -362,7 +362,9 @@ public class LoopTests(BallpassAppFactory app)
         Assert.DoesNotContain($"action=\"/me/inbox/{a.InterestId}/reply\"", li);
         Assert.Contains("Συνδεθήκατε", li);
         var addr = Regex.Match(li, "contact@[a-z0-9-]+\\.invalid").Value;
-        Assert.Matches($"<a[^>]*class=\"bp-btn-athlete\"[^>]*href=\"mailto:{Regex.Escape(addr)}\"", li);
+        // messages (2026-11-23): the teal action opens the conversation; the mailto stays as a secondary ghost link.
+        Assert.Matches($"<a[^>]*class=\"bp-btn-athlete\"[^>]*href=\"/messages/with/{a.InterestId}\"", li);
+        Assert.Matches($"<a[^>]*class=\"bp-btn-ghost\"[^>]*href=\"mailto:{Regex.Escape(addr)}\"", li);
         Assert.DoesNotContain(".invalid", Regex.Replace(li, "<[^>]+>", " "));   // the reserved address lives only in the mailto, never as visible text
         foreach (Match m in Regex.Matches(html, "[\\w.+-]+@[\\w.-]+"))
             Assert.EndsWith(".invalid", m.Value);
@@ -678,9 +680,13 @@ public class LoopTests(BallpassAppFactory app)
         var afterSecond = Counts();
 
         Assert.Equal(afterFirst, afterSecond);
-        Assert.Equal(40, afterSecond.Interests);
-        Assert.Equal(12, afterSecond.Seen);
-        Assert.Equal(6, afterSecond.Replied);
-        Assert.True(afterSecond.Accepted is > 0 and < 6);
+        // The messages seed adds accepted (seen, replied) interests for its conversations on top of the generated 40.
+        var extra = h.Db(db => db.Interests.Count()) - 40;
+        Assert.InRange(extra, 15, 25);
+        Assert.Equal(40 + extra, afterSecond.Interests);
+        Assert.Equal(12 + extra, afterSecond.Seen);
+        Assert.Equal(6 + extra, afterSecond.Replied);
+        Assert.True(afterSecond.Accepted - extra is > 0 and < 6);
+        Assert.Equal(afterSecond.Accepted, h.Db(db => db.Set<Conversation>().Count()));
     }
 }
